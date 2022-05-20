@@ -1,9 +1,11 @@
-using System;
+﻿using System;
 
-namespace Engeman.Intranet.Models {
-    public class ErrorViewModel {
-        public string RequestId { get; set; }
+namespace Engeman.Intranet.Models
+{
+  public class ErrorViewModel
+  {
+    public string RequestId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-    }
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+  }
 }

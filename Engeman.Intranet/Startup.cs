@@ -1,4 +1,5 @@
 using Engeman.Intranet.Library;
+using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -21,10 +22,11 @@ namespace Engeman.Intranet {
       if (Configuration.GetConnectionString("EngemanDb") != null) {
         DatabaseInfo.ConnectionString = Configuration.GetConnectionString("EngemanDb");
 
-        //using(StaticQuery sq = new StaticQuery()) {
+        //using (StaticQuery sq = new StaticQuery())
+        //{
         //  string name = sq.GetDataToString("SELECT NAME FROM USERACCOUNT WHERE ID = 1");
         //  DataSet ds = sq.GetDataSet("SELECT * FROM DEPARTMENT");
-        //  sq.ExecuteCommand("INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID) VALUES ('Durval Ferreira', 'durval.ferreira', 'S', 1)")
+        //  sq.ExecuteCommand("INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID) VALUES ('Durval Ferreira', 'durval.ferreira', 'S', 1)");
         //}
 
       } else {
@@ -38,6 +40,7 @@ namespace Engeman.Intranet {
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services) {
       services.AddControllersWithViews();
+      services.AddTransient<IUserAccountRepository, UserAccountRepository>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

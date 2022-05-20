@@ -1,4 +1,5 @@
 ﻿using Engeman.Intranet.Models;
+using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -10,16 +11,16 @@ namespace Engeman.Intranet.Controllers
   public class DashboardController : Controller
   {
     private readonly IConfiguration _configuration;
+    private readonly IUserAccountRepository _userAccountRepository;
 
-    public DashboardController(IConfiguration configuration)
+    public DashboardController(IConfiguration configuration, IUserAccountRepository userAccountRepository)
     {
       _configuration = configuration;
+      _userAccountRepository = userAccountRepository;
     }
 
     public IActionResult Index(Credentials credentials)
     {
-      var url = _configuration["LocalPath"];      
-
       try
       {
         DirectoryEntry entry = new DirectoryEntry("LDAP://" + _configuration["LocalPath"], credentials.DomainUsername, credentials.Password);
@@ -27,9 +28,18 @@ namespace Engeman.Intranet.Controllers
 
       } catch (COMException ex)
       {
-        Console.WriteLine(ex.Message);
+        ViewData["Message"] = ex.Message;
+        return PartialView("~/Views/Login/Index.cshtml");
+      }     
+
+      if (_userAccountRepository.UserAccountValidate(credentials) == false)
+      {
+        ViewData["Message"] = "O usuário não existe.";
+        return PartialView("~/Views/Login/Index.cshtml");
+      } else
+      {
+        return View();
       }
-      return View();
     }
   }
 }
