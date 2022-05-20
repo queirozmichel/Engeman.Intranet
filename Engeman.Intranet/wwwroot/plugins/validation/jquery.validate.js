@@ -10,7 +10,7 @@
  */
 
 (function($) {
-
+	
 $.extend($.fn, {
 	// http://docs.jquery.com/Plugins/Validation/validate
 	validate: function( options ) {
@@ -1184,7 +1184,8 @@ $.format = $.validator.format;
 // ajax mode: abort
 // usage: $.ajax({ mode: "abort"[, port: "uniqueport"]});
 // if mode:"abort" is used, the previous request on that port (port can be undefined) is aborted via XMLHttpRequest.abort()
-(function($) {
+(function ($) {
+
 	var pendingRequests = {};
 	// Use a prefilter if available (1.5+)
 	if ( $.ajaxPrefilter ) {
@@ -1217,7 +1218,7 @@ $.format = $.validator.format;
 
 // provides delegate(type: String, delegate: Selector, handler: Callback) plugin for easier event delegation
 // handler is only called when $(event.target).is(delegate), in the scope of the jquery-object for event.target
-(function($) {
+(function ($) {	
 	$.extend($.fn, {
 		validateDelegate: function( delegate, type, handler ) {
 			return this.bind(type, function( event ) {

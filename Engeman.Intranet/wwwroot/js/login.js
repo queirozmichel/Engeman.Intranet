@@ -199,7 +199,7 @@ var Login = function() {
 	/* * * * * * * * * * * *
 	 * Validation for Registering
 	 * * * * * * * * * * * */
-	var initRegisterValidation = function() {
+	var initRegisterValidation = function () {
 		if ($.validator) {
 			$('.register-form').validate({
 				invalidHandler: function (event, validator) {
