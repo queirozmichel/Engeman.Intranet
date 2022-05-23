@@ -10,7 +10,9 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        string result = sq.GetDataToString("SELECT 0 FROM USERACCOUNT WHERE DOMAINACCOUNT = " + "'" + credentials.DomainUsername + "'");
+        var query = ("SELECT 0 FROM USERACCOUNT WHERE DOMAINACCOUNT = " + "'" + credentials.DomainUsername + "' AND ACTIVE = 'S'").ToUpper();
+
+        string result = sq.GetDataToString(query);
 
         if (result == "")
         {

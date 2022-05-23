@@ -51,14 +51,14 @@
   <script type="text/javascript" src="~/js/login.js"></script>
   <script>
     $(document).ready(function () {
-      "use strict";      
+      "use strict";
 
       Login.init(); // Init login JavaScript
     });
   </script>
 </head>
 
-<body class="login">
+<body style="padding-right: 0px !important; margin-right: 0px !important;" class="login">
   <!-- Logo -->
   <div class="logo">
     <img src="~/images/logo.png" alt="logo" />
@@ -68,9 +68,9 @@
   <!-- Login Box -->
   <div class="box">
     <div class="content">
-
       <!-- Login Formular -->
-      <form asp-controller="dashboard" asp-action="index" class="form-vertical" method="post">  @*Para validar = class="form-vertical login-form"*@
+      <form asp-controller="login" asp-action="tryLogin" class="form-vertical" method="post">
+        @*Para validar = class="form-vertical login-form"*@
         <!-- Title -->
         <h3 class="form-title">Sign In to your Account</h3>
 
@@ -100,7 +100,7 @@
         <div class="form-actions">
           <label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Remember me</label>
           <button type="submit" class="submit btn btn-primary pull-right">
-            Sign In <i class="icon-angle-right"></i>
+            Entrar <i class="icon-angle-right"></i>
           </button>
         </div>
       </form>
@@ -210,4 +210,29 @@
     <a href="#" class="sign-up">Don't have an account yet? <strong>Sign Up</strong></a>
   </div>
   <!-- /Footer -->
+
+
+
+  @if (TempData["Message"] != null)
+  {
+    <div style="overflow: hidden;" class="modal fade" id="myModal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 style="text-align: center;" class="modal-title" id="exampleModalLabel">@Html.TempData["Message"]</h5>
+          </div>
+          @*<div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>*@
+        </div>
+      </div>
+    </div>
+  }
+
+  <script>
+    $(window).load(function () {
+      $('#myModal').modal('show');
+    });
+  </script>
+
 </body>
