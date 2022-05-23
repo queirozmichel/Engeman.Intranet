@@ -1,5 +1,6 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -25,7 +26,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public IActionResult TryLogin(Credentials credentials)
+    public IActionResult TryLogin(CredentialsDto credentials)
     {
       try
       {
@@ -45,10 +46,8 @@ namespace Engeman.Intranet.Controllers
         return RedirectToAction("index", "login");
       } else
       {
-
-
-
-
+        HttpContext.Session.SetString("_DomainUsername", credentials.DomainUsername.ToString());
+        HttpContext.Session.SetString("_Password", credentials.Password.ToString());
         //return View("~/Views/dashboard/index.cshtml");
         return RedirectToAction("index", "dashboard");
       }

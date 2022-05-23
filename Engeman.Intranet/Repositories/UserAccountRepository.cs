@@ -6,7 +6,7 @@ namespace Engeman.Intranet.Repositories
 {
   public class UserAccountRepository : IUserAccountRepository
   {
-    public bool UserAccountValidate(Credentials credentials)
+    public bool UserAccountValidate(CredentialsDto credentials)
     {
       using (StaticQuery sq = new StaticQuery())
       {
