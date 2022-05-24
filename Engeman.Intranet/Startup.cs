@@ -14,10 +14,8 @@ using System.Threading.Tasks;
 
 namespace Engeman.Intranet
 {
-
   public class Startup
   {
-
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
@@ -37,7 +35,6 @@ namespace Engeman.Intranet
       {
         throw new Exception("Unknown Connection String.");
       }
-
     }
 
     public IConfiguration Configuration { get; }
@@ -49,7 +46,7 @@ namespace Engeman.Intranet
       services.AddDistributedMemoryCache();
       services.AddSession(options =>
       {
-        options.IdleTimeout = TimeSpan.FromSeconds(1200);
+        options.IdleTimeout = TimeSpan.FromMinutes(20);
         options.Cookie.HttpOnly = true;
         options.Cookie.IsEssential = true;
       });
@@ -71,7 +68,6 @@ namespace Engeman.Intranet
       app.UseHttpsRedirection();
       app.UseStaticFiles();
       app.UseRouting();
-      app.UseAuthorization();
       app.UseSession();
       app.UseEndpoints(endpoints =>
       {

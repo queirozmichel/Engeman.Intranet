@@ -1,5 +1,6 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;

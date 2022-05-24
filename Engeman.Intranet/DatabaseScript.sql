@@ -67,8 +67,11 @@ CREATE TABLE USERACCOUNT (
      ACTIVE                        CHAR(1) DEFAULT 'S'                 NOT NULL,
      NAME                          VARCHAR(100)                        NOT NULL,
 	   DOMAINACCOUNT                 VARCHAR(100)                        NOT NULL,
-	   DEPARTMENT_ID                 NUMERIC(18,0)                       NOT NULL,
-     CHANGEDATE                        DATETIME DEFAULT CURRENT_TIMESTAMP      NULL,     
+	   DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
+     EMAIL                         VARCHAR(50)                         NOT NULL,
+	   PHOTO                         VARBINARY(MAX)					             NULL,
+	   DESCRIPTION				           VARCHAR(MAX)                        NULL,
+	   CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,     
      CHECK (NAME <> ''),
      CHECK (DOMAINACCOUNT <> ''))ON [PRIMARY]
 GO
@@ -105,11 +108,11 @@ INSERT INTO DEPARTMENT (CODE, DESCRIPTION, ACTIVE) VALUES ('004', 'TI Engeman Pe
 GO
 SELECT * FROM DEPARTMENT
 GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID) VALUES ('Michel Queiroz', 'michel.queiroz', 'S', 1)
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Michel Queiroz', 'michel.queiroz', 'S', 1, 'michel.queiroz@engeman.com.br')
 GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID) VALUES ('Samuel Moreira', 'samuel.moreira', 'S', 1)
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Samuel Moreira', 'samuel.moreira', 'S', 1, 'samuel.moreira@engeman.com.br')
 GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID) VALUES ('Alan Vasconcelos', 'alan.vasconcelos', 'S', 3)
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Alan Vasconcelos', 'alan.vasconcelos', 'S', 3, 'alan.vasconcelos@engeman.com.br')
 GO
 SELECT * FROM USERACCOUNT
 GO
