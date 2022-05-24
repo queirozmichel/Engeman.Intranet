@@ -4,6 +4,7 @@ namespace Engeman.Intranet.Repositories
 {
   public interface IUserAccountRepository
   {
-    bool UserAccountValidate(CredentialsDto credentials);
+    public bool UserAccountValidate(string domainUsername);
+    public UserProfile GetUserProfile(string domainUsername);
   }
 }

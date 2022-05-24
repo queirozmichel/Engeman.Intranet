@@ -39,7 +39,7 @@ namespace Engeman.Intranet.Controllers
         return RedirectToAction("index", "login");
       }
 
-      if (_userAccountRepository.UserAccountValidate(credentials) == false)
+      if (_userAccountRepository.UserAccountValidate(credentials.DomainUsername) == false)
       {
         TempData["Message"] = "Usuário não cadastrado ou bloqueado.";
         //return PartialView("~/Views/Login/Index.cshtml");
