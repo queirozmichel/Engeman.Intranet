@@ -1,6 +1,7 @@
 ﻿using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Engeman.Intranet.Models;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -18,6 +19,13 @@ namespace Engeman.Intranet.Controllers
       var userProfile = _userAccountRepository.GetUserProfile(HttpContext.Session.GetString("_DomainUsername").ToString());
 
       return View(userProfile);
+    }
+
+    public IActionResult EditUserProfile(UserProfile userProfile)
+    {
+      _userAccountRepository.UpdateUserProfile(userProfile);
+
+      return RedirectToAction("index","userprofile");
     }
   }
 }

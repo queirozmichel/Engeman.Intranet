@@ -2,6 +2,7 @@
 using Engeman.Intranet.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using System;
 
 namespace Engeman.Intranet.Repositories
 {
@@ -15,7 +16,7 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = ("SELECT 0 FROM USERACCOUNT WHERE DOMAINACCOUNT = " + "'" + domainUsername + "' AND ACTIVE = 'S'").ToUpper();
+        var query = $"SELECT 0 FROM USERACCOUNT WHERE DOMAINACCOUNT = '{domainUsername.ToUpper()}' AND ACTIVE = 'S'";
 
         string result = sq.GetDataToString(query);
 
@@ -31,25 +32,43 @@ namespace Engeman.Intranet.Repositories
 
     public UserProfile GetUserProfile(string domainUsername)
     {
+      UserProfile userProfile = new UserProfile();
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = ("SELECT NAME,DOMAINACCOUNT,D.DESCRIPTION AS DEPARTMENTDESCRIPTION,EMAIL,PHOTO,UA.DESCRIPTION AS USERDESCRIPTION " +
-          "FROM ENGEMANINTRANET.USERACCOUNT UA INNER JOIN ENGEMANINTRANET.DEPARTMENT D " +
-          "ON UA.DEPARTMENT_ID = D.ID where DOMAINACCOUNT = " + "'" + domainUsername + "'");
+        var query = 
+          $"SELECT " +
+          $"UA.ID,UA.ACTIVE,NAME,DOMAINACCOUNT,D.DESCRIPTION AS DEPARTMENTDESCRIPTION,EMAIL," +
+          $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CHANGEDATE " +
+          $"FROM ENGEMANINTRANET.USERACCOUNT UA INNER JOIN ENGEMANINTRANET.DEPARTMENT D " +
+          $"ON UA.DEPARTMENT_ID = D.ID where DOMAINACCOUNT = '{domainUsername.ToUpper()}'";
 
-        var result = sq.GetDataSet(query);
+        var result = sq.GetDataSet(Convert.ToString(query)).Tables[0].Rows[0];
 
-        UserProfile userProfile = new UserProfile();
-
-        userProfile.Name = result.Tables["TABLE"].Rows[0]["NAME"].ToString();
-        userProfile.DomainAccount = result.Tables["TABLE"].Rows[0]["DOMAINACCOUNT"].ToString();
-        userProfile.Department.Description = result.Tables["TABLE"].Rows[0]["DEPARTMENTDESCRIPTION"].ToString();
-        userProfile.Email = result.Tables["TABLE"].Rows[0]["EMAIL"].ToString();
-        userProfile.Photo = result.Tables["TABLE"].Rows[0]["PHOTO"].ToString();
-        userProfile.Description = result.Tables["TABLE"].Rows[0]["USERDESCRIPTION"].ToString();
+        userProfile.Id = Convert.ToInt32(result["ID"]);
+        userProfile.Active = Convert.ToChar(result["active"]);
+        userProfile.Name = result["name"].ToString();
+        userProfile.DomainAccount = result["domainaccount"].ToString();
+        userProfile.Department.Description = result["departmentdescription"].ToString();
+        userProfile.Email = result["email"].ToString();
+        userProfile.Photo = result["photo"].ToString();
+        userProfile.Description = result["userdescription"].ToString();
+        userProfile.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
 
         return userProfile;
+      }
+    }
+    public void UpdateUserProfile(UserProfile userProfile)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+          $"UPDATE " +
+          $"ENGEMANINTRANET.USERACCOUNT " +
+          $"SET NAME = '{userProfile.Name}', EMAIL = '{userProfile.Email}', DESCRIPTION = '{userProfile.Description}' " +
+          $"WHERE DOMAINACCOUNT = '{userProfile.DomainAccount}' ";
+
+        sq.ExecuteCommand(query);
       }
     }
   }

@@ -1,4 +1,6 @@
-﻿<head>
+﻿@model UserProfile
+
+<head>
   <!-- Demo JS -->
   <script type="text/javascript" src="~/js/custom.js"></script>
   <script type="text/javascript" src="~/js/demo/charts/chart_filled_blue.js"></script>
@@ -147,7 +149,7 @@
 
         <!--=== Edit Account ===-->
         <div class="tab-pane" id="tab_edit_account">
-          <form class="form-horizontal" action="#">
+          <form asp-controller="userprofile" asp-action="edituserprofile" class="form-horizontal" method="post">
             <div class="col-md-12">
               <div class="widget">
                 <div class="widget-header">
@@ -158,31 +160,31 @@
                     <div class="col-md-6">
                       <div class="form-group">
                         <label class="col-md-4 control-label">Nome:</label>
-                        <div class="col-md-8"><input type="text" name="regular" class="form-control" value="@Model.Name"></div>
+                        <div class="col-md-8"><input asp-for="@Model.Name" type="text" name="name" class="form-control" value="@Model.Name"></div>
                       </div>
 
                       <div class="form-group">
                         <label class="col-md-4 control-label">Usuário de Domínio:</label>
-                        <div class="col-md-8"><input type="text" name="regular" class="form-control" value="@Model.DomainAccount" disabled="disabled"></div>
+                        <div class="col-md-8"><input asp-for="@Model.DomainAccount" type="text" name="domainAccount" class="form-control" value="@Model.DomainAccount" readonly></div>
                       </div>
                     </div>
 
                     <div class="col-md-6">
                       <div class="form-group">
                         <label class="col-md-4 control-label">E-mail:</label>
-                        <div class="col-md-8"><input type="email" name="regular" class="form-control" value="@Model.Email"></div>
+                        <div class="col-md-8"><input asp-for="@Model.Email" type="email" name="email" class="form-control" value="@Model.Email"></div>
                       </div>
 
                       <div class="form-group">
                         <label class="col-md-4 control-label">Setor:</label>
-                        <div class="col-md-8"><input type="text" name="regular" class="form-control" value="@Model.Department.Description" disabled="disabled"></div>
+                        <div class="col-md-8"><input type="text" name="departmentDescription" class="form-control" value="@Model.Department.Description" readonly></div>
                       </div>
                     </div>
                   </div>
                   <!-- /.row -->
                   <div class="form-outline">
                     <label class="form-label" for="textArea">Descrição:</label>
-                    <textarea class="form-control" id="textArea" rows="5">@Model.Description</textarea>
+                    <textarea asp-for="@Model.Description" class="form-control" id="textArea" rows="5">@Model.Description</textarea>
                   </div>
                 </div> <!-- /.widget-content -->
               </div> <!-- /.widget -->
