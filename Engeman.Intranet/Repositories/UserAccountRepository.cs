@@ -7,11 +7,7 @@ using System;
 namespace Engeman.Intranet.Repositories
 {
   public class UserAccountRepository : IUserAccountRepository
-  {
-    public UserAccountRepository()
-    {
-
-    }
+  {   
     public bool UserAccountValidate(string domainUsername)
     {
       using (StaticQuery sq = new StaticQuery())
@@ -36,7 +32,7 @@ namespace Engeman.Intranet.Repositories
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = 
+        var query =
           $"SELECT " +
           $"UA.ID,UA.ACTIVE,NAME,DOMAINACCOUNT,D.DESCRIPTION AS DEPARTMENTDESCRIPTION,EMAIL," +
           $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CHANGEDATE " +
@@ -51,7 +47,7 @@ namespace Engeman.Intranet.Repositories
         userProfile.DomainAccount = result["domainaccount"].ToString();
         userProfile.Department.Description = result["departmentdescription"].ToString();
         userProfile.Email = result["email"].ToString();
-        userProfile.Photo = result["photo"].ToString();
+        userProfile.Photo = (byte[])result["photo"];
         userProfile.Description = result["userdescription"].ToString();
         userProfile.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
 
@@ -62,13 +58,15 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
-          $"UPDATE " +
-          $"ENGEMANINTRANET.USERACCOUNT " +
-          $"SET NAME = '{userProfile.Name}', EMAIL = '{userProfile.Email}', DESCRIPTION = '{userProfile.Description}' " +
-          $"WHERE DOMAINACCOUNT = '{userProfile.DomainAccount}' ";
+        string[] parametros = { "Photo;byte" };
+        Object[] valor = { userProfile.Photo };
 
-        sq.ExecuteCommand(query);
+        var query =
+        $"UPDATE ENGEMANINTRANET.USERACCOUNT SET NAME = '{userProfile.Name}', EMAIL = '{userProfile.Email}'," +
+        $"DESCRIPTION = '{userProfile.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
+        $"WHERE DOMAINACCOUNT = '{userProfile.DomainAccount}'";
+
+        sq.ExecuteCommand(query, parametros, valor);
       }
     }
   }

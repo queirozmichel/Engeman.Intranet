@@ -15,7 +15,7 @@ namespace Engeman.Intranet.Models
     public int DepartmentId { get; set; }
     public Department Department { get; set; }
     public string Email { get; set; }
-    public string Photo { get; set; }
+    public byte[] Photo { get; set; }
     public string Description { get; set; }
     public DateTime ChangeDate { get; set; }
   }
