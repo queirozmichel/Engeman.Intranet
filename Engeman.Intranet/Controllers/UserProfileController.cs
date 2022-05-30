@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Http;
 using Engeman.Intranet.Models;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Engeman.Intranet.Controllers
 {
+  [Authorize(AuthenticationSchemes = "CookieAuthentication")]
   public class UserProfileController : Controller  {
 
     private readonly IUserAccountRepository _userAccountRepository;

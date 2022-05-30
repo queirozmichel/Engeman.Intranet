@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace Engeman.Intranet.Controllers
 {
+  [Authorize(AuthenticationSchemes = "CookieAuthentication")]
   public class DashboardController : Controller
   {
     public IActionResult Index()

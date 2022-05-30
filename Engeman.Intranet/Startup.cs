@@ -23,14 +23,6 @@ namespace Engeman.Intranet
       if (Configuration.GetConnectionString("EngemanDb") != null)
       {
         DatabaseInfo.ConnectionString = Configuration.GetConnectionString("EngemanDb");
-
-        //using (StaticQuery sq = new StaticQuery())
-        //{
-        //  string name = sq.GetDataToString("SELECT NAME FROM USERACCOUNT WHERE ID = 1");
-        //  DataSet ds = sq.GetDataSet("SELECT * FROM DEPARTMENT");
-        //  sq.ExecuteCommand("INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID) VALUES ('Durval Ferreira', 'durval.ferreira', 'S', 1)");
-        //}
-
       } else
       {
         throw new Exception("Unknown Connection String.");
@@ -43,9 +35,16 @@ namespace Engeman.Intranet
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllersWithViews();
+      services.AddAuthentication("CookieAuthentication").AddCookie("CookieAuthentication", options =>
+      {
+        options.Cookie.Name = "UserLoginCookie";
+        options.LoginPath = "/Login/Index";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+      });
       services.AddDistributedMemoryCache();
       services.AddSession(options =>
       {
+        options.Cookie.Name = "UserSession";
         options.IdleTimeout = TimeSpan.FromMinutes(20);
         options.Cookie.HttpOnly = true;
         options.Cookie.IsEssential = true;
@@ -68,6 +67,8 @@ namespace Engeman.Intranet
       app.UseHttpsRedirection();
       app.UseStaticFiles();
       app.UseRouting();
+      app.UseAuthentication();
+      app.UseAuthorization();
       app.UseSession();
       app.UseEndpoints(endpoints =>
       {
