@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -30,11 +31,12 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
+    [SupportedOSPlatform("windows")]
     public async Task<IActionResult> TryLogin(string domainUsername, string password)
     {
       try
       {
-        DirectoryEntry entry = new DirectoryEntry("LDAP://" + _configuration["LocalPath"], domainUsername, password);
+        DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], domainUsername, password);
         Object obj = entry.NativeObject;
       } catch (COMException ex)
       {

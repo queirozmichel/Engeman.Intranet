@@ -26,6 +26,10 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult EditUserProfile(UserProfile userProfile, List<IFormFile> Photo)
     {
+      if (Photo.Count == 0)
+      {
+       userProfile.Photo =  _userAccountRepository.GetUserProfile(userProfile.DomainAccount).Photo;
+      }
       foreach (var item in Photo)
       {
         if (item.Length>0)

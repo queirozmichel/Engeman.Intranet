@@ -13,7 +13,6 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var query = $"SELECT 0 FROM USERACCOUNT WHERE DOMAINACCOUNT = '{domainUsername.ToUpper()}' AND ACTIVE = 'S'";
-
         string result = sq.GetDataToString(query);
 
         if (result == "")
@@ -39,7 +38,7 @@ namespace Engeman.Intranet.Repositories
           $"FROM ENGEMANINTRANET.USERACCOUNT UA INNER JOIN ENGEMANINTRANET.DEPARTMENT D " +
           $"ON UA.DEPARTMENT_ID = D.ID where DOMAINACCOUNT = '{domainUsername.ToUpper()}'";
 
-        var result = sq.GetDataSet(Convert.ToString(query)).Tables[0].Rows[0];
+        var result =  sq.GetDataSet(Convert.ToString(query)).Tables[0].Rows[0];
 
         userProfile.Id = Convert.ToInt32(result["ID"]);
         userProfile.Active = Convert.ToChar(result["active"]);
@@ -56,17 +55,18 @@ namespace Engeman.Intranet.Repositories
     }
     public void UpdateUserProfile(UserProfile userProfile)
     {
+
       using (StaticQuery sq = new StaticQuery())
       {
-        string[] parametros = { "Photo;byte" };
-        Object[] valor = { userProfile.Photo };
+        string[] paramters = { "Photo;byte" };
+        Object[] values = { userProfile.Photo };
 
         var query =
         $"UPDATE ENGEMANINTRANET.USERACCOUNT SET NAME = '{userProfile.Name}', EMAIL = '{userProfile.Email}'," +
         $"DESCRIPTION = '{userProfile.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
         $"WHERE DOMAINACCOUNT = '{userProfile.DomainAccount}'";
 
-        sq.ExecuteCommand(query, parametros, valor);
+        sq.ExecuteCommand(query, paramters, values);
       }
     }
   }
