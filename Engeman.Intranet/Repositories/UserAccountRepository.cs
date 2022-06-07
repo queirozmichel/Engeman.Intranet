@@ -3,6 +3,9 @@ using Engeman.Intranet.Models;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Engeman.Intranet.Repositories
 {
@@ -68,6 +71,27 @@ namespace Engeman.Intranet.Repositories
 
         sq.ExecuteCommand(query, paramters, values);
       }
+    }
+
+    public List<UserProfileDto> GetAllUserProfiles()
+    {
+      List<UserProfileDto> users = new List<UserProfileDto>();
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query = "SELECT * FROM ENGEMANINTRANET.USERACCOUNT WHERE ACTIVE = 'S'";
+        var result = sq.GetDataSet(query).Tables[0];
+        for (int i = 0; i < result.Rows.Count; i++)
+        {
+          UserProfileDto userProfile = new UserProfileDto();
+          userProfile.Name = result.Rows[i]["name"].ToString();
+          userProfile.Email = result.Rows[i]["email"].ToString();
+          userProfile.DomainAccount = result.Rows[i]["domainaccount"].ToString();
+
+          users.Add(userProfile);
+        }
+      }
+      return users;
     }
   }
 }

@@ -34,15 +34,15 @@ namespace Engeman.Intranet.Controllers
     [SupportedOSPlatform("windows")]
     public async Task<IActionResult> TryLogin(string domainUsername, string password)
     {
-      try
-      {
-        DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], domainUsername, password);
-        Object obj = entry.NativeObject;
-      } catch (COMException ex)
-      {
-        TempData["Message"] = ex.Message;
-        return RedirectToAction("index", "login");
-      }
+      //try
+      //{
+      //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], domainUsername, password);
+      //  Object obj = entry.NativeObject;
+      //} catch (COMException ex)
+      //{
+      //  TempData["Message"] = ex.Message;
+      //  return RedirectToAction("index", "login");
+      //}
 
       if (_userAccountRepository.UserAccountValidate(domainUsername) == false)
       {
@@ -60,7 +60,6 @@ namespace Engeman.Intranet.Controllers
         return RedirectToAction("index", "dashboard");
       }
     }
-
     public async Task<IActionResult> Logout()
     {
       await HttpContext.SignOutAsync("CookieAuthentication");

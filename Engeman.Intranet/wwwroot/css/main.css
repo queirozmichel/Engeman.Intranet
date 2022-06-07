@@ -721,7 +721,7 @@ span.red {
 }
 #sidebar .resizeable {
   cursor: col-resize;
-  background: url(../img/sidebar/sidebar-divider-dots.png) 2px 50% no-repeat #ececec !important;
+  background: url(../images/sidebar/sidebar-divider-dots.png) 2px 50% no-repeat #ececec !important;
 }
 #sidebar .slimScrollDiv {
   float: left !important;

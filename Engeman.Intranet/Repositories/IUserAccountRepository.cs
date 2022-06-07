@@ -1,4 +1,5 @@
 ﻿using Engeman.Intranet.Models;
+using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
@@ -7,5 +8,6 @@ namespace Engeman.Intranet.Repositories
     public bool UserAccountValidate(string domainUsername);
     public UserProfile GetUserProfile(string domainUsername);
     public void UpdateUserProfile(UserProfile userProfile);
+    public List<UserProfileDto> GetAllUserProfiles();
   }
 }

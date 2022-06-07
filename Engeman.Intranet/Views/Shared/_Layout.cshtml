@@ -32,9 +32,15 @@
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 
   <!--=== JavaScript ===-->
+  @*<script type="text/javascript" src="~/js/libs/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="~/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js"></script>*@
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+          integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+          crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"
+          integrity="sha256-eTyxS0rkjpLEo16uXTS0uVCS4815lc40K2iVpWDvdSY="
+          crossorigin="anonymous"></script>
 
-  <script type="text/javascript" src="~/js/libs/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="~/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js"></script>
 
   <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="~/js/libs/lodash.compat.min.js"></script>
@@ -599,24 +605,24 @@
               Tables
             </a>
             <ul class="sub-menu">
-              <li>
+              @*<li>
                 <a href="tables_static.html">
                   <i class="icon-angle-right"></i>
                   Static Tables
                 </a>
-              </li>
+              </li>*@
               <li>
                 <a asp-area="" asp-controller="questionsAnswers" asp-action="Index">
                   <i class="icon-angle-right"></i>
                   Dynamic Tables (DataTables)
                 </a>
               </li>
-              <li>
+              @*<li>
                 <a href="tables_responsive.html">
                   <i class="icon-angle-right"></i>
                   Responsive Tables
                 </a>
-              </li>
+              </li>*@
             </ul>
           </li>
           <li>

@@ -114,6 +114,24 @@ INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALU
 GO
 INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Alan Vasconcelos', 'alan.vasconcelos', 'S', 3, 'alan.vasconcelos@engeman.com.br')
 GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Durval Ferreira', 'durval.ferreira', 'S', 1, 'durval.ferreira@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Monique Santiago', 'monique.santiago', 'S', 1, 'monique.santiago@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Cruz', 'gustavo.cruz', 'S', 1, 'gustavo.cruz@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Fonseca', 'gustavo.fonseca', 'S', 1, 'gustavo.fonseca@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Bruno Gonçalves', 'bruno.goncalves', 'S', 4, 'bruno.goncalves@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Pedro Silva', 'pedro.silva', 'S', 4, 'pedro.silva@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Luan Santos', 'luan.santos', 'S', 4, 'luan.santos@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Matheus Correa', 'matheus.correa', 'S', 2, 'matheus.correa@engeman.com.br')
+GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Luciano Rodrigues', 'luciano.rodrigues', 'S', 2, 'luciano.rodrigues@engeman.com.br')
+GO
 SELECT * FROM USERACCOUNT
 GO
 UPDATE DEPARTMENT SET ACTIVE = 'N' WHERE CODE = '004'
