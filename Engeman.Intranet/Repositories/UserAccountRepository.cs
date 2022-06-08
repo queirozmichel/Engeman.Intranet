@@ -84,14 +84,17 @@ namespace Engeman.Intranet.Repositories
         for (int i = 0; i < result.Rows.Count; i++)
         {
           UserProfileDto userProfile = new UserProfileDto();
+
+          userProfile.Id = Convert.ToInt32(result.Rows[i]["id"]);
           userProfile.Name = result.Rows[i]["name"].ToString();
           userProfile.Email = result.Rows[i]["email"].ToString();
           userProfile.DomainAccount = result.Rows[i]["domainaccount"].ToString();
+          userProfile.ChangeDate = result.Rows[i]["changeDate"].ToString();
 
           users.Add(userProfile);
         }
       }
-      return users;
+     return users;
     }
   }
 }

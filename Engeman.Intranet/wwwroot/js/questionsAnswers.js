@@ -1,12 +1,17 @@
 ﻿$(document).ready(function () {
+
   $("#grid-data").bootgrid({
     ajax: true,
-    post: function () {
-      return {
-        id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
-      };
-    },
     url: "QuestionsAnswers/GetDataToGrid",
-    formatters: {}
+    labels: {
+      infos: "Exibindo {{ctx.start}} até {{ctx.end}} de {{ctx.total}} registros",
+      loading: "Carregando dados...",
+      noResults: "Não há dados para exibir",
+      refresh: "Atualizar",
+      search: "Pesquisar"
+    },
+    searchSettings: {
+      characters: 1
+    }
   });
 });

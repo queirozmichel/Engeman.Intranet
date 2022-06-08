@@ -27,17 +27,24 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public JsonResult GetDataToGrid( int current = 1, int rowCount = 5)
+    public JsonResult GetDataToGrid(string searchPhrase, int current = 1, int rowCount = 5)
     {
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
-
       var order = requestKeys[key];
       var field = key.Replace("sort[", "").Replace("]", "");
-
+      var profilesInfo = _userAccountRepository.GetAllUserProfiles().AsQueryable();
       string orderedField = String.Format("{0} {1}", field, order);
 
-      var profilesInfo = _userAccountRepository.GetAllUserProfiles().AsQueryable();
+      if (!String.IsNullOrWhiteSpace(searchPhrase))
+      {
+        int id = 0;
+        int.TryParse(searchPhrase, out id);        
+
+        profilesInfo = profilesInfo.Where("name.Contains(@0) OR domainAccount.Contains(@0) OR " +
+          "email.Contains(@0) OR changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
+      }
+
       int total = profilesInfo.Count();
       var profilesPaginated = profilesInfo.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
 
