@@ -81,15 +81,15 @@ namespace Engeman.Intranet.Repositories
       {
         var query = "SELECT * FROM ENGEMANINTRANET.USERACCOUNT WHERE ACTIVE = 'S'";
         var result = sq.GetDataSet(query).Tables[0];
+
         for (int i = 0; i < result.Rows.Count; i++)
         {
           UserProfileDto userProfile = new UserProfileDto();
-
           userProfile.Id = Convert.ToInt32(result.Rows[i]["id"]);
           userProfile.Name = result.Rows[i]["name"].ToString();
           userProfile.Email = result.Rows[i]["email"].ToString();
           userProfile.DomainAccount = result.Rows[i]["domainaccount"].ToString();
-          userProfile.ChangeDate = result.Rows[i]["changeDate"].ToString();
+          userProfile.ChangeDate = Convert.ToString(result.Rows[i]["changeDate"]);
 
           users.Add(userProfile);
         }

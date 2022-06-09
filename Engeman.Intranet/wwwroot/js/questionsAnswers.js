@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-
   $("#grid-data").bootgrid({
     ajax: true,
     url: "QuestionsAnswers/GetDataToGrid",

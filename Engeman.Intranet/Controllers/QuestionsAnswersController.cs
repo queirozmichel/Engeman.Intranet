@@ -29,26 +29,41 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public JsonResult GetDataToGrid(string searchPhrase, int current = 1, int rowCount = 5)
     {
+      int total = 0;
+      IQueryable paginatedProfiles;
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
       var field = key.Replace("sort[", "").Replace("]", "");
-      var profilesInfo = _userAccountRepository.GetAllUserProfiles().AsQueryable();
+      var allUsers = _userAccountRepository.GetAllUserProfiles().AsQueryable();
       string orderedField = String.Format("{0} {1}", field, order);
+      total = allUsers.Count();
 
       if (!String.IsNullOrWhiteSpace(searchPhrase))
       {
         int id = 0;
-        int.TryParse(searchPhrase, out id);        
+        int.TryParse(searchPhrase, out id);
 
-        profilesInfo = profilesInfo.Where("name.Contains(@0) OR domainAccount.Contains(@0) OR " +
+        allUsers = allUsers.Where("name.Contains(@0) OR domainAccount.Contains(@0) OR " +
           "email.Contains(@0) OR changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
       }
 
-      int total = profilesInfo.Count();
-      var profilesPaginated = profilesInfo.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+      if (orderedField.Contains("changeDate asc"))
+      {
+        paginatedProfiles = allUsers.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+        total = allUsers.Count();
+        return Json(new { rows = paginatedProfiles, current, rowCount, total });
+      }
+      else if (orderedField.Contains("changeDate desc"))
+      {
+        paginatedProfiles = allUsers.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+        total = allUsers.Count();
+        return Json(new { rows = paginatedProfiles, current, rowCount, total });
+      }
+      total = allUsers.Count();
+      paginatedProfiles = allUsers.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
 
-      return Json(new { rows = profilesPaginated, current, rowCount, total });
+      return Json(new { rows = paginatedProfiles, current, rowCount, total });
     }
   }
 }
