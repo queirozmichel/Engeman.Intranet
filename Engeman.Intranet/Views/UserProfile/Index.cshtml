@@ -4,7 +4,16 @@
   <!-- Demo JS -->
   <script type="text/javascript" src="~/js/custom.js"></script>
   <script type="text/javascript" src="~/js/demo/charts/chart_filled_blue.js"></script>
+
+  @*Spinner*@
+  <link rel="stylesheet" href="~/lib/spinner/jquery.loadingModal.css" />
+  <script src="~/lib/spinner/jquery.loadingModal.js"></script>
+  <script src="~/js/userprofile.js"></script>
+  <script src="~/js/spinner.js"></script>
 </head>
+
+@*Inicializa o spinner*@
+<script>startSpinner();</script>
 
 <div class="page-header">
   <div class="page-title">
@@ -146,7 +155,6 @@
           </div> <!-- /.col-md-9 -->
         </div>
         <!-- /Overview -->
-
         <!--=== Edit Account ===-->
         <div class="tab-pane" id="tab_edit_account">
           <form asp-controller="userprofile" asp-action="edituserprofile" class="form-horizontal" method="post" enctype="multipart/form-data">

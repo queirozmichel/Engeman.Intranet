@@ -11,6 +11,6 @@
     },
     searchSettings: {
       characters: 1
-    }
+    },
   });
 });

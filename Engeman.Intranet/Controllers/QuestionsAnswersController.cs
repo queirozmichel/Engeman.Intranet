@@ -30,7 +30,7 @@ namespace Engeman.Intranet.Controllers
     public JsonResult GetDataToGrid(string searchPhrase, int current = 1, int rowCount = 5)
     {
       int total = 0;
-      IQueryable paginatedProfiles;
+      IQueryable paginatedUsers;
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
@@ -50,20 +50,21 @@ namespace Engeman.Intranet.Controllers
 
       if (orderedField.Contains("changeDate asc"))
       {
-        paginatedProfiles = allUsers.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+        paginatedUsers = allUsers.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
         total = allUsers.Count();
-        return Json(new { rows = paginatedProfiles, current, rowCount, total });
+        return Json(new { rows = paginatedUsers, current, rowCount, total });
       }
       else if (orderedField.Contains("changeDate desc"))
       {
-        paginatedProfiles = allUsers.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+        paginatedUsers = allUsers.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
         total = allUsers.Count();
-        return Json(new { rows = paginatedProfiles, current, rowCount, total });
+        return Json(new { rows = paginatedUsers, current, rowCount, total });
       }
-      total = allUsers.Count();
-      paginatedProfiles = allUsers.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
 
-      return Json(new { rows = paginatedProfiles, current, rowCount, total });
+      total = allUsers.Count();
+      paginatedUsers = allUsers.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+
+      return Json(new { rows = paginatedUsers, current, rowCount, total });
     }
   }
 }
