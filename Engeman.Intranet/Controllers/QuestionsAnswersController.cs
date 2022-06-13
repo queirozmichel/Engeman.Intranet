@@ -25,49 +25,92 @@ namespace Engeman.Intranet.Controllers
     }
     public IActionResult Index()
     {
-      var resultado = _postRepository.GetAllPosts();
       return View();
     }
+
+    //[HttpPost]
+    //public JsonResult GetDataToGrid(string searchPhrase, int current = 1, int rowCount = 5)
+    //{
+    //  int total = 0;
+    //  IQueryable paginatedUsers;
+    //  var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
+    //  var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
+    //  var order = requestKeys[key];
+    //  var field = key.Replace("sort[", "").Replace("]", "");
+    //  var allUsers = _userAccountRepository.GetAllUserAccounts().AsQueryable();
+    //  string orderedField = String.Format("{0} {1}", field, order);
+    //  total = allUsers.Count();
+
+    //  if (!String.IsNullOrWhiteSpace(searchPhrase))
+    //  {
+    //    int id = 0;
+    //    int.TryParse(searchPhrase, out id);
+
+    //    allUsers = allUsers.Where("name.Contains(@0, StringComparison.OrdinalIgnoreCase) OR domainAccount.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+    //      "email.Contains(@0, StringComparison.OrdinalIgnoreCase) OR changeDate.Contains(@0, StringComparison.OrdinalIgnoreCase) OR id == (@1)", searchPhrase, id);
+    //  }
+
+    //  if (orderedField.Contains("changeDate asc"))
+    //  {
+    //    paginatedUsers = allUsers.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+    //    total = allUsers.Count();
+    //    return Json(new { rows = paginatedUsers, current, rowCount, total });
+    //  }
+    //  else if (orderedField.Contains("changeDate desc"))
+    //  {
+    //    paginatedUsers = allUsers.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+    //    total = allUsers.Count();
+    //    return Json(new { rows = paginatedUsers, current, rowCount, total });
+    //  }
+
+    //  total = allUsers.Count();
+    //  paginatedUsers = allUsers.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+
+    //  return Json(new { rows = paginatedUsers, current, rowCount, total });
+    //}
 
     [HttpPost]
     public JsonResult GetDataToGrid(string searchPhrase, int current = 1, int rowCount = 5)
     {
       int total = 0;
-      IQueryable paginatedUsers;
+      IQueryable paginatedPosts;
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
       var field = key.Replace("sort[", "").Replace("]", "");
-      var allUsers = _userAccountRepository.GetAllUserAccounts().AsQueryable();
+      var allPosts = _postRepository.GetAllPosts().AsQueryable();
       string orderedField = String.Format("{0} {1}", field, order);
-      total = allUsers.Count();
+      total = allPosts.Count();
 
       if (!String.IsNullOrWhiteSpace(searchPhrase))
       {
         int id = 0;
         int.TryParse(searchPhrase, out id);
 
-        allUsers = allUsers.Where("name.Contains(@0) OR domainAccount.Contains(@0) OR " +
-          "email.Contains(@0) OR changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
+        allPosts = allPosts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+          "departmentDescription.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+          "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+          "cleanDescription.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+          "changeDate.Contains(@0, StringComparison.OrdinalIgnoreCase) OR id == (@1)", searchPhrase, id);
       }
 
       if (orderedField.Contains("changeDate asc"))
       {
-        paginatedUsers = allUsers.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-        total = allUsers.Count();
-        return Json(new { rows = paginatedUsers, current, rowCount, total });
+        paginatedPosts = allPosts.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+        total = allPosts.Count();
+        return Json(new { rows = paginatedPosts, current, rowCount, total });
       }
       else if (orderedField.Contains("changeDate desc"))
       {
-        paginatedUsers = allUsers.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-        total = allUsers.Count();
-        return Json(new { rows = paginatedUsers, current, rowCount, total });
+        paginatedPosts = allPosts.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+        total = allPosts.Count();
+        return Json(new { rows = paginatedPosts, current, rowCount, total });
       }
 
-      total = allUsers.Count();
-      paginatedUsers = allUsers.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+      total = allPosts.Count();
+      paginatedPosts = allPosts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
 
-      return Json(new { rows = paginatedUsers, current, rowCount, total });
+      return Json(new { rows = paginatedPosts, current, rowCount, total });
     }
   }
 }

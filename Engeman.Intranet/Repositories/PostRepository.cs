@@ -28,8 +28,8 @@ namespace Engeman.Intranet.Repositories
           postDto.Subject = result.Rows[i]["Subject"].ToString();
           postDto.ChangeDate = result.Rows[i]["ChangeDate"].ToString();
           postDto.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
-          postDto.Department.Description = result.Rows[i]["Description"].ToString();
-          postDto.UserAccount.Name = result.Rows[i]["Name"].ToString();
+          postDto.DepartmentDescription = result.Rows[i]["Description"].ToString();
+          postDto.UserAccountName = result.Rows[i]["Name"].ToString();
 
           posts.Add(postDto);
         }
