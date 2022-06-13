@@ -90,7 +90,7 @@ CREATE TABLE POST (
 	 DESCRIPTION                   VARCHAR(MAX)                        NOT NULL,
 	 CLEAN_DESCRIPTION             VARCHAR(MAX)                        NOT NULL,
 	 KEYWORDS                      VARCHAR(MAX)                            NULL,
-	 USERACCOUNT_ID                VARCHAR(100)                        NOT NULL,
+	 USERACCOUNT_ID                NUMERIC(18)                         NOT NULL,
 	 DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
 	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
      POST_TYPE	                   CHAR(1) DEFAULT 'Q'                 NOT NULL, /*D-DOCUMENT, M-MANUAL, Q-QUESTION */
@@ -105,7 +105,7 @@ CREATE TABLE POST_COMMENT (
 	 DESCRIPTION                   VARCHAR(MAX)                        NOT NULL,
 	 CLEAN_DESCRIPTION             VARCHAR(MAX)                        NOT NULL,
 	 KEYWORDS                      VARCHAR(MAX)                            NULL,
-	 USERACCOUNT_ID                VARCHAR(100)                        NOT NULL,
+	 USERACCOUNT_ID                NUMERIC(18)                         NOT NULL,
 	 DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
 	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
      CHECK (DESCRIPTION <> ''))ON [PRIMARY]
