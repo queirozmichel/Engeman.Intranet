@@ -2,7 +2,7 @@
 
 namespace Engeman.Intranet.Models
 {
-  public class UserProfileDto
+  public class UserAccountDto
   {
     public int Id{ get; set; }
     public string Name { get; set; }

@@ -1,4 +1,4 @@
-﻿@model UserProfile
+﻿@model UserAccount
 
 <head>
   <!-- Demo JS -->
@@ -8,7 +8,7 @@
   @*Spinner*@
   <link rel="stylesheet" href="~/lib/spinner/jquery.loadingModal.css" />
   <script src="~/lib/spinner/jquery.loadingModal.js"></script>
-  <script src="~/js/userprofile.js"></script>
+  <script src="~/js/useraccount.js"></script>
   <script src="~/js/spinner.js"></script>
 </head>
 
@@ -157,7 +157,7 @@
         <!-- /Overview -->
         <!--=== Edit Account ===-->
         <div class="tab-pane" id="tab_edit_account">
-          <form asp-controller="userprofile" asp-action="edituserprofile" class="form-horizontal" method="post" enctype="multipart/form-data">
+          <form asp-controller="useraccount" asp-action="edituseraccount" class="form-horizontal" method="post" enctype="multipart/form-data">
             <div class="col-md-12">
               <div class="widget">
                 <div class="widget-header">

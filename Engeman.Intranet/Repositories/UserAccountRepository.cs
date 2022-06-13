@@ -28,9 +28,9 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public UserProfile GetUserProfile(string domainUsername)
+    public UserAccount GetUserAccount(string domainUsername)
     {
-      UserProfile userProfile = new UserProfile();
+      UserAccount userAccount = new UserAccount();
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -43,39 +43,39 @@ namespace Engeman.Intranet.Repositories
 
         var result =  sq.GetDataSet(Convert.ToString(query)).Tables[0].Rows[0];
 
-        userProfile.Id = Convert.ToInt32(result["ID"]);
-        userProfile.Active = Convert.ToChar(result["active"]);
-        userProfile.Name = result["name"].ToString();
-        userProfile.DomainAccount = result["domainaccount"].ToString();
-        userProfile.Department.Description = result["departmentdescription"].ToString();
-        userProfile.Email = result["email"].ToString();
-        userProfile.Photo = (byte[])result["photo"];
-        userProfile.Description = result["userdescription"].ToString();
-        userProfile.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
+        userAccount.Id = Convert.ToInt32(result["ID"]);
+        userAccount.Active = Convert.ToChar(result["active"]);
+        userAccount.Name = result["name"].ToString();
+        userAccount.DomainAccount = result["domainaccount"].ToString();
+        userAccount.Department.Description = result["departmentdescription"].ToString();
+        userAccount.Email = result["email"].ToString();
+        userAccount.Photo = (byte[])result["photo"];
+        userAccount.Description = result["userdescription"].ToString();
+        userAccount.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
 
-        return userProfile;
+        return userAccount;
       }
     }
-    public void UpdateUserProfile(UserProfile userProfile)
+    public void UpdateUserAccount(UserAccount userAccount)
     {
 
       using (StaticQuery sq = new StaticQuery())
       {
         string[] paramters = { "Photo;byte" };
-        Object[] values = { userProfile.Photo };
+        Object[] values = { userAccount.Photo };
 
         var query =
-        $"UPDATE ENGEMANINTRANET.USERACCOUNT SET NAME = '{userProfile.Name}', EMAIL = '{userProfile.Email}'," +
-        $"DESCRIPTION = '{userProfile.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
-        $"WHERE DOMAINACCOUNT = '{userProfile.DomainAccount}'";
+        $"UPDATE ENGEMANINTRANET.USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
+        $"DESCRIPTION = '{userAccount.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
+        $"WHERE DOMAINACCOUNT = '{userAccount.DomainAccount}'";
 
         sq.ExecuteCommand(query, paramters, values);
       }
     }
 
-    public List<UserProfileDto> GetAllUserProfiles()
+    public List<UserAccountDto> GetAllUserAccount()
     {
-      List<UserProfileDto> users = new List<UserProfileDto>();
+      List<UserAccountDto> users = new List<UserAccountDto>();
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -84,14 +84,14 @@ namespace Engeman.Intranet.Repositories
 
         for (int i = 0; i < result.Rows.Count; i++)
         {
-          UserProfileDto userProfile = new UserProfileDto();
-          userProfile.Id = Convert.ToInt32(result.Rows[i]["id"]);
-          userProfile.Name = result.Rows[i]["name"].ToString();
-          userProfile.Email = result.Rows[i]["email"].ToString();
-          userProfile.DomainAccount = result.Rows[i]["domainaccount"].ToString();
-          userProfile.ChangeDate = Convert.ToString(result.Rows[i]["changeDate"]);
+          UserAccountDto userAccountDto = new UserAccountDto();
+          userAccountDto.Id = Convert.ToInt32(result.Rows[i]["id"]);
+          userAccountDto.Name = result.Rows[i]["name"].ToString();
+          userAccountDto.Email = result.Rows[i]["email"].ToString();
+          userAccountDto.DomainAccount = result.Rows[i]["domainaccount"].ToString();
+          userAccountDto.ChangeDate = Convert.ToString(result.Rows[i]["changeDate"]);
 
-          users.Add(userProfile);
+          users.Add(userAccountDto);
         }
       }
      return users;

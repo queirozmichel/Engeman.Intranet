@@ -9,26 +9,26 @@ using Microsoft.AspNetCore.Authorization;
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
-  public class UserProfileController : Controller  {
+  public class UserAccountController : Controller  {
 
     private readonly IUserAccountRepository _userAccountRepository;
 
-    public UserProfileController(IUserAccountRepository userAccountRepository)
+    public UserAccountController(IUserAccountRepository userAccountRepository)
     {
       _userAccountRepository = userAccountRepository;
     }
     public IActionResult Index()
     {
-      var profileInfos = _userAccountRepository.GetUserProfile(HttpContext.Session.GetString("_DomainUsername").ToString());
+      var userAccount = _userAccountRepository.GetUserAccount(HttpContext.Session.GetString("_DomainUsername").ToString());
 
-      return View(profileInfos);
+      return View(userAccount);
     }
 
-    public IActionResult EditUserProfile(UserProfile userProfile, List<IFormFile> Photo)
+    public IActionResult EditUserAccount(UserAccount userAccount, List<IFormFile> Photo)
     {
       if (Photo.Count == 0)
       {
-       userProfile.Photo =  _userAccountRepository.GetUserProfile(userProfile.DomainAccount).Photo;
+        userAccount.Photo =  _userAccountRepository.GetUserAccount(userAccount.DomainAccount).Photo;
       }
       foreach (var item in Photo)
       {
@@ -37,13 +37,13 @@ namespace Engeman.Intranet.Controllers
           using (var stream = new MemoryStream())
           {
             item.CopyTo(stream);
-            userProfile.Photo = stream.ToArray();
+            userAccount.Photo = stream.ToArray();
           }
         }
       }
-      _userAccountRepository.UpdateUserProfile(userProfile);
+      _userAccountRepository.UpdateUserAccount(userAccount);
 
-      return RedirectToAction("index","userprofile");
+      return RedirectToAction("index","useraccount");
     }
   }
 }

@@ -2,9 +2,9 @@
 
 namespace Engeman.Intranet.Models
 {
-  public class UserProfile
+  public class UserAccount
   {
-    public UserProfile()
+    public UserAccount()
     {
       this.Department = new Department();
     }

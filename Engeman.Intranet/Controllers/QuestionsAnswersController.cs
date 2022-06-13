@@ -35,7 +35,7 @@ namespace Engeman.Intranet.Controllers
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
       var field = key.Replace("sort[", "").Replace("]", "");
-      var allUsers = _userAccountRepository.GetAllUserProfiles().AsQueryable();
+      var allUsers = _userAccountRepository.GetAllUserAccount().AsQueryable();
       string orderedField = String.Format("{0} {1}", field, order);
       total = allUsers.Count();
 
