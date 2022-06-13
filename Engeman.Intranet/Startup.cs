@@ -50,6 +50,7 @@ namespace Engeman.Intranet
         options.Cookie.IsEssential = true;
       });
       services.AddTransient<IUserAccountRepository, UserAccountRepository>();
+      services.AddTransient<IPostRepository, PostRepository>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

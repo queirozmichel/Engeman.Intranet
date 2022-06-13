@@ -16,13 +16,16 @@ namespace Engeman.Intranet.Controllers
   public class QuestionsAnswersController : Controller
   {
     private readonly IUserAccountRepository _userAccountRepository;
+    private readonly IPostRepository _postRepository;
 
-    public QuestionsAnswersController(IUserAccountRepository userAccountRepository)
+    public QuestionsAnswersController(IUserAccountRepository userAccountRepository, IPostRepository postRepository)
     {
       _userAccountRepository = userAccountRepository;
+      _postRepository = postRepository;
     }
     public IActionResult Index()
     {
+      var resultado = _postRepository.GetAllPosts();
       return View();
     }
 
@@ -35,7 +38,7 @@ namespace Engeman.Intranet.Controllers
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
       var field = key.Replace("sort[", "").Replace("]", "");
-      var allUsers = _userAccountRepository.GetAllUserAccount().AsQueryable();
+      var allUsers = _userAccountRepository.GetAllUserAccounts().AsQueryable();
       string orderedField = String.Format("{0} {1}", field, order);
       total = allUsers.Count();
 

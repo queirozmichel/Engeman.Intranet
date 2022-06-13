@@ -39,9 +39,10 @@ namespace Engeman.Intranet.Repositories
           $"UA.ID,UA.ACTIVE,NAME,DOMAINACCOUNT,D.DESCRIPTION AS DEPARTMENTDESCRIPTION,EMAIL," +
           $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CHANGEDATE " +
           $"FROM ENGEMANINTRANET.USERACCOUNT UA INNER JOIN ENGEMANINTRANET.DEPARTMENT D " +
-          $"ON UA.DEPARTMENT_ID = D.ID where DOMAINACCOUNT = '{domainUsername.ToUpper()}'";
+          $"ON UA.DEPARTMENT_ID = D.ID " +
+          $"WHERE DOMAINACCOUNT = '{domainUsername.ToUpper()}'";
 
-        var result =  sq.GetDataSet(Convert.ToString(query)).Tables[0].Rows[0];
+        var result =  sq.GetDataSet(query).Tables[0].Rows[0];
 
         userAccount.Id = Convert.ToInt32(result["ID"]);
         userAccount.Active = Convert.ToChar(result["active"]);
@@ -73,7 +74,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public List<UserAccountDto> GetAllUserAccount()
+    public List<UserAccountDto> GetAllUserAccounts()
     {
       List<UserAccountDto> users = new List<UserAccountDto>();
 
@@ -95,6 +96,6 @@ namespace Engeman.Intranet.Repositories
         }
       }
      return users;
-    }
+    }    
   }
 }
