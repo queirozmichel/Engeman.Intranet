@@ -197,6 +197,15 @@ GO
 INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
 VALUES ('S', 'N', 'Documentação de Integração Supermercados Itaúna', 'Este documento contém informações sobre a integração levantada pelo consultor Danny Lage entre Engeman e Sapiens.', 'Este documento contém informações sobre a integração levantada pelo consultor Danny Lage entre Engeman e Sapiens.', 'Integração;Engeman, Sapiens', 1, 1, 'M')
 GO
+INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('S', 'N', 'Como instalar o Engeman Client/Server?', 'Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?', 'Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?', 'Instalação;Engeman Client/Server', 8, 1, 'Q')
+GO
+INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('S', 'N', 'Manual de instalação do Engeman Client/Server', 'Este manual contém instruções para instalação do Engeman Client/Server, bem como de todos os seus requisitos.', 'Este manual contém instruções para instalação do Engeman Client/Server, bem como de todos os seus requisitos.', 'Instalação;Engeman Web, SSW', 18, 2, 'M')
+GO
+INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('S', 'N', 'Como instalar o Engeman Mobile?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Instalação;Engeman Mobile', 10, 3, 'Q')
+GO
 SELECT * FROM POST
 
 UPDATE DEPARTMENT SET ACTIVE = 'N' WHERE CODE = '004'
