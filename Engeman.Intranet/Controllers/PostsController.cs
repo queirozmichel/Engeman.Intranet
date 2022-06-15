@@ -13,12 +13,12 @@ using System;
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
-  public class QuestionsAnswersController : Controller
+  public class PostsController : Controller
   {
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IPostRepository _postRepository;
 
-    public QuestionsAnswersController(IUserAccountRepository userAccountRepository, IPostRepository postRepository)
+    public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
@@ -26,10 +26,15 @@ namespace Engeman.Intranet.Controllers
     public IActionResult Index()
     {
       return View();
-    }    
+    }
+    
+    public IActionResult ListAll()
+    {
+      return View();
+    }
 
     [HttpPost]
-    public JsonResult GetDataToGrid(string searchPhrase, int current = 1, int rowCount = 5)
+    public JsonResult GetDataGrid(string searchPhrase, int current = 1, int rowCount = 5)
     {
       int total = 0;
       IQueryable paginatedPosts;

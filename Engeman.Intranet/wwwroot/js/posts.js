@@ -5,7 +5,7 @@
     css: {
       left: "text-left",
     },
-    url: "QuestionsAnswers/GetDataToGrid",
+    url: "getdatagrid",
     labels: {
       infos: "Exibindo {{ctx.start}} até {{ctx.end}} de {{ctx.total}} registros",
       loading: "Carregando dados...",

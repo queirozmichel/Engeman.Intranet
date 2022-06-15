@@ -41,7 +41,7 @@
           integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
           crossorigin="anonymous"></script>
   <script type="text/javascript" src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="~/lib/jquery-ui/jquery-ui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="~/lib/jquery-ui/jquery-ui.min.css" />
 
 
   <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.min.js"></script>
@@ -599,27 +599,33 @@
           <li>
             <a href="javascript:void(0);">
               <i class="icon-table"></i>
-              Tables
+              Postagens
             </a>
             <ul class="sub-menu">
-              @*<li>
-                <a href="tables_static.html">
-                  <i class="icon-angle-right"></i>
-                  Static Tables
-                </a>
-              </li>*@
               <li>
-                <a asp-area="" asp-controller="questionsAnswers" asp-action="Index">
+                <a asp-area="" asp-controller="posts" asp-action="listall">
                   <i class="icon-angle-right"></i>
-                  Dynamic Tables (DataTables)
+                  Listar Todas
                 </a>
               </li>
-              @*<li>
+              <li>
                 <a href="tables_responsive.html">
                   <i class="icon-angle-right"></i>
-                  Responsive Tables
+                  Fazer uma Pergunta
                 </a>
-              </li>*@
+              </li>
+              <li>
+                <a href="tables_static.html">
+                  <i class="icon-angle-right"></i>
+                  Adicionar um Documento
+                </a>
+              </li>
+              <li>
+                <a href="tables_static.html">
+                  <i class="icon-angle-right"></i>
+                  Adicionar um Manual
+                </a>
+              </li>
             </ul>
           </li>
           <li>
