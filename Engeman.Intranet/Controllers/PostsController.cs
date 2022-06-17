@@ -33,6 +33,11 @@ namespace Engeman.Intranet.Controllers
       return View();
     }
 
+    public IActionResult AskQuestion()
+    {
+      return View();
+    }
+
     [HttpPost]
     public JsonResult GetDataGrid(string searchPhrase, int current = 1, int rowCount = 5)
     {
@@ -75,6 +80,23 @@ namespace Engeman.Intranet.Controllers
       paginatedPosts = allPosts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
 
       return Json(new { rows = paginatedPosts, current, rowCount, total });
+    }
+
+    public IActionResult SaveQuestion(AskQuestionDto askQuestionDto)
+    {
+
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetUserAccount(sessionDomainUsername);
+      askQuestionDto.UserAccountId = userAccount.Id;
+      askQuestionDto.DepartmentId = userAccount.DepartmentId;
+      askQuestionDto.PostType = 'Q';
+      askQuestionDto.Active = 'S';
+      askQuestionDto.CleanDescription = askQuestionDto.Description;
+      askQuestionDto.DomainAccount = sessionDomainUsername;
+
+      _postRepository.InsertQuestion(askQuestionDto);
+
+      return View("AskQuestion");
     }
   }
 }

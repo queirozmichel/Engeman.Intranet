@@ -5,6 +5,7 @@ namespace Engeman.Intranet.Repositories
 {
   public interface IPostRepository
   {
-    List<PostDto> GetAllPosts();
+    public List<PostDto> GetAllPosts();
+    public void InsertQuestion(AskQuestionDto askQuestionDto);
   }
 }

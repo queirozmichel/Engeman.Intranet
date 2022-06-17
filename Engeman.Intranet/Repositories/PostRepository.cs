@@ -1,5 +1,6 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 
@@ -35,6 +36,25 @@ namespace Engeman.Intranet.Repositories
         }
       }
       return posts;
+    }
+
+    public void InsertQuestion(AskQuestionDto askQuestionDto)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        string[] paramters = {};
+        Object[] values = { askQuestionDto };
+
+        var query =
+        $"INSERT INTO " +
+        $"ENGEMANINTRANET.POST " +
+        $"(ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE) " +
+        $"VALUES ('{askQuestionDto.Active}', '{askQuestionDto.Restricted}', '{askQuestionDto.Subject}', '{askQuestionDto.Description}', " +
+        $"'{askQuestionDto.CleanDescription}', '{askQuestionDto.Keywords}', {askQuestionDto.UserAccountId}, {askQuestionDto.DepartmentId}, " +
+        $"'{askQuestionDto.PostType}')";
+
+        sq.ExecuteCommand(query, paramters, values);
+      }
     }
   }
 }

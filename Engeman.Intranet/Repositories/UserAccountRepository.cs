@@ -36,7 +36,7 @@ namespace Engeman.Intranet.Repositories
       {
         var query =
           $"SELECT " +
-          $"UA.ID,UA.ACTIVE,NAME,DOMAINACCOUNT,D.DESCRIPTION AS DEPARTMENTDESCRIPTION,EMAIL," +
+          $"UA.ID,UA.ACTIVE,NAME,DOMAINACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
           $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CHANGEDATE " +
           $"FROM ENGEMANINTRANET.USERACCOUNT UA INNER JOIN ENGEMANINTRANET.DEPARTMENT D " +
           $"ON UA.DEPARTMENT_ID = D.ID " +
@@ -48,7 +48,8 @@ namespace Engeman.Intranet.Repositories
         userAccount.Active = Convert.ToChar(result["active"]);
         userAccount.Name = result["name"].ToString();
         userAccount.DomainAccount = result["domainaccount"].ToString();
-        userAccount.Department.Description = result["departmentdescription"].ToString();
+        userAccount.DepartmentId = Convert.ToInt32(result["department_id"]);
+        userAccount.Department.Description = result["department_description"].ToString();
         userAccount.Email = result["email"].ToString();
         userAccount.Photo = (byte[])result["photo"];
         userAccount.Description = result["userdescription"].ToString();
