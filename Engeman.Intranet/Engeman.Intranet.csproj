@@ -17,11 +17,13 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="System.DirectoryServices" Version="6.0.0" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.18" />
+    <PackageReference Include="toastr" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\lib\toastr\" />
     <Folder Include="wwwroot\plugins\" />
   </ItemGroup>
 

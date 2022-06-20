@@ -82,9 +82,9 @@ namespace Engeman.Intranet.Controllers
       return Json(new { rows = paginatedPosts, current, rowCount, total });
     }
 
+    [HttpPost]
     public IActionResult SaveQuestion(AskQuestionDto askQuestionDto)
     {
-
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccount(sessionDomainUsername);
       askQuestionDto.UserAccountId = userAccount.Id;
