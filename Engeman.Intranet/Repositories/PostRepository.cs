@@ -42,7 +42,7 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        string[] paramters = {};
+        string[] paramters = { };
         Object[] values = { askQuestionDto };
 
         var query =
@@ -52,6 +52,22 @@ namespace Engeman.Intranet.Repositories
         $"VALUES ('{askQuestionDto.Active}', '{askQuestionDto.Restricted}', '{askQuestionDto.Subject}', '{askQuestionDto.Description}', " +
         $"'{askQuestionDto.CleanDescription}', '{askQuestionDto.Keywords}', {askQuestionDto.UserAccountId}, {askQuestionDto.DepartmentId}, " +
         $"'{askQuestionDto.PostType}')";
+
+        sq.ExecuteCommand(query, paramters, values);
+      }
+    }
+
+    public void DeletePost(int postId)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        string[] paramters = { };
+        Object[] values = { postId };
+
+        var query =
+          $"DELETE FROM " +
+          $"ENGEMANINTRANET.POST " +
+          $"WHERE ID = {postId}";
 
         sq.ExecuteCommand(query, paramters, values);
       }

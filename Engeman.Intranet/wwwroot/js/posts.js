@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
 
-  $("#grid-data").bootgrid({
+  var postGrid = $("#post-grid").bootgrid({
     ajax: true,
     css: {
       left: "text-left",
@@ -36,17 +36,63 @@
         return row.changeDate;
       },
       "action": function (column, row) {
-        return "<button type=\"button\" class=\"btn btn-xs btn-default action-details\" data-row-id=\"" + row.id + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
-          "<button type=\"button\" class=\"btn btn-xs btn-default action-edit\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-pencil\"></i></button> " +
-          "<button type=\"button\" class=\"btn btn-xs btn-default action-delete\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        return "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
+          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-pencil\"></i></button> " +
+          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-trash-o\"></i></button> ";
       },
     }
-  }).on("loaded.rs.jquery.bootgrid", function () {
-    $(function () {
-      $("#grid-data").tooltip();
+  })
+
+  postGrid.on("loaded.rs.jquery.bootgrid", function () {
+    $("#post-grid").tooltip();
+    postGrid.find("button.btn").each(function (index, element) {
+      var actionButtons = $(element);
+      var action = actionButtons.data("action");
+      var idElement = actionButtons.data("row-id");
+
+      actionButtons.on("click", function () {
+        if (action == "details") {
+          postDetails();
+        } else if (action == "edit") {
+          postEdit();
+        } else if (action == "delete") {
+          postDelete(idElement, element);
+        }
+      })
+
     });
-  }) 
+  })
 });
 
+function postDetails() {
+  console.log("details");
+}
 
+function postEdit() {
+  console.log("edit");
+}
 
+function postDelete(idElement, element) {
+  $.ajax({
+    type: "DELETE",
+    data: {
+      'idPost': idElement
+    },
+    url: "removepost",
+    dataType: "text",
+    success: function () {
+      $(element).parent().parent().fadeOut(700);
+      setTimeout(() => {
+        $(element).parent().parent().remove();
+      }, 700);
+    },
+    error: function () {
+      console.log("erro");
+    },
+    complete: function () {
+      setTimeout(() => {
+        $("#post-grid").bootgrid("reload");
+      }, 700);
+    }
+  });
+}

@@ -7,5 +7,6 @@ namespace Engeman.Intranet.Repositories
   {
     public List<PostDto> GetAllPosts();
     public void InsertQuestion(AskQuestionDto askQuestionDto);
+    public void DeletePost(int postId);
   }
 }

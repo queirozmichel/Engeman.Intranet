@@ -98,5 +98,10 @@ namespace Engeman.Intranet.Controllers
 
       return View("AskQuestion");
     }
+
+    public void RemovePost(int idPost)
+    {
+      _postRepository.DeletePost(idPost);
+    }
   }
 }
