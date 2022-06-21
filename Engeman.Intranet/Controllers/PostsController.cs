@@ -27,7 +27,7 @@ namespace Engeman.Intranet.Controllers
     {
       return View();
     }
-    
+
     public IActionResult ListAll()
     {
       return View();
@@ -86,7 +86,7 @@ namespace Engeman.Intranet.Controllers
     public IActionResult SaveQuestion(AskQuestionDto askQuestionDto)
     {
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetUserAccount(sessionDomainUsername);
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
       askQuestionDto.UserAccountId = userAccount.Id;
       askQuestionDto.DepartmentId = userAccount.DepartmentId;
       askQuestionDto.PostType = 'Q';
@@ -99,9 +99,30 @@ namespace Engeman.Intranet.Controllers
       return View("AskQuestion");
     }
 
-    public void RemovePost(int idPost)
+    public JsonResult RemovePost(int idPost)
     {
-      _postRepository.DeletePost(idPost);
+      var post = _postRepository.GetPostById(idPost);
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
+      var postCanBeDeleted = CheckIfPostCanBeDeleted(userAccount, post);    
+
+      if (postCanBeDeleted == false)
+      {
+        return Json("false");
+      }
+      else
+      {
+        _postRepository.DeletePost(idPost);
+        return Json("true");
+      }
+    }
+
+    public bool CheckIfPostCanBeDeleted(UserAccount userAccount, Post post)
+    {
+      if (userAccount.Id == post.UserAccountId)
+      {
+        return true;
+      }
+      return false;
     }
   }
 }

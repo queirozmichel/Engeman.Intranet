@@ -72,5 +72,34 @@ namespace Engeman.Intranet.Repositories
         sq.ExecuteCommand(query, paramters, values);
       }
     }
+
+    public Post GetPostById(int id)
+    {
+      Post post = new Post();
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query = 
+          $"SELECT " +
+          $"* " +
+          $"FROM ENGEMANINTRANET.POST " +
+          $"WHERE ID = {id}";
+
+        var result = sq.GetDataSet(query).Tables[0].Rows[0];
+        post.Id = Convert.ToInt32(result["id"]);
+        post.Active = Convert.ToChar(result["Active"]);
+        post.Restricted = Convert.ToChar(result["Restricted"]);
+        post.Subject = result["Subject"].ToString();
+        post.Description = result["Description"].ToString();
+        post.CleanDescription = result["Clean_Description"].ToString();
+        post.Keywords = result["Keywords"].ToString();
+        post.UserAccountId = Convert.ToInt32(result["UserAccount_Id"]);
+        post.DepartmentId = Convert.ToInt32(result["Department_Id"]);
+        post.ChangeDate = (DateTime)result["ChangeDate"];
+        post.PostType = Convert.ToChar(result["Post_Type"].ToString());
+
+      }
+      return post;
+    }
   }
 }

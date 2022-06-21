@@ -1,5 +1,4 @@
 ﻿$(document).ready(function () {
-
   var postGrid = $("#post-grid").bootgrid({
     ajax: true,
     css: {
@@ -38,7 +37,7 @@
       "action": function (column, row) {
         return "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
           "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-pencil\"></i></button> " +
-          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+          "<button type=\"button\" id=\"remove\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-trash-o\"></i></button> ";
       },
     }
   })
@@ -56,10 +55,16 @@
         } else if (action == "edit") {
           postEdit();
         } else if (action == "delete") {
+          $(".modal").modal('show');
+          $("#cancel-delete").one("click", function () {
+            $(".modal").modal('hide');
+          })
+          $("#confirm-delete").one("click", function () {
+          $(".modal").modal('hide');
           postDelete(idElement, element);
+          })
         }
       })
-
     });
   })
 });
@@ -80,14 +85,15 @@ function postDelete(idElement, element) {
     },
     url: "removepost",
     dataType: "text",
-    success: function () {
+    success: function (result) {
       $(element).parent().parent().fadeOut(700);
       setTimeout(() => {
         $(element).parent().parent().remove();
       }, 700);
+      console.log(result);
     },
-    error: function () {
-      console.log("erro");
+    error: function (result) {
+      console.log(result);
     },
     complete: function () {
       setTimeout(() => {

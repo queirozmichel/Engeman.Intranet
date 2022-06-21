@@ -28,7 +28,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public UserAccount GetUserAccount(string domainUsername)
+    public UserAccount GetUserAccountByDomainUsername(string domainUsername)
     {
       UserAccount userAccount = new UserAccount();
 

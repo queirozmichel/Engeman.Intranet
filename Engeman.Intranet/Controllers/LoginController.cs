@@ -50,11 +50,14 @@ namespace Engeman.Intranet.Controllers
         return RedirectToAction("index", "login");
       } else
       {
+        var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(domainUsername);
         var claims = new List<Claim>();
         claims.Add(new Claim(ClaimTypes.Name, domainUsername));
         var userIdentity = new ClaimsIdentity(claims, "Access");
         ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
         await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
+
+        HttpContext.Session.SetString("_Id", userAccount.Id.ToString());
         HttpContext.Session.SetString("_DomainUsername", domainUsername.ToString());
         HttpContext.Session.SetString("_Password", password.ToString());
         return RedirectToAction("index", "dashboard");
@@ -63,6 +66,7 @@ namespace Engeman.Intranet.Controllers
     public async Task<IActionResult> Logout()
     {
       await HttpContext.SignOutAsync("CookieAuthentication");
+      HttpContext.Session.Remove("_Id");
       HttpContext.Session.Remove("_DomainUsername");
       HttpContext.Session.Remove("_Password");
       return RedirectToAction("index", "login");

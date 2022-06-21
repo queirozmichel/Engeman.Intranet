@@ -19,7 +19,7 @@ namespace Engeman.Intranet.Controllers
     }
     public IActionResult Index()
     {
-      var userAccount = _userAccountRepository.GetUserAccount(HttpContext.Session.GetString("_DomainUsername").ToString());
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(HttpContext.Session.GetString("_DomainUsername").ToString());
 
       return View(userAccount);
     }
@@ -28,7 +28,7 @@ namespace Engeman.Intranet.Controllers
     {
       if (Photo.Count == 0)
       {
-        userAccount.Photo =  _userAccountRepository.GetUserAccount(userAccount.DomainAccount).Photo;
+        userAccount.Photo =  _userAccountRepository.GetUserAccountByDomainUsername(userAccount.DomainAccount).Photo;
       }
       foreach (var item in Photo)
       {

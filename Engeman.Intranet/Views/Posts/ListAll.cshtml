@@ -54,10 +54,19 @@
   <!-- /Page Stats -->
 </div>
 
-<!-- /Page Header -->
-<!--=== Page Content ===-->
-<!--=== Managed Tables ===-->
-
+@*MODAL
+  $('.modal').modal();*@
+<div style="overflow: hidden;" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="p-4" style="text-align:center;"><h5>Apagar Postagem?</h5></div>
+        <div style="text-align:center;" class="modal-footer">
+          <button id="confirm-delete" type="button" class="btn btn-success">Sim</button>
+          <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <table id="post-grid" class="table table-condensed table-hover table-striped">
   <thead>
@@ -76,7 +85,6 @@
 </table>
 
 <script src="~/js/posts.js"></script>
-
 
 
 
