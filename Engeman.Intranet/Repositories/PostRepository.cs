@@ -15,7 +15,7 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var query = "SELECT " +
-          "POST.ID, POST.SUBJECT, POST.CLEAN_DESCRIPTION, POST.CHANGEDATE, UA.NAME, D.DESCRIPTION " +
+          "POST.ID, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USERACCOUNT_ID, POST.CHANGEDATE, UA.NAME, D.DESCRIPTION " +
           "FROM POST INNER JOIN USERACCOUNT AS UA ON POST.USERACCOUNT_ID = UA.ID " +
           "INNER JOIN DEPARTMENT AS D ON POST.DEPARTMENT_ID = D.ID " +
           "WHERE POST.ACTIVE = 'S'";
@@ -29,6 +29,7 @@ namespace Engeman.Intranet.Repositories
           postDto.Subject = result.Rows[i]["Subject"].ToString();
           postDto.ChangeDate = result.Rows[i]["ChangeDate"].ToString();
           postDto.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
+          postDto.UserAccountId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
           postDto.DepartmentDescription = result.Rows[i]["Description"].ToString();
           postDto.UserAccountName = result.Rows[i]["Name"].ToString();
 
@@ -97,7 +98,6 @@ namespace Engeman.Intranet.Repositories
         post.DepartmentId = Convert.ToInt32(result["Department_Id"]);
         post.ChangeDate = (DateTime)result["ChangeDate"];
         post.PostType = Convert.ToChar(result["Post_Type"].ToString());
-
       }
       return post;
     }

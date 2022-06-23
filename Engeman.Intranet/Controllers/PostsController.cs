@@ -99,20 +99,15 @@ namespace Engeman.Intranet.Controllers
       return View("AskQuestion");
     }
 
-    public JsonResult RemovePost(int idPost)
+    public void RemovePost(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
       var postCanBeDeleted = CheckIfPostCanBeDeleted(userAccount, post);    
 
-      if (postCanBeDeleted == false)
-      {
-        return Json("false");
-      }
-      else
+      if (postCanBeDeleted == true)
       {
         _postRepository.DeletePost(idPost);
-        return Json("true");
       }
     }
 

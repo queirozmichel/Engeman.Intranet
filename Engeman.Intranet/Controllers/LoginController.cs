@@ -48,7 +48,8 @@ namespace Engeman.Intranet.Controllers
       {
         TempData["Message"] = "Usuário não cadastrado ou bloqueado.";
         return RedirectToAction("index", "login");
-      } else
+      }
+      else
       {
         var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(domainUsername);
         var claims = new List<Claim>();
@@ -70,6 +71,21 @@ namespace Engeman.Intranet.Controllers
       HttpContext.Session.Remove("_DomainUsername");
       HttpContext.Session.Remove("_Password");
       return RedirectToAction("index", "login");
+    }
+
+    [HttpGet]
+    public JsonResult GetSessionUserIdByAjax(int userAccountIdPost)
+    {
+      var userSessionId = Convert.ToInt32(HttpContext.Session.GetString("_Id"));
+
+      if (userSessionId == userAccountIdPost)
+      {
+        return Json(true);
+      }
+      else
+      {
+        return Json(false);
+      }
     }
   }
 }

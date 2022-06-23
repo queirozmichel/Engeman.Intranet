@@ -54,19 +54,30 @@
   <!-- /Page Stats -->
 </div>
 
-@*MODAL
-  $('.modal').modal();*@
-<div style="overflow: hidden;" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="p-4" style="text-align:center;"><h5>Apagar Postagem?</h5></div>
-        <div style="text-align:center;" class="modal-footer">
-          <button id="confirm-delete" type="button" class="btn btn-success">Sim</button>
-          <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
-        </div>
+@*modal de confirmação ao tentar apagar uma postagem*@
+<div style="overflow: hidden;" data-backdrop="true" id="confirm-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="p-4" style="text-align:center;"><h5>Apagar a postagem?</h5></div>
+      <div style="text-align:center;" class="modal-footer">
+        <button id="confirm-delete" type="button" class="btn btn-success">Sim</button>
+        <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
       </div>
     </div>
   </div>
+</div>
+
+@*modal de restrição ao tentar apagar uma postagem*@
+<div style="overflow: hidden;" data-backdrop="true" id="restricted-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div style="background-color: lightcoral;" class="modal-content">
+      <div class="p-4" style="text-align:center;"><h5>Operação não suportada</h5></div>
+      <div style="text-align:center;" class="modal-footer">
+        Você não pode apagar uma postagem de outra pessoa.
+      </div>
+    </div>
+  </div>
+</div>
 
 <table id="post-grid" class="table table-condensed table-hover table-striped">
   <thead>

@@ -1,4 +1,7 @@
-﻿$(document).ready(function () {
+﻿var idPostAux;
+var elementAux;
+
+$(document).ready(function () {
   var postGrid = $("#post-grid").bootgrid({
     ajax: true,
     css: {
@@ -35,9 +38,9 @@
         return row.changeDate;
       },
       "action": function (column, row) {
-        return "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
-          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-pencil\"></i></button> " +
-          "<button type=\"button\" id=\"remove\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        return "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
+          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"><i class=\"fa fa-pencil\"></i></button> " +
+          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"><i class=\"fa fa-trash-o\"></i></button> ";
       },
     }
   })
@@ -47,27 +50,31 @@
     postGrid.find("button.btn").each(function (index, element) {
       var actionButtons = $(element);
       var action = actionButtons.data("action");
-      var idElement = actionButtons.data("row-id");
-
+      var idPost = actionButtons.data("row-id");
+      var userIdPost = actionButtons.data("user-id");
       actionButtons.on("click", function () {
         if (action == "details") {
           postDetails();
         } else if (action == "edit") {
           postEdit();
         } else if (action == "delete") {
-          $(".modal").modal('show');
-          $("#cancel-delete").one("click", function () {
-            $(".modal").modal('hide');
-          })
-          $("#confirm-delete").one("click", function () {
-          $(".modal").modal('hide');
-          postDelete(idElement, element);
-          })
+          getSessionUserId(userIdPost);
+          elementAux = element;
+          idPostAux = idPost;
         }
       })
     });
   })
 });
+
+$("#confirm-delete").on("click", function () {
+  postDelete(idPostAux, elementAux);
+  $("#confirm-modal").modal("toggle");
+})
+
+$("#cancel-delete").on("click", function () {
+  $("#confirm-modal").modal("toggle");
+})
 
 function postDetails() {
   console.log("details");
@@ -90,15 +97,31 @@ function postDelete(idElement, element) {
       setTimeout(() => {
         $(element).parent().parent().remove();
       }, 700);
-      console.log(result);
     },
     error: function (result) {
-      console.log(result);
     },
     complete: function () {
       setTimeout(() => {
         $("#post-grid").bootgrid("reload");
       }, 700);
+    }
+  });
+}
+
+function getSessionUserId(userIdPost) {
+  $.ajax({
+    type: "GET",
+    data: {
+      'userAccountIdPost': userIdPost
+    },
+    dataType: "text",
+    url: "/login/GetSessionUserIdByAjax",
+    success: function (response) {
+      if (response == "false") {
+        $("#restricted-modal").modal("toggle");
+      } else if (response == "true") {
+        $("#confirm-modal").modal("toggle");        
+      }
     }
   });
 }
