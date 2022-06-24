@@ -1,6 +1,4 @@
-﻿@model AskQuestionDto;
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -68,43 +66,37 @@
           <div class="widget-header">
             <h4><i class="icon-reorder"></i> Pergunta</h4>
           </div>
-
           <div class="widget-content">
             <form class="form-horizontal row-border" id="ask-form" method="post">
               <div class="form-group">
                 <label class="col-md-2 control-label">Id:</label>
                 <div class="col-md-1">
-                  <input id="restricted" class="form-control" asp-for="@Model.Id" type="text" readonly value="10" />
+                  <input id="id-post" class="form-control" name="idPost" type="text" readonly value="@ViewBag.Post.Id" />
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Data:</label>
+                <label class="col-md-2 control-label">Data e hora:</label>
                 <div class="col-md-2">
-                  <input class="form-control" id="keywords" asp-for="@Model.Keywords" type="text" name="keywords" value="20-07-2022" readonly>
+                  <input class="form-control" id="data-post" type="text" name="changeDate" value="@ViewBag.Post.ChangeDate" readonly>
                 </div>
-                <label class="col-md-1 control-label">Hora:</label>
-                <div class="col-md-1">
-                  <input class="form-control" id="keywords" asp-for="@Model.Keywords" type="text" name="keywords" value="10:50" readonly>
-                </div>
+ 
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto:</label>
                 <div class="col-md-10">
-                  <input readonly class="form-control" id="subject" asp-for="@Model.Subject" type="text"
-                         name="subject" value="Dúvida sobre como instalar o Engeman Web.">
+                  <input readonly class="form-control" id="subject"  type="text" name="subject" value="@ViewBag.Post.Subject">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave:</label>
                 <div class="col-md-10">
-                  <input class="form-control" id="keywords" asp-for="@Model.Keywords" type="text" name="keywords" value="palavras,chave" readonly>
+                  <input class="form-control" id="keywords" type="text" name="keywords" value="@ViewBag.Post.Keywords" readonly>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Pergunta:</label>
                 <div class="col-md-10">
-                  <textarea class="form-control" id="description" rows="3" cols="5" asp-for="@Model.Description"
-                            name="description" readonly></textarea>
+                  <textarea class="form-control" id="description" rows="3" cols="5" name="description" readonly>@ViewBag.Post.Description</textarea>
                 </div>
               </div>
               <div class="form-actions">
@@ -122,30 +114,33 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Id:</label>
                 <div class="col-md-1">
-                  <input id="id" class="form-control" asp-for="@Model.CheckIsRestricted" type="text" readonly />
-                </div>                
-
+                  <input id="id-user-account" class="form-control" name="idUserAccount" type="text" value="@ViewBag.Post.UserAccountId" readonly />
+                </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Nome de usuário:</label>
                 <div class="col-md-2">
-                  <input id="restricted" class="form-control" asp-for="@Model.CheckIsRestricted" type="text" readonly />
+                  <input id="name-user-account" class="form-control" name="nameUserAccount" type="text" value="@ViewBag.UserAccount.Name" readonly />
                 </div>
                 <label class="col-md-2 control-label">Usuário de domínio:</label>
                 <div class="col-md-2">
-                  <input id="restricted" class="form-control" asp-for="@Model.CheckIsRestricted" type="text" readonly />
+                  <input id="domain-user-account" class="form-control" name="domainUserAccount" type="text" value="@ViewBag.UserAccount.DomainAccount" readonly />
                 </div>
                 <label class="col-md-1 control-label">Email:</label>
                 <div class="col-md-3">
-                  <input readonly class="form-control" id="subject" asp-for="@Model.Subject" type="text"
-                         name="subject">
-                </div>
+                  <input readonly class="form-control" id="email-user-account" type="text" name="emailUserAccount" value="@ViewBag.UserAccount.Email">
+                </div>                
               </div>
+              @*<div class="form-group">
+                <label class="col-md-2 control-label">Setor:</label>
+                <div class="col-md-3">
+                  <input id="department-user" class="form-control" name="departmentUserAccount" type="text" value="@ViewBag.Post.UserAccountId" readonly />
+                </div>
+              </div>*@
               <div class="form-group">
                 <label class="col-md-2 control-label">Autodescrição:</label>
                 <div class="col-md-10">
-                  <textarea class="form-control" id="description" rows="3" cols="5" asp-for="@Model.Description"
-                            name="description" readonly></textarea>
+                  <textarea class="form-control" id="description-user-account" rows="3" cols="5" name="descriptionUserAccount" readonly>@ViewBag.UserAccount.Description</textarea>
                 </div>
               </div>
               <div class="form-actions">

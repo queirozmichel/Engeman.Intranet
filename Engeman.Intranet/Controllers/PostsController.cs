@@ -125,8 +125,10 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult QuestionDetails(int idPost)
     {
-        var post = _postRepository.GetPostById(idPost);
-        var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var post = _postRepository.GetPostById(idPost);
+      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      ViewBag.Post = post;
+      ViewBag.UserAccount = userAccount;
 
       return PartialView();
     }

@@ -46,6 +46,7 @@ $(document).ready(function () {
     }
   })
 
+  //Após carregar o grid
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
     $("#post-grid").tooltip();
     postGrid.find("button.btn").each(function (index, element) {
@@ -70,6 +71,7 @@ $(document).ready(function () {
 
 $("#confirm-delete").on("click", function () {
   postDelete(idPostAux, elementAux);
+  toastr.success("A postagem foi apagada", "Sucesso!");
   $("#confirm-modal").modal("toggle");
 })
 
@@ -84,11 +86,12 @@ function postDetails(idPost) {
     dataType: "html",
     url: "/posts/questiondetails",
     error: function () {
-      console.log("Erro ao tentar mostrar os detalhes da pergunta");
+      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
     },
     success: function (response) {
       $("#question-details").empty();
-      $("#question-details").html(response);    }
+      $("#question-details").html(response);
+    }
   })
 }
 
