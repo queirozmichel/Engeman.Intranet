@@ -57,6 +57,9 @@ GO
 CREATE SEQUENCE GENPOST_COMMENT START WITH 1 AS NUMERIC(18);
 GO
 
+CREATE SEQUENCE GENARCHIVE START WITH 1 AS NUMERIC(18);
+GO
+
 /* ====================================== Criação das Tabelas ====================================================== */
 
 CREATE TABLE DEPARTMENT ( 
@@ -111,6 +114,20 @@ CREATE TABLE POST_COMMENT (
      CHECK (DESCRIPTION <> ''))ON [PRIMARY]
 GO
 
+CREATE TABLE ARCHIVE ( 
+     ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENARCHIVE) CONSTRAINT PK_ARCHIVE PRIMARY KEY CLUSTERED,
+     ACTIVE                        CHAR(1) DEFAULT 'S'                 NOT NULL,
+     ARCHIVE_TYPE	               CHAR(1) DEFAULT 'D'                 NOT NULL, /*D-DOCUMENT, M-MANUAL*/
+	 NAME                          VARCHAR(100)                        NOT NULL,
+	 DESCRIPTION                   VARCHAR(MAX)                        NOT NULL,
+	 BINARY_DATA				   VARBINARY(MAX)                      NOT NULL,
+	 POST_ID                       NUMERIC(18)                         NOT NULL,
+	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
+     CHECK (NAME <> ''),
+	 CHECK (DESCRIPTION <> ''),
+     CHECK (BINARY_DATA <> ''))ON [PRIMARY]
+GO
+
 /* ====================================== Criação de Triggers ====================================================== */
 
 CREATE TRIGGER DEPARTMENT_CHANGEDATE ON DEPARTMENT AFTER UPDATE
@@ -146,6 +163,15 @@ AS
 BEGIN
   UPDATE POST_COMMENT SET CHANGEDATE = CURRENT_TIMESTAMP FROM POST_COMMENT
   INNER JOIN INSERTED ON POST_COMMENT.ID = INSERTED.ID;
+END
+GO
+
+CREATE TRIGGER ARCHIVE_CHANGEDATE ON ARCHIVE AFTER UPDATE
+AS 
+ SET NOCOUNT ON
+BEGIN
+  UPDATE ARCHIVE SET CHANGEDATE = CURRENT_TIMESTAMP FROM ARCHIVE
+  INNER JOIN INSERTED ON ARCHIVE.ID = INSERTED.ID;
 END
 GO
 
@@ -207,6 +233,14 @@ INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, K
 VALUES ('S', 'N', 'Como instalar o Engeman Mobile?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Instalação;Engeman Mobile', 10, 3, 'Q')
 GO
 SELECT * FROM POST
+
+INSERT INTO ARCHIVE (ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
+VALUES ('S', 'M', 'Instalação do Engeman Web.pdf', 'Passo a passo de como instalar o Engeman Web.', CAST('Teste' AS VARBINARY(MAX)), 155)
+GO
+INSERT INTO ARCHIVE (ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
+VALUES ('S', 'D', 'Melhorias para o Engeman Client/Server.pdf', 'Melhorias sugeridas por clientes no ano de 2022.', CAST('Documento' AS VARBINARY(MAX)), 10)
+GO
+SELECT * FROM ARCHIVE
 
 UPDATE DEPARTMENT SET ACTIVE = 'N' WHERE CODE = '004'
 GO
