@@ -1,0 +1,15 @@
+﻿#confirm-modal, #restricted-modal {
+  overflow: hidden;
+}
+
+.modal-content, .modal-footer{
+  text-align: center;
+}
+
+#restricted-modal .modal-content {
+  background-color: lightcoral;
+}
+
+#confirm-modal .modal-content {
+  background-color: lightyellow;
+}

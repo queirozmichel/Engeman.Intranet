@@ -1,4 +1,5 @@
-﻿var idPostAux;
+﻿//variáveis para armazenar o id da postagem e o elemento linha
+var idPostAux;
 var elementAux;
 
 $(document).ready(function () {
@@ -54,7 +55,7 @@ $(document).ready(function () {
       var userIdPost = actionButtons.data("user-id");
       actionButtons.on("click", function () {
         if (action == "details") {
-          postDetails();
+          postDetails(idPost);
         } else if (action == "edit") {
           postEdit();
         } else if (action == "delete") {
@@ -76,8 +77,19 @@ $("#cancel-delete").on("click", function () {
   $("#confirm-modal").modal("toggle");
 })
 
-function postDetails() {
-  console.log("details");
+function postDetails(idPost) {
+  $.ajax({
+    type: "POST",
+    data: { "idPost": idPost },
+    dataType: "html",
+    url: "/posts/questiondetails",
+    error: function () {
+      console.log("Erro ao tentar mostrar os detalhes da pergunta");
+    },
+    success: function (response) {
+      $("#question-details").empty();
+      $("#question-details").html(response);    }
+  })
 }
 
 function postEdit() {
@@ -120,7 +132,7 @@ function getSessionUserId(userIdPost) {
       if (response == "false") {
         $("#restricted-modal").modal("toggle");
       } else if (response == "true") {
-        $("#confirm-modal").modal("toggle");        
+        $("#confirm-modal").modal("toggle");
       }
     }
   });

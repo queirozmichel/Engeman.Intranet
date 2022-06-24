@@ -7,6 +7,7 @@ namespace Engeman.Intranet.Repositories
   {
     public bool UserAccountValidate(string domainUsername);
     public UserAccount GetUserAccountByDomainUsername(string domainUsername);
+    public UserAccount GetUserAccountById(int id);
     public void UpdateUserAccount(UserAccount userAccount);
     public List<UserAccountDto> GetAllUserAccounts();
   }

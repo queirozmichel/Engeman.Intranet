@@ -87,6 +87,7 @@ namespace Engeman.Intranet.Repositories
           $"WHERE ID = {id}";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
+
         post.Id = Convert.ToInt32(result["id"]);
         post.Active = Convert.ToChar(result["Active"]);
         post.Restricted = Convert.ToChar(result["Restricted"]);

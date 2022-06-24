@@ -63,20 +63,23 @@ namespace Engeman.Intranet.Controllers
           "changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
       }
 
+      total = allPosts.Count();
+      if (rowCount == -1)
+      {
+        rowCount = total;
+      }
+
       if (orderedField.Contains("changeDate asc"))
       {
         paginatedPosts = allPosts.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-        total = allPosts.Count();
         return Json(new { rows = paginatedPosts, current, rowCount, total });
       }
       else if (orderedField.Contains("changeDate desc"))
       {
         paginatedPosts = allPosts.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-        total = allPosts.Count();
         return Json(new { rows = paginatedPosts, current, rowCount, total });
       }
 
-      total = allPosts.Count();
       paginatedPosts = allPosts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
 
       return Json(new { rows = paginatedPosts, current, rowCount, total });
@@ -103,7 +106,7 @@ namespace Engeman.Intranet.Controllers
     {
       var post = _postRepository.GetPostById(idPost);
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
-      var postCanBeDeleted = CheckIfPostCanBeDeleted(userAccount, post);    
+      var postCanBeDeleted = CheckIfPostCanBeDeleted(userAccount, post);
 
       if (postCanBeDeleted == true)
       {
@@ -118,6 +121,14 @@ namespace Engeman.Intranet.Controllers
         return true;
       }
       return false;
+    }
+
+    public IActionResult QuestionDetails(int idPost)
+    {
+        var post = _postRepository.GetPostById(idPost);
+        var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+
+      return PartialView();
     }
   }
 }

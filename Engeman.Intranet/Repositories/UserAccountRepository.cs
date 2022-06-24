@@ -97,6 +97,33 @@ namespace Engeman.Intranet.Repositories
         }
       }
      return users;
-    }    
+    }
+
+    public UserAccount GetUserAccountById(int id)
+    {
+      UserAccount userAccount = new UserAccount();
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+          $"SELECT " +
+          $"* " +
+          $"FROM ENGEMANINTRANET.USERACCOUNT " +
+          $"WHERE ID = {id}";
+
+        var result = sq.GetDataSet(query).Tables[0].Rows[0];
+
+        userAccount.Active = Convert.ToChar(result["active"]);
+        userAccount.Name = result["name"].ToString();
+        userAccount.DomainAccount = result["domainaccount"].ToString();
+        userAccount.DepartmentId = Convert.ToInt32(result["department_id"]);
+        userAccount.Email = result["email"].ToString();
+        userAccount.Photo = (byte[])result["photo"];
+        userAccount.Description = result["description"].ToString();
+        userAccount.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
+
+        return userAccount;
+      }
+    }
   }
 }
