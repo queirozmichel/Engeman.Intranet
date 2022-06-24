@@ -17,11 +17,13 @@ namespace Engeman.Intranet.Controllers
   {
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IPostRepository _postRepository;
+    private readonly IDepartmentRepository _departmentRepository;
 
-    public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository)
+    public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository, IDepartmentRepository departmentRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
+      _departmentRepository = departmentRepository;
     }
     public IActionResult Index()
     {
@@ -127,8 +129,10 @@ namespace Engeman.Intranet.Controllers
     {
       var post = _postRepository.GetPostById(idPost);
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
+      ViewBag.Department = department;
 
       return PartialView();
     }
