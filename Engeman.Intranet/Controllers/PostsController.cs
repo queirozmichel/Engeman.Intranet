@@ -40,6 +40,11 @@ namespace Engeman.Intranet.Controllers
       return View();
     }
 
+    public IActionResult InsertArchive()
+    {
+      return View();
+    }
+
     [HttpPost]
     public JsonResult GetDataGrid(string searchPhrase, int current = 1, int rowCount = 5)
     {

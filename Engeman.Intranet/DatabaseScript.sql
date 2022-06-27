@@ -96,7 +96,7 @@ CREATE TABLE POST (
 	 USERACCOUNT_ID                NUMERIC(18)                         NOT NULL,
 	 DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
 	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
-     POST_TYPE	                   CHAR(1) DEFAULT 'Q'                 NOT NULL, /*D-DOCUMENT, M-MANUAL, Q-QUESTION */
+     POST_TYPE	                   CHAR(1) DEFAULT 'Q'                 NOT NULL, /*A-ARCHIVE, Q-QUESTION */
      CHECK (SUBJECT <> ''),
      CHECK (DESCRIPTION <> ''))ON [PRIMARY]
 GO

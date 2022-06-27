@@ -16,7 +16,7 @@
 	// our plugin constructor
 	function FileInput( element, options ) {
 		if( arguments.length ) {
-			this._init( element, options );
+			//this._init( element, options );
 		}
     };
 
@@ -30,9 +30,6 @@
 
 	// Defaults
 	$.fn.fileInput.defaults = {
-		placeholder: 'No file selected...',
-		buttontext: 'Browse...',
-		inputsize: 'width-xlarge' // e.g. block-level
 	};
 
 	// the plugin prototype
