@@ -106,7 +106,7 @@ namespace Engeman.Intranet.Controllers
       askQuestionDto.CleanDescription = askQuestionDto.Description;
       askQuestionDto.DomainAccount = sessionDomainUsername;
 
-      _postRepository.InsertQuestion(askQuestionDto);
+      _postRepository.AddQuestion(askQuestionDto);
 
       return View("AskQuestion");
     }
@@ -147,8 +147,52 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public ActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
     {
+      bool statusPost = true;
+      bool statusArchive = false;
+      bool status = false;
+      
+      AskQuestionDto askQuestionDto = new AskQuestionDto();
+      Archive archive = new Archive();
 
-      bool status = true;
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+      askQuestionDto.Active = 'S';
+      askQuestionDto.Restricted = postArchiveDto.Post.Restricted;
+      askQuestionDto.Subject = postArchiveDto.Post.Subject;
+      askQuestionDto.Description = postArchiveDto.Post.Description;
+      askQuestionDto.CleanDescription = askQuestionDto.Description;
+      askQuestionDto.Keywords = postArchiveDto.Post.Keywords;
+      askQuestionDto.UserAccountId = userAccount.Id;
+      askQuestionDto.DomainAccount = sessionDomainUsername;
+      askQuestionDto.DepartmentId = userAccount.DepartmentId;
+      askQuestionDto.PostType = 'A';
+
+      if (binaryData.Count != 0)
+      {
+        foreach (var item in binaryData)
+        {
+          if (item.Length > 0)
+          {
+            using (var stream = new MemoryStream())
+            {
+              item.CopyTo(stream);
+              archive.BinaryData = stream.ToArray();
+            }
+          }
+        }
+        archive.Active = 'S';
+        archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
+        archive.Name = binaryData[0].FileName;
+        archive.Description = postArchiveDto.Post.Description;
+        archive.PostId = 0;
+        statusArchive = true;
+      }
+
+      if (statusArchive == true & statusPost == true)
+      {
+        _postRepository.AddArchive(askQuestionDto,archive);
+        status = true;
+      }
 
       return Json(status);
     }
