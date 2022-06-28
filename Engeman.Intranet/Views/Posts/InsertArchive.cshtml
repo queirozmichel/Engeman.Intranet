@@ -1,4 +1,5 @@
-﻿
+﻿@model PostArchiveDto;
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,34 +68,34 @@
       <div class="col-md-12">
         <div class="widget box">
           <div class="widget-header">
-            <h4><i class="icon-reorder"></i> Nova Pergunta</h4>
+            <h4><i class="icon-reorder"></i> Novo Documento/Manual</h4>
           </div>
 
           <div class="widget-content">
-            <form class="form-horizontal row-border" id="ask-form" method="post">
+            <form class="form-horizontal row-border" id="archive-form" method="post" enctype="multipart/form-data">
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrito ao setor?</label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
-                    <input id="restricted" type="checkbox" checked class="toggle" />
+                    <input id="post-restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" checked class="toggle" />
                   </div>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Inserir arquivo</label>
                 <div class="col-md-2">
-                  <input type="file" id="input-archive">
+                  <input id="file" type="file" name="binarydata" accept="application/pdf">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Tipo de arquivo: </label>
                 <div class="col-md-3">
                   <label class="radio">
-                    <input type="radio" name="optionsRadios" value="D">
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D")
                     Documento
                   </label>
                   <label class="radio">
-                    <input type="radio" name="optionsRadios" value="M">
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M")
                     Manual
                   </label>
                 </div>
@@ -102,22 +103,22 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto:</label>
                 <div class="col-md-10">
-                  <input class="form-control" id="subject" type="text"
-                         name="subject">
+                  <input id="subject" class="form-control" type="text"
+                         name="post.subject">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave:</label>
                 <div class="col-md-10">
-                  <input class="tags" id="keywords" type="text"
-                         name="keywords" value="palavras,chave">
+                  <input class="tags" id="keywords"  type="text"
+                         name="post.keywords" value="palavras,chave">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Descrição:</label>
                 <div class="col-md-10">
-                  <textarea class="form-control" id="description" rows="3" cols="5"
-                            name="description"></textarea>
+                  <textarea id="description" class="form-control" rows="3" cols="5"
+                            name="archive.description"></textarea>
                 </div>
               </div>
               <div class="form-actions">

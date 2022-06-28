@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Linq.Dynamic.Core;
 using System;
+using System.Collections.Generic;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -40,6 +41,7 @@ namespace Engeman.Intranet.Controllers
       return View();
     }
 
+    [HttpGet]
     public IActionResult InsertArchive()
     {
       return View();
@@ -140,6 +142,15 @@ namespace Engeman.Intranet.Controllers
       ViewBag.Department = department;
 
       return PartialView();
+    }
+
+    [HttpPost]
+    public ActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
+    {
+
+      bool status = true;
+
+      return Json(status);
     }
   }
 }

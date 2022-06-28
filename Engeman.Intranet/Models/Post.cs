@@ -22,5 +22,30 @@ namespace Engeman.Intranet.Models
     public Department Department { get; set; }
     public DateTime ChangeDate { get; set; }
     public char PostType { get; set; }
+    public bool CheckIsRestricted
+    {
+      get
+      {
+        if (Restricted == 'N')
+        {
+          return false;
+        }
+        else
+        {
+          return true;
+        }
+      }
+      set
+      {
+        if (value == false)
+        {
+          Restricted = 'N';
+        }
+        else
+        {
+          Restricted = 'S';
+        }
+      }
+    }
   }
 }
