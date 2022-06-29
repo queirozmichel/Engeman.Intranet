@@ -13,8 +13,7 @@
   <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
   <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script>
   <!-- Styled radio and checkboxes -->
-  <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.min.js"></script>
-  <script type="text/javascript" src="~/plugins/select2/select2.min.js"></script>  Styled select boxes
+  <script type="text/javascript" src="~/plugins/select2/select2.min.js"></script>
   <script type="text/javascript" src="~/plugins/fileinput/fileinput.js"></script>
   <script type="text/javascript" src="~/plugins/duallistbox/jquery.duallistbox.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-inputmask/jquery.inputmask.min.js"></script>
@@ -70,14 +69,13 @@
           <div class="widget-header">
             <h4><i class="icon-reorder"></i> Novo Documento/Manual</h4>
           </div>
-
           <div class="widget-content">
             <form class="form-horizontal row-border" id="archive-form" method="post" enctype="multipart/form-data">
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrito ao setor?</label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
-                    <input id="post-restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" checked class="toggle" />
+                    <input id="post-restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
                   </div>
                 </div>
               </div>
@@ -91,11 +89,11 @@
                 <label class="col-md-2 control-label">Tipo de arquivo: </label>
                 <div class="col-md-3">
                   <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D")
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type" })
                     Documento
                   </label>
                   <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M")
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M", new { @class = "archive-type" })
                     Manual
                   </label>
                 </div>
@@ -107,11 +105,12 @@
                          name="post.subject">
                 </div>
               </div>
+
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave:</label>
                 <div class="col-md-10">
-                  <input class="tags" id="keywords"  type="text"
-                         name="post.keywords" value="palavras,chave">
+                  <input class="tags" id="keywords" type="text"
+                         name="post.keywords">
                 </div>
               </div>
               <div class="form-group">

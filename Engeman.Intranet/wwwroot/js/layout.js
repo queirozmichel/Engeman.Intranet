@@ -14,7 +14,7 @@ function toastrConfig () {
       "debug": false,
       "newestOnTop": false,
       "progressBar": true,
-      "positionClass": "toast-bottom-right",
+      "positionClass": "toast-bottom-center",
       "preventDuplicates": false,
       "onclick": null,
       "showDuration": "300",

@@ -16,7 +16,7 @@
 	// our plugin constructor
 	function FileInput( element, options ) {
 		if( arguments.length ) {
-			//this._init( element, options );
+			this._init( element, options );
 		}
     };
 

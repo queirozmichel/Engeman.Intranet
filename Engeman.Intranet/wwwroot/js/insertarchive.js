@@ -1,7 +1,15 @@
 ﻿$(document).ready(function () {
+  clearForm();
+
 })
 
-
+function clearForm() {
+  $(".archive-type").prop('checked', false);
+  $("#subject").val('');
+  $("#description").val('');
+  $("#file").val('');
+  $(".tag").remove();
+}
 
 $("#archive-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
@@ -16,11 +24,14 @@ $("#archive-form").on("submit", function (event) {
     processData: false,
     data: formData,
     success: function (response) {
-      console.log(response);
-      toastr.success("O arquivo foi salvo", "Sucesso!");
+      if (response == true) {
+        toastr.success("O arquivo foi salvo", "Sucesso!");
+        clearForm();
+      } else {
+        toastr.error("O arquivo não foi salvo", "Erro!");
+      }
     },
     error: function (response) {
-      console.log(response);
       toastr.error("O arquivo não foi salvo", "Erro!");
     }
   });

@@ -5,6 +5,7 @@
  function clearForm() {
    $("#subject").val('');
    $("#description").val('');
+   $(".tag").remove();
  } 
 
  $("#ask-form").on("submit", function (event) {
