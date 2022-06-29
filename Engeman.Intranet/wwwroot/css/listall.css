@@ -1,4 +1,4 @@
-﻿#confirm-modal, #restricted-modal {
+﻿#confirm-modal, #restrict-delete-modal, #restrict-edit-modal {
   overflow: hidden;
 }
 
@@ -6,7 +6,7 @@
   text-align: center;
 }
 
-#restricted-modal .modal-content {
+#restrict-delete-modal .modal-content, #restrict-edit-modal .modal-content {
   background-color: lightcoral;
 }
 

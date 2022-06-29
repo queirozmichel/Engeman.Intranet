@@ -58,9 +58,9 @@ $(document).ready(function () {
         if (action == "details") {
           postDetails(idPost);
         } else if (action == "edit") {
-          postEdit();
+          confirmSessionUser(userIdPost, idPost, action);
         } else if (action == "delete") {
-          getSessionUserId(userIdPost);
+          confirmSessionUser(userIdPost, idPost, action);
           elementAux = element;
           idPostAux = idPost;
         }
@@ -95,8 +95,20 @@ function postDetails(idPost) {
   })
 }
 
-function postEdit() {
-  console.log("edit");
+function postEdit(idPost) {
+  $.ajax({
+    type: "POST",
+    data: { "idPost": idPost },
+    dataType: "html",
+    url: "/posts/questionedit",
+    error: function () {
+      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+    },
+    success: function (response) {
+      $("#question-details").empty();
+      $("#question-details").html(response);
+    }
+  })
 }
 
 function postDelete(idElement, element) {
@@ -123,19 +135,28 @@ function postDelete(idElement, element) {
   });
 }
 
-function getSessionUserId(userIdPost) {
+function confirmSessionUser(userIdPost, idPost, action) {
   $.ajax({
     type: "GET",
     data: {
       'userAccountIdPost': userIdPost
     },
     dataType: "text",
-    url: "/login/GetSessionUserIdByAjax",
+    url: "/login/confirmSessionUserByAjax",
     success: function (response) {
       if (response == "false") {
-        $("#restricted-modal").modal("toggle");
-      } else if (response == "true") {
-        $("#confirm-modal").modal("toggle");
+        if (action == "delete") {
+          $("#restrict-delete-modal").modal("toggle");
+        } else if (action == "edit") {
+          $("#restrict-edit-modal").modal("toggle");
+        }
+      }
+      if (response == "true") {
+        if (action == "delete") {
+          $("#confirm-modal").modal("toggle");
+        } else if (action == "edit") {
+          postEdit(idPost);
+        }
       }
     }
   });

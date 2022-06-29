@@ -144,6 +144,19 @@ namespace Engeman.Intranet.Controllers
       return PartialView();
     }
 
+    public IActionResult QuestionEdit(int idPost)
+    {
+      var post = _postRepository.GetPostById(idPost);
+      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
+      ViewBag.Post = post;
+      ViewBag.UserAccount = userAccount;
+      ViewBag.Department = department;
+
+      return PartialView();
+    }
+
+
     [HttpPost]
     public ActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
     {

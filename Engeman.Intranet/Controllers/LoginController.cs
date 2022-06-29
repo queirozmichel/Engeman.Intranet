@@ -74,7 +74,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public JsonResult GetSessionUserIdByAjax(int userAccountIdPost)
+    public JsonResult ConfirmSessionUserByAjax(int userAccountIdPost)
     {
       var userSessionId = Convert.ToInt32(HttpContext.Session.GetString("_Id"));
 

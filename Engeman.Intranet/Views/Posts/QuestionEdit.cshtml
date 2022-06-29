@@ -1,6 +1,4 @@
-﻿@model PostArchiveDto;
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,7 +11,8 @@
   <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
   <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script>
   <!-- Styled radio and checkboxes -->
-  <script type="text/javascript" src="~/plugins/select2/select2.min.js"></script>
+  <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.min.js"></script>
+  <script type="text/javascript" src="~/plugins/select2/select2.min.js"></script> <!-- Styled select boxes -->
   <script type="text/javascript" src="~/plugins/fileinput/fileinput.js"></script>
   <script type="text/javascript" src="~/plugins/duallistbox/jquery.duallistbox.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-inputmask/jquery.inputmask.min.js"></script>
@@ -28,13 +27,11 @@
 </head>
 
 <body>
-
   <div id="container">
-
     <!--=== Page Header ===-->
     <div class="page-header">
       <div class="page-title">
-        <h3>Inserir um Documento/Manual</h3>
+        <h3>Editar Pergunta</h3>
         <span>Good morning, John!</span>
       </div>
 
@@ -67,72 +64,47 @@
       <div class="col-md-12">
         <div class="widget box">
           <div class="widget-header">
-            <h4><i class="icon-reorder"></i> Novo Documento/Manual</h4>
+            <h4><i class="icon-reorder"></i> Pergunta</h4>
           </div>
           <div class="widget-content">
-            <form class="form-horizontal row-border" id="archive-form" method="post" enctype="multipart/form-data">
+            <form class="form-horizontal row-border" id="ask-form" method="post">
               <div class="form-group">
-                <label class="col-md-2 control-label">Restrito ao setor?</label>
+                <label class="col-md-2 control-label">Restrita ao setor?</label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
-                    <input id="post-restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
+                    <input id="restricted" type="checkbox" class="toggle" />
                   </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Anexar arquivo:</label>
-                <div class="col-md-2">
-                  <input id="file" type="file" name="binarydata" accept="application/pdf">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Tipo de arquivo: </label>
-                <div class="col-md-3">
-                  <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type" })
-                    Documento
-                  </label>
-                  <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M", new { @class = "archive-type" })
-                    Manual
-                  </label>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto:</label>
                 <div class="col-md-10">
-                  <input id="subject" class="form-control" type="text"
-                         name="post.subject">
+                  <input class="form-control" id="subject" type="text" name="subject" value="@ViewBag.Post.Subject">
                 </div>
               </div>
-
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave:</label>
                 <div class="col-md-10">
-                  <input class="tags" id="keywords" type="text"
-                         name="post.keywords">
+                  <input class="form-control" id="keywords" type="text" name="keywords" value="@ViewBag.Post.Keywords">
                 </div>
               </div>
+
               <div class="form-group">
-                <label class="col-md-2 control-label">Descrição:</label>
+                <label class="col-md-2 control-label">Pergunta:</label>
                 <div class="col-md-10">
-                  <textarea id="description" class="form-control" rows="3" cols="5"
-                            name="post.description"></textarea>
+                  <textarea class="form-control" id="description" rows="3" cols="5" name="description">@ViewBag.Post.Description</textarea>
                 </div>
               </div>
               <div class="form-actions">
-                <input class="btn btn-primary pull-right" id="submit-button" type="submit" value="Postar">
+                <input class="btn btn-primary pull-right" id="submit-button" type="submit" value="Salvar">
               </div>
             </form>
           </div>
-        </div>
+        </div>        
       </div>
-      <!-- /Horizontal Forms -->
     </div>
-    <!-- /Page Content -->
   </div>
 </body>
-
 </html>
 
-<script type="text/javascript" src="~/js/insertarchive.js"></script>
+<script type="text/javascript" src="~/js/questionedit.js"></script>
