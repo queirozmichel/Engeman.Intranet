@@ -111,6 +111,35 @@ namespace Engeman.Intranet.Controllers
       return View("AskQuestion");
     }
 
+    public IActionResult QuestionEdit(int idPost)
+    {
+      var post = _postRepository.GetPostById(idPost);
+      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
+      ViewBag.Post = post;
+      ViewBag.UserAccount = userAccount;
+      ViewBag.Department = department;
+
+      return PartialView();
+    }
+
+    [HttpPost]
+    public IActionResult UpdateQuestion(AskQuestionDto askQuestionDto)
+    {
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+      askQuestionDto.UserAccountId = userAccount.Id;
+      askQuestionDto.DepartmentId = userAccount.DepartmentId;
+      askQuestionDto.PostType = 'Q';
+      askQuestionDto.Active = 'S';
+      askQuestionDto.CleanDescription = askQuestionDto.Description;
+      askQuestionDto.DomainAccount = sessionDomainUsername;
+
+      _postRepository.UpdateQuestion(askQuestionDto.Id, askQuestionDto);
+
+      return PartialView("ListAll");
+    }
+
     public void RemovePost(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
@@ -143,19 +172,6 @@ namespace Engeman.Intranet.Controllers
 
       return PartialView();
     }
-
-    public IActionResult QuestionEdit(int idPost)
-    {
-      var post = _postRepository.GetPostById(idPost);
-      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
-      var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
-      ViewBag.Post = post;
-      ViewBag.UserAccount = userAccount;
-      ViewBag.Department = department;
-
-      return PartialView();
-    }
-
 
     [HttpPost]
     public ActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)

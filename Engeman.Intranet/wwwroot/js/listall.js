@@ -102,7 +102,7 @@ function postEdit(idPost) {
     dataType: "html",
     url: "/posts/questionedit",
     error: function () {
-      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+      toastr.error("Não foi possível editar a postagem", "Erro!");
     },
     success: function (response) {
       $("#question-details").empty();

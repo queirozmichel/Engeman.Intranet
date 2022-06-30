@@ -130,5 +130,20 @@ namespace Engeman.Intranet.Repositories
         sq.ExecuteCommand(query, paramters, values);
       }
     }
+
+    public void UpdateQuestion(int id, AskQuestionDto askQuestionDto)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+        $"UPDATE " +
+        $"ENGEMANINTRANET.POST " +
+        $"SET RESTRICTED = '{askQuestionDto.Restricted}', SUBJECT = '{askQuestionDto.Subject}', DESCRIPTION = '{askQuestionDto.Description}', " +
+        $"CLEAN_DESCRIPTION = '{askQuestionDto.Description}', KEYWORDS = '{askQuestionDto.Keywords}' " +
+        $"WHERE ID = {id}";
+
+        sq.ExecuteCommand(query);
+      }
+    }
   }
 }
