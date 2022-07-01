@@ -19,12 +19,14 @@ namespace Engeman.Intranet.Controllers
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IPostRepository _postRepository;
     private readonly IDepartmentRepository _departmentRepository;
+    private readonly IArchiveRepository _archiveRepository;
 
-    public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository, IDepartmentRepository departmentRepository)
+    public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository, IDepartmentRepository departmentRepository, IArchiveRepository archiveRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
       _departmentRepository = departmentRepository;
+      _archiveRepository = archiveRepository;
     }
     public IActionResult Index()
     {
@@ -165,6 +167,20 @@ namespace Engeman.Intranet.Controllers
       ViewBag.Department = department;
 
       return PartialView();
+    }
+
+    public IActionResult ArchivePostDetails(int idPost)
+    {
+      var post = _postRepository.GetPostById(idPost);
+      var archive = _archiveRepository.GetArchiveById(idPost);
+      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
+      ViewBag.Post = post;
+      ViewBag.UserAccount = userAccount;
+      ViewBag.Department = department;
+      ViewBag.Archive = archive;      
+
+      return PartialView(archive);
     }
 
     [HttpPost]

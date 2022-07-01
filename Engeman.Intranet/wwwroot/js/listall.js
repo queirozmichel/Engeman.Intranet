@@ -39,9 +39,9 @@ $(document).ready(function () {
         return row.changeDate;
       },
       "action": function (column, row) {
-        return "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
-          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"><i class=\"fa fa-pencil\"></i></button> " +
-          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        return "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
+          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> " +
+          "<button type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
       },
     }
   })
@@ -54,9 +54,10 @@ $(document).ready(function () {
       var action = actionButtons.data("action");
       var idPost = actionButtons.data("row-id");
       var userIdPost = actionButtons.data("user-id");
+      var postType = actionButtons.data("post-type");
       actionButtons.on("click", function () {
         if (action == "details") {
-          postDetails(idPost);
+          postDetails(idPost, postType);
         } else if (action == "edit") {
           confirmSessionUser(userIdPost, idPost, action);
         } else if (action == "delete") {
@@ -79,20 +80,36 @@ $("#cancel-delete").on("click", function () {
   $("#confirm-modal").modal("toggle");
 })
 
-function postDetails(idPost) {
-  $.ajax({
-    type: "POST",
-    data: { "idPost": idPost },
-    dataType: "html",
-    url: "/posts/questiondetails",
-    error: function () {
-      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
-    },
-    success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
-    }
-  })
+function postDetails(idPost, postType) {
+  if (postType === 'Q') {
+    $.ajax({
+      type: "POST",
+      data: { "idPost": idPost },
+      dataType: "html",
+      url: "/posts/questiondetails",
+      error: function () {
+        toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+      },
+      success: function (response) {
+        $("#question-details").empty();
+        $("#question-details").html(response);
+      }
+    })
+  } else if (postType === 'A') {
+    $.ajax({
+      type: "POST",
+      data: { "idPost": idPost },
+      dataType: "html",
+      url: "/posts/archivepostdetails",
+      error: function () {
+        toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+      },
+      success: function (response) {
+        $("#question-details").empty();
+        $("#question-details").html(response);
+      }
+    })
+  }
 }
 
 function postEdit(idPost) {
