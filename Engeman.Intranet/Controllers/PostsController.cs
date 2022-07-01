@@ -114,13 +114,7 @@ namespace Engeman.Intranet.Controllers
     public IActionResult QuestionEdit(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
-      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
-      var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
-      ViewBag.Post = post;
-      ViewBag.UserAccount = userAccount;
-      ViewBag.Department = department;
-
-      return PartialView();
+      return PartialView(post);
     }
 
     [HttpPost]
