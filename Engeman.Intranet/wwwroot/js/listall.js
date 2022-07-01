@@ -20,8 +20,14 @@ $(document).ready(function () {
       characters: 1,
     },
     formatters: {
+
       "id": function (column, row) {
-        return row.id;
+        return row.id
+      },
+      "attachment": function (column, row) {
+        if (row.postType === "A") {
+          return "<i class=\"fa-solid fa-paperclip\"></i>";
+        }
       },
       "userAccountName": function (column, row) {
         return row.userAccountName;
