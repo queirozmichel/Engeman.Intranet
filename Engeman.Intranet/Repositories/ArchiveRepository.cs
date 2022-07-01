@@ -6,7 +6,7 @@ namespace Engeman.Intranet.Repositories
 {
   public class ArchiveRepository : IArchiveRepository
   {
-    public Archive GetArchiveById(int id)
+    public Archive GetArchiveByPostId(int postId)
     {
       Archive archive = new Archive();
 
@@ -15,7 +15,7 @@ namespace Engeman.Intranet.Repositories
         var query = 
         $"SELECT * " +
         $"FROM ENGEMANINTRANET.ARCHIVE " +
-        $"WHERE POST_ID = {id}";
+        $"WHERE POST_ID = {postId}";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 

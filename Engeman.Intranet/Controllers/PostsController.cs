@@ -169,10 +169,20 @@ namespace Engeman.Intranet.Controllers
       return PartialView();
     }
 
+    public FileContentResult DownloadArchive(int idPost)
+    {
+      Archive archive = new Archive();
+      archive = _archiveRepository.GetArchiveByPostId(idPost);
+      byte[] fileBytes = archive.BinaryData;
+      var response = new FileContentResult(fileBytes, "application/octet-stream");
+      response.FileDownloadName = archive.Name;
+      return response;
+    }
+
     public IActionResult ArchivePostDetails(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
-      var archive = _archiveRepository.GetArchiveById(idPost);
+      var archive = _archiveRepository.GetArchiveByPostId(idPost);
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
       ViewBag.Post = post;

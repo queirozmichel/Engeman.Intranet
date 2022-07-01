@@ -4,6 +4,6 @@ namespace Engeman.Intranet.Repositories
 {
   public interface IArchiveRepository
   {
-    public Archive GetArchiveById(int id);
+    public Archive GetArchiveByPostId(int postId);
   }
 }
