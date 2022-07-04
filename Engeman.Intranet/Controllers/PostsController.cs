@@ -119,6 +119,20 @@ namespace Engeman.Intranet.Controllers
       return PartialView(post);
     }
 
+    public IActionResult ArchivePostEdit(int idPost)
+    {
+      EditPostArchiveDto editPostArchiveDto = new EditPostArchiveDto();
+
+      var post = _postRepository.GetPostById(idPost);
+      var archive = _archiveRepository.GetArchiveByPostId(idPost);
+
+      editPostArchiveDto.Post = post;
+      editPostArchiveDto.Archive = archive;
+
+
+      return PartialView(editPostArchiveDto);
+    }
+
     [HttpPost]
     public IActionResult UpdateQuestion(AskQuestionDto askQuestionDto)
     {

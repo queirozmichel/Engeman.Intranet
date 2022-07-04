@@ -1,0 +1,144 @@
+﻿@model EditPostArchiveDto;
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+  <script type="text/javascript" src="~/plugins/typeahead/typeahead.min.js"></script> <!-- AutoComplete -->
+  <script type="text/javascript" src="~/plugins/autosize/jquery.autosize.min.js"></script>
+  <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
+  <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script>
+  <!-- Styled radio and checkboxes -->
+  <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.js"></script>
+  <script type="text/javascript" src="~/plugins/select2/select2.min.js"></script> <!-- Styled select boxes -->
+  <script type="text/javascript" src="~/plugins/fileinput/fileinput.js"></script>
+  <script type="text/javascript" src="~/plugins/duallistbox/jquery.duallistbox.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-inputmask/jquery.inputmask.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/wysihtml5.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+
+  <!-- Demo JS -->
+  <script type="text/javascript" src="~/js/custom.js"></script>
+
+</head>
+
+<body>
+  <div id="container">
+    <!--=== Page Header ===-->
+    <div class="page-header">
+      <div class="page-title">
+        <h3>Detalhes da Postagem</h3>
+        <span>Good morning, John!</span>
+      </div>
+
+      <!-- Page Stats -->
+      <ul class="page-stats">
+        <li>
+          <div class="summary">
+            <span>New orders</span>
+            <h3>17,561</h3>
+          </div>
+          <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+          <!-- Use instead of sparkline e.g. this:
+          <div class="graph circular-chart" data-percent="73">73%</div>
+          -->
+        </li>
+        <li>
+          <div class="summary">
+            <span>My balance</span>
+            <h3>$21,561.21</h3>
+          </div>
+          <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+        </li>
+      </ul>
+      <!-- /Page Stats -->
+    </div>
+    <!-- /Page Header -->
+    <!--=== Page Content ===-->
+    <div class="row">
+      <!--=== Horizontal Forms ===-->
+      <div class="col-md-12">
+        <div class="widget box">
+          <div class="widget-header">
+            <h4><i class="icon-reorder"></i> Arquivo</h4>
+          </div>
+          <div class="widget-content">
+            <form class="form-horizontal row-border" id="archive-edit-post-form" method="post">
+              <div class="form-group">
+                <label class="col-md-2 control-label">Id:</label>
+                <div class="col-md-1">
+                  <input class="form-control" type="text" readonly value="@Model.Post.Id" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Restrita ao setor?</label>
+                <div class="col-md-10">
+                  <div class="make-switch" data-on-label="Sim" data-off-label="Não">
+                    <input id="restricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Arquivo atual:</label>
+                <div class="col-md-5">
+                  <input class="form-control" readonly type="text" value="@Model.Archive.Name">
+                </div>
+                <div class="col-md-2">
+                  <button asp-action="DownloadArchive" asp-route-idPost="@Model.Post.Id" class="btn btn-success">Download do arquivo</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Novo arquivo:</label>
+                <div class="col-md-2">
+                  <input id="file" type="file" name="binarydata" accept="application/pdf">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Tipo de arquivo: </label>
+                <div class="col-md-3">
+                  <label class="radio">
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type" })
+                    Documento
+                  </label>
+                  <label class="radio">
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M", new { @class = "archive-type" })
+                    Manual
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Assunto:</label>
+                <div class="col-md-10">
+                  <input class="form-control" id="subject" type="text" name="subject" asp-for="@Model.Post.Subject" value="@Model.Post.Subject">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Palavras chave:</label>
+                <div class="col-md-10">
+                  <input class="tags" id="keywords" type="text" name="keywords" asp-for="@Model.Post.Keywords" value="@Model.Post.Keywords">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Descrição:</label>
+                <div class="col-md-10">
+                  <textarea class="form-control" rows="3" cols="5">@Model.Post.Description</textarea>
+                </div>
+              </div>
+              <div class="form-actions">
+              </div>
+            </form>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+<script type="text/javascript" src="~/js/archivepostedit.js"></script>

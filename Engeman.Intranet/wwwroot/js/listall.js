@@ -65,7 +65,7 @@ $(document).ready(function () {
         if (action == "details") {
           postDetails(idPost, postType);
         } else if (action == "edit") {
-          confirmSessionUser(userIdPost, idPost, action);
+          confirmSessionUser(userIdPost, idPost, postType, action);
         } else if (action == "delete") {
           confirmSessionUser(userIdPost, idPost, action);
           elementAux = element;
@@ -134,6 +134,23 @@ function postEdit(idPost) {
   })
 }
 
+function archivePostEdit(idPost) {
+  $.ajax({
+    type: "POST",
+    data: { "idPost": idPost },
+    dataType: "html",
+    url: "/posts/archivepostedit",
+    error: function () {
+      toastr.error("Não foi possível editar a postagem", "Erro!");
+    },
+    success: function (response) {
+      $("#question-details").empty();
+      $("#question-details").html(response);
+    }
+  })
+}
+
+
 function postDelete(idElement, element) {
   $.ajax({
     type: "DELETE",
@@ -158,7 +175,7 @@ function postDelete(idElement, element) {
   });
 }
 
-function confirmSessionUser(userIdPost, idPost, action) {
+function confirmSessionUser(userIdPost, idPost, postType, action) {
   $.ajax({
     type: "GET",
     data: {
@@ -178,7 +195,11 @@ function confirmSessionUser(userIdPost, idPost, action) {
         if (action == "delete") {
           $("#confirm-modal").modal("toggle");
         } else if (action == "edit") {
-          postEdit(idPost);
+          if (postType === "Q") {
+            postEdit(idPost);
+          } else if (postType === "A") {
+            archivePostEdit(idPost);
+          }
         }
       }
     }
