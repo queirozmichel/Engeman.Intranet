@@ -67,7 +67,7 @@ $(document).ready(function () {
         } else if (action == "edit") {
           confirmSessionUser(userIdPost, idPost, postType, action);
         } else if (action == "delete") {
-          confirmSessionUser(userIdPost, idPost, action);
+          confirmSessionUser(userIdPost, idPost, postType, action);
           elementAux = element;
           idPostAux = idPost;
         }

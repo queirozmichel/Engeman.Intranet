@@ -81,7 +81,7 @@ namespace Engeman.Intranet.Repositories
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = 
+        var query =
           $"SELECT " +
           $"* " +
           $"FROM ENGEMANINTRANET.POST " +
@@ -146,5 +146,25 @@ namespace Engeman.Intranet.Repositories
         sq.ExecuteCommand(query);
       }
     }
+
+    public void UpdateArchivePost(int id, AskQuestionDto askQuestionDto, Archive archive)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        UpdateQuestion(id, askQuestionDto);
+
+        string[] paramters = { "BinaryData;byte" };
+        Object[] values = { archive.BinaryData };
+
+        var query =
+        $"UPDATE " +
+        $"ENGEMANINTRANET.ARCHIVE " +
+        $"SET ARCHIVE_TYPE = '{archive.ArchiveType}', NAME = '{archive.Name}', DESCRIPTION = '{askQuestionDto.Description}', " +
+        $"BINARY_DATA = Convert(VARBINARY(MAX),@BinaryData) " +
+        $"WHERE POST_ID = {id}";
+
+        sq.ExecuteCommand(query, paramters, values);
+      }
+    }    
   }
 }

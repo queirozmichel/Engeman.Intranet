@@ -150,6 +150,57 @@ namespace Engeman.Intranet.Controllers
       return PartialView("ListAll");
     }
 
+    [HttpPost]
+    public ActionResult UpdateArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
+    {
+      bool statusPost = true;
+      bool statusArchive = false;
+      bool finalStatus = false;
+
+      AskQuestionDto askQuestionDto = new AskQuestionDto();
+      Archive archive = new Archive();
+
+      askQuestionDto.Restricted = postArchiveDto.Post.Restricted;
+      askQuestionDto.Subject = postArchiveDto.Post.Subject;
+      askQuestionDto.Description = postArchiveDto.Post.Description;
+      askQuestionDto.CleanDescription = askQuestionDto.Description;
+      askQuestionDto.Keywords = postArchiveDto.Post.Keywords;
+      archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
+      archive.Description = postArchiveDto.Post.Description;
+
+      if (binaryData.Count != 0)
+      {
+        foreach (var item in binaryData)
+        {
+          if (item.Length > 0)
+          {
+            using (var stream = new MemoryStream())
+            {
+              item.CopyTo(stream);
+              archive.BinaryData = stream.ToArray();
+            }
+          }
+        }
+        archive.Name = binaryData[0].FileName;
+        statusArchive = true;
+      }
+      else
+      {
+        var aux = _archiveRepository.GetArchiveByPostId(postArchiveDto.Post.Id);
+        archive.BinaryData = aux.BinaryData;
+        archive.Name = aux.Name;
+        statusArchive = true;
+      }
+
+      if (statusArchive == true & statusPost == true)
+      {
+        _postRepository.UpdateArchivePost(postArchiveDto.Post.Id, askQuestionDto, archive);
+        finalStatus = true;
+      }
+
+      return PartialView("ListAll");
+    }
+
     public void RemovePost(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
@@ -202,7 +253,7 @@ namespace Engeman.Intranet.Controllers
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
-      ViewBag.Archive = archive;      
+      ViewBag.Archive = archive;
 
       return PartialView(archive);
     }
@@ -213,7 +264,7 @@ namespace Engeman.Intranet.Controllers
       bool statusPost = true;
       bool statusArchive = false;
       bool status = false;
-      
+
       AskQuestionDto askQuestionDto = new AskQuestionDto();
       Archive archive = new Archive();
 
@@ -253,7 +304,7 @@ namespace Engeman.Intranet.Controllers
 
       if (statusArchive == true & statusPost == true)
       {
-        _postRepository.AddArchive(askQuestionDto,archive);
+        _postRepository.AddArchive(askQuestionDto, archive);
         status = true;
       }
 

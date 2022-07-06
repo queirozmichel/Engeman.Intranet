@@ -69,18 +69,18 @@
             <h4><i class="icon-reorder"></i> Arquivo</h4>
           </div>
           <div class="widget-content">
-            <form class="form-horizontal row-border" id="archive-edit-post-form" method="post">
+            <form class="form-horizontal row-border" id="archive-post-edit-form" method="post">
               <div class="form-group">
                 <label class="col-md-2 control-label">Id:</label>
                 <div class="col-md-1">
-                  <input class="form-control" type="text" readonly value="@Model.Post.Id" />
+                  <input class="form-control" name="post.id" type="text" readonly value="@Model.Post.Id" />
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrita ao setor?</label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
-                    <input id="restricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
+                    <input id="restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
                   </div>
                 </div>
               </div>
@@ -88,9 +88,6 @@
                 <label class="col-md-2 control-label">Arquivo atual:</label>
                 <div class="col-md-5">
                   <input class="form-control" readonly type="text" value="@Model.Archive.Name">
-                </div>
-                <div class="col-md-2">
-                  <button asp-action="DownloadArchive" asp-route-idPost="@Model.Post.Id" class="btn btn-success">Download do arquivo</button>
                 </div>
               </div>
               <div class="form-group">
@@ -115,22 +112,23 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto:</label>
                 <div class="col-md-10">
-                  <input class="form-control" id="subject" type="text" name="subject" asp-for="@Model.Post.Subject" value="@Model.Post.Subject">
+                  <input class="form-control" id="subject" type="text" name="post.subject" asp-for="@Model.Post.Subject" value="@Model.Post.Subject">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave:</label>
                 <div class="col-md-10">
-                  <input class="tags" id="keywords" type="text" name="keywords" asp-for="@Model.Post.Keywords" value="@Model.Post.Keywords">
+                  <input class="tags" id="keywords" type="text" name="post.keywords" asp-for="@Model.Post.Keywords" value="@Model.Post.Keywords">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Descrição:</label>
                 <div class="col-md-10">
-                  <textarea class="form-control" rows="3" cols="5">@Model.Post.Description</textarea>
+                  <textarea class="form-control" name="post.description" rows="3" cols="5">@Model.Post.Description</textarea>
                 </div>
               </div>
               <div class="form-actions">
+                <input class="btn btn-primary pull-right" id="submit-button" type="submit" value="Salvar">
               </div>
             </form>
           </div>
