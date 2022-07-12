@@ -1,102 +1,56 @@
-﻿@*@model CredentialsDto*@
-
+﻿@model Engeman.Intranet.Models.LoginViewModel;
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@ViewData["Title"] Login</title>
-
-  <!--=== CSS ===-->
-  <!-- Bootstrap -->
-  <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
-  <!-- Theme -->
-  <link href="~/css/main.css" rel="stylesheet" type="text/css" />
-  <link href="~/css/plugins.css" rel="stylesheet" type="text/css" />
-  <link href="~/css/responsive.css" rel="stylesheet" type="text/css" />
-  <link href="~/css/icons.css" rel="stylesheet" type="text/css" />
-
-  <!-- Login -->
-  <link href="~/css/login.css" rel="stylesheet" type="text/css" />
-
-  <link rel="stylesheet" href="~/css/fontawesome/font-awesome.min.css">
-  <!--[if IE 7]>
-      <link rel="stylesheet" href="assets/css/fontawesome/font-awesome-ie7.min.css">
-  <![endif]-->
-  <!--[if IE 8]>
-      <link href="assets/css/ie8.css" rel="stylesheet" type="text/css" />
-  <![endif]-->
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-
-  <!--=== JavaScript ===-->
-
-  <script type="text/javascript" src="~/js/libs/jquery-1.10.2.min.js"></script>
-
-  <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="~/js/libs/lodash.compat.min.js"></script>
-
-  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-  <!--[if lt IE 9]>
-      <script src="assets/js/libs/html5shiv.js"></script>
-  <![endif]-->
-  <!-- Beautiful Checkboxes -->
-  <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script>
-
-  <!-- Form Validation -->
-  <script type="text/javascript" src="~/plugins/validation/jquery.validate.min.js"></script>
-
-  <!-- Slim Progress Bars -->
-  <script type="text/javascript" src="~/plugins/nprogress/nprogress.js"></script>
-
-  <!-- App -->
+  <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" /> @*Bootstrap.css*@
+  <link href="~/css/main.css" rel="stylesheet" type="text/css" /> @*Tema*@
+  <link href="~/css/plugins.css" rel="stylesheet" type="text/css" /> @*Tema*@
+  <link href="~/css/responsive.css" rel="stylesheet" type="text/css" /> @*Tema*@
+  <link href="~/css/icons.css" rel="stylesheet" type="text/css" /> @*Tema*@
+  <link href="~/css/login.css" rel="stylesheet" type="text/css" /> @*CSS*@
+  <link rel="stylesheet" href="~/css/fontawesome/font-awesome.min.css"> @*Font-Awesome*@
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'> @*Fonte do Google*@
+  <script type="text/javascript" src="~/js/libs/jquery-2.2.5.min.js"></script> @*Jquery*@
+  <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.min.js"></script> @*Bootstrap.js*@
+  <script type="text/javascript" src="~/js/libs/lodash.compat.min.js"></script> @*Lodash*@
+  <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script> @*Checkboxes estilizados*@
+  <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script> @*Validação do formulário*@
+  <script type="text/javascript" src="~/plugins/nprogress/nprogress.js"></script> @*Barra de progresso*@
   <script type="text/javascript" src="~/js/login.js"></script>
-  <script>
-    $(document).ready(function () {
-      "use strict";
-
-      Login.init(); // Init login JavaScript
-    });
-  </script>
 </head>
 
 <body style="padding-right: 0px !important; margin-right: 0px !important;" class="login">
-  <!-- Logo -->
   <div class="logo">
-    <img src="~/images/logo.png" alt="logo" />
-    <strong>ME</strong>LON
+    @*<img src="~/images/logo.png" alt="logo" />*@
+    <strong>ENGEMAN </strong>INTRANET
   </div>
-  <!-- /Logo -->
-  <!-- Login Box -->
   <div class="box">
     <div class="content">
-      <!-- Login Formular -->
-      <form asp-controller="login" asp-action="tryLogin" class="form-vertical" method="post">
-        @*Para validar = class="form-vertical login-form"*@
-        <!-- Title -->
+      <form asp-controller="login" asp-action="tryLogin" class="form-vertical login-form" method="post">
+        @Html.AntiForgeryToken()
         <h3 class="form-title">Faça login em sua conta</h3>
-
-        <!-- Error Message -->
+        @*Mensagem de erro*@
         <div class="alert fade in alert-danger" style="display: none;">
           <i class="icon-remove close" data-dismiss="alert"></i>
-          Enter any username and password.
+          Insira a conta de domínio e a senha.
         </div>
-
-        <!-- Input Fields -->
         <div class="form-group">
-          <!--<label for="username">Username:</label>-->
           <div class="input-icon">
             <i class="icon-user"></i>
-            <input type="text" name="domainUsername" class="form-control" placeholder="Usuário de domínio" autofocus="autofocus" data-rule-required="true" data-msg-required="Informe o nome de usuário de domínio." />
+            <input type="text" name="DomainAccount" class="form-control" placeholder="Conta de domínio" autofocus="autofocus"
+                   data-rule-required="true" data-msg-required="Informe a conta de domínio." maxlength="25" />
           </div>
         </div>
         <div class="form-group">
-          <!--<label for="password">Password:</label>-->
           <div class="input-icon">
             <i class="icon-lock"></i>
-            <input type="password" name="password" class="form-control" placeholder="Senha" data-rule-required="true" data-msg-required="Informe a sua senha." />
+            <input type="password" name="Password" class="form-control" placeholder="Senha" data-rule-required="true"
+                   data-msg-required="Informe a sua senha." maxlength="25" />
           </div>
         </div>
-        <!-- /Input Fields -->
-        <!-- Form Actions -->
         <div class="form-actions">
           <label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Lembrar de mim</label>
           <button type="submit" class="submit btn btn-primary pull-right">
@@ -104,135 +58,108 @@
           </button>
         </div>
       </form>
-      <!-- /Login Formular -->
-      <!-- Register Formular (hidden by default) -->
-      <form class="form-vertical register-form" method="post" style="display: none;">
-        <!-- Title -->
-        <h3 class="form-title">Sign Up for Free</h3>
 
-        <!-- Input Fields -->
+      <!-- Formulário de registro (oculto por padrão) -->
+      <form class="form-vertical register-form" method="post" style="display: none;">
+        <h3 class="form-title">Novo registro</h3>
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-user"></i>
-            <input type="text" name="username" class="form-control" placeholder="Username" autofocus="autofocus" data-rule-required="true" />
+            <input type="text" name="username" class="form-control" placeholder="Conta de domínio" autofocus="autofocus" data-rule-required="true" />
           </div>
         </div>
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-lock"></i>
-            <input type="password" name="password" class="form-control" placeholder="Password" id="register_password" data-rule-required="true" />
+            <input type="password" name="password" class="form-control" placeholder="Senha" id="register_password" data-rule-required="true" />
           </div>
         </div>
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-ok"></i>
-            <input type="password" name="password_confirm" class="form-control" placeholder="Confirm Password" data-rule-required="true" data-rule-equalTo="#register_password" />
+            <input type="password" name="password_confirm" class="form-control" placeholder="Confirmar senha"
+                   data-rule-required="true" data-rule-equalTo="#register_password" />
           </div>
         </div>
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-envelope"></i>
-            <input type="text" name="Email" class="form-control" placeholder="Email address" data-rule-required="true" data-rule-email="true" />
+            <input type="text" name="Email" class="form-control" placeholder="Endereço de email" data-rule-required="true" data-rule-email="true" />
           </div>
         </div>
         <div class="form-group spacing-top">
-          <label class="checkbox"><input type="checkbox" class="uniform" name="remember" data-rule-required="true" data-msg-required="Please accept ToS first."> I agree to the <a href="javascript:void(0);">Terms of Service</a></label>
+          <label class="checkbox">
+            <input type="checkbox" class="uniform" name="remember" data-rule-required="true"
+                   data-msg-required="Por favor, concorde com os termos."> Eu concordo com os <a href="javascript:void(0);">Termos de Serviço</a>
+          </label>
           <label for="remember" class="has-error help-block" generated="true" style="display:none;"></label>
         </div>
-        <!-- /Input Fields -->
-        <!-- Form Actions -->
         <div class="form-actions">
           <button type="button" class="back btn btn-default pull-left">
-            <i class="icon-angle-left"></i> Back</i>
+            <i class="icon-angle-left"></i> Voltar
           </button>
           <button type="submit" class="submit btn btn-primary pull-right">
-            Sign Up <i class="icon-angle-right"></i>
+            Cadastrar <i class="icon-angle-right"></i>
           </button>
         </div>
       </form>
-      <!-- /Register Formular -->
-    </div> <!-- /.content -->
-    <!-- Forgot Password Form -->
+    </div>
+
+    <!-- Formulário de senha esquecida -->
     <div class="inner-box">
       <div class="content">
-        <!-- Close Button -->
         <i class="icon-remove close hide-default"></i>
-
-        <!-- Link as Toggle Button -->
         <a href="#" class="forgot-password-link">Esqueceu a senha?</a>
-
-        <!-- Forgot Password Formular -->
         <form class="form-vertical forgot-password-form hide-default" action="login.html" method="post">
-          <!-- Input Fields -->
           <div class="form-group">
-            <!--<label for="email">Email:</label>-->
             <div class="input-icon">
               <i class="icon-envelope"></i>
-              <input type="text" name="email" class="form-control" placeholder="Enter email address" data-rule-required="true" data-rule-email="true" data-msg-required="Please enter your email." />
+              <input type="text" name="email" class="form-control" placeholder="Endereço de email"
+                     data-rule-required="true" data-rule-email="true" data-msg-required="Por favor, insira um endereço de email." />
             </div>
           </div>
-          <!-- /Input Fields -->
-
           <button type="submit" class="submit btn btn-default btn-block">
-            Reset your Password
+            Modificar senha
           </button>
         </form>
-        <!-- /Forgot Password Formular -->
-        <!-- Shows up if reset-button was clicked -->
+        <!-- Mostra se clicar em "Modificar senha" -->
         <div class="forgot-password-done hide-default">
-          <i class="icon-ok success-icon"></i> <!-- Error-Alternative: <i class="icon-remove danger-icon"></i> -->
-          <span>Great. We have sent you an email.</span>
+          <i class="icon-ok success-icon"></i> <!-- Mostrar um erro ao não conseguir enviar o email: <i class="icon-remove danger-icon"></i> -->
+          <span>Email enviado com sucesso!</span>
         </div>
-      </div> <!-- /.content -->
+      </div>
     </div>
-    <!-- /Forgot Password Form -->
   </div>
-  <!-- /Login Box -->
-  <!-- Single-Sign-On (SSO) -->
+
+  <!-- Formulário de cadastro caso clique em "Cadastre-se" -->
   <div class="single-sign-on">
     <span>OU</span>
-
     <button class="btn btn-facebook btn-block">
       <i class="icon-facebook"></i> Entre com o Facebook
     </button>
-
     <button class="btn btn-twitter btn-block">
       <i class="icon-twitter"></i> Entre com o Twitter
     </button>
-
     <button class="btn btn-google-plus btn-block">
       <i class="icon-google-plus"></i> Entre com o Google
     </button>
   </div>
-  <!-- /Single-Sign-On (SSO) -->
-  <!-- Footer -->
   <div class="footer">
     <a href="#" class="sign-up">Não tem uma conta ainda? <strong>Cadastre-se</strong></a>
   </div>
-  <!-- /Footer -->
-
-
-
   @if (TempData["Message"] != null)
   {
-    <div style="overflow: hidden;" class="modal fade" id="myModal" aria-hidden="true">
+    <div style="overflow: hidden;" class="modal fade" id="modal-login" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 style="text-align: center;" class="modal-title" id="exampleModalLabel">@Html.TempData["Message"]</h5>
           </div>
-          @*<div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-            </div>*@
         </div>
       </div>
     </div>
   }
-
-  <script>
-    $(window).load(function () {
-      $('#myModal').modal('show');
-    });
-  </script>
-
 </body>
+
+</html>
+

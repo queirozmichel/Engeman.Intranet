@@ -32,37 +32,47 @@ namespace Engeman.Intranet.Controllers
 
     [HttpPost]
     [SupportedOSPlatform("windows")]
-    public async Task<IActionResult> TryLogin(string domainUsername, string password)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> TryLogin(LoginViewModel loginViewModel)
     {
-      //try
-      //{
-      //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], domainUsername, password);
-      //  Object obj = entry.NativeObject;
-      //} catch (COMException ex)
-      //{
-      //  TempData["Message"] = ex.Message;
-      //  return RedirectToAction("index", "login");
-      //}
-
-      if (_userAccountRepository.UserAccountValidate(domainUsername) == false)
+      if (!ModelState.IsValid)
       {
-        TempData["Message"] = "Usuário não cadastrado ou bloqueado.";
-        return RedirectToAction("index", "login");
+        return RedirectToAction("Error");
       }
       else
       {
-        var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(domainUsername);
-        var claims = new List<Claim>();
-        claims.Add(new Claim(ClaimTypes.Name, domainUsername));
-        var userIdentity = new ClaimsIdentity(claims, "Access");
-        ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
-        await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
+        //try
+        //{
+        //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.DomainAccount, loginViewModel.Password);
+        //  Object obj = entry.NativeObject;
+        //}
+        //catch (COMException ex)
+        //{
+        //  TempData["Message"] = ex.Message;
+        //  return RedirectToAction("index", "login");
+        //}
 
-        HttpContext.Session.SetString("_Id", userAccount.Id.ToString());
-        HttpContext.Session.SetString("_DomainUsername", domainUsername.ToString());
-        HttpContext.Session.SetString("_Password", password.ToString());
-        return RedirectToAction("index", "dashboard");
+        if (_userAccountRepository.UserAccountValidate(loginViewModel.DomainAccount) == false)
+        {
+          TempData["Message"] = "Usuário não cadastrado ou bloqueado.";
+          return RedirectToAction("index", "login");
+        }
+        else
+        {
+          var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(loginViewModel.DomainAccount);
+          var claims = new List<Claim>();
+          claims.Add(new Claim(ClaimTypes.Name, loginViewModel.DomainAccount));
+          var userIdentity = new ClaimsIdentity(claims, "Access");
+          ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
+          await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
+
+          HttpContext.Session.SetString("_Id", userAccount.Id.ToString());
+          HttpContext.Session.SetString("_DomainUsername", loginViewModel.DomainAccount.ToString());
+          HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());
+          return RedirectToAction("index", "dashboard");
+        }
       }
+      
     }
     public async Task<IActionResult> Logout()
     {

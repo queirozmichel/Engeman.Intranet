@@ -1,3 +1,9 @@
+$(document).ready(function () {
+  "use strict";
+  Login.init(); // Init this login JavaScript
+  $("#modal-login").modal("show");
+});
+
 /*
  * Core script to handle all login specific things
  */
@@ -156,14 +162,6 @@ var Login = function() {
 					$('.login-form .alert-danger').show();
 					NProgress.done(); // Demo Purpose Only!
 				},
-
-				submitHandler: function (form) {
-					// This is just example code for the live preview
-					//
-					// In reality, you want to remove this submitHandler
-					// to use the native browser submitting
-					window.location.href = "index.html";
-				}
 			});
 		}
 	}
@@ -210,7 +208,7 @@ var Login = function() {
 					window.location.href = "index.html";
 
 					// Maybe you want here something like:
-					// $(form).submit();
+					 //$(form).submit();
 				}
 			});
 		}
