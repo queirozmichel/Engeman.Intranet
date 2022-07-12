@@ -29,7 +29,38 @@
   </div>
   <div class="box">
     <div class="content">
-      <form asp-controller="login" asp-action="tryLogin" class="form-vertical login-form" method="post">
+      @*<form asp-controller="login" asp-action="tryLogin" class="form-vertical login-form" method="post">
+          @Html.AntiForgeryToken()
+          <h3 class="form-title">Faça login em sua conta</h3>
+          Mensagem de erro
+          <div class="alert fade in alert-danger" style="display: none;">
+            <i class="icon-remove close" data-dismiss="alert"></i>
+            Insira a conta de domínio e a senha.
+          </div>
+          <div class="form-group">
+            <div class="input-icon">
+              <i class="icon-user"></i>
+              <input type="text" name="DomainAccount" class="form-control" placeholder="Conta de domínio" autofocus="autofocus"
+                     data-rule-required="true" data-msg-required="Informe a conta de domínio." maxlength="25" />
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="input-icon">
+              <i class="icon-lock"></i>
+              <input type="password" name="Password" class="form-control" placeholder="Senha" data-rule-required="true"
+                     data-msg-required="Informe a sua senha." maxlength="25" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Lembrar de mim</label>
+            <button type="submit" class="submit btn btn-primary pull-right">
+              Entrar <i class="icon-angle-right"></i>
+            </button>
+          </div>
+        </form>*@
+
+     @using (Html.BeginForm("trylogin", "login", FormMethod.Post, new { @class = "form-vertical login-form" }))
+      {
         @Html.AntiForgeryToken()
         <h3 class="form-title">Faça login em sua conta</h3>
         @*Mensagem de erro*@
@@ -40,15 +71,28 @@
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-user"></i>
-            <input type="text" name="DomainAccount" class="form-control" placeholder="Conta de domínio" autofocus="autofocus"
-                   data-rule-required="true" data-msg-required="Informe a conta de domínio." maxlength="25" />
+            @Html.TextBoxFor(loginModel => loginModel.DomainAccount, new
+            {
+              @class = "form-control",
+              placeholder = "Conta de domínio",
+              autofocus = "autofocus",
+              maxlength = "25",
+              data_rule_required = "true",
+              data_msg_required = "Informe a conta de domínio"
+            })
           </div>
         </div>
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-lock"></i>
-            <input type="password" name="Password" class="form-control" placeholder="Senha" data-rule-required="true"
-                   data-msg-required="Informe a sua senha." maxlength="25" />
+            @Html.PasswordFor(loginModel => loginModel.Password, new
+             {
+               @class = "form-control",
+               placeholder = "Senha",
+               maxlength = "25",
+               data_rule_required = "true",
+               data_msg_required = "Informe a sua senha."
+             })
           </div>
         </div>
         <div class="form-actions">
@@ -57,7 +101,7 @@
             Entrar <i class="icon-angle-right"></i>
           </button>
         </div>
-      </form>
+      }
 
       <!-- Formulário de registro (oculto por padrão) -->
       <form class="form-vertical register-form" method="post" style="display: none;">
@@ -77,8 +121,7 @@
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-ok"></i>
-            <input type="password" name="password_confirm" class="form-control" placeholder="Confirmar senha"
-                   data-rule-required="true" data-rule-equalTo="#register_password" />
+            <input type="password" name="password_confirm" class="form-control" placeholder="Confirmar senha" data-rule-required="true" data-rule-equalTo="#register_password" />
           </div>
         </div>
         <div class="form-group">
@@ -89,8 +132,7 @@
         </div>
         <div class="form-group spacing-top">
           <label class="checkbox">
-            <input type="checkbox" class="uniform" name="remember" data-rule-required="true"
-                   data-msg-required="Por favor, concorde com os termos."> Eu concordo com os <a href="javascript:void(0);">Termos de Serviço</a>
+            <input type="checkbox" class="uniform" name="remember" data-rule-required="true" data-msg-required="Por favor, concorde com os termos."> Eu concordo com os <a href="javascript:void(0);">Termos de Serviço</a>
           </label>
           <label for="remember" class="has-error help-block" generated="true" style="display:none;"></label>
         </div>
@@ -114,8 +156,7 @@
           <div class="form-group">
             <div class="input-icon">
               <i class="icon-envelope"></i>
-              <input type="text" name="email" class="form-control" placeholder="Endereço de email"
-                     data-rule-required="true" data-rule-email="true" data-msg-required="Por favor, insira um endereço de email." />
+              <input type="text" name="email" class="form-control" placeholder="Endereço de email" data-rule-required="true" data-rule-email="true" data-msg-required="Por favor, insira um endereço de email." />
             </div>
           </div>
           <button type="submit" class="submit btn btn-default btn-block">

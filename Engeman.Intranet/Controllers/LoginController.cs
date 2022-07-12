@@ -72,7 +72,6 @@ namespace Engeman.Intranet.Controllers
           return RedirectToAction("index", "dashboard");
         }
       }
-      
     }
     public async Task<IActionResult> Logout()
     {
