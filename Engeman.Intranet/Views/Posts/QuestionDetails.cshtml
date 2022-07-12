@@ -3,9 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <script type="text/javascript" src="~/plugins/typeahead/typeahead.min.js"></script> <!-- AutoComplete -->
   <script type="text/javascript" src="~/plugins/autosize/jquery.autosize.min.js"></script>
   <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
@@ -20,10 +18,8 @@
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
-
   <!-- Demo JS -->
   <script type="text/javascript" src="~/js/custom.js"></script>
-
 </head>
 
 <body>
@@ -31,10 +27,9 @@
     <!--=== Page Header ===-->
     <div class="page-header">
       <div class="page-title">
-        <h3>Detalhes da Pergunta</h3>
+        <h3>Detalhes da Postagem</h3>
         <span>Good morning, John!</span>
       </div>
-
       <!-- Page Stats -->
       <ul class="page-stats">
         <li>
@@ -60,85 +55,99 @@
     <!-- /Page Header -->
     <!--=== Page Content ===-->
     <div class="row">
-      <!--=== Horizontal Forms ===-->
       <div class="col-md-12">
-        <div class="widget box">
-          <div class="widget-header">
-            <h4><i class="icon-reorder"></i> Pergunta</h4>
-          </div>
-          <div class="widget-content">
-            <form class="form-horizontal row-border" id="ask-form" method="post">
-              <div class="form-group">
-                <label class="col-md-2 control-label">Id:</label>
-                <div class="col-md-1">
-                  <input id="id-post" class="form-control" name="idPost" type="text" readonly value="@ViewBag.Post.Id" />
+        <!-- Tabs-->
+        <div class="tabbable tabbable-custom">
+          <ul class="nav nav-tabs">
+            <li class="active">
+              <a href="#tab_1_1" data-toggle="tab"><h5>Postagem</h5></a>
+            </li>
+            <li><a href="#tab_1_2" data-toggle="tab"><h5>Autor</h5></a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab_1_1">
+              <div class="widget box">
+                <div class="widget-header">
+                  <h4><i class="icon-reorder"></i> Pergunta</h4>
+                </div>
+                <div class="widget-content">
+                  <form class="form-horizontal row-border" id="ask-form" method="post">
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Id:</label>
+                      <div class="col-md-1">
+                        <input id="id-post" class="form-control" name="idPost" type="text" readonly value="@ViewBag.Post.Id" />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Data e hora:</label>
+                      <div class="col-md-2">
+                        <input class="form-control" id="data-post" type="text" name="changeDate" value="@ViewBag.Post.ChangeDate" readonly>
+                      </div>
+
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Assunto:</label>
+                      <div class="col-md-10">
+                        <input readonly class="form-control" id="subject" type="text" name="subject" value="@ViewBag.Post.Subject">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Pergunta:</label>
+                      <div class="col-md-10">
+                        <textarea class="form-control" id="description" rows="3" cols="5" name="description" readonly>@ViewBag.Post.Description</textarea>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                    </div>
+                  </form>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Data e hora:</label>
-                <div class="col-md-2">
-                  <input class="form-control" id="data-post" type="text" name="changeDate" value="@ViewBag.Post.ChangeDate" readonly>
+            </div>
+            <div class="tab-pane" id="tab_1_2">
+              <div class="widget box">
+                <div class="widget-header">
+                  <h4><i class="icon-reorder"></i> Autor da postagem</h4>
                 </div>
- 
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Assunto:</label>
-                <div class="col-md-10">
-                  <input readonly class="form-control" id="subject"  type="text" name="subject" value="@ViewBag.Post.Subject">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Pergunta:</label>
-                <div class="col-md-10">
-                  <textarea class="form-control" id="description" rows="3" cols="5" name="description" readonly>@ViewBag.Post.Description</textarea>
-                </div>
-              </div>
-              <div class="form-actions">
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="widget box">
-          <div class="widget-header">
-            <h4><i class="icon-reorder"></i> Responsável pela pergunta</h4>
-          </div>
-          <div class="widget-content">
-            <form class="form-horizontal row-border" id="ask-form" method="post">
-              <div class="form-group">
-                <label class="col-md-2 control-label">Id:</label>
-                <div class="col-md-1">
-                  <input id="id-user-account" class="form-control" name="idUserAccount" type="text" value="@ViewBag.Post.UserAccountId" readonly />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Nome de usuário:</label>
-                <div class="col-md-2">
-                  <input id="name-user-account" class="form-control" name="nameUserAccount" type="text" value="@ViewBag.UserAccount.Name" readonly />
-                </div>
-                <label class="col-md-2 control-label">Usuário de domínio:</label>
-                <div class="col-md-2">
-                  <input id="domain-user-account" class="form-control" name="domainUserAccount" type="text" value="@ViewBag.UserAccount.DomainAccount" readonly />
-                </div>
-                <label class="col-md-1 control-label">Email:</label>
-                <div class="col-md-3">
-                  <input readonly class="form-control" id="email-user-account" type="text" name="emailUserAccount" value="@ViewBag.UserAccount.Email">
-                </div>                
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Setor:</label>
-                <div class="col-md-3">
-                  <input id="department-user" class="form-control" name="departmentUserAccount" type="text" value="@ViewBag.Department.Description" readonly />
+                <div class="widget-content">
+                  <form class="form-horizontal row-border" id="ask-form" method="post">
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Id:</label>
+                      <div class="col-md-1">
+                        <input id="id-user-account" class="form-control" name="idUserAccount" type="text" value="@ViewBag.Post.UserAccountId" readonly />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Nome de usuário:</label>
+                      <div class="col-md-2">
+                        <input id="name-user-account" class="form-control" name="nameUserAccount" type="text" value="@ViewBag.UserAccount.Name" readonly />
+                      </div>
+                      <label class="col-md-2 control-label">Usuário de domínio:</label>
+                      <div class="col-md-2">
+                        <input id="domain-user-account" class="form-control" name="domainUserAccount" type="text" value="@ViewBag.UserAccount.DomainAccount" readonly />
+                      </div>
+                      <label class="col-md-1 control-label">Email:</label>
+                      <div class="col-md-3">
+                        <input readonly class="form-control" id="email-user-account" type="text" name="emailUserAccount" value="@ViewBag.UserAccount.Email">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Setor:</label>
+                      <div class="col-md-3">
+                        <input id="department-user" class="form-control" name="departmentUserAccount" type="text" value="@ViewBag.Department.Description" readonly />
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Autodescrição:</label>
+                      <div class="col-md-10">
+                        <textarea class="form-control" id="description-user-account" rows="3" cols="5" name="descriptionUserAccount" readonly>@ViewBag.UserAccount.Description</textarea>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                    </div>
+                  </form>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Autodescrição:</label>
-                <div class="col-md-10">
-                  <textarea class="form-control" id="description-user-account" rows="3" cols="5" name="descriptionUserAccount" readonly>@ViewBag.UserAccount.Description</textarea>
-                </div>
-              </div>
-              <div class="form-actions">
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
