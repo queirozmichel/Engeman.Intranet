@@ -279,7 +279,7 @@
     },
 
     messages: {
-      required: "Este campo é obrigatório.",
+      required: "Campo obrigatório",
       remote: "Please fix this field.",
       email: "Por favor, insira um email válido.",
       url: "Please enter a valid URL.",

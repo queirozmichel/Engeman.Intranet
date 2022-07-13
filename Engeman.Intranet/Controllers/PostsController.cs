@@ -99,6 +99,10 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult SaveQuestion(AskQuestionDto askQuestionDto)
     {
+      if (!ModelState.IsValid)
+      {
+        return Json(0);
+      }
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
       askQuestionDto.UserAccountId = userAccount.Id;
@@ -261,9 +265,10 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public ActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
     {
-      bool statusPost = true;
-      bool statusArchive = false;
-      bool status = false;
+      if (!ModelState.IsValid || binaryData.Count == 0)
+      {
+        return Json(0);
+      }
 
       AskQuestionDto askQuestionDto = new AskQuestionDto();
       Archive archive = new Archive();
@@ -280,35 +285,27 @@ namespace Engeman.Intranet.Controllers
       askQuestionDto.DomainAccount = sessionDomainUsername;
       askQuestionDto.DepartmentId = userAccount.DepartmentId;
       askQuestionDto.PostType = 'A';
+      archive.Active = 'S';
+      archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
+      archive.Name = binaryData[0].FileName;
+      archive.Description = postArchiveDto.Post.Description;
+      archive.PostId = 0;
 
-      if (binaryData.Count != 0)
+      foreach (var item in binaryData)
       {
-        foreach (var item in binaryData)
+        if (item.Length > 0)
         {
-          if (item.Length > 0)
+          using (var stream = new MemoryStream())
           {
-            using (var stream = new MemoryStream())
-            {
-              item.CopyTo(stream);
-              archive.BinaryData = stream.ToArray();
-            }
+            item.CopyTo(stream);
+            archive.BinaryData = stream.ToArray();
           }
         }
-        archive.Active = 'S';
-        archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
-        archive.Name = binaryData[0].FileName;
-        archive.Description = postArchiveDto.Post.Description;
-        archive.PostId = 0;
-        statusArchive = true;
       }
 
-      if (statusArchive == true & statusPost == true)
-      {
-        _postRepository.AddArchive(askQuestionDto, archive);
-        status = true;
-      }
+      _postRepository.AddArchive(askQuestionDto, archive);
 
-      return Json(status);
+      return View("InsertArchive");
     }
   }
 }

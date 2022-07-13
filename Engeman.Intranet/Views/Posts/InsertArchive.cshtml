@@ -22,6 +22,7 @@
   <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
   <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.js"></script>
+  <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
 
   <!-- Demo JS -->
   <script type="text/javascript" src="~/js/custom.js"></script>
@@ -73,36 +74,38 @@
           <div class="widget-content">
             <form class="form-horizontal row-border" id="archive-form" method="post" enctype="multipart/form-data">
               <div class="form-group">
-                <label class="col-md-2 control-label">Restrito ao setor?</label>
+                <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
-                    <input id="post-restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
+                    <input id="post-restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle required" />
                   </div>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Anexar arquivo:</label>
+                <label class="col-md-2 control-label">Anexar arquivo<span class="required">*</span></label>
                 <div class="col-md-2">
-                  <input id="file" type="file" name="binarydata" accept="application/pdf">
-                </div>
+                  <input class="required" id="file" type="file" name="binarydata" accept="application/pdf">
+                </div>          
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Tipo de arquivo: </label>
+                <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
                 <div class="col-md-3">
                   <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type" })
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type required" })
                     Documento
                   </label>
                   <label class="radio">
                     @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M", new { @class = "archive-type" })
                     Manual
                   </label>
+                  <label for="Archive.ArchiveType" class="has-error help-block" generated="true"
+                         style="display:none;"></label>
                 </div>
-              </div>
+              </div>              
               <div class="form-group">
-                <label class="col-md-2 control-label">Assunto:</label>
+                <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input id="subject" class="form-control" type="text"
+                  <input id="subject" class="form-control required" type="text"
                          name="post.subject">
                 </div>
               </div>
@@ -115,9 +118,9 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Descrição:</label>
+                <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <textarea id="description" class="form-control" rows="3" cols="5"
+                  <textarea id="description" class="form-control required" rows="3" cols="5"
                             name="post.description"></textarea>
                 </div>
               </div>

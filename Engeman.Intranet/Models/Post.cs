@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Engeman.Intranet.Models
 {
@@ -11,8 +12,11 @@ namespace Engeman.Intranet.Models
     }
     public int Id { get; set; }
     public char Active { get; set; }
+    [Required]
     public char Restricted { get; set; }
+    [Required]
     public string Subject { get; set; }
+    [Required]
     public string Description { get; set; }
     public string CleanDescription { get; set; }
     public string Keywords { get; set; }
