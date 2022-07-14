@@ -125,21 +125,26 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult ArchivePostEdit(int idPost)
     {
-      EditPostArchiveDto editPostArchiveDto = new EditPostArchiveDto();
+      PostArchiveDto postArchiveDto = new PostArchiveDto();
 
       var post = _postRepository.GetPostById(idPost);
       var archive = _archiveRepository.GetArchiveByPostId(idPost);
 
-      editPostArchiveDto.Post = post;
-      editPostArchiveDto.Archive = archive;
+      postArchiveDto.Post = post;
+      postArchiveDto.Archive = archive;
 
 
-      return PartialView(editPostArchiveDto);
+      return PartialView(postArchiveDto);
     }
 
     [HttpPost]
     public IActionResult UpdateQuestion(AskQuestionDto askQuestionDto)
     {
+      if (!ModelState.IsValid)
+      {
+        return Json(0);
+      }
+
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
       askQuestionDto.UserAccountId = userAccount.Id;
@@ -150,16 +155,17 @@ namespace Engeman.Intranet.Controllers
       askQuestionDto.DomainAccount = sessionDomainUsername;
 
       _postRepository.UpdateQuestion(askQuestionDto.Id, askQuestionDto);
-
       return PartialView("ListAll");
     }
 
     [HttpPost]
     public ActionResult UpdateArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
     {
-      bool statusPost = true;
+      if (!ModelState.IsValid)
+      {
+        return Json(0);
+      }
       bool statusArchive = false;
-      bool finalStatus = false;
 
       AskQuestionDto askQuestionDto = new AskQuestionDto();
       Archive archive = new Archive();
@@ -196,12 +202,10 @@ namespace Engeman.Intranet.Controllers
         statusArchive = true;
       }
 
-      if (statusArchive == true & statusPost == true)
+      if (statusArchive == true)
       {
         _postRepository.UpdateArchivePost(postArchiveDto.Post.Id, askQuestionDto, archive);
-        finalStatus = true;
       }
-
       return PartialView("ListAll");
     }
 

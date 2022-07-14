@@ -1,4 +1,4 @@
-﻿@model Post;
+﻿@model Engeman.Intranet.Models.Post;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,12 +20,9 @@
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/wysihtml5.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.min.js"></script>
-
+  <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
   <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.js"></script>
-
-
-  @*<script src="~/js/layout.js"></script>*@
 
   <!-- Demo JS -->
   <script type="text/javascript" src="~/js/custom.js"></script>
@@ -75,13 +72,13 @@
           <div class="widget-content">
             <form class="form-horizontal row-border" id="edit-question-form" method="post">
               <div class="form-group">
-                <label class="col-md-2 control-label">Código da pergunta:</label>
+                <label class="col-md-2 control-label">Código da pergunta</label>
                 <div class="col-md-1">
                   <input id="id-post" class="form-control" name="id" type="text" readonly value="@Model.Id" />
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Restrita ao setor?</label>
+                <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
                     <input id="restricted" asp-for="@Model.CheckIsRestricted" type="checkbox" class="toggle" />
@@ -89,21 +86,21 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Assunto:</label>
+                <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input class="form-control" id="subject" type="text" name="subject" asp-for="@Model.Subject" value="@Model.Subject">
+                  <input class="form-control required" id="subject" type="text" name="subject" asp-for="@Model.Subject" value="@Model.Subject">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Palavras chave:</label>
+                <label class="col-md-2 control-label">Palavras chave</label>
                 <div class="col-md-10">
                   <input class="tags" id="keywords" type="text" name="keywords" asp-for="@Model.Keywords" value="@Model.Keywords">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Pergunta:</label>
+                <label class="col-md-2 control-label">Pergunta<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <textarea class="form-control" id="description" rows="3" cols="5" name="description">@Model.Description</textarea>
+                  <textarea class="form-control required" id="description" rows="3" cols="5" name="description">@Model.Description</textarea>
                 </div>
               </div>
               <div class="form-actions">

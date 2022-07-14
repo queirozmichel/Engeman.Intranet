@@ -1,4 +1,4 @@
-﻿@model EditPostArchiveDto;
+﻿@model Engeman.Intranet.Models.PostArchiveDto;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,6 +22,7 @@
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+  <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
 
   <!-- Demo JS -->
   <script type="text/javascript" src="~/js/custom.js"></script>
@@ -71,13 +72,13 @@
           <div class="widget-content">
             <form class="form-horizontal row-border" id="archive-post-edit-form" method="post">
               <div class="form-group">
-                <label class="col-md-2 control-label">Id:</label>
+                <label class="col-md-2 control-label">Id</label>
                 <div class="col-md-1">
                   <input class="form-control" name="post.id" type="text" readonly value="@Model.Post.Id" />
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Restrita ao setor?</label>
+                <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
                     <input id="restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
@@ -85,46 +86,48 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Arquivo atual:</label>
+                <label class="col-md-2 control-label">Arquivo atual<span class="required">*</span></label>
                 <div class="col-md-5">
                   <input class="form-control" readonly type="text" value="@Model.Archive.Name">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Novo arquivo:</label>
+                <label class="col-md-2 control-label">Novo arquivo</label>
                 <div class="col-md-2">
                   <input id="file" type="file" name="binarydata" accept="application/pdf">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Tipo de arquivo: </label>
+                <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
                 <div class="col-md-3">
                   <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type" })
+                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type required" })
                     Documento
                   </label>
                   <label class="radio">
                     @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M", new { @class = "archive-type" })
                     Manual
                   </label>
+                  <label for="Archive.ArchiveType" class="has-error help-block" generated="true"
+                         style="display:none;"></label>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Assunto:</label>
+                <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input class="form-control" id="subject" type="text" name="post.subject" asp-for="@Model.Post.Subject" value="@Model.Post.Subject">
+                  <input class="form-control required" id="subject" type="text" name="post.subject" asp-for="@Model.Post.Subject" value="@Model.Post.Subject">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Palavras chave:</label>
+                <label class="col-md-2 control-label">Palavras chave</label>
                 <div class="col-md-10">
                   <input class="tags" id="keywords" type="text" name="post.keywords" asp-for="@Model.Post.Keywords" value="@Model.Post.Keywords">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Descrição:</label>
+                <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <textarea class="form-control" name="post.description" rows="3" cols="5">@Model.Post.Description</textarea>
+                  <textarea class="form-control required" name="post.description" rows="3" cols="5">@Model.Post.Description</textarea>
                 </div>
               </div>
               <div class="form-actions">
