@@ -105,7 +105,7 @@
                         <input readonly class="form-control" type="text" value="@ViewBag.Archive.Name">
                       </div>
                       <div class="col-md-2">
-                        <button asp-action="DownloadArchive" asp-route-idPost="@ViewBag.Post.Id" class="btn btn-success">Download do arquivo</button>
+                        <a class="btn btn-default" href="@Url.Action("showarchive", "posts", new { idPost = ViewBag.Post.Id })" target = "_blank"><i class="fa-solid fa-file-arrow-down"></i></a>
                       </div>
                     </div>
                     <div class="form-group">

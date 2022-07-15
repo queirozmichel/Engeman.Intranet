@@ -265,9 +265,17 @@ namespace Engeman.Intranet.Controllers
 
       return PartialView(archive);
     }
+    [HttpGet]
+    public ActionResult ShowArchive(int idPost)
+    {
+      var aux = _archiveRepository.GetArchiveByPostId(idPost);
+      //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
+      Response.Headers.Add("Content-Disposition", "inline; filename=" + aux.Name);
+      return File(aux.BinaryData, "application/pdf");
+    }
 
     [HttpPost]
-    public ActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
+    public IActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
     {
       if (!ModelState.IsValid || binaryData.Count == 0)
       {
