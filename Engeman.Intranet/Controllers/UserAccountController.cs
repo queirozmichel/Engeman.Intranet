@@ -26,6 +26,10 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult EditUserAccount(UserAccount userAccount, List<IFormFile> Photo)
     {
+      if (!ModelState.IsValid)
+      {
+        return PartialView("~/Views/Error/501.cshtml");
+      }
       if (Photo.Count == 0)
       {
         userAccount.Photo =  _userAccountRepository.GetUserAccountByDomainUsername(userAccount.DomainAccount).Photo;

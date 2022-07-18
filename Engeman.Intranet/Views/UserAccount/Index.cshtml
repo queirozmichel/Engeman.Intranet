@@ -1,4 +1,4 @@
-﻿@model UserAccount
+﻿@model Engeman.Intranet.Models.UserAccount;
 
 <head>
   <!-- Demo JS -->
@@ -8,8 +8,9 @@
   @*Spinner*@
   <link rel="stylesheet" href="~/lib/spinner/jquery.loadingModal.css" />
   <script src="~/lib/spinner/jquery.loadingModal.js"></script>
-  <script src="~/js/useraccount.js"></script>
   <script src="~/js/spinner.js"></script>
+
+  <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
 </head>
 
 @*Inicializa o spinner*@
@@ -157,60 +158,61 @@
         <!-- /Overview -->
         <!--=== Edit Account ===-->
         <div class="tab-pane" id="tab_edit_account">
-          <form asp-controller="useraccount" asp-action="edituseraccount" class="form-horizontal" method="post" enctype="multipart/form-data">
+          <form id="edit-account-form" asp-controller="useraccount" asp-action="edituseraccount" class="form-horizontal" method="post" enctype="multipart/form-data">
             <div class="col-md-12">
               <div class="widget">
-                <div class="widget-header">
-                  <h4>Informações Gerais</h4>
-                </div>
                 <div class="widget-content">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label class="col-md-4 control-label">Nome:</label>
-                        <div class="col-md-8"><input asp-for="@Model.Name" type="text" name="name" class="form-control" value="@Model.Name"></div>
-                      </div>
-
-                      <div class="form-group">
-                        <label class="col-md-4 control-label">Usuário de Domínio:</label>
-                        <div class="col-md-8"><input asp-for="@Model.DomainAccount" type="text" name="domainAccount" class="form-control" value="@Model.DomainAccount" readonly></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-md-4 control-label">Nome<span class="required">*</span></label>
+                      <div class="col-md-8">
+                        <input asp-for="@Model.Name" type="text" name="name" class="form-control required" value="@Model.Name">
                       </div>
                     </div>
-
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label class="col-md-4 control-label">E-mail:</label>
-                        <div class="col-md-8"><input asp-for="@Model.Email" type="email" name="email" class="form-control" value="@Model.Email"></div>
+                    <div class="form-group">
+                      <label class="col-md-4 control-label">Usuário de Domínio<span class="required">*</span></label>
+                      <div class="col-md-8">
+                        <input asp-for="@Model.DomainAccount" type="text" name="domainAccount" class="form-control required" value="@Model.DomainAccount" readonly>
                       </div>
-
-                      <div class="form-group">
-                        <label class="col-md-4 control-label">Setor:</label>
-                        <div class="col-md-8"><input type="text" name="departmentDescription" class="form-control" value="@Model.Department.Description" readonly></div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-4 control-label">E-mail<span class="required">*</span></label>
+                      <div class="col-md-8">
+                        <input asp-for="@Model.Email" type="email" name="email" class="form-control required" value="@Model.Email">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-4 control-label">Setor<span class="required">*</span></label>
+                      <div class="col-md-8">
+                        <input type="text" name="departmentDescription" class="form-control required" value="@Model.Department.Description" readonly>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-4 control-label" for="photo">Foto de perfil</label>
+                      <div class="col-md-8">
+                        <input type="file" id="photo" asp-for="@Model.Photo" accept="image/jpeg, image/png" value="@Model.Photo" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" for="textArea">Descrição</label>
+                      <div class="col-md-8">
+                        <textarea asp-for="@Model.Description" class="form-control" id="textArea" rows="10">@Model.Description</textarea>
                       </div>
                     </div>
                   </div>
-                  <!-- /.row -->
-                  <div class="row">
-                    <div class="col-md-6">
-                      <label class="form-label" for="textArea">Descrição:</label>
-                      <textarea asp-for="@Model.Description" class="form-control" id="textArea" rows="5">@Model.Description</textarea>
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label" for="photo">Foto:</label>
-                      <input type="file" id="photo" asp-for="@Model.Photo" accept="image/jpeg, image/png" value="@Model.Photo" class="form-control" />
-                    </div>
-                  </div>
-                </div> <!-- /.widget-content -->
-              </div> <!-- /.widget -->
-            </div> <!-- /.col-md-12 -->
-
+                </div>
+              </div>
+            </div>
             <div class="col-md-12 form-vertical no-margin">
               <div class="form-actions">
                 <input type="submit" value="Salvar e Sair" class="btn btn-primary pull-right">
               </div>
-            </div> <!-- /.col-md-12 -->
+            </div>
 
           </form>
+
         </div>
         <!-- /Edit Account -->
 
@@ -219,3 +221,5 @@
     <!--END TABS-->
   </div>
 </div> <!-- /.row -->
+
+<script src="~/js/useraccount.js"></script>
