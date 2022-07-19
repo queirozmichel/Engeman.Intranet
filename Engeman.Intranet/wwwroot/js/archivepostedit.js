@@ -28,3 +28,17 @@ $("#archive-post-edit-form").on("submit", function (event) {
     });
   }
 })
+
+$("#back-to-list-button").on("click", function () {
+  $.ajax({
+    type: "POST",
+    url: "BackToList",
+    success: function (response) {
+      $("#question-details").empty();
+      $("#question-details").html(response);
+    },
+    error: function () {
+      toastr.error("O aarquivo não foi atualizad", "Erro!");
+    }
+  });
+})

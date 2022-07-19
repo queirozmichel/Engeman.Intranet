@@ -42,6 +42,10 @@ namespace Engeman.Intranet.Controllers
     {
       return View();
     }
+    public IActionResult BackToList()
+    {
+      return PartialView("ListAll");
+    }
 
     [HttpGet]
     public IActionResult InsertArchive()

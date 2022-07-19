@@ -1,6 +1,4 @@
 ﻿$(document).ready(function () {
-  "use strict";
-  clearForm();
 })
 
 function clearForm() {
