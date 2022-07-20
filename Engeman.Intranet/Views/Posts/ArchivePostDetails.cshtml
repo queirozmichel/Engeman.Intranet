@@ -73,51 +73,32 @@
                   <h4><i class="icon-reorder"></i> Arquivo</h4>
                 </div>
                 <div class="widget-content">
-                  <form class="form-horizontal row-border" id="ask-form" method="post">
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Id:</label>
-                      <div class="col-md-1">
-                        <input class="form-control" type="text" readonly value="@ViewBag.Post.Id" />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Data e hora:</label>
-                      <div class="col-md-2">
-                        <input class="form-control" type="text" value="@ViewBag.Post.ChangeDate" readonly>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Tipo de arquivo: </label>
-                      <div class="col-md-3">
-                        <label class="radio">
-                          @Html.RadioButtonFor(model => model.ArchiveType, "D", new { @disabled = true })
-                          Documento
-                        </label>
-                        <label class="radio">
-                          @Html.RadioButtonFor(model => model.ArchiveType, "M", new { @disabled = true })
-                          Manual
-                        </label>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Nome do arquivo:</label>
-                      <div class="col-md-5">
-                        <input readonly class="form-control" type="text" value="@ViewBag.Archive.Name">
-                      </div>
-                      <div class="col-md-2">
-                        <a class="btn btn-default" href="@Url.Action("showarchive", "posts", new { idPost = ViewBag.Post.Id })" target = "_blank"><i class="fa-solid fa-file-arrow-down"></i></a>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Descrição:</label>
-                      <div class="col-md-10">
-                        <textarea class="form-control" rows="3" cols="5" readonly>@ViewBag.Post.Description</textarea>
-                      </div>
-                    </div>
-                    <div class="form-actions">
-                      <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
-                    </div>
-                  </form>
+                  <dl class="dl-horizontal">
+                    <dt>Id:</dt>
+                    <dd>@ViewBag.Post.Id</dd>
+                    <dt>Data:</dt>
+                    <dd>@ViewBag.Post.ChangeDate</dd>
+                    <dt>Assunto:</dt>
+                    <dd>@ViewBag.Post.Subject</dd>
+                    <dt>Descrição:</dt>
+                    <dd>@ViewBag.Post.Description</dd>
+                    <dt>Tipo de arquivo:</dt>
+                    <dd>
+                      @if (Model.ArchiveType == 'D')
+                      {
+                        <p>Documento</p>
+                      }
+                      else
+                      {
+                        <p>Manual</p>
+                      }
+                    </dd>
+                    <dt>Arquivo:</dt>
+                    <dd><a href="@Url.Action("showarchive", "posts", new { idPost = ViewBag.Post.Id })" target="_blank">@ViewBag.Archive.Name</a></dd>
+                  </dl>
+                  <div class="form-actions">
+                    <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -127,43 +108,23 @@
                   <h4><i class="icon-reorder"></i> Responsável pelo arquivo</h4>
                 </div>
                 <div class="widget-content">
-                  <form class="form-horizontal row-border" id="ask-form" method="post">
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Id:</label>
-                      <div class="col-md-1">
-                        <input id="id-user-account" class="form-control" name="idUserAccount" type="text" value="@ViewBag.Post.UserAccountId" readonly />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Nome de usuário:</label>
-                      <div class="col-md-2">
-                        <input id="name-user-account" class="form-control" name="nameUserAccount" type="text" value="@ViewBag.UserAccount.Name" readonly />
-                      </div>
-                      <label class="col-md-2 control-label">Usuário de domínio:</label>
-                      <div class="col-md-2">
-                        <input id="domain-user-account" class="form-control" name="domainUserAccount" type="text" value="@ViewBag.UserAccount.DomainAccount" readonly />
-                      </div>
-                      <label class="col-md-1 control-label">Email:</label>
-                      <div class="col-md-3">
-                        <input readonly class="form-control" id="email-user-account" type="text" name="emailUserAccount" value="@ViewBag.UserAccount.Email">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Setor:</label>
-                      <div class="col-md-3">
-                        <input id="department-user" class="form-control" name="departmentUserAccount" type="text" value="@ViewBag.Department.Description" readonly />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Autodescrição:</label>
-                      <div class="col-md-10">
-                        <textarea class="form-control" id="description-user-account" rows="3" cols="5" name="descriptionUserAccount" readonly>@ViewBag.UserAccount.Description</textarea>
-                      </div>
-                    </div>
-                    <div class="form-actions">
-                      <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
-                    </div>
-                  </form>
+                  <dl class="dl-horizontal">
+                    <dt>Id:</dt>
+                    <dd>@ViewBag.Post.UserAccountId</dd>
+                    <dt>Nome de usuário:</dt>
+                    <dd>@ViewBag.UserAccount.Name</dd>
+                    <dt>Usuário de domínio:</dt>
+                    <dd>@ViewBag.UserAccount.DomainAccount</dd>
+                    <dt>E-mail:</dt>
+                    <dd>@ViewBag.UserAccount.Email</dd>
+                    <dt>Setor:</dt>
+                    <dd>@ViewBag.Department.Description</dd>
+                    <dt>Autodescrição:</dt>
+                    <dd>@ViewBag.UserAccount.Description</dd>
+                  </dl>
+                  <div class="form-actions">
+                    <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
+                  </div>
                 </div>
               </div>
             </div>

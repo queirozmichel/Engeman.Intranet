@@ -71,36 +71,19 @@
                   <h4><i class="icon-reorder"></i> Pergunta</h4>
                 </div>
                 <div class="widget-content">
-                  <form class="form-horizontal row-border" id="ask-form" method="post">
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Id:</label>
-                      <div class="col-md-1">
-                        <input id="id-post" class="form-control" name="idPost" type="text" readonly value="@ViewBag.Post.Id" />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Data e hora:</label>
-                      <div class="col-md-2">
-                        <input class="form-control" id="data-post" type="text" name="changeDate" value="@ViewBag.Post.ChangeDate" readonly>
-                      </div>
-
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Assunto:</label>
-                      <div class="col-md-10">
-                        <input readonly class="form-control" id="subject" type="text" name="subject" value="@ViewBag.Post.Subject">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Pergunta:</label>
-                      <div class="col-md-10">
-                        <textarea class="form-control" id="description" rows="3" cols="5" name="description" readonly>@ViewBag.Post.Description</textarea>
-                      </div>
-                    </div>
-                    <div class="form-actions">
-                      <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
-                    </div>
-                  </form>
+                  <dl class="dl-horizontal">
+                    <dt>Id:</dt>
+                    <dd>@ViewBag.Post.Id</dd>
+                    <dt>Data:</dt>
+                    <dd>@ViewBag.Post.ChangeDate</dd>
+                    <dt>Assunto:</dt>
+                    <dd>@ViewBag.Post.Subject</dd>
+                    <dt>Setor:</dt>
+                    <dd>@ViewBag.Post.Description</dd>
+                  </dl>
+                  <div class="form-actions">
+                    <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -110,43 +93,23 @@
                   <h4><i class="icon-reorder"></i> Responsável pela postagem</h4>
                 </div>
                 <div class="widget-content">
-                  <form class="form-horizontal row-border" id="ask-form" method="post">
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Id:</label>
-                      <div class="col-md-1">
-                        <input id="id-user-account" class="form-control" name="idUserAccount" type="text" value="@ViewBag.Post.UserAccountId" readonly />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Nome de usuário:</label>
-                      <div class="col-md-2">
-                        <input id="name-user-account" class="form-control" name="nameUserAccount" type="text" value="@ViewBag.UserAccount.Name" readonly />
-                      </div>
-                      <label class="col-md-2 control-label">Usuário de domínio:</label>
-                      <div class="col-md-2">
-                        <input id="domain-user-account" class="form-control" name="domainUserAccount" type="text" value="@ViewBag.UserAccount.DomainAccount" readonly />
-                      </div>
-                      <label class="col-md-1 control-label">Email:</label>
-                      <div class="col-md-3">
-                        <input readonly class="form-control" id="email-user-account" type="text" name="emailUserAccount" value="@ViewBag.UserAccount.Email">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Setor:</label>
-                      <div class="col-md-3">
-                        <input id="department-user" class="form-control" name="departmentUserAccount" type="text" value="@ViewBag.Department.Description" readonly />
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Autodescrição:</label>
-                      <div class="col-md-10">
-                        <textarea class="form-control" id="description-user-account" rows="3" cols="5" name="descriptionUserAccount" readonly>@ViewBag.UserAccount.Description</textarea>
-                      </div>
-                    </div>
-                    <div class="form-actions">
-                      <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
-                    </div>
-                  </form>
+                  <dl class="dl-horizontal">
+                    <dt>Id:</dt>
+                    <dd>@ViewBag.Post.UserAccountId</dd>
+                    <dt>Nome de usuário:</dt>
+                    <dd>@ViewBag.UserAccount.Name</dd>
+                    <dt>Usuário de domínio:</dt>
+                    <dd>@ViewBag.UserAccount.DomainAccount</dd>
+                    <dt>E-mail:</dt>
+                    <dd>@ViewBag.UserAccount.Email</dd>
+                    <dt>Setor:</dt>
+                    <dd>@ViewBag.Department.Description</dd>
+                    <dt>Autodescrição:</dt>
+                    <dd>@ViewBag.UserAccount.Description</dd>
+                  </dl>
+                  <div class="form-actions">
+                    <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
+                  </div>
                 </div>
               </div>
             </div>
