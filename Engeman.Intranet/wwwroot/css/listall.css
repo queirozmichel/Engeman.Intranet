@@ -2,14 +2,30 @@
   overflow: hidden;
 }
 
-.modal-content, .modal-footer{
+.modal-header, .modal-content, .modal-footer {
   text-align: center;
 }
 
-#restrict-delete-modal .modal-content, #restrict-edit-modal .modal-content {
+#confirm-modal .modal-header, #confirm-modal .modal-footer {
+  background-color: lightyellow;
+}
+
+.modal-header, .modal-footer{
+  padding: 10px;
+}
+
+.modal-footer{
+  margin-top: 0px;
+}
+
+#restrict-delete-modal .modal-header {
+  background-color: lightcoral;
+}
+
+#restrict-edit-modal .modal-header {
   background-color: lightcoral;
 }
 
 #confirm-modal .modal-content {
-  background-color: lightyellow;
+  background-color: whitesmoke;
 }

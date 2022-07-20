@@ -59,12 +59,16 @@
       <!-- /Page Stats -->
     </div>
 
-
-    @*modal de confirmação ao tentar apagar uma postagem*@
-    <div data-backdrop="true" id="confirm-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    @*Modal de confirmação para apagar uma psotagem*@
+    <div data-backdrop="true" id="confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
-          <div class="modal-title"><h5>Apagar a postagem?</h5></div>
+          <div class="modal-header">
+            <div class="modal-title"><h5>Apagar a postagem?</h5></div>
+          </div>
+          <div class="modal-body">
+            Se houver quaisquer arquivos associados à postagem, eles também serão excluídos
+          </div>
           <div class="modal-footer">
             <button id="confirm-delete" type="button" class="btn btn-success">Sim</button>
             <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
@@ -73,25 +77,29 @@
       </div>
     </div>
 
-    @*modal de restrição ao tentar apagar uma postagem*@
-    <div data-backdrop="true" id="restrict-delete-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    @*Modal de restrição ao tentar apagar uma postagem de outra pessoa*@
+    <div data-backdrop="true" id="restrict-delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
-          <div class="modal-title"><h5>Operação não suportada</h5></div>
-          <div class="modal-footer">
-            Você não pode apagar uma postagem de outra pessoa.
+          <div class="modal-header">
+            <div class="modal-title"><h5>Operação não suportada!</h5></div>
+          </div>
+          <div class="modal-body">
+            Não é possível apagar uma postagem que não seja sua
           </div>
         </div>
       </div>
     </div>
 
-    @*modal de restrição ao tentar editar uma postagem*@
-    <div data-backdrop="true" id="restrict-edit-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    @*Modal de restrição ao tentar editar uma postagem de outra pessoa*@
+    <div data-backdrop="true" id="restrict-edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
-          <div class="modal-title"><h5>Operação não suportada</h5></div>
-          <div class="modal-footer">
-            Você não pode editar uma postagem de outra pessoa.
+          <div class="modal-header">
+            <div class="modal-title"><h5>Operação não suportada!</h5></div>
+          </div>
+          <div class="modal-body">
+            Não é possível editar uma postagem que não seja sua
           </div>
         </div>
       </div>
