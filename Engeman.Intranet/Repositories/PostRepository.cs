@@ -104,14 +104,13 @@ namespace Engeman.Intranet.Repositories
       return post;
     }
 
-    public void AddArchive(AskQuestionDto askQuestionDto, Archive archive)
+    public void AddArchive(AskQuestionDto askQuestionDto, List<Archive> archive)
     {
       var query = "";
 
       using (StaticQuery sq = new StaticQuery())
       {
         string[] paramters = { "BinaryData;byte" };
-        Object[] values = { archive.BinaryData };
 
         query =
         $"INSERT INTO " +
@@ -123,12 +122,17 @@ namespace Engeman.Intranet.Repositories
 
         var outputPostId = sq.GetDataToInt(query);
 
-        query =
-        "INSERT " +
-        "INTO ARCHIVE(ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-        $"VALUES('{archive.Active}', '{archive.ArchiveType}', '{archive.Name}', '{archive.Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
+        for (int i = 0; i < archive.Count; i++)
+        {
+          Object[] values = { archive[i].BinaryData };
+          query =
+          "INSERT " +
+          "INTO ARCHIVE(ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
+          $"VALUES('{archive[i].Active}', '{archive[i].ArchiveType}', '{archive[i].Name}', '{archive[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
 
-        sq.ExecuteCommand(query, paramters, values);
+          sq.ExecuteCommand(query, paramters, values);
+        }
+
       }
     }
 
@@ -165,6 +169,6 @@ namespace Engeman.Intranet.Repositories
 
         sq.ExecuteCommand(query, paramters, values);
       }
-    }    
+    }
   }
 }

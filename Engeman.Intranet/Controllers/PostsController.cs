@@ -287,7 +287,7 @@ namespace Engeman.Intranet.Controllers
       }
 
       AskQuestionDto askQuestionDto = new AskQuestionDto();
-      Archive archive = new Archive();
+      List<Archive> archiveList = new List<Archive>();      
 
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
@@ -301,25 +301,51 @@ namespace Engeman.Intranet.Controllers
       askQuestionDto.DomainAccount = sessionDomainUsername;
       askQuestionDto.DepartmentId = userAccount.DepartmentId;
       askQuestionDto.PostType = 'A';
-      archive.Active = 'S';
-      archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
-      archive.Name = binaryData[0].FileName;
-      archive.Description = postArchiveDto.Post.Description;
-      archive.PostId = 0;
 
-      foreach (var item in binaryData)
+      for (int i = 0; i < binaryData.Count; i++)
       {
-        if (item.Length > 0)
+        Archive archive = new Archive();
+        archive.Active = 'S';
+        archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
+        archive.Name = binaryData[i].FileName;
+        archive.Description = postArchiveDto.Post.Description;
+        archive.PostId = 0;
+        if (binaryData[i].Length > 0)
         {
           using (var stream = new MemoryStream())
           {
-            item.CopyTo(stream);
+            binaryData[i].CopyTo(stream);
             archive.BinaryData = stream.ToArray();
           }
         }
+        archiveList.Add(archive);
       }
 
-      _postRepository.AddArchive(askQuestionDto, archive);
+      //foreach (var item in binaryData)
+      //{
+      //  if (item.Length > 0)
+      //  {
+      //    using (var stream = new MemoryStream())
+      //    {
+      //      item.CopyTo(stream);
+      //      archive.BinaryData = stream.ToArray();
+      //    }
+      //  }
+      //}
+
+      //for (int i = 0; i < binaryData.Count; i++)
+      //{
+      //  if (binaryData[i].Length > 0)
+      //  {
+      //    using (var stream = new MemoryStream())
+      //    {
+      //      binaryData[i].CopyTo(stream);
+      //      archive.BinaryData = stream.ToArray();
+      //    }
+      //  }
+      //}
+
+      _postRepository.AddArchive(askQuestionDto, archiveList);
 
       return View("InsertArchive");
     }
