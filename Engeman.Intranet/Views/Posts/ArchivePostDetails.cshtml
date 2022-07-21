@@ -1,4 +1,4 @@
-﻿@model Archive;
+﻿@*@model List<Archive>;*@
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,6 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <link rel="stylesheet" href="~/css/archivepostdetails.css"/>
   <script type="text/javascript" src="~/plugins/typeahead/typeahead.min.js"></script> <!-- AutoComplete -->
   <script type="text/javascript" src="~/plugins/autosize/jquery.autosize.min.js"></script>
   <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
@@ -82,9 +83,9 @@
                     <dd>@ViewBag.Post.Subject</dd>
                     <dt>Descrição:</dt>
                     <dd>@ViewBag.Post.Description</dd>
-                    <dt>Tipo de arquivo:</dt>
+                    <dt>Tipo de arquivo(s):</dt>
                     <dd>
-                      @if (Model.ArchiveType == 'D')
+                      @if (@ViewBag.Archive[0].ArchiveType == 'D')
                       {
                         <p>Documento</p>
                       }
@@ -93,8 +94,11 @@
                         <p>Manual</p>
                       }
                     </dd>
-                    <dt>Arquivo:</dt>
-                    <dd><a href="@Url.Action("showarchive", "posts", new { idPost = ViewBag.Post.Id })" target="_blank">@ViewBag.Archive.Name</a></dd>
+                    <dt class="archive-list">Arquivo(s):</dt>
+                    @for (int i = 0; i < ViewBag.Archive.Count; i++)
+                    {
+                      <dd class="archive-list"><a href="@Url.Action("showarchive", "posts", new { idPost = ViewBag.Post.Id, file = i })" target="_blank">@ViewBag.Archive[i].Name</a></dd>
+                    }
                   </dl>
                   <div class="form-actions">
                     <a class="btn pull-left back-to-list-button">Voltar para a lista</a>

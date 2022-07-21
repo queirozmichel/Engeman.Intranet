@@ -1,9 +1,10 @@
 ﻿using Engeman.Intranet.Models;
+using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
   public interface IArchiveRepository
   {
-    public Archive GetArchiveByPostId(int postId);
+    public List<Archive> GetArchiveByPostId(int postId);
   }
 }

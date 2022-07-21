@@ -135,7 +135,7 @@ namespace Engeman.Intranet.Controllers
       var archive = _archiveRepository.GetArchiveByPostId(idPost);
 
       postArchiveDto.Post = post;
-      postArchiveDto.Archive = archive;
+      //postArchiveDto.Archive = archive;
 
 
       return PartialView(postArchiveDto);
@@ -201,8 +201,8 @@ namespace Engeman.Intranet.Controllers
       else
       {
         var aux = _archiveRepository.GetArchiveByPostId(postArchiveDto.Post.Id);
-        archive.BinaryData = aux.BinaryData;
-        archive.Name = aux.Name;
+        //archive.BinaryData = aux.BinaryData;
+        //archive.Name = aux.Name;
         statusArchive = true;
       }
 
@@ -249,7 +249,7 @@ namespace Engeman.Intranet.Controllers
     public FileContentResult DownloadArchive(int idPost)
     {
       Archive archive = new Archive();
-      archive = _archiveRepository.GetArchiveByPostId(idPost);
+      //archive = _archiveRepository.GetArchiveByPostId(idPost);
       byte[] fileBytes = archive.BinaryData;
       var response = new FileContentResult(fileBytes, "application/octet-stream");
       response.FileDownloadName = archive.Name;
@@ -270,16 +270,16 @@ namespace Engeman.Intranet.Controllers
       return PartialView(archive);
     }
     [HttpGet]
-    public ActionResult ShowArchive(int idPost)
+    public ActionResult ShowArchive(int idPost, int file)
     {
-      var aux = _archiveRepository.GetArchiveByPostId(idPost);
+      var archives = _archiveRepository.GetArchiveByPostId(idPost);
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
-      Response.Headers.Add("Content-Disposition", "inline; filename=" + aux.Name);
-      return File(aux.BinaryData, "application/pdf");
+      Response.Headers.Add("Content-Disposition", "inline; filename=" + archives[file].Name);
+      return File(archives[file].BinaryData, "application/pdf");
     }
 
     [HttpPost]
-    public IActionResult InsertArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
+    public IActionResult AddArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
     {
       if (!ModelState.IsValid || binaryData.Count == 0)
       {

@@ -20,7 +20,7 @@ $("#archive-form").on("submit", function (event) {
     //contentType e processData são obrigatórios
     $.ajax({
       type: "POST",
-      url: "insertarchive",
+      url: "addarchive",
       contentType: false,
       processData: false,
       data: formData,
