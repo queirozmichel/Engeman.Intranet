@@ -104,7 +104,7 @@ namespace Engeman.Intranet.Repositories
       return post;
     }
 
-    public void AddArchive(AskQuestionDto askQuestionDto, List<Archive> archive)
+    public void AddArchive(AskQuestionDto askQuestionDto, List<Archive> archives)
     {
       var query = "";
 
@@ -122,17 +122,38 @@ namespace Engeman.Intranet.Repositories
 
         var outputPostId = sq.GetDataToInt(query);
 
-        for (int i = 0; i < archive.Count; i++)
+        for (int i = 0; i < archives.Count; i++)
         {
-          Object[] values = { archive[i].BinaryData };
+          Object[] values = { archives[i].BinaryData };
           query =
           "INSERT " +
           "INTO ARCHIVE(ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-          $"VALUES('{archive[i].Active}', '{archive[i].ArchiveType}', '{archive[i].Name}', '{archive[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
+          $"VALUES('{archives[i].Active}', '{archives[i].ArchiveType}', '{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
 
+      }
+    }
+
+    public void AddArchive(int id, List<Archive> archives)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query = "";
+        string[] paramters = { "BinaryData;byte" };
+
+        for (int i = 0; i < archives.Count; i++)
+        {
+          Object[] values = { archives[i].BinaryData };
+
+          query =
+          "INSERT " +
+          "INTO ARCHIVE(ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
+          $"VALUES('{archives[i].Active}', '{archives[i].ArchiveType}', '{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {id}) ";
+          
+          sq.ExecuteCommand(query, paramters, values);
+        }
       }
     }
 
@@ -151,23 +172,40 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void UpdateArchivePost(int id, AskQuestionDto askQuestionDto, Archive archive)
+    public void UpdateArchivePost(int id, AskQuestionDto postInformation, List<Archive> archives)
     {
+      //using (StaticQuery sq = new StaticQuery())
+      //{
+      //  UpdateQuestion(id, askQuestionDto);
+
+      //  string[] paramters = { "BinaryData;byte" };
+      //  Object[] values = { archive.BinaryData };
+
+      //  var query =
+      //  $"UPDATE " +
+      //  $"ENGEMANINTRANET.ARCHIVE " +
+      //  $"SET ARCHIVE_TYPE = '{archive.ArchiveType}', NAME = '{archive.Name}', DESCRIPTION = '{askQuestionDto.Description}', " +
+      //  $"BINARY_DATA = Convert(VARBINARY(MAX),@BinaryData) " +
+      //  $"WHERE POST_ID = {id}";
+
+      //  sq.ExecuteCommand(query, paramters, values);
+      //}
+
       using (StaticQuery sq = new StaticQuery())
       {
-        UpdateQuestion(id, askQuestionDto);
+        UpdateQuestion(id, postInformation);
 
-        string[] paramters = { "BinaryData;byte" };
-        Object[] values = { archive.BinaryData };
+        for (int i = 0; i < archives.Count; i++)
+        {
 
-        var query =
-        $"UPDATE " +
-        $"ENGEMANINTRANET.ARCHIVE " +
-        $"SET ARCHIVE_TYPE = '{archive.ArchiveType}', NAME = '{archive.Name}', DESCRIPTION = '{askQuestionDto.Description}', " +
-        $"BINARY_DATA = Convert(VARBINARY(MAX),@BinaryData) " +
-        $"WHERE POST_ID = {id}";
+          var query =
+          $"UPDATE " +
+          $"ENGEMANINTRANET.ARCHIVE " +
+          $"SET ARCHIVE_TYPE = '{archives[i].ArchiveType}', DESCRIPTION = '{postInformation.Description}' " +
+          $"WHERE POST_ID = {id}";
 
-        sq.ExecuteCommand(query, paramters, values);
+          sq.ExecuteCommand(query);
+        }
       }
     }
   }

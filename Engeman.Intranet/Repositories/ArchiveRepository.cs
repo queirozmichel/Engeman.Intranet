@@ -52,7 +52,19 @@ namespace Engeman.Intranet.Repositories
         //archive.ChangeDate = (DateTime)result["ChangeDate"];
 
         return archives;
-      }      
+      }
+    }
+    public void DeleteArchiveById(int id)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+        $"DELETE " +
+        $"FROM ARCHIVE " +
+        $"WHERE ID = {id}";
+
+        sq.ExecuteCommand(query);
+      }
     }
   }
 }

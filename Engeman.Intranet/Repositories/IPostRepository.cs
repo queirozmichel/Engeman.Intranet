@@ -9,8 +9,9 @@ namespace Engeman.Intranet.Repositories
     public Post GetPostById(int id);
     public void AddQuestion(AskQuestionDto askQuestionDto);
     public void UpdateQuestion(int id, AskQuestionDto askQuestionDto);
-    public void UpdateArchivePost(int id, AskQuestionDto askQuestionDto, Archive archive);
+    public void UpdateArchivePost(int id, AskQuestionDto postInformation, List<Archive> archive);
     public void AddArchive(AskQuestionDto askQuestionDto, List<Archive> archive);
+    public void AddArchive(int id, List<Archive> archives);
     public void DeletePost(int postId);
   }
 }

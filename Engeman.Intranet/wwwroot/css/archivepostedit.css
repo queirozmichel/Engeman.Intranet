@@ -1,0 +1,17 @@
+﻿.checkbox{
+  padding:0;
+}
+.fa-xmark{
+  color:orangered;
+  cursor: pointer;
+  padding-right: 10px;
+}
+
+.archives-qty{
+  display: none;
+}
+
+p{
+  margin: 5px 0 0 0;
+  color: darkred;
+}

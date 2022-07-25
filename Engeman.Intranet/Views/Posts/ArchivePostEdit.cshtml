@@ -1,4 +1,4 @@
-﻿@model Engeman.Intranet.Models.PostArchiveDto;
+﻿@model Engeman.Intranet.Models.PostArchiveViewModel;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-
+  <link rel="stylesheet" href="~/css/archivepostedit.css" />
   <script type="text/javascript" src="~/plugins/typeahead/typeahead.min.js"></script> <!-- AutoComplete -->
   <script type="text/javascript" src="~/plugins/autosize/jquery.autosize.min.js"></script>
   <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
@@ -20,7 +20,7 @@
   <script type="text/javascript" src="~/plugins/bootstrap-inputmask/jquery.inputmask.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/wysihtml5.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.min.js"></script>
-  <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
   <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
 
@@ -67,7 +67,7 @@
       <div class="col-md-12">
         <div class="widget box">
           <div class="widget-header">
-            <h4><i class="icon-reorder"></i> Arquivo</h4>
+            <h4><i class="icon-reorder"></i>Arquivo</h4>
           </div>
           <div class="widget-content">
             <form class="form-horizontal row-border" id="archive-post-edit-form" method="post">
@@ -78,40 +78,14 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
+                <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
                   <div class="make-switch" data-on-label="Sim" data-off-label="Não">
                     <input id="restricted" name="post.checkisrestricted" asp-for="@Model.Post.CheckIsRestricted" type="checkbox" class="toggle" />
                   </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Arquivo atual<span class="required">*</span></label>
-                <div class="col-md-5">
-                  <input class="form-control" readonly type="text" value="@Model.Archive.Name">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Novo arquivo</label>
-                <div class="col-md-2">
-                  <input id="file" type="file" name="binarydata" accept="application/pdf">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
-                <div class="col-md-3">
-                  <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type required" })
-                    Documento
-                  </label>
-                  <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M", new { @class = "archive-type" })
-                    Manual
-                  </label>
-                  <label for="Archive.ArchiveType" class="has-error help-block" generated="true"
-                         style="display:none;"></label>
-                </div>
-              </div>
+
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">
@@ -130,13 +104,50 @@
                   <textarea class="form-control required" name="post.description" rows="3" cols="5">@Model.Post.Description</textarea>
                 </div>
               </div>
+              <div class="form-group">
+                <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
+                <div class="col-md-3">
+                  <label class="radio">
+                    @Html.RadioButtonFor(model => model.Archive[0].ArchiveType, "D", new { @class = "archive-type required" })
+                    Documento
+                  </label>
+                  <label class="radio">
+                    @Html.RadioButtonFor(model => model.Archive[0].ArchiveType, "M", new { @class = "archive-type" })
+                    Manual
+                  </label>
+                  <label for="Archive.ArchiveType" class="has-error help-block" generated="true"
+                         style="display:none;"></label>
+                </div>
+              </div>
+
+              <div class="form-group files">
+                <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span><span class="archives-qty">0</span></label>
+                <div class="col-md-10">
+                  @for (int i = 0; i < Model.Archive.Count; i++)
+                  {
+                    <label class="checkbox">
+                      @Html.HiddenFor(model => model.Archive[i].Id, new { @class = "archive-id" })
+                      @Html.HiddenFor(model => model.Archive[i].Active, new { @class = "archive-active" })
+                      <i class=" fa-solid fa-xmark"></i><a href="@Url.Action("showarchive", "posts", new { idPost = Model.Post.Id, file = i })" target="_blank">@Model.Archive[i].Name</a>
+                    </label>
+                  }
+                  <span class="archives-qty">0</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-2 control-label">Novo(s) arquivo(s)</label>
+                <div class="col-md-2">
+                  <input id="file" type="file" name="binarydata" accept="application/pdf" multiple>
+                </div>
+              </div>
               <div class="form-actions">
                 <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-                <a class="btn pull-left" id="back-to-list-button">Voltar para a lista</a>
+                <a class="btn pull-left" id="back-to-list-button">Cancelar alterações</a>
               </div>
             </form>
           </div>
-        </div>        
+        </div>
       </div>
     </div>
   </div>

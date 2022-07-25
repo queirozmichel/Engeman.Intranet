@@ -91,7 +91,7 @@
                     return this.nonSelectedText + '<b class="caret"></b>';
                 }
                 else
-                if (options.length > 3) {
+                if (options.length > 0) {
                     return options.length + ' ' + this.nSelectedText + ' <b class="caret"></b>';
                 }
                 else {
@@ -133,8 +133,8 @@
             // possible options: 'text', 'value', 'both'
             filterBehavior: 'text',
             preventInputChangeEvent: false,
-            nonSelectedText: 'None selected',
-            nSelectedText: 'selected'
+            nonSelectedText: 'Nenhum item foi selecionado',
+            nSelectedText: 'selecionado(s)'
         },
 
         constructor: Multiselect,

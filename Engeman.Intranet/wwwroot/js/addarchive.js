@@ -38,3 +38,9 @@ $("#archive-form").on("submit", function (event) {
     });
   }
 })
+
+$("#file").on("change", function () {
+  $("#file").parent().parent().removeClass("has-error").addClass("has-success")
+  $("#file").removeClass("required has-error").addClass("has-success");
+  $("#file").parent().find("label").remove();
+})

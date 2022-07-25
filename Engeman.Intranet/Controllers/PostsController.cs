@@ -129,16 +129,16 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult ArchivePostEdit(int idPost)
     {
-      PostArchiveDto postArchiveDto = new PostArchiveDto();
+      PostArchiveViewModel postArchiveViewModel = new PostArchiveViewModel();
 
       var post = _postRepository.GetPostById(idPost);
-      var archive = _archiveRepository.GetArchiveByPostId(idPost);
-
-      postArchiveDto.Post = post;
-      //postArchiveDto.Archive = archive;
-
-
-      return PartialView(postArchiveDto);
+      var archives = _archiveRepository.GetArchiveByPostId(idPost);
+      postArchiveViewModel.Post = post;
+      for (int i = 0; i < archives.Count; i++)
+      {
+        postArchiveViewModel.Archive.Add(archives[i]);
+      }
+      return PartialView(postArchiveViewModel);
     }
 
     [HttpPost]
@@ -163,52 +163,65 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public ActionResult UpdateArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
+    public ActionResult UpdateArchive(PostArchiveViewModel postArchives, List<IFormFile> binaryData)
     {
       if (!ModelState.IsValid)
       {
         return Json(0);
       }
-      bool statusArchive = false;
 
-      AskQuestionDto askQuestionDto = new AskQuestionDto();
-      Archive archive = new Archive();
+      char archiveType = postArchives.Archive[0].ArchiveType;
+      AskQuestionDto postInformation = new AskQuestionDto();
+      List<Archive> archives = new List<Archive>();
 
-      askQuestionDto.Restricted = postArchiveDto.Post.Restricted;
-      askQuestionDto.Subject = postArchiveDto.Post.Subject;
-      askQuestionDto.Description = postArchiveDto.Post.Description;
-      askQuestionDto.CleanDescription = askQuestionDto.Description;
-      askQuestionDto.Keywords = postArchiveDto.Post.Keywords;
-      archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
-      archive.Description = postArchiveDto.Post.Description;
+      for (int i = 0; i < postArchives.Archive.Count; i++)
+      {
+        if (postArchives.Archive[i].Active == 'N')
+        {
+          _archiveRepository.DeleteArchiveById(postArchives.Archive[i].Id);
+          postArchives.Archive.RemoveAt(i);
+          i--;
+        }
+      }
+
+      for (int i = 0; i < postArchives.Archive.Count; i++)
+      {
+        Archive archiveUpdate = new Archive();
+        archiveUpdate.ArchiveType = archiveType;
+        archiveUpdate.Description = postArchives.Post.Description;
+        archives.Add(archiveUpdate);
+      }
+
+      postInformation.Restricted = postArchives.Post.Restricted;
+      postInformation.Subject = postArchives.Post.Subject;
+      postInformation.Description = postArchives.Post.Description;
+      postInformation.CleanDescription = postInformation.Description;
+      postInformation.Keywords = postArchives.Post.Keywords;
+
+      _postRepository.UpdateArchivePost(postArchives.Post.Id, postInformation, archives);
 
       if (binaryData.Count != 0)
       {
-        foreach (var item in binaryData)
+        archives.Clear();
+
+        for (int i = 0; i < binaryData.Count; i++)
         {
-          if (item.Length > 0)
+          Archive newArchive = new Archive();
+          if (binaryData[i].Length > 0)
           {
             using (var stream = new MemoryStream())
             {
-              item.CopyTo(stream);
-              archive.BinaryData = stream.ToArray();
+              binaryData[i].CopyTo(stream);
+              newArchive.BinaryData = stream.ToArray();
+              newArchive.Name = binaryData[i].FileName;
+              newArchive.Active = 'S';
+              newArchive.ArchiveType = archiveType;
+              newArchive.Description = postInformation.Description;
+              archives.Add(newArchive);
             }
           }
         }
-        archive.Name = binaryData[0].FileName;
-        statusArchive = true;
-      }
-      else
-      {
-        var aux = _archiveRepository.GetArchiveByPostId(postArchiveDto.Post.Id);
-        //archive.BinaryData = aux.BinaryData;
-        //archive.Name = aux.Name;
-        statusArchive = true;
-      }
-
-      if (statusArchive == true)
-      {
-        _postRepository.UpdateArchivePost(postArchiveDto.Post.Id, askQuestionDto, archive);
+        _postRepository.AddArchive(postArchives.Post.Id, archives);
       }
       return PartialView("ListAll");
     }
@@ -246,16 +259,6 @@ namespace Engeman.Intranet.Controllers
       return PartialView();
     }
 
-    public FileContentResult DownloadArchive(int idPost)
-    {
-      Archive archive = new Archive();
-      //archive = _archiveRepository.GetArchiveByPostId(idPost);
-      byte[] fileBytes = archive.BinaryData;
-      var response = new FileContentResult(fileBytes, "application/octet-stream");
-      response.FileDownloadName = archive.Name;
-      return response;
-    }
-
     public IActionResult ArchivePostDetails(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
@@ -287,7 +290,7 @@ namespace Engeman.Intranet.Controllers
       }
 
       AskQuestionDto askQuestionDto = new AskQuestionDto();
-      List<Archive> archiveList = new List<Archive>();      
+      List<Archive> archiveList = new List<Archive>();
 
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
