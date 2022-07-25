@@ -33,3 +33,12 @@ $("#ask-form").on("submit", function (event) {
     });
   }
 })
+
+$("#restricted").parent().on("change", function () {
+  console.log($("#restricted").parent());
+  if ($("#restricted").parent().hasClass("switch-on")) {
+    console.log("on");
+  } else if ($("#restricted").parent().hasClass("switch-off")) {
+    console.log("off");
+  }
+})
