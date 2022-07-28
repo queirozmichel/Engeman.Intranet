@@ -116,7 +116,7 @@ namespace Engeman.Intranet.Controllers
       askQuestionDto.CleanDescription = askQuestionDto.Description;
       askQuestionDto.DomainAccount = sessionDomainUsername;
 
-      _postRepository.AddQuestion(askQuestionDto);
+      //_postRepository.AddQuestion(askQuestionDto);
 
       return View("AskQuestion");
     }

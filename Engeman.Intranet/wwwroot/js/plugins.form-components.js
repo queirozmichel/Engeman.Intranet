@@ -257,13 +257,13 @@ var FormComponents = function () {
   /**************************
    * Multiselect            *
    **************************/
-  var initMultiselect = function () {
-    if ($.fn.multiselect) {
-      $('.multiselect').each(function () {
-        $(this).multiselect();
-      });
-    }
-  }
+  //var initMultiselect = function () {
+  //  if ($.fn.multiselect) {
+  //    $('.multiselect').each(function () {
+  //      $(this).multiselect();
+  //    });
+  //  }
+  //}
 
   return {
 
@@ -279,7 +279,7 @@ var FormComponents = function () {
       initDualListBox(); // Dual Select Boxes
       initValidation(); // Validation
       initWysiwyg(); // wysihtml5
-      initMultiselect(); // Multiselect
+      //initMultiselect();
     }
 
   };

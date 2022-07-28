@@ -7,7 +7,8 @@
   <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-
+  <link rel="stylesheet" href="~/css/askquestion.css" />
+  <link rel="stylesheet" href="~/css/plugins/bootstrap-switch.css" />
   <script type="text/javascript" src="~/plugins/typeahead/typeahead.min.js"></script> <!-- AutoComplete -->
   <script type="text/javascript" src="~/plugins/autosize/jquery.autosize.min.js"></script>
   <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
@@ -21,7 +22,7 @@
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
 
-  <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.js"></script>
   <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.js"></script>
   <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
 
@@ -76,12 +77,22 @@
             <form class="form-horizontal row-border" id="ask-form" method="post">
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
-                <div class="col-md-10">
-                  <div class="make-switch required" data-on-label="Sim" data-off-label="Não">
-                    <input id="restricted" asp-for="@Model.CheckIsRestricted" type="checkbox" class="toggle" />
-                  </div>
+                <div class="col-md-10">      
+                  <input type="checkbox" id="restricted" name="CheckIsRestricted" checked asp-for="@Model.CheckIsRestricted">
                 </div>
-              </div>              
+              </div>
+              <div class="form-group departments-list">
+                <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
+                <div class="col-md-10">
+                  <select class=" required" id="multiselect-department" multiple="multiple" asp-for="@Model.DepartmentsList" name="DepartmentsList">
+                    <option value="004">Personalização</option>
+                    <option value="002">TI Client/Server</option>
+                    <option value="001">TI Web</option>
+                    <option value="003">TI Mobile</option>
+                  </select>
+                </div>
+              </div>
+
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">

@@ -1,4 +1,17 @@
 ﻿$(document).ready(function () {
+  $("#multiselect-department").multiselect({
+    nonSelectedText: 'Nenhum ',
+    includeSelectAllOption: true,
+    allSelectedText: 'Todos ',
+  });
+
+  $("#restricted").bootstrapSwitch({
+    onText: "Sim",
+    offText: "Não",
+    size: "normal",
+    state: false,
+
+  });
 })
 
 function clearForm() {
@@ -6,6 +19,7 @@ function clearForm() {
   $("#description").val('');
   $(".tag").remove();
   $(".form-group").removeClass("has-success");
+  $("#restricted").bootstrapSwitch("state", false);
 }
 
 $("#ask-form").on("submit", function (event) {
@@ -34,11 +48,15 @@ $("#ask-form").on("submit", function (event) {
   }
 })
 
-$("#restricted").parent().on("change", function () {
-  console.log($("#restricted").parent());
-  if ($("#restricted").parent().hasClass("switch-on")) {
-    console.log("on");
-  } else if ($("#restricted").parent().hasClass("switch-off")) {
-    console.log("off");
+
+$("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
+  if (state == true) {
+    $(".departments-list").css("display", "block");
+    console.log($(".departments-list").find(".btn-group").removeClass("open"));
+  } else {
+    console.log($(".departments-list").find(".btn-group").addClass("open"));
+    $("#multiselect-department").multiselect('deselectAll', true);
+    $("#multiselect-department").multiselect('updateButtonText');
+    $(".departments-list").css("display", "none");
   }
-})
+});
