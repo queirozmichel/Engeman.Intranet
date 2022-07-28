@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Engeman.Intranet.Models
@@ -13,7 +14,7 @@ namespace Engeman.Intranet.Models
     public string Subject { get; set; }
     [Required]
     public string Description { get; set; }
-    public string[] DepartmentsList { get; set; }
+    public List<int> DepartmentsList { get; set; }
     public string CleanDescription { get; set; }
     public string Keywords { get; set; }
     public int UserAccountId { get; set; }

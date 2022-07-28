@@ -44,18 +44,28 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        string[] paramters = { };
-        Object[] values = { askQuestionDto };
-
         var query =
         $"INSERT INTO " +
         $"ENGEMANINTRANET.POST " +
-        $"(ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE) " +
+        $"(ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE) OUTPUT INSERTED.ID " +
         $"VALUES ('{askQuestionDto.Active}', '{askQuestionDto.Restricted}', '{askQuestionDto.Subject}', '{askQuestionDto.Description}', " +
         $"'{askQuestionDto.CleanDescription}', '{askQuestionDto.Keywords}', {askQuestionDto.UserAccountId}, {askQuestionDto.DepartmentId}, " +
         $"'{askQuestionDto.PostType}')";
 
-        sq.ExecuteCommand(query, paramters, values);
+        var outputPostId = sq.GetDataToInt(query);
+
+        if (askQuestionDto.DepartmentsList != null)
+        {
+          for (int i = 0; i < askQuestionDto.DepartmentsList.Count; i++)
+          {
+            query =
+            $"INSERT INTO " +
+            $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
+            $"VALUES({outputPostId},{askQuestionDto.DepartmentsList[i]}) ";
+
+            sq.ExecuteCommand(query);
+          }
+        }
       }
     }
 
@@ -151,7 +161,7 @@ namespace Engeman.Intranet.Repositories
           "INSERT " +
           "INTO ARCHIVE(ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
           $"VALUES('{archives[i].Active}', '{archives[i].ArchiveType}', '{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {id}) ";
-          
+
           sq.ExecuteCommand(query, paramters, values);
         }
       }

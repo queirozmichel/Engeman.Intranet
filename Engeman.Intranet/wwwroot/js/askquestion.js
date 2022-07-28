@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
@@ -10,7 +11,6 @@
     offText: "Não",
     size: "normal",
     state: false,
-
   });
 })
 
@@ -52,9 +52,9 @@ $("#ask-form").on("submit", function (event) {
 $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
   if (state == true) {
     $(".departments-list").css("display", "block");
-    console.log($(".departments-list").find(".btn-group").removeClass("open"));
+    $(".departments-list").find(".btn-group").removeClass("open");
   } else {
-    console.log($(".departments-list").find(".btn-group").addClass("open"));
+    $(".departments-list").find(".btn-group").addClass("open");
     $("#multiselect-department").multiselect('deselectAll', true);
     $("#multiselect-department").multiselect('updateButtonText');
     $(".departments-list").css("display", "none");

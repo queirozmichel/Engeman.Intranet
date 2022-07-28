@@ -10,6 +10,7 @@ using System.Web;
 using System.Linq.Dynamic.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -107,6 +108,7 @@ namespace Engeman.Intranet.Controllers
       {
         return Json(0);
       }
+
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
       askQuestionDto.UserAccountId = userAccount.Id;
@@ -116,7 +118,7 @@ namespace Engeman.Intranet.Controllers
       askQuestionDto.CleanDescription = askQuestionDto.Description;
       askQuestionDto.DomainAccount = sessionDomainUsername;
 
-      //_postRepository.AddQuestion(askQuestionDto);
+      _postRepository.AddQuestion(askQuestionDto);
 
       return View("AskQuestion");
     }

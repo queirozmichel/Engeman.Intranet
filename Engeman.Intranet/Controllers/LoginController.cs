@@ -67,6 +67,7 @@ namespace Engeman.Intranet.Controllers
           await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
 
           HttpContext.Session.SetString("_Id", userAccount.Id.ToString());
+          HttpContext.Session.SetString("_DepartmentId", userAccount.DepartmentId.ToString());
           HttpContext.Session.SetString("_DomainUsername", loginViewModel.DomainAccount.ToString());
           HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());
           return RedirectToAction("index", "dashboard");
