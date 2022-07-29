@@ -10,6 +10,7 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
+  <link rel="stylesheet" href="~/css/askquestion.css"/>
   <script type="text/javascript" src="~/plugins/typeahead/typeahead.min.js"></script> <!-- AutoComplete -->
   <script type="text/javascript" src="~/plugins/autosize/jquery.autosize.min.js"></script>
   <script type="text/javascript" src="~/plugins/inputlimiter/jquery.inputlimiter.min.js"></script>
@@ -104,9 +105,16 @@
                   <select class="required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
                     @{for (int i = 0; i < departments.Count; i++)
                       {
-                        if (restrictedDepartments.Exists(x => x.Equals(departments[i].Id)))
+                        if (restrictedDepartments != null)
                         {
-                          <option selected="selected" value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
+                          if (restrictedDepartments.Exists(x => x.Equals(departments[i].Id)))
+                          {
+                            <option selected="selected" value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
+                          }
+                          else
+                          {
+                            <option value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
+                          }
                         }
                         else
                         {

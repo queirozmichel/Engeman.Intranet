@@ -171,14 +171,37 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
+        var update =
         $"UPDATE " +
         $"ENGEMANINTRANET.POST " +
         $"SET RESTRICTED = '{askQuestionDto.Restricted}', SUBJECT = '{askQuestionDto.Subject}', DESCRIPTION = '{askQuestionDto.Description}', " +
         $"CLEAN_DESCRIPTION = '{askQuestionDto.Description}', KEYWORDS = '{askQuestionDto.Keywords}' " +
         $"WHERE ID = {id}";
 
-        sq.ExecuteCommand(query);
+        var delete =
+        $"DELETE " +
+        $"FROM POST_DEPARTMENT " +
+        $"WHERE POST_ID = {id} ";
+
+        sq.ExecuteCommand(update);
+
+        if (askQuestionDto.Restricted == 'N')
+        {
+          sq.ExecuteCommand(delete);
+        }
+        else
+        {
+          sq.ExecuteCommand(delete);
+
+          for (int i = 0; i < askQuestionDto.DepartmentsList.Count; i++)
+          {
+            var insert =
+            $"INSERT INTO " +
+            $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
+            $"VALUES({id},{askQuestionDto.DepartmentsList[i]}) ";
+            sq.ExecuteCommand(insert);
+          }
+        }
       }
     }
 

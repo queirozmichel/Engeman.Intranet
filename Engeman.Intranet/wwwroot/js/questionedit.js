@@ -13,8 +13,9 @@
     size: "normal",
   });
 
-  //$('#multiselect-department').multiselect('select', ['1', '2', '4'])
-
+  if ($(".bootstrap-switch-on").length) {
+    $(".departments-list").css("display", "block");
+  }
 })
 
 $("#edit-question-form").on("submit", function (event) {
