@@ -1,6 +1,7 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
@@ -27,6 +28,34 @@ namespace Engeman.Intranet.Repositories
         department.ChangeDate = (DateTime)result["ChangeDate"];
 
         return department;
+      }
+    }
+
+    public List<Department> GetAllDepartments()
+    {
+      var query = "";
+      using (StaticQuery sq = new StaticQuery())
+      {
+        List<Department> departments = new List<Department>();        
+        query =
+        $"SELECT * " +
+        $"FROM DEPARTMENT ";
+
+        var result = sq.GetDataSet(query).Tables[0];
+
+        for (int i = 0; i < result.Rows.Count; i++)
+        {
+          Department department = new Department();
+
+          department.Id = Convert.ToInt32(result.Rows[i]["Id"]);
+          department.Code = result.Rows[i]["Code"].ToString();
+          department.Description = result.Rows[i]["Description"].ToString();
+          department.Active = Convert.ToChar(result.Rows[i]["Active"]);
+          department.ChangeDate = (DateTime)result.Rows[i]["ChangeDate"];
+
+          departments.Add(department);
+        }
+        return departments;
       }
     }
   }

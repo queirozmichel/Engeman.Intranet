@@ -218,5 +218,25 @@ namespace Engeman.Intranet.Repositories
         }
       }
     }
+
+    public List<int> GetRestrictedDepartmentsIdByPost(int id)
+    {
+      List<int> departments = new List<int>();
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+        $"SELECT DEPARTMENT_ID " +
+        $"FROM POST_DEPARTMENT " +
+        $"WHERE POST_ID = {id}";
+
+        var result = sq.GetDataSet(query).Tables[0];
+        for (int i = 0; i < result.Rows.Count; i++)
+        {
+          departments.Add(Convert.ToInt32(result.Rows[i]["Department_Id"]));
+        }
+        return departments;
+      }
+    }
   }
 }

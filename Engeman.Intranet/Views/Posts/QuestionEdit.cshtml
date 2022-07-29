@@ -1,4 +1,6 @@
 ﻿@model Engeman.Intranet.Models.Post;
+@{List<Department> departments = ViewBag.Departments; }
+@{List<int> restrictedDepartments = ViewBag.RestrictedDepartments;}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,9 +21,9 @@
   <script type="text/javascript" src="~/plugins/bootstrap-inputmask/jquery.inputmask.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/wysihtml5.min.js"></script>
   <script type="text/javascript" src="~/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.min.js"></script>
-  <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
   <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
-  <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+  <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.js"></script>
   <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.js"></script>
 
   <!-- Demo JS -->
@@ -80,11 +82,42 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <div class="make-switch" data-on-label="Sim" data-off-label="Não">
-                    <input id="restricted" asp-for="@Model.CheckIsRestricted" type="checkbox" class="toggle" />
-                  </div>
+                  <input type="checkbox" id="restricted" name="CheckIsRestricted" asp-for="@Model.CheckIsRestricted">
                 </div>
               </div>
+
+              @*<div class="form-group departments-list">
+                  <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
+                  <div class="col-md-10">
+                    <select class="required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
+                      <option selected="selected" value="4">Personalização</option>
+                      <option value="2">TI Client/Server</option>
+                      <option value="1">TI Web</option>
+                      <option value="3">TI Mobile</option>
+                    </select>
+                  </div>
+                </div>*@
+
+              <div class="form-group departments-list">
+                <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
+                <div class="col-md-10">
+                  <select class="required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
+                    @{for (int i = 0; i < departments.Count; i++)
+                      {
+                        if (restrictedDepartments.Exists(x => x.Equals(departments[i].Id)))
+                        {
+                          <option selected="selected" value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
+                        }
+                        else
+                        {
+                          <option value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
+                        }
+                      }
+                    }
+                  </select>
+                </div>
+              </div>
+
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">

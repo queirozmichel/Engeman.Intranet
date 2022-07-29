@@ -1,5 +1,20 @@
 ﻿$(document).ready(function () {
   FormComponents.init(); // Init all form-specific plugins
+
+  $("#multiselect-department").multiselect({
+    nonSelectedText: 'Nenhum ',
+    includeSelectAllOption: true,
+    allSelectedText: 'Todos ',
+  });
+
+  $("#restricted").bootstrapSwitch({
+    onText: "Sim",
+    offText: "Não",
+    size: "normal",
+  });
+
+  //$('#multiselect-department').multiselect('select', ['1', '2', '4'])
+
 })
 
 $("#edit-question-form").on("submit", function (event) {
@@ -42,3 +57,15 @@ $("#back-to-list-button").on("click", function () {
     }
   });
 })
+
+$("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
+  if (state == true) {
+    $(".departments-list").css("display", "block");
+    $(".departments-list").find(".btn-group").removeClass("open");
+  } else {
+    $(".departments-list").find(".btn-group").addClass("open");
+    $("#multiselect-department").multiselect('deselectAll', true);
+    $("#multiselect-department").multiselect('updateButtonText');
+    $(".departments-list").css("display", "none");
+  }
+});

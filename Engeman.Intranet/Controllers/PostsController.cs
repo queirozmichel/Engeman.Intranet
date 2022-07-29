@@ -125,7 +125,16 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult QuestionEdit(int idPost)
     {
-      var post = _postRepository.GetPostById(idPost);
+      List<int> restrictedDepartments;
+      var post = _postRepository.GetPostById(idPost);   
+      var departments = _departmentRepository.GetAllDepartments();
+      if (post.Restricted == 'S')
+      {
+        restrictedDepartments = _postRepository.GetRestrictedDepartmentsIdByPost(idPost);
+        ViewBag.RestrictedDepartments = restrictedDepartments;
+        ViewBag.Departments = departments;
+        return PartialView(post);
+      }
       return PartialView(post);
     }
 
