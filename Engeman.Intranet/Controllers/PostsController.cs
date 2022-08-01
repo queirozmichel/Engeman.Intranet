@@ -145,12 +145,23 @@ namespace Engeman.Intranet.Controllers
     {
       PostArchiveViewModel postArchiveViewModel = new PostArchiveViewModel();
 
+      List<int> restrictedDepartments;
       var post = _postRepository.GetPostById(idPost);
       var archives = _archiveRepository.GetArchiveByPostId(idPost);
+      ViewBag.Departments = _departmentRepository.GetAllDepartments();
+      ViewBag.RestrictedDepartments = null;
       postArchiveViewModel.Post = post;
+
       for (int i = 0; i < archives.Count; i++)
       {
         postArchiveViewModel.Archive.Add(archives[i]);
+      }
+
+      if (post.Restricted == 'S')
+      {
+        restrictedDepartments = _postRepository.GetRestrictedDepartmentsIdByPost(idPost);
+        ViewBag.RestrictedDepartments = restrictedDepartments;
+        return PartialView(postArchiveViewModel);
       }
       return PartialView(postArchiveViewModel);
     }
@@ -211,6 +222,7 @@ namespace Engeman.Intranet.Controllers
       postInformation.Description = postArchives.Post.Description;
       postInformation.CleanDescription = postInformation.Description;
       postInformation.Keywords = postArchives.Post.Keywords;
+      postInformation.DepartmentsList = postArchives.DepartmentsList;
 
       _postRepository.UpdateArchivePost(postArchives.Post.Id, postInformation, archives);
 

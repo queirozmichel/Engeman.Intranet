@@ -220,23 +220,6 @@ namespace Engeman.Intranet.Repositories
 
     public void UpdateArchivePost(int id, AskQuestionDto postInformation, List<Archive> archives)
     {
-      //using (StaticQuery sq = new StaticQuery())
-      //{
-      //  UpdateQuestion(id, askQuestionDto);
-
-      //  string[] paramters = { "BinaryData;byte" };
-      //  Object[] values = { archive.BinaryData };
-
-      //  var query =
-      //  $"UPDATE " +
-      //  $"ENGEMANINTRANET.ARCHIVE " +
-      //  $"SET ARCHIVE_TYPE = '{archive.ArchiveType}', NAME = '{archive.Name}', DESCRIPTION = '{askQuestionDto.Description}', " +
-      //  $"BINARY_DATA = Convert(VARBINARY(MAX),@BinaryData) " +
-      //  $"WHERE POST_ID = {id}";
-
-      //  sq.ExecuteCommand(query, paramters, values);
-      //}
-
       using (StaticQuery sq = new StaticQuery())
       {
         UpdateQuestion(id, postInformation);
@@ -244,13 +227,36 @@ namespace Engeman.Intranet.Repositories
         for (int i = 0; i < archives.Count; i++)
         {
 
-          var query =
+          var update =
           $"UPDATE " +
           $"ENGEMANINTRANET.ARCHIVE " +
           $"SET ARCHIVE_TYPE = '{archives[i].ArchiveType}', DESCRIPTION = '{postInformation.Description}' " +
           $"WHERE POST_ID = {id}";
 
-          sq.ExecuteCommand(query);
+          var delete =
+          $"DELETE " +
+          $"FROM POST_DEPARTMENT " +
+          $"WHERE POST_ID = {id} ";
+
+          sq.ExecuteCommand(update);
+
+          if (postInformation.Restricted == 'N')
+          {
+            sq.ExecuteCommand(delete);
+          }
+          else
+          {
+            sq.ExecuteCommand(delete);
+
+            for (i = 0; i < postInformation.DepartmentsList.Count; i++)
+            {
+              var insert =
+              $"INSERT INTO " +
+              $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
+              $"VALUES({id},{postInformation.DepartmentsList[i]}) ";
+              sq.ExecuteCommand(insert);
+            }
+          }
         }
       }
     }

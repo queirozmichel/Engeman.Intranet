@@ -1,6 +1,21 @@
 ﻿$(document).ready(function () {
   FormComponents.init(); // Init all form-specific plugins
   countFiles();
+  $("#multiselect-department").multiselect({
+    nonSelectedText: 'Nenhum ',
+    includeSelectAllOption: true,
+    allSelectedText: 'Todos ',
+  });
+
+  $("#restricted").bootstrapSwitch({
+    onText: "Sim",
+    offText: "Não",
+    size: "normal",
+  });
+
+  if ($(".bootstrap-switch-on").length) {
+    $(".departments-list").css("display", "block");
+  }
 })
 
 function countFiles() {
@@ -72,3 +87,15 @@ $("#file").on("change", function () {
   $("#file").removeClass("required has-error").addClass("has-success");
   $("#file").parent().find("label").remove();
 })
+
+$("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
+  if (state == true) {
+    $(".departments-list").css("display", "block");
+    $(".departments-list").find(".btn-group").removeClass("open");
+  } else {
+    $(".departments-list").find(".btn-group").addClass("open");
+    $("#multiselect-department").multiselect('deselectAll', true);
+    $("#multiselect-department").multiselect('updateButtonText');
+    $(".departments-list").css("display", "none");
+  }
+});

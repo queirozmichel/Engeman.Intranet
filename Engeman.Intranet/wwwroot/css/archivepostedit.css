@@ -15,3 +15,7 @@ p{
   margin: 5px 0 0 0;
   color: darkred;
 }
+
+.departments-list {
+  display: none;
+}

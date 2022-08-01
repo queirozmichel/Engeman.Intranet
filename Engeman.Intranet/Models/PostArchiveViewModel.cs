@@ -10,5 +10,6 @@ namespace Engeman.Intranet.Models
     }
     public Post Post { get; set; }
     public List<Archive> Archive { get; set; }
+    public List<int> DepartmentsList { get; set; }
   }
 }
