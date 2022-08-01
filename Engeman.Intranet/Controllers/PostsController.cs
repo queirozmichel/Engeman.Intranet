@@ -41,6 +41,7 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult AskQuestion()
     {
+      ViewBag.Departments = _departmentRepository.GetAllDepartments();
       return View();
     }
     public IActionResult BackToList()
@@ -51,6 +52,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult InsertArchive()
     {
+      ViewBag.Departments = _departmentRepository.GetAllDepartments();
       return View();
     }
 
@@ -312,6 +314,7 @@ namespace Engeman.Intranet.Controllers
       askQuestionDto.Description = postArchiveDto.Post.Description;
       askQuestionDto.CleanDescription = askQuestionDto.Description;
       askQuestionDto.Keywords = postArchiveDto.Post.Keywords;
+      askQuestionDto.DepartmentsList = postArchiveDto.DepartmentsList;
       askQuestionDto.UserAccountId = userAccount.Id;
       askQuestionDto.DomainAccount = sessionDomainUsername;
       askQuestionDto.DepartmentId = userAccount.DepartmentId;

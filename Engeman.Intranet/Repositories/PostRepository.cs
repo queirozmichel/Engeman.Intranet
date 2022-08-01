@@ -143,6 +143,19 @@ namespace Engeman.Intranet.Repositories
           sq.ExecuteCommand(query, paramters, values);
         }
 
+        if (askQuestionDto.DepartmentsList != null)
+        {
+          for (int i = 0; i < askQuestionDto.DepartmentsList.Count; i++)
+          {
+            query =
+            $"INSERT INTO " +
+            $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
+            $"VALUES({outputPostId},{askQuestionDto.DepartmentsList[i]}) ";
+
+            sq.ExecuteCommand(query);
+          }
+        }
+
       }
     }
 
