@@ -65,7 +65,10 @@ namespace Engeman.Intranet.Controllers
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
       var field = key.Replace("sort[", "").Replace("]", "");
-      var allPosts = _postRepository.GetAllPosts().AsQueryable();
+      var departmentIdSession = HttpContext.Session.GetInt32("_DepartmentId");
+      var userIdSession = HttpContext.Session.GetInt32("_Id");
+      var allPosts = _postRepository.GetPostsByRestriction((int)departmentIdSession, (int)userIdSession).AsQueryable();
+      ;
       string orderedField = String.Format("{0} {1}", field, order);
       total = allPosts.Count();
 
@@ -350,30 +353,6 @@ namespace Engeman.Intranet.Controllers
         }
         archiveList.Add(archive);
       }
-
-      //foreach (var item in binaryData)
-      //{
-      //  if (item.Length > 0)
-      //  {
-      //    using (var stream = new MemoryStream())
-      //    {
-      //      item.CopyTo(stream);
-      //      archive.BinaryData = stream.ToArray();
-      //    }
-      //  }
-      //}
-
-      //for (int i = 0; i < binaryData.Count; i++)
-      //{
-      //  if (binaryData[i].Length > 0)
-      //  {
-      //    using (var stream = new MemoryStream())
-      //    {
-      //      binaryData[i].CopyTo(stream);
-      //      archive.BinaryData = stream.ToArray();
-      //    }
-      //  }
-      //}
 
       _postRepository.AddArchive(askQuestionDto, archiveList);
 
