@@ -128,6 +128,7 @@ namespace Engeman.Intranet.Controllers
       return View("AskQuestion");
     }
 
+    [HttpGet]
     public IActionResult QuestionEdit(int idPost)
     {
       List<int> restrictedDepartments;
@@ -144,6 +145,7 @@ namespace Engeman.Intranet.Controllers
       return PartialView(post);
     }
 
+    [HttpGet]
     public IActionResult ArchivePostEdit(int idPost)
     {
       PostArchiveViewModel postArchiveViewModel = new PostArchiveViewModel();
@@ -276,6 +278,7 @@ namespace Engeman.Intranet.Controllers
       return false;
     }
 
+    [HttpGet]
     public IActionResult QuestionDetails(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
@@ -288,6 +291,7 @@ namespace Engeman.Intranet.Controllers
       return PartialView();
     }
 
+    [HttpGet]
     public IActionResult ArchivePostDetails(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);

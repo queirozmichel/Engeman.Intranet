@@ -36,6 +36,7 @@ $("#edit-question-form").on("submit", function (event) {
           toastr.success("A pergunta foi atualizada", "Sucesso!");
           $("#question-details").empty();
           $("#question-details").html(response);
+          window.history.pushState({}, '', '/posts/listall');
         }
       },
       error: function () {
@@ -52,6 +53,7 @@ $("#back-to-list-button").on("click", function () {
     success: function (response) {
       $("#question-details").empty();
       $("#question-details").html(response);
+      window.history.pushState({}, '', '/posts/listall')
     },
     error: function () {
       toastr.error("A pergunta não foi atualizada", "Erro!");

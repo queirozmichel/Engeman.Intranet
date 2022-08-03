@@ -100,7 +100,7 @@ $("#cancel-delete").on("click", function () {
 function postDetails(idPost, postType) {
   if (postType === 'Q') {
     $.ajax({
-      type: "POST",
+      type: "GET",
       data: { "idPost": idPost },
       dataType: "html",
       url: "/posts/questiondetails",
@@ -114,7 +114,7 @@ function postDetails(idPost, postType) {
     })
   } else if (postType === 'A') {
     $.ajax({
-      type: "POST",
+      type: "GET",
       data: { "idPost": idPost },
       dataType: "html",
       url: "/posts/archivepostdetails",
@@ -131,7 +131,7 @@ function postDetails(idPost, postType) {
 
 function postEdit(idPost) {
   $.ajax({
-    type: "POST",
+    type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
     url: "/posts/questionedit",
@@ -147,7 +147,7 @@ function postEdit(idPost) {
 
 function archivePostEdit(idPost) {
   $.ajax({
-    type: "POST",
+    type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
     url: "/posts/archivepostedit",

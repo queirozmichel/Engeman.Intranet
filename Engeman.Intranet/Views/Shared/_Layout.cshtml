@@ -122,9 +122,9 @@
       </ul>
 
       <!-- Logo -->
-      <a class="navbar-brand" href="index.html">
-        <img src="~/images/logo.png" alt="logo" />
-        <strong>ME</strong>LON
+      <a class="navbar-brand" asp-controller="dashboard" asp-action="Index">
+        @*<img src="~/images/logo.png" alt="logo" />*@
+        <strong>ENGEMAN </strong>INTRANET
       </a>
       <!-- /logo -->
       <!-- Sidebar Toggler -->
@@ -508,7 +508,7 @@
         </div> <!-- /.sidebar-search-results -->
         <!--=== Navigation ===-->
         <ul id="nav">
-          <li class="current">
+          <li>
             <a asp-area="" asp-controller="dashboard" asp-action="Index">
               <i class="icon-dashboard"></i>
               Dashboard

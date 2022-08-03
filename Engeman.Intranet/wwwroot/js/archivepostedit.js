@@ -48,6 +48,7 @@ $("#archive-post-edit-form").on("submit", function (event) {
           $("#question-details").empty();
           $("#question-details").html(response);
           toastr.success("O arquivo foi salvo", "Sucesso!");
+          window.history.pushState({}, '', '/posts/listall');
         }
       },
       error: function (response) {
@@ -64,6 +65,7 @@ $("#back-to-list-button").on("click", function () {
     success: function (response) {
       $("#question-details").empty();
       $("#question-details").html(response);
+      window.history.pushState({}, '', '/posts/listall')
     },
     error: function () {
       toastr.error("O aarquivo não foi atualizad", "Erro!");

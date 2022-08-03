@@ -1,72 +1,82 @@
-/*
- * custom.js
- *
- * Place your code here that you need on all your pages.
- */
+
+//Comum a todas as páginas
+$("#nav li").on("click", function (event) {
+  var li = $(event.target.parentElement);
+  if (li.hasClass("current")) {
+    li.removeClass("current");
+  } else {
+    var allLi = $("#nav").children();
+    allLi.each(function (index, element) {
+      $(this).removeClass("current");
+    })
+    li.addClass("current");
+  }
+})
+
 
 "use strict";
 
-$(document).ready(function(){
+$(document).ready(function () {
 
-	//===== Sidebar Search (Demo Only) =====//
-	$('.sidebar-search').submit(function (e) {
-		//e.preventDefault(); // Prevent form submitting (browser redirect)
+  //===== Sidebar Search (Demo Only) =====//
+  $('.sidebar-search').submit(function (e) {
+    //e.preventDefault(); // Prevent form submitting (browser redirect)
 
-		$('.sidebar-search-results').slideDown(200);
-		return false;
-	});
+    $('.sidebar-search-results').slideDown(200);
+    return false;
+  });
 
-	$('.sidebar-search-results .close').click(function() {
-		$('.sidebar-search-results').slideUp(200);
-	});
+  $('.sidebar-search-results .close').click(function () {
+    $('.sidebar-search-results').slideUp(200);
+  });
 
-	//===== .row .row-bg Toggler =====//
-	$('.row-bg-toggle').click(function (e) {
-		e.preventDefault(); // prevent redirect to #
+  //===== .row .row-bg Toggler =====//
+  $('.row-bg-toggle').click(function (e) {
+    e.preventDefault(); // prevent redirect to #
 
-		$('.row.row-bg').each(function () {
-			$(this).slideToggle(200);
-		});
-	});
+    $('.row.row-bg').each(function () {
+      $(this).slideToggle(200);
+    });
+  });
 
-	//===== Sparklines =====//
+  //===== Sparklines =====//
 
-	$("#sparkline-bar").sparkline('html', {
-		type: 'bar',
-		height: '35px',
-		zeroAxis: false,
-		barColor: App.getLayoutColorCode('red')
-	});
+  $("#sparkline-bar").sparkline('html', {
+    type: 'bar',
+    height: '35px',
+    zeroAxis: false,
+    barColor: App.getLayoutColorCode('red')
+  });
 
-	$("#sparkline-bar2").sparkline('html', {
-		type: 'bar',
-		height: '35px',
-		zeroAxis: false,
-		barColor: App.getLayoutColorCode('green')
-	});
+  $("#sparkline-bar2").sparkline('html', {
+    type: 'bar',
+    height: '35px',
+    zeroAxis: false,
+    barColor: App.getLayoutColorCode('green')
+  });
 
-	//===== Refresh-Button on Widgets =====//
+  //===== Refresh-Button on Widgets =====//
 
-	$('.widget .toolbar .widget-refresh').click(function() {
-		var el = $(this).parents('.widget');
+  $('.widget .toolbar .widget-refresh').click(function () {
+    var el = $(this).parents('.widget');
 
-		App.blockUI(el);
-		window.setTimeout(function () {
-			App.unblockUI(el);
-			noty({
-				text: '<strong>Widget updated.</strong>',
-				type: 'success',
-				timeout: 1000
-			});
-		}, 1000);
-	});
+    App.blockUI(el);
+    window.setTimeout(function () {
+      App.unblockUI(el);
+      noty({
+        text: '<strong>Widget updated.</strong>',
+        type: 'success',
+        timeout: 1000
+      });
+    }, 1000);
+  });
 
-	//===== Fade In Notification (Demo Only) =====//
-	setTimeout(function() {
-		$('#sidebar .notifications.demo-slide-in > li:eq(1)').slideDown(500);
-	}, 3500);
+  //===== Fade In Notification (Demo Only) =====//
+  setTimeout(function () {
+    $('#sidebar .notifications.demo-slide-in > li:eq(1)').slideDown(500);
+  }, 3500);
 
-	setTimeout(function() {
-		$('#sidebar .notifications.demo-slide-in > li:eq(0)').slideDown(500);
-	}, 7000);
+  setTimeout(function () {
+    $('#sidebar .notifications.demo-slide-in > li:eq(0)').slideDown(500);
+  }, 7000);
 });
