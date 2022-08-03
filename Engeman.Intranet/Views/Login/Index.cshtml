@@ -1,8 +1,9 @@
 ﻿@model Engeman.Intranet.Models.LoginViewModel;
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
+
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@ViewData["Title"] Login</title>
   <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" /> @*Bootstrap.css*@
@@ -19,46 +20,15 @@
   <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script> @*Checkboxes estilizados*@
   <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script> @*Validação do formulário*@
   <script type="text/javascript" src="~/plugins/nprogress/nprogress.js"></script> @*Barra de progresso*@
-  <script type="text/javascript" src="~/js/login.js"></script>
+  <script type="text/javascript" src="~/js/login.js"></script>@*JavaScript*@
 </head>
 
 <body style="padding-right: 0px !important; margin-right: 0px !important;" class="login">
   <div class="logo">
-    @*<img src="~/images/logo.png" alt="logo" />*@
     <strong>ENGEMAN </strong>INTRANET
   </div>
   <div class="box">
-    <div class="content">
-      @*<form asp-controller="login" asp-action="tryLogin" class="form-vertical login-form" method="post">
-          @Html.AntiForgeryToken()
-          <h3 class="form-title">Faça login em sua conta</h3>
-          Mensagem de erro
-          <div class="alert fade in alert-danger" style="display: none;">
-            <i class="icon-remove close" data-dismiss="alert"></i>
-            Insira a conta de domínio e a senha.
-          </div>
-          <div class="form-group">
-            <div class="input-icon">
-              <i class="icon-user"></i>
-              <input type="text" name="DomainAccount" class="form-control" placeholder="Conta de domínio" autofocus="autofocus"
-                     data-rule-required="true" data-msg-required="Informe a conta de domínio." maxlength="25" />
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-icon">
-              <i class="icon-lock"></i>
-              <input type="password" name="Password" class="form-control" placeholder="Senha" data-rule-required="true"
-                     data-msg-required="Informe a sua senha." maxlength="25" />
-            </div>
-          </div>
-          <div class="form-actions">
-            <label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Lembrar de mim</label>
-            <button type="submit" class="submit btn btn-primary pull-right">
-              Entrar <i class="icon-angle-right"></i>
-            </button>
-          </div>
-        </form>*@
-
+    <div class="content">   
      @using (Html.BeginForm("trylogin", "login", FormMethod.Post, new { @class = "form-vertical login-form" }))
       {
         @Html.AntiForgeryToken()
@@ -98,7 +68,6 @@
           </button>
         </div>
       }
-
       <!-- Formulário de registro (oculto por padrão) -->
       <form class="form-vertical register-form" method="post" style="display: none;">
         <h3 class="form-title">Novo registro</h3>
@@ -142,7 +111,6 @@
         </div>
       </form>
     </div>
-
     <!-- Formulário de senha esquecida -->
     <div class="inner-box">
       <div class="content">
@@ -167,7 +135,6 @@
       </div>
     </div>
   </div>
-
   <!-- Formulário de cadastro caso clique em "Cadastre-se" -->
   <div class="single-sign-on">
     <span>OU</span>

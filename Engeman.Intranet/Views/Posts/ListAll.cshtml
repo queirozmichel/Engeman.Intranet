@@ -1,31 +1,13 @@
-﻿<head>
-  <!-- DataTables -->
-  <script type="text/javascript" src="~/plugins/datatables/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" src="~/plugins/datatables/tabletools/TableTools.min.js"></script> <!-- optional -->
-  <script type="text/javascript" src="~/plugins/datatables/colvis/ColVis.min.js"></script> <!-- optional -->
-  <script type="text/javascript" src="~/plugins/datatables/columnfilter/jquery.dataTables.columnFilter.js"></script>
-  <!-- optional -->
-  <script type="text/javascript" src="~/plugins/datatables/DT_bootstrap.js"></script>
+﻿<!DOCTYPE html>
+<html lang="pt-br">
 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @*CSS*@
   <link rel="stylesheet" href="~/css/listall.css" />
-
-  @*Bootgrid*@
-  <link rel="stylesheet" href="~/lib/bootgrid/jquery.bootgrid.css">
-  <script src="~/lib/bootgrid/jquery.bootgrid.js"></script>
-
-  @*Spinner*@
-  <link rel="stylesheet" href="~/lib/spinner/jquery.loadingModal.css" />
-  <script src="~/lib/spinner/jquery.loadingModal.js"></script>
-
-  <!-- Demo JS -->
+  @*JavasScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
-
-  @*Jquery-UI*@
-  <script type="text/javascript" src="~/lib/jquery-ui/jquery-ui.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="~/lib/jquery-ui/jquery-ui.min.css" />
-  <link href="~/lib/jquery-ui/jquery-ui.structure.min.css" rel="stylesheet" />
-  <link href="~/lib/jquery-ui/jquery-ui.theme.min.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -35,7 +17,6 @@
         <h3>Postagens</h3>
         @*<span>Good morning, John!</span>*@
       </div>
-
       <!-- Page Stats -->
       <ul class="page-stats">
         <li>
@@ -45,8 +26,8 @@
           </div>
           <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
           <!-- Use instead of sparkline e.g. this:
-        <div class="graph circular-chart" data-percent="73">73%</div>
-        -->
+          <div class="graph circular-chart" data-percent="73">73%</div>
+          -->
         </li>
         <li>
           <div class="summary">
@@ -58,7 +39,6 @@
       </ul>
       <!-- /Page Stats -->
     </div>
-
     @*Modal de confirmação para apagar uma psotagem*@
     <div data-backdrop="true" id="confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
@@ -76,7 +56,6 @@
         </div>
       </div>
     </div>
-
     @*Modal de restrição ao tentar apagar uma postagem de outra pessoa*@
     <div data-backdrop="true" id="restrict-delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
@@ -90,7 +69,6 @@
         </div>
       </div>
     </div>
-
     @*Modal de restrição ao tentar editar uma postagem de outra pessoa*@
     <div data-backdrop="true" id="restrict-edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
@@ -104,7 +82,6 @@
         </div>
       </div>
     </div>
-
     <table id="post-grid" class="table table-condensed table-hover table-striped">
       <thead>
         <tr>
@@ -123,5 +100,7 @@
     </table>
   </div>
 </body>
+
+</html>
 
 <script src="~/js/listall.js"></script>

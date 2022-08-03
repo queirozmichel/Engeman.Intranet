@@ -1,4 +1,3 @@
-
 //Comum a todas as páginas
 $("#nav li").on("click", function (event) {
   var li = $(event.target.parentElement);
