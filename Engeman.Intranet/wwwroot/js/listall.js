@@ -2,6 +2,10 @@
 var idPostAux;
 var elementAux;
 
+$(window).on("load", function () {
+  closeSpinner();
+});
+
 $(document).ready(function () {
   var postGrid = $("#post-grid").bootgrid({
     ajax: true,

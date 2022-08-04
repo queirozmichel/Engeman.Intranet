@@ -7,6 +7,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  @*Inicializa o Spinner*@
+  <script>startSpinner();</script>
   @*CSS*@
   <link rel="stylesheet" href="~/css/insertarchive.css" />
   @*JavaScript*@
@@ -63,7 +65,7 @@
               <div class="form-group departments-list">
                 <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <select class=" required" id="multiselect-department" multiple="multiple" asp-for="@Model.DepartmentsList" name="DepartmentsList">
+                  <select class="required" id="multiselect-department" multiple="multiple" asp-for="@Model.DepartmentsList" name="DepartmentsList">
                     @{if (departments != null)
                       {
                         for (int i = 0; i < departments.Count; i++)

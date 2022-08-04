@@ -6,43 +6,38 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@ViewData["Title"] Engeman Intranet</title>
-  <!-- Bootstrap -->
+  @*jQuery*@
+  <script type="text/javascript" src="~/lib/jquery/jquery-2.2.5.min.js"></script>
+  @*Bootstrap*@
   <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-  <!-- Theme -->
+  <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+  @*Theme*@
   <link href="~/css/main.css" rel="stylesheet" type="text/css" />
   <link href="~/css/plugins.css" rel="stylesheet" type="text/css" />
   <link href="~/css/responsive.css" rel="stylesheet" type="text/css" />
   <link href="~/css/icons.css" rel="stylesheet" type="text/css" />
-  @*CSS personalizado*@
-  <link rel="stylesheet" type="text/css" href="~/css/custom.css" />
   @*Font-Awesome*@
   <link rel="stylesheet" href="~/css/fontawesome/font-awesome.min.css">
   <script src="https://kit.fontawesome.com/aed8741637.js" crossorigin="anonymous"></script>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-  <!--=== JavaScript ===-->
-  <script type="text/javascript" src="~/js/libs/jquery-2.2.5.min.js"></script>
-  <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="~/js/libs/lodash.compat.min.js"></script>
+  @*Palavras chave*@
+  <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.js"></script>
   @*Calendário*@
   <script type="text/javascript" src="~/js/demo/pages_calendar.js"></script>
-  @*Spinner*@
-  <link rel="stylesheet" href="~/lib/spinner/jquery.loadingModal.css" />
-  <script src="~/lib/spinner/jquery.loadingModal.js"></script>
   @*Toastr*@
   <link rel="stylesheet" href="~/lib/toastr/toastr.css" />
   <script type="text/javascript" src="~/lib/toastr/toastr.js"></script>
-  <!-- Smartphone Touch Events -->
+  @*Smartphone Touch Events*@
   <script type="text/javascript" src="~/plugins/touchpunch/jquery.ui.touch-punch.min.js"></script>
   <script type="text/javascript" src="~/plugins/event.swipe/jquery.event.move.js"></script>
   <script type="text/javascript" src="~/plugins/event.swipe/jquery.event.swipe.js"></script>
-  <!-- General -->
+  @*General*@
   <script type="text/javascript" src="~/js/libs/breakpoints.js"></script>
   <script type="text/javascript" src="~/plugins/respond/respond.min.js"></script> <!-- Polyfill for min/max-width CSS3 Media Queries (only for IE8) -->
   <script type="text/javascript" src="~/plugins/cookie/jquery.cookie.min.js"></script>
   <script type="text/javascript" src="~/plugins/slimscroll/jquery.slimscroll.min.js"></script>
   <script type="text/javascript" src="~/plugins/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
-  <!-- Page specific plugins -->
-  <!-- Charts -->
+  @*Page specific plugins*@
   <script type="text/javascript" src="~/plugins/sparkline/jquery.sparkline.min.js"></script>
   <script type="text/javascript" src="~/plugins/flot/jquery.flot.min.js"></script>
   <script type="text/javascript" src="~/plugins/flot/jquery.flot.tooltip.min.js"></script>
@@ -54,14 +49,14 @@
   <script type="text/javascript" src="~/plugins/daterangepicker/daterangepicker.js"></script>
   <script type="text/javascript" src="~/plugins/blockui/jquery.blockUI.min.js"></script>
   <script type="text/javascript" src="~/plugins/fullcalendar/fullcalendar.min.js"></script>
-  <!-- Noty -->
+  @*Noty*@
   <script type="text/javascript" src="~/plugins/noty/jquery.noty.js"></script>
   <script type="text/javascript" src="~/plugins/noty/layouts/top.js"></script>
   <script type="text/javascript" src="~/plugins/noty/themes/default.js"></script>
-  <!-- Forms -->
+  @*Forms*@
   <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script>
   <script type="text/javascript" src="~/plugins/select2/select2.min.js"></script>
-  <!-- App -->
+  @*App*@
   <script type="text/javascript" src="~/js/app.js"></script>
   <script type="text/javascript" src="~/js/plugins.js"></script>
   <script type="text/javascript" src="~/js/plugins.form-components.js"></script>
@@ -82,17 +77,17 @@
   <script type="text/javascript" src="~/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
   @*Switch*@
   <script type="text/javascript" src="~/plugins/bootstrap-switch/bootstrap-switch.js"></script>
-  @*Palavras chave*@
-  <script type="text/javascript" src="~/plugins/tagsinput/jquery.tagsinput.js"></script>
   @*Bootgrid*@
   <link rel="stylesheet" href="~/lib/bootgrid/jquery.bootgrid.css">
   <script src="~/lib/bootgrid/jquery.bootgrid.js"></script>
+  @*jQuery Validation*@
+  <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
   @*Spinner*@
   <link rel="stylesheet" href="~/lib/spinner/jquery.loadingModal.css" />
   <script src="~/lib/spinner/jquery.loadingModal.js"></script>
   <script src="~/js/spinner.js"></script>
-  @*jQuery Validation*@
-  <script type="text/javascript" src="~/plugins/validation/jquery.validate.js"></script>
+  @*CSS personalizado*@
+  <link rel="stylesheet" type="text/css" href="~/css/custom.css" />
 </head>
 
 <body>

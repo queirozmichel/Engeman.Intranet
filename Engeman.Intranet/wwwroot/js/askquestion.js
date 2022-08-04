@@ -1,5 +1,8 @@
-﻿$(document).ready(function () {
+﻿$(window).on("load", function () {
+  closeSpinner();
+});
 
+$(document).ready(function () {
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
@@ -48,7 +51,6 @@ $("#ask-form").on("submit", function (event) {
   }
 })
 
-
 $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
   if (state == true) {
     $(".departments-list").css("display", "block");
@@ -60,3 +62,7 @@ $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
     $(".departments-list").css("display", "none");
   }
 });
+
+$("#multiselect-department").on("change", function () {
+  $(this).valid();
+})

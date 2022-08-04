@@ -1,4 +1,8 @@
-﻿$(document).ready(function () {
+﻿$(window).on("load", function () {
+  closeSpinner();
+});
+
+$(document).ready(function () {
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
@@ -52,9 +56,11 @@ $("#archive-form").on("submit", function (event) {
 })
 
 $("#file").on("change", function () {
-  $("#file").parent().parent().removeClass("has-error").addClass("has-success")
-  $("#file").removeClass("required has-error").addClass("has-success");
-  $("#file").parent().find("label").remove();
+  $(this).valid();
+})
+
+$("#multiselect-department").on("change", function () {
+  $(this).valid();
 })
 
 $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
