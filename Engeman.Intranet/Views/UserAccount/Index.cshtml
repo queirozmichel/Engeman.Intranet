@@ -9,6 +9,8 @@
   @*Inicializa o spinner*@
   <script>startSpinner();</script>
   <script type="text/javascript" src="~/js/demo/charts/chart_filled_blue.js"></script>
+  @*CSS*@
+  <link rel="stylesheet" href="~/css/useraccount.css"/>
   @*JavaScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
@@ -182,7 +184,8 @@
                       <div class="form-group">
                         <label class="col-md-4 control-label" for="photo">Foto de perfil</label>
                         <div class="col-md-8">
-                          <input type="file" id="photo" asp-for="@Model.Photo" accept="image/jpeg, image/png" value="@Model.Photo" />
+                          <input type="file" id="photo" asp-for="@Model.Photo" accept="image/jpeg, image/png" value="@Model.Photo"/>
+                          <label id="photo-limit">A imagem tem <span>6.81</span>MB e excede o tamanho máximo de 5MB</label>
                         </div>
                       </div>
                     </div>
