@@ -1,8 +1,8 @@
 ﻿.checkbox{
   padding:0;
 }
-.fa-xmark{
-  color:orangered;
+.icon-remove-circle {
+  color: orangered;
   cursor: pointer;
   padding-right: 10px;
 }

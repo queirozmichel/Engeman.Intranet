@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
   FormComponents.init(); // Init all form-specific plugins
+  $(document).tooltip();
   countFiles();
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
@@ -68,12 +69,12 @@ $("#back-to-list-button").on("click", function () {
       window.history.pushState({}, '', '/posts/listall')
     },
     error: function () {
-      toastr.error("O aarquivo não foi atualizad", "Erro!");
+      toastr.error("O aarquivo não foi atualizado", "Erro!");
     }
   });
 })
 
-$(".fa-xmark").on("click", function () {
+$(".icon-remove-circle").on("click", function () {
   $(this).parent().css("display", "none");
   $(this).parent().find(".archive-active").val("N");
   var qty = countFiles();
