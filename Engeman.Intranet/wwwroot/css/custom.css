@@ -14,3 +14,7 @@ label {
 li .active {
   background-color: white;
 }
+
+.sidebar-title {
+  text-align: center;
+}

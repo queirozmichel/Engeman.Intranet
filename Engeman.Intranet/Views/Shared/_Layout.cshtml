@@ -103,7 +103,6 @@
 
       <!-- Logo -->
       <a class="navbar-brand" asp-controller="dashboard" asp-action="Index">
-        @*<img src="~/images/logo.png" alt="logo" />*@
         <strong>ENGEMAN </strong>INTRANET
       </a>
       <!-- /logo -->
@@ -113,7 +112,7 @@
       </a>
       <!-- /Sidebar Toggler -->
       <!-- Top Left Menu -->
-      <ul class="nav navbar-nav navbar-left hidden-xs hidden-sm">
+      @*<ul class="nav navbar-nav navbar-left hidden-xs hidden-sm">
         <li>
           <a asp-area="" asp-controller="dashboard" asp-action="Index">
             Dashboard
@@ -131,12 +130,12 @@
             <li><a href="#"><i class="icon-tasks"></i> Example #3</a></li>
           </ul>
         </li>
-      </ul>
+      </ul>*@
       <!-- /Top Left Menu -->
       <!-- Top Right Menu -->
       <ul class="nav navbar-nav navbar-right">
         <!-- Notifications -->
-        <li class="dropdown">
+        <!--<li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="icon-warning-sign"></i>
             <span class="badge">5</span>
@@ -184,10 +183,10 @@
               <a href="javascript:void(0);">View all notifications</a>
             </li>
           </ul>
-        </li>
+        </li>-->
 
         <!-- Tasks -->
-        <li class="dropdown hidden-xs hidden-sm">
+        <!--<li class="dropdown hidden-xs hidden-sm">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="icon-tasks"></i>
             <span class="badge">7</span>
@@ -244,10 +243,10 @@
               <a href="javascript:void(0);">View all tasks</a>
             </li>
           </ul>
-        </li>
+        </li>-->
 
         <!-- Messages -->
-        <li class="dropdown hidden-xs hidden-sm">
+        <!--<li class="dropdown hidden-xs hidden-sm">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="icon-envelope"></i>
             <span class="badge">1</span>
@@ -296,37 +295,35 @@
               <a href="javascript:void(0);">View all messages</a>
             </li>
           </ul>
-        </li>
+        </li>-->
 
         <!-- .row .row-bg Toggler -->
-        <li>
+        <!--<li>
           <a href="#" class="dropdown-toggle row-bg-toggle">
             <i class="icon-resize-vertical"></i>
           </a>
-        </li>
+        </li>-->
 
         <!-- Project Switcher Button -->
-        <li class="dropdown">
+        <!--<li class="dropdown">
           <a href="#" class="project-switcher-btn dropdown-toggle">
             <i class="icon-folder-open"></i>
             <span>Projects</span>
           </a>
-        </li>
+        </li>-->
 
         <!-- User Login Dropdown -->
         <li class="dropdown user">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <!--<img alt="" src="assets/img/avatar1_small.jpg" />-->
-            <i class="icon-male"></i>
+            <i class="fa-solid fa-user-check"></i>
             <span class="username">@Context.Session.GetString("_DomainUsername")</span>
             <i class="icon-caret-down small"></i>
           </a>
           <ul class="dropdown-menu">
             <li><a asp-area="" asp-controller="useraccount" asp-action="Index"><i class="icon-user"></i> Meu Perfil</a></li>
-            <li><a href="pages_calendar.html"><i class="icon-calendar"></i> My Calendar</a></li>
-            <li><a href="#"><i class="icon-tasks"></i> My Tasks</a></li>
             <li class="divider"></li>
-            <li><a asp-area="" asp-controller="login" asp-action="logout"><i class="icon-key"></i>Sair</a></li>
+            <li><a asp-area="" asp-controller="login" asp-action="logout"><i class="fa-solid fa-right-from-bracket"></i>Sair</a></li>
           </ul>
         </li>
         <!-- /user login dropdown -->
@@ -335,7 +332,7 @@
     </div>
     <!-- /top navigation bar -->
     <!--=== Project Switcher ===-->
-    <div id="project-switcher" class="container project-switcher">
+    <!--<div id="project-switcher" class="container project-switcher">
       <div id="scrollbar">
         <div class="handle"></div>
       </div>
@@ -415,8 +412,8 @@
             </a>
           </li>
         </ul>
-      </div> <!-- /#frame -->
-    </div> <!-- /#project-switcher -->
+      </div>--> <!-- /#frame -->
+    <!--</div>--> <!-- /#project-switcher -->
   </header> <!-- /.header -->
 
   <div id="container">
@@ -424,7 +421,7 @@
       <div id="sidebar-content">
 
         <!-- Search Input -->
-        <form class="sidebar-search">
+        @*<form class="sidebar-search">
           <div class="input-box">
             <button type="submit" class="submit">
               <i class="icon-search"></i>
@@ -433,14 +430,14 @@
               <input type="text" placeholder="Search...">
             </span>
           </div>
-        </form>
+        </form>*@
 
         <!-- Search Results -->
-        <div class="sidebar-search-results">
+        <!--<div class="sidebar-search-results">
 
-          <i class="icon-remove close"></i>
+          <i class="icon-remove close"></i>-->
           <!-- Documents -->
-          <div class="title">
+          <!--<div class="title">
             Documents
           </div>
           <ul class="notifications">
@@ -466,10 +463,10 @@
                 </div>
               </a>
             </li>
-          </ul>
+          </ul>-->
           <!-- /Documents -->
           <!-- Persons -->
-          <div class="title">
+          <!--<div class="title">
             Persons
           </div>
           <ul class="notifications">
@@ -485,108 +482,20 @@
               </a>
             </li>
           </ul>
-        </div> <!-- /.sidebar-search-results -->
+        </div>--> <!-- /.sidebar-search-results -->
         <!--=== Navigation ===-->
         <ul id="nav">
           <li>
             <a asp-area="" asp-controller="dashboard" asp-action="Index">
-              <i class="icon-dashboard"></i>
+              <i class="icon-bar-chart"></i>
               Dashboard
             </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <i class="icon-desktop"></i>
-              UI Features
-              <span class="label label-info pull-right">6</span>
-            </a>
-            <ul class="sub-menu">
-              <li>
-                <a href="ui_general.html">
-                  <i class="icon-angle-right"></i>
-                  General
-                </a>
-              </li>
-              <li>
-                <a href="ui_buttons.html">
-                  <i class="icon-angle-right"></i>
-                  Buttons
-                </a>
-              </li>
-              <li>
-                <a href="ui_tabs_accordions.html">
-                  <i class="icon-angle-right"></i>
-                  Tabs &amp; Accordions
-                </a>
-              </li>
-              <li>
-                <a href="ui_sliders.html">
-                  <i class="icon-angle-right"></i>
-                  Sliders
-                </a>
-              </li>
-              <li>
-                <a href="ui_nestable_list.html">
-                  <i class="icon-angle-right"></i>
-                  Nestable List
-                </a>
-              </li>
-              <li>
-                <a href="ui_typography.html">
-                  <i class="icon-angle-right"></i>
-                  Typography / Icons
-                </a>
-              </li>
-              <li>
-                <a href="ui_google_maps.html">
-                  <i class="icon-angle-right"></i>
-                  Google Maps
-                </a>
-              </li>
-              <li>
-                <a href="ui_grid.html">
-                  <i class="icon-angle-right"></i>
-                  Grid
-                </a>
-              </li>
-            </ul>
-          </li>
+          </li>         
           <li>
             <a href="javascript:void(0);">
               <i class="icon-edit"></i>
-              Form Elements
-            </a>
-            <ul class="sub-menu">
-              <li>
-                <a href="form_components.html">
-                  <i class="icon-angle-right"></i>
-                  Form Components
-                </a>
-              </li>
-              <li>
-                <a href="form_layouts.html">
-                  <i class="icon-angle-right"></i>
-                  Form Layouts
-                </a>
-              </li>
-              <li>
-                <a href="form_validation.html">
-                  <i class="icon-angle-right"></i>
-                  Form Validation
-                </a>
-              </li>
-              <li>
-                <a href="form_wizard.html">
-                  <i class="icon-angle-right"></i>
-                  Form Wizard
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <i class="icon-table"></i>
               Postagens
+              <span class="label label-info pull-right">6</span>
             </a>
             <ul class="sub-menu">
               <li>
@@ -608,106 +517,24 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li>          
           <li>
-            <a href="charts.html">
-              <i class="icon-bar-chart"></i>
-              Charts &amp; Statistics
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <i class="icon-folder-open-alt"></i>
-              Pages
-            </a>
-            <ul class="sub-menu">
-              <li>
-                <a asp-area="" asp-controller="useraccount" asp-action="Index">
-                  <i class="icon-angle-right"></i>
-                  User Profile
-                </a>
-              </li>
-              <li>
-                <a href="pages_calendar.html">
-                  <i class="icon-angle-right"></i>
-                  Calendar
-                </a>
-              </li>
-              <li>
-                <a href="pages_invoice.html">
-                  <i class="icon-angle-right"></i>
-                  Invoice
-                </a>
-              </li>
-              <li>
-                <a href="404.html">
-                  <i class="icon-angle-right"></i>
-                  404 Page
-                </a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <i class="icon-list-ol"></i>
-              4 Level Menu
-            </a>
-            <ul class="sub-menu">
-              <li class="open-default">
-                <a href="javascript:void(0);">
-                  <i class="icon-cogs"></i>
-                  Item 1
-                  <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                  <li class="open-default">
-                    <a href="javascript:void(0);">
-                      <i class="icon-user"></i>
-                      Sample Link 1
-                      <span class="arrow"></span>
-                    </a>
-                    <ul class="sub-menu">
-                      <li class="current"><a href="javascript:void(0);"><i class="icon-remove"></i> Sample Link 1</a></li>
-                      <li><a href="javascript:void(0);"><i class="icon-pencil"></i> Sample Link 1</a></li>
-                      <li><a href="javascript:void(0);"><i class="icon-edit"></i> Sample Link 1</a></li>
-                    </ul>
-                  </li>
-                  <li><a href="javascript:void(0);"><i class="icon-user"></i>  Sample Link 1</a></li>
-                  <li><a href="javascript:void(0);"><i class="icon-external-link"></i>  Sample Link 2</a></li>
-                  <li><a href="javascript:void(0);"><i class="icon-bell"></i>  Sample Link 3</a></li>
-                </ul>
-              </li>
-              <li>
-                <a href="javascript:void(0);">
-                  <i class="icon-globe"></i>
-                  Item 2
-                  <span class="arrow"></span>
-                </a>
-                <ul class="sub-menu">
-                  <li><a href="javascript:void(0);"><i class="icon-user"></i>  Sample Link 1</a></li>
-                  <li><a href="javascript:void(0);"><i class="icon-external-link"></i>  Sample Link 1</a></li>
-                  <li><a href="javascript:void(0);"><i class="icon-bell"></i>  Sample Link 1</a></li>
-                </ul>
-              </li>
-              <li>
-                <a href="javascript:void(0);">
-                  <i class="icon-folder-open"></i>
-                  Item 3
-                </a>
-              </li>
-            </ul>
-          </li>
+            <a asp-controller="useraccount" asp-action="Index">
+              <i class="icon-user"></i>
+              PERFIL DE USUÁRIO
+            </a>            
+          </li>          
         </ul>
 
         <!-- /Navigation -->
         <div class="sidebar-title">
-          <span>Notifications</span>
+          <span>TEMA</span>
         </div>
-        <ul class="notifications demo-slide-in">
+        <!--<ul class="notifications demo-slide-in">-->
           <!-- .demo-slide-in is just for demonstration purposes. You can remove this. -->
-          <li style="display: none;">
+          <!--<li style="display: none;">-->
             <!-- style-attr is here only for fading in this notification after a specific time. Remove this. -->
-            <div class="col-left">
+            <!--<div class="col-left">
               <span class="label label-danger"><i class="icon-warning-sign"></i></span>
             </div>
             <div class="col-right with-margin">
@@ -715,9 +542,9 @@
               <span class="time">few seconds ago</span>
             </div>
           </li>
-          <li style="display: none;">
+          <li style="display: none;">-->
             <!-- style-attr is here only for fading in this notification after a specific time. Remove this. -->
-            <div class="col-left">
+            <!--<div class="col-left">
               <span class="label label-info"><i class="icon-envelope"></i></span>
             </div>
             <div class="col-right with-margin">
@@ -734,7 +561,7 @@
               <span class="time">4 hours ago</span>
             </div>
           </li>
-        </ul>
+        </ul>-->
 
         <div class="sidebar-widget align-center">
           <div class="btn-group" data-toggle="buttons" id="theme-switcher">
@@ -755,25 +582,9 @@
       <div class="container">
         <!-- Breadcrumbs line -->
         <div class="crumbs">
-          <ul id="breadcrumbs" class="breadcrumb">
-            <li>
-              <i class="icon-home"></i>
-              <a asp-area="" asp-controller="dashboard" asp-action="Index">Dashboard</a>
-            </li>
-            <li class="current">
-              <a href="pages_calendar.html" title="">Calendar</a>
-            </li>
-          </ul>
+          
 
-          <ul class="crumb-buttons">
-            <li><a href="charts.html" title=""><i class="icon-signal"></i><span>Statistics</span></a></li>
-            <li class="dropdown">
-              <a href="#" title="" data-toggle="dropdown"><i class="icon-tasks"></i><span>Users <strong>(+3)</strong></span><i class="icon-angle-down left-padding"></i></a>
-              <ul class="dropdown-menu pull-right">
-                <li><a href="form_components.html" title=""><i class="icon-plus"></i>Add new User</a></li>
-                <li><a href="tables_dynamic.html" title=""><i class="icon-reorder"></i>Overview</a></li>
-              </ul>
-            </li>
+          <ul class="crumb-buttons">            
             <li class="range">
               <a href="#">
                 <i class="icon-calendar"></i>
