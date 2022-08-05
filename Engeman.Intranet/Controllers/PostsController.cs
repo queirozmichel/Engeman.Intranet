@@ -149,17 +149,17 @@ namespace Engeman.Intranet.Controllers
     public IActionResult ArchivePostEdit(int idPost)
     {
       PostArchiveViewModel postArchiveViewModel = new PostArchiveViewModel();
-
       List<int> restrictedDepartments;
       var post = _postRepository.GetPostById(idPost);
-      var archives = _archiveRepository.GetArchiveByPostId(idPost);
+      //var archives = _archiveRepository.GetArchiveByPostId(idPost);
+      var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
       ViewBag.Departments = _departmentRepository.GetAllDepartments();
       ViewBag.RestrictedDepartments = null;
       postArchiveViewModel.Post = post;
 
-      for (int i = 0; i < archives.Count; i++)
+      for (int i = 0; i < orderedArchives.Count; i++)
       {
-        postArchiveViewModel.Archive.Add(archives[i]);
+        postArchiveViewModel.Archive.Add(orderedArchives[i]);
       }
 
       if (post.Restricted == 'S')
@@ -295,23 +295,24 @@ namespace Engeman.Intranet.Controllers
     public IActionResult ArchivePostDetails(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
-      var archive = _archiveRepository.GetArchiveByPostId(idPost);
+      var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
-      ViewBag.Archive = archive;
+      ViewBag.Archives = orderedArchives;
 
-      return PartialView(archive);
+      return PartialView();
     }
     [HttpGet]
     public ActionResult ShowArchive(int idPost, int file)
     {
-      var archives = _archiveRepository.GetArchiveByPostId(idPost);
+      var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
-      Response.Headers.Add("Content-Disposition", "inline; filename=" + archives[file].Name);
-      return File(archives[file].BinaryData, "application/pdf");
+      Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedArchives[file].Name);
+
+      return File(orderedArchives[file].BinaryData, "application/pdf");
     }
 
     [HttpPost]

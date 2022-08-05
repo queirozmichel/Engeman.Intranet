@@ -134,7 +134,7 @@
                     <label class="checkbox">
                       @Html.HiddenFor(model => model.Archive[i].Id, new { @class = "archive-id" })
                       @Html.HiddenFor(model => model.Archive[i].Active, new { @class = "archive-active" })
-                      <i title="Remover" class="icon-remove-circle"></i><a href="@Url.Action("showarchive", "posts", new { idPost = Model.Post.Id, file = i })" target="_blank">@Model.Archive[i].Name</a>
+                      <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showarchive", "posts", new { idPost = Model.Post.Id, file = i })" target="_blank">@Model.Archive[i].Name</a>
                     </label>
                   }
                   <span class="archives-qty">0</span>

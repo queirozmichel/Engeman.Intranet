@@ -70,7 +70,7 @@
                     <dd>@ViewBag.Post.Description</dd>
                     <dt>Tipo de arquivo(s):</dt>
                     <dd>
-                      @if (@ViewBag.Archive[0].ArchiveType == 'D')
+                      @if (@ViewBag.Archives[0].ArchiveType == 'D')
                       {
                         <p>Documento</p>
                       }
@@ -80,9 +80,9 @@
                       }
                     </dd>
                     <dt class="archive-list">Arquivo(s):</dt>
-                    @for (int i = 0; i < ViewBag.Archive.Count; i++)
+                    @for (int i = 0; i < ViewBag.Archives.Count; i++)
                     {
-                      <dd class="archive-list"><a href="@Url.Action("showarchive", "posts", new { idPost = ViewBag.Post.Id, file = i })" target="_blank">@ViewBag.Archive[i].Name</a></dd>
+                      <dd class="archive-list">@(i+1) -  <a href="@Url.Action("showarchive", "posts", new { idPost = ViewBag.Post.Id, file = i })" target="_blank">@ViewBag.Archives[i].Name</a></dd>
                     }
                   </dl>
                   <div class="form-actions">
