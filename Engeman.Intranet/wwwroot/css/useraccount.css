@@ -2,3 +2,9 @@
   color: #a94442;
   display: none;
 }
+
+img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+}

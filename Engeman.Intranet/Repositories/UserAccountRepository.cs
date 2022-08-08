@@ -113,6 +113,7 @@ namespace Engeman.Intranet.Repositories
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
+        userAccount.Id = Convert.ToInt32(result["id"]);
         userAccount.Active = Convert.ToChar(result["active"]);
         userAccount.Name = result["name"].ToString();
         userAccount.DomainAccount = result["domainaccount"].ToString();

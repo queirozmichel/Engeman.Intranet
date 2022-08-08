@@ -10,7 +10,7 @@
   <script>startSpinner();</script>
   <script type="text/javascript" src="~/js/demo/charts/chart_filled_blue.js"></script>
   @*CSS*@
-  <link rel="stylesheet" href="~/css/useraccount.css"/>
+  <link rel="stylesheet" href="~/css/useraccount.css" />
   @*JavaScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
@@ -63,7 +63,7 @@
                   @{ var base64 = Convert.ToBase64String(Model.Photo);
                     var imasrc = string.Format("data:image/png;base64,{0}", base64);
                   }
-                  <img src='@imasrc' style="width:100%; height:250px; object-fit:cover" />
+                  <img src='@imasrc' />
                 </li>
                 <a href="javascript:void(0);" class="list-group-item">Projects</a>
                 <a href="javascript:void(0);" class="list-group-item">Messages</a>
@@ -184,8 +184,8 @@
                       <div class="form-group">
                         <label class="col-md-4 control-label" for="photo">Foto de perfil</label>
                         <div class="col-md-8">
-                          <input type="file" id="photo" asp-for="@Model.Photo" accept="image/jpeg, image/png" value="@Model.Photo"/>
-                          <label id="photo-limit">A imagem tem <span>6.81</span>MB e excede o tamanho máximo de 5MB</label>
+                          <input type="file" id="photo" asp-for="@Model.Photo" accept="image/jpeg, image/png" value="@Model.Photo" />
+                          <label id="photo-limit">A imagem tem <span></span>MB e excede o tamanho máximo de 5MB</label>
                         </div>
                       </div>
                     </div>

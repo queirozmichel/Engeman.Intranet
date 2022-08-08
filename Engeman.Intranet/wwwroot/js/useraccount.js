@@ -10,7 +10,7 @@ $("#edit-account-form").submit(function (event) {
 
 $("#photo").on("change", function () {
   if (this.files[0].size > 5000000) {
-    let imageSize = ((this.files[0].size) / (1024 * 1024)).toFixed(1);
+    let imageSize = ((this.files[0].size) / (1000 * 1000)).toFixed(1);
     $(this).siblings().find("span").text(imageSize);
     $("#photo").siblings("label").css("display", "block");
     this.value = "";

@@ -329,5 +329,20 @@ namespace Engeman.Intranet.Repositories
         return departments;
       }
     }
+
+    public int GetPostsCountByUserId(int id)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+        $"SELECT COUNT(*) " +
+        $"FROM POST " +
+        $"WHERE USERACCOUNT_ID = {id}";
+
+        var result = sq.GetDataToInt(query);
+
+        return result;
+      }
+    }
   }
 }

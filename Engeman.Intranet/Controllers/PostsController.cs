@@ -284,9 +284,11 @@ namespace Engeman.Intranet.Controllers
       var post = _postRepository.GetPostById(idPost);
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
+      var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
+      ViewBag.PostsCount = postsCount;
 
       return PartialView();
     }
@@ -298,10 +300,12 @@ namespace Engeman.Intranet.Controllers
       var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
+      var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
       ViewBag.Archives = orderedArchives;
+      ViewBag.PostsCount = postsCount;
 
       return PartialView();
     }

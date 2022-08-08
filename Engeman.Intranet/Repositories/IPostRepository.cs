@@ -7,6 +7,7 @@ namespace Engeman.Intranet.Repositories
   {
     public List<PostDto> GetPostsByRestriction(int userDepartmentId, int userIdSession);
     public Post GetPostById(int id);
+    public int GetPostsCountByUserId(int id);
     public List<int> GetRestrictedDepartmentsIdByPost(int id);
     public void AddQuestion(AskQuestionDto askQuestionDto);
     public void UpdateQuestion(int id, AskQuestionDto askQuestionDto);
