@@ -46,17 +46,16 @@ $("#edit-question-form").on("submit", function (event) {
   }
 })
 
-$("#back-to-list-button").on("click", function () {
+$(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
     url: "BackToList",
     success: function (response) {
       $("#question-details").empty();
       $("#question-details").html(response);
-      window.history.pushState({}, '', '/posts/listall')
     },
     error: function () {
-      toastr.error("A pergunta não foi atualizada", "Erro!");
+      toastr.error("Não foi possível voltar", "Erro!");
     }
   });
 })

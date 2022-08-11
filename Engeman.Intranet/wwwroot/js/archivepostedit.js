@@ -59,17 +59,16 @@ $("#archive-post-edit-form").on("submit", function (event) {
   }
 })
 
-$("#back-to-list-button").on("click", function () {
+$(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
     url: "BackToList",
     success: function (response) {
       $("#question-details").empty();
       $("#question-details").html(response);
-      window.history.pushState({}, '', '/posts/listall')
     },
     error: function () {
-      toastr.error("O aarquivo não foi atualizado", "Erro!");
+      toastr.error("Não foi possível voltar", "Erro!");
     }
   });
 })

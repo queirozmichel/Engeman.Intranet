@@ -10,7 +10,7 @@ $(".back-to-list-button").on("click", function () {
       $("#question-details").html(response);
     },
     error: function () {
-      toastr.error("A pergunta não foi atualizada", "Erro!");
+      toastr.error("Não foi possível voltar", "Erro!");
     }
   });
 })
