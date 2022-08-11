@@ -7,6 +7,7 @@ $(window).on("load", function () {
 });
 
 $(document).ready(function () {
+
   var postGrid = $("#post-grid").bootgrid({
     ajax: true,
     //columnSelection: false,
@@ -23,6 +24,52 @@ $(document).ready(function () {
     },
     searchSettings: {
       characters: 1,
+    },
+    requestHandler: function (request) {
+      var filterElements = $(".filter-type");
+      filterElements.each(function () {
+        if ($(this).data("filter") != null) {
+          request.filter = $(this).data('filter');
+        }
+      })
+      return request;
+    },
+    responseHandler: function (response) {
+      return response;
+    },
+    templates: {
+      header:
+        "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\">" +
+          "<div class=\"row\">" +
+            "<div class=\"col-sm-12 actionBar\">" +
+              "<p class=\"{{css.search}}\"></p>" +
+              "<p class=\"{{css.actions}}\"></p>" +
+              "<div id=\"filter\" class=\"{{css.dropDownMenu}}\">" +
+                "<button id=\"filter-button\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">" +
+                  "<span class=\"{{css.dropDownMenuText}}\">Todas as postagens</span> " +
+                  "<span class=\"caret\"></span>" +
+                "</button>" +
+                "<ul class=\"{{css.dropDownMenuItems}}\" role=\"menu\">" +
+                  "<li>" +
+                    "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"all\">Todas as postagens</a>" +
+                  "<li>" +
+                    "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"my\">Minhas postagens</a>" +
+                  "</li>" +
+                  "</li>" +
+                  "<li>" +
+                   "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"question\">Perguntas</a>" +
+                  "</li>" +
+                  "<li>" +
+                   "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"document\">Documentos</a>" +
+                  "</li>" +
+                  "<li>" +
+                   "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"manual\">Manuais</a>" +
+                  "</li>" +
+                "</ul>" +
+              "</div>" +
+            "</div>" +
+          "</div>" +
+        "</div>"
     },
     formatters: {
 
@@ -57,6 +104,24 @@ $(document).ready(function () {
     }
   })
 
+  $(".filter-type").on("click", function () {
+    $(".filter-type").removeAttr("data-filter");
+    $(".filter-type").removeData("filter");
+    if ($(this).data("value") == "all") {
+      $(this).attr("data-filter", "all");
+    } else if ($(this).data("value") == "question") {
+      $(this).attr("data-filter", "question");
+    } else if ($(this).data("value") == "document") {
+      $(this).attr("data-filter", "document");
+    } else if ($(this).data("value") == "manual") {
+      $(this).attr("data-filter", "manual");
+    } else if ($(this).data("value") == "my") {
+      $(this).attr("data-filter", "my");
+    }
+
+    $("#post-grid").bootgrid("reload");
+  });
+
   //Após carregar o grid
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
     $("#post-grid").tooltip();
@@ -80,6 +145,10 @@ $(document).ready(function () {
       })
     });
   })
+
+  $(".filter-type").on("click", function () {
+    $(this).parents("div#filter").find("span.dropdown-text").text($(this).text());
+  });
 });
 
 function dropdownHideItens() {
@@ -87,7 +156,7 @@ function dropdownHideItens() {
     var attachment = $("input[name = 'attachment']");
     var action = $("input[name = 'action']")
     attachment.parent().css("display", "none");
-    action.parent().css("display", "none");    
+    action.parent().css("display", "none");
   }
 }
 

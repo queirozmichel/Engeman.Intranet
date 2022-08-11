@@ -15,8 +15,10 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var query = "SELECT " +
-          "POST.ID as POST_ID, POST.RESTRICTED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USERACCOUNT_ID, POST.CHANGEDATE, POST.POST_TYPE, UA.NAME, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT " +
-          "FROM POST INNER JOIN USERACCOUNT AS UA ON POST.USERACCOUNT_ID = UA.ID " +
+          "POST.ID as POST_ID, POST.RESTRICTED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USERACCOUNT_ID, POST.CHANGEDATE, POST.POST_TYPE, UA.NAME, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, A.ARCHIVE_TYPE " +
+          "FROM POST " +
+          "LEFT JOIN ARCHIVE AS A ON A.POST_ID = POST.ID " +
+          "INNER JOIN USERACCOUNT AS UA ON POST.USERACCOUNT_ID = UA.ID " +
           "INNER JOIN DEPARTMENT AS D ON POST.DEPARTMENT_ID = D.ID " +
           "WHERE POST.ACTIVE = 'S'";
 
@@ -30,16 +32,15 @@ namespace Engeman.Intranet.Repositories
             query =
             $"SELECT COUNT(*)" +
             $"FROM POST_DEPARTMENT " +
-            $"WHERE POST_ID = {result.Rows[i]["Post_Id"]} AND DEPARTMENT_ID = {result.Rows[i]["Department_Id"]}";
+            $"WHERE POST_ID = {result.Rows[i]["Post_Id"]} AND DEPARTMENT_ID = {userDepartmentId}";
 
             var aux = sq.GetDataToInt(query);
-
+            //se não houver registro na tabela de restrição e se noa for o autor da postagem
             if (aux == 0 && Convert.ToInt32(result.Rows[i]["UserAccount_Id"]) != userIdSession)
             {
               continue;
             }
           }
-
           PostDto postDto = new PostDto();
           postDto.Id = Convert.ToInt32(result.Rows[i]["Post_Id"]);
           postDto.Restricted = Convert.ToChar(result.Rows[i]["Restricted"]);
@@ -50,6 +51,7 @@ namespace Engeman.Intranet.Repositories
           postDto.UserAccountId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
           postDto.DepartmentDescription = result.Rows[i]["Department"].ToString();
           postDto.UserAccountName = result.Rows[i]["Name"].ToString();
+          postDto.ArchiveType = result.Rows[i]["Archive_Type"].ToString();
 
           posts.Add(postDto);
         }

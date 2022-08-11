@@ -57,7 +57,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public JsonResult GetDataGrid(string searchPhrase, int current = 1, int rowCount = 5)
+    public JsonResult GetDataGrid(string filter, int rowCount, string searchPhrase, int current)
     {
       int total = 0;
       IQueryable paginatedPosts;
@@ -68,7 +68,23 @@ namespace Engeman.Intranet.Controllers
       var departmentIdSession = HttpContext.Session.GetInt32("_DepartmentId");
       var userIdSession = HttpContext.Session.GetInt32("_Id");
       var allPosts = _postRepository.GetPostsByRestriction((int)departmentIdSession, (int)userIdSession).AsQueryable();
-      ;
+
+      if (filter == "manual")
+      {
+        allPosts = allPosts.Where("archiveType == (@0)", "M");
+      }
+      else if (filter == "document")
+      {
+        allPosts = allPosts.Where("archiveType == (@0)", "D");
+      }
+      else if (filter == "question")
+      {
+        allPosts = allPosts.Where(x => x.PostType == 'Q');
+      }
+      else if (filter == "my")
+      {
+        allPosts = allPosts.Where(x => x.UserAccountId == userIdSession);
+      }
       string orderedField = String.Format("{0} {1}", field, order);
       total = allPosts.Count();
 
@@ -102,7 +118,6 @@ namespace Engeman.Intranet.Controllers
       }
 
       paginatedPosts = allPosts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
-
       return Json(new { rows = paginatedPosts, current, rowCount, total });
     }
 
@@ -132,7 +147,7 @@ namespace Engeman.Intranet.Controllers
     public IActionResult QuestionEdit(int idPost)
     {
       List<int> restrictedDepartments;
-      var post = _postRepository.GetPostById(idPost);   
+      var post = _postRepository.GetPostById(idPost);
       var departments = _departmentRepository.GetAllDepartments();
       ViewBag.RestrictedDepartments = null;
       ViewBag.Departments = departments;

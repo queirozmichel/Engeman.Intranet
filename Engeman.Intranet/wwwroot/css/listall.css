@@ -29,3 +29,19 @@
 #confirm-modal .modal-content {
   background-color: whitesmoke;
 }
+
+.dropdown-item {
+  cursor: pointer;
+  display: block;
+  margin: 0;
+  padding: 3px 20px;
+  white-space: nowrap;
+}
+
+#filter-button{
+  width: 160px;
+}
+
+.pagination {
+  cursor: pointer;
+}

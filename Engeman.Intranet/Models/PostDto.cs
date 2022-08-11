@@ -15,5 +15,6 @@
     public string UserAccountName { get; set; }
     public string ChangeDate { get; set; }
     public char PostType { get; set; }
+    public string ArchiveType { get; set; }
   }
 }
