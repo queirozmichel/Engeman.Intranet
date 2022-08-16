@@ -3,14 +3,11 @@ using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Linq.Dynamic.Core;
 using System;
 using System.Collections.Generic;
-using System.Collections;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -29,21 +26,25 @@ namespace Engeman.Intranet.Controllers
       _departmentRepository = departmentRepository;
       _archiveRepository = archiveRepository;
     }
+    [HttpGet]
     public IActionResult Index()
     {
       return View();
     }
 
+    [HttpGet]
     public IActionResult ListAll()
     {
       return View();
     }
 
+    [HttpGet]
     public IActionResult AskQuestion()
     {
       ViewBag.Departments = _departmentRepository.GetAllDepartments();
       return View();
     }
+
     public IActionResult BackToList()
     {
       return PartialView("ListAll");
@@ -56,68 +57,91 @@ namespace Engeman.Intranet.Controllers
       return View();
     }
 
+    public IQueryable<PostDto> FilterPosts(string filter)
+    {
+      int departmentIdSession = (int)HttpContext.Session.GetInt32("_DepartmentId");
+      int userIdSession = (int)HttpContext.Session.GetInt32("_Id");
+      IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(departmentIdSession, userIdSession).AsQueryable();
+
+      if (filter == "manual")
+      {
+        return posts = posts.Where("archiveType == (@0)", "M");
+      }
+      if (filter == "document")
+      {
+        return posts = posts.Where("archiveType == (@0)", "D");
+      }
+      if (filter == "question")
+      {
+        return posts = posts.Where(x => x.PostType == 'Q');
+      }
+      if (filter == "my")
+      {
+        return posts = posts.Where(x => x.UserAccountId == userIdSession);
+      }
+      else
+      {
+        return posts;
+      }
+    }
+
+    public IQueryable<PostDto> FilterPostsBySearchPhrase(IQueryable<PostDto> posts, string searchPhrase)
+    {
+      int id = 0;
+      int.TryParse(searchPhrase, out id);
+      posts = posts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+        "departmentDescription.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+        "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+        "cleanDescription.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+        "changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
+      return posts;
+    }
+
+    public IQueryable OrderedPosts(IQueryable<PostDto> posts, string orderedField, int current, int rowCount)
+    {
+      IQueryable aux;
+      if (orderedField.Contains("changeDate asc"))
+      {
+        return aux = posts.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+      }
+      else if (orderedField.Contains("changeDate desc"))
+      {
+        return aux = posts.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+      }
+      else
+      {
+        return aux = posts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+      }
+    }
+
     [HttpPost]
     public JsonResult GetDataGrid(string filter, int rowCount, string searchPhrase, int current)
     {
-      int total = 0;
+      IQueryable<PostDto> posts = null;
       IQueryable paginatedPosts;
+      int total = 0;
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
       var field = key.Replace("sort[", "").Replace("]", "");
-      var departmentIdSession = HttpContext.Session.GetInt32("_DepartmentId");
-      var userIdSession = HttpContext.Session.GetInt32("_Id");
-      var allPosts = _postRepository.GetPostsByRestriction((int)departmentIdSession, (int)userIdSession).AsQueryable();
-
-      if (filter == "manual")
-      {
-        allPosts = allPosts.Where("archiveType == (@0)", "M");
-      }
-      else if (filter == "document")
-      {
-        allPosts = allPosts.Where("archiveType == (@0)", "D");
-      }
-      else if (filter == "question")
-      {
-        allPosts = allPosts.Where(x => x.PostType == 'Q');
-      }
-      else if (filter == "my")
-      {
-        allPosts = allPosts.Where(x => x.UserAccountId == userIdSession);
-      }
       string orderedField = String.Format("{0} {1}", field, order);
-      total = allPosts.Count();
+
+      posts = FilterPosts(filter);
+      total = posts.Count();
 
       if (!String.IsNullOrWhiteSpace(searchPhrase))
       {
-        int id = 0;
-        int.TryParse(searchPhrase, out id);
-
-        allPosts = allPosts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-          "departmentDescription.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-          "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-          "cleanDescription.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-          "changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
+        posts = FilterPostsBySearchPhrase(posts, searchPhrase);
+        total = posts.Count();
       }
 
-      total = allPosts.Count();
       if (rowCount == -1)
       {
         rowCount = total;
       }
 
-      if (orderedField.Contains("changeDate asc"))
-      {
-        paginatedPosts = allPosts.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-        return Json(new { rows = paginatedPosts, current, rowCount, total });
-      }
-      else if (orderedField.Contains("changeDate desc"))
-      {
-        paginatedPosts = allPosts.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-        return Json(new { rows = paginatedPosts, current, rowCount, total });
-      }
-
-      paginatedPosts = allPosts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+      paginatedPosts = OrderedPosts(posts, orderedField, current, rowCount);
+      
       return Json(new { rows = paginatedPosts, current, rowCount, total });
     }
 
@@ -166,7 +190,6 @@ namespace Engeman.Intranet.Controllers
       PostArchiveViewModel postArchiveViewModel = new PostArchiveViewModel();
       List<int> restrictedDepartments;
       var post = _postRepository.GetPostById(idPost);
-      //var archives = _archiveRepository.GetArchiveByPostId(idPost);
       var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
       ViewBag.Departments = _departmentRepository.GetAllDepartments();
       ViewBag.RestrictedDepartments = null;
@@ -324,6 +347,7 @@ namespace Engeman.Intranet.Controllers
 
       return PartialView();
     }
+
     [HttpGet]
     public ActionResult ShowArchive(int idPost, int file)
     {

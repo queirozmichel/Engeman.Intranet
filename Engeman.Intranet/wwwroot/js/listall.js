@@ -16,6 +16,7 @@ $(document).ready(function () {
     },
     url: "getdatagrid",
     labels: {
+      all: "Tudo",
       infos: "Exibindo {{ctx.start}} até {{ctx.end}} de {{ctx.total}} registros",
       loading: "Carregando dados...",
       noResults: "Não há dados para exibir",
