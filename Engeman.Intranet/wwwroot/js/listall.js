@@ -41,35 +41,35 @@ $(document).ready(function () {
     templates: {
       header:
         "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\">" +
-          "<div class=\"row\">" +
-            "<div class=\"col-sm-12 actionBar\">" +
-              "<p class=\"{{css.search}}\"></p>" +
-              "<p class=\"{{css.actions}}\"></p>" +
-              "<div id=\"filter\" class=\"{{css.dropDownMenu}}\">" +
-                "<button id=\"filter-button\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">" +
-                  "<span class=\"{{css.dropDownMenuText}}\">Todas as postagens</span> " +
-                  "<span class=\"caret\"></span>" +
-                "</button>" +
-                "<ul class=\"{{css.dropDownMenuItems}}\" role=\"menu\">" +
-                  "<li>" +
-                    "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"all\">Todas as postagens</a>" +
-                  "<li>" +
-                    "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"my\">Minhas postagens</a>" +
-                  "</li>" +
-                  "</li>" +
-                  "<li>" +
-                   "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"question\">Perguntas</a>" +
-                  "</li>" +
-                  "<li>" +
-                   "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"document\">Documentos</a>" +
-                  "</li>" +
-                  "<li>" +
-                   "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"manual\">Manuais</a>" +
-                  "</li>" +
-                "</ul>" +
-              "</div>" +
-            "</div>" +
-          "</div>" +
+        "<div class=\"row\">" +
+        "<div class=\"col-sm-12 actionBar\">" +
+        "<p class=\"{{css.search}}\"></p>" +
+        "<p class=\"{{css.actions}}\"></p>" +
+        "<div id=\"filter\" class=\"{{css.dropDownMenu}}\" data-filter=\"all\">" +
+        "<button id=\"filter-button\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">" +
+        "<span class=\"{{css.dropDownMenuText}}\">Todas as postagens</span> " +
+        "<span class=\"caret\"></span>" +
+        "</button>" +
+        "<ul class=\"{{css.dropDownMenuItems}}\" role=\"menu\">" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"all\" data-filter=\"all\">Todas as postagens</a>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"my\">Minhas postagens</a>" +
+        "</li>" +
+        "</li>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"question\">Perguntas</a>" +
+        "</li>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"document\">Documentos</a>" +
+        "</li>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"manual\">Manuais</a>" +
+        "</li>" +
+        "</ul>" +
+        "</div>" +
+        "</div>" +
+        "</div>" +
         "</div>"
     },
     formatters: {
@@ -110,17 +110,33 @@ $(document).ready(function () {
     $(".filter-type").removeData("filter");
     if ($(this).data("value") == "all") {
       $(this).attr("data-filter", "all");
+      $("#filter").attr("data-filter", "all");
     } else if ($(this).data("value") == "question") {
       $(this).attr("data-filter", "question");
+      $("#filter").attr("data-filter", "question");
     } else if ($(this).data("value") == "document") {
       $(this).attr("data-filter", "document");
+      $("#filter").attr("data-filter", "document");
     } else if ($(this).data("value") == "manual") {
       $(this).attr("data-filter", "manual");
+      $("#filter").attr("data-filter", "manual");
     } else if ($(this).data("value") == "my") {
       $(this).attr("data-filter", "my");
+      $("#filter").attr("data-filter", "my");
     }
-
     $("#post-grid").bootgrid("reload");
+  });
+
+  $("#filter").on("click", function () {
+    var aux = $(this).attr("data-filter");
+    var filterOptions = $(".filter-type");
+    filterOptions.each(function () {
+      if ($(this).attr("data-filter") == aux) {
+        $(this).hide();
+      } else {
+        $(this).show();
+      }
+    })
   });
 
   //Após carregar o grid
