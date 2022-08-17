@@ -74,3 +74,17 @@ $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
     $(".departments-list").css("display", "none");
   }
 });
+
+$(".back-to-list-button").on("click", function () {
+  $.ajax({
+    type: "POST",
+    url: "BackToList",
+    success: function (response) {
+      $("#question-details").empty();
+      $("#question-details").html(response);
+    },
+    error: function () {
+      toastr.error("Não foi possível voltar", "Erro!");
+    }
+  });
+})
