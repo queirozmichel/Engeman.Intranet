@@ -9,7 +9,15 @@ img {
   object-fit: cover;
 }
 
-h2 {
+h2, h3 {
   text-align: center;
   margin-bottom: 10px;
+}
+
+.answer-box{
+  margin-top: 25px;
+}
+
+.well{
+  text-align:center;
 }

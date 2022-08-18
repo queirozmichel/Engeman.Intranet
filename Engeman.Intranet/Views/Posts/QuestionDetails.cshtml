@@ -5,12 +5,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @*CSS*@
-  <link rel="stylesheet" href="~/css/questiondetails.css"/>
+  <link rel="stylesheet" href="~/css/questiondetails.css" />
   @*JavasScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
 
-<body>  
+<body>
   <div class="page-header">
     <div class="page-title">
       <h3>Detalhes da Postagem</h3>
@@ -44,6 +44,7 @@
         <ul class="nav nav-tabs">
           <li class="active"><a href="#tab_1_1" data-toggle="tab">Postagem</a></li>
           <li><a href="#tab_1_2" data-toggle="tab">Autor</a></li>
+          <li><a href="#tab_1_3" data-toggle="tab">Responder</a></li>
         </ul>
         <div class="tab-content row">
           <div class="tab-pane active" id="tab_1_1">
@@ -60,7 +61,7 @@
                         <dt>Assunto:</dt>
                         <dd>@ViewBag.Post.Subject</dd>
                         <dt>Descrição:</dt>
-                        <dd>@ViewBag.Post.Description</dd>                       
+                        <dd>@ViewBag.Post.Description</dd>
                       </dl>
                     </div>
                     <div class="form-actions">
@@ -105,6 +106,46 @@
                       <div class="form-actions">
                         <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
                       </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane active" id="tab_1_3">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                  <h3>@ViewBag.Post.Subject</h3>
+                  <div class="well">
+                    @ViewBag.Post.Description
+                  </div>
+                </div>
+              </div>
+              <div class="widget box answer-box">
+                <div class="widget-content">
+                  <form class="form-horizontal row-border" id="answer-form" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Resposta<span class="required">*</span></label>
+                      <div class="col-md-10">
+                        <textarea id="description" class="form-control required" rows="3" cols="5" name=""></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Palavras chave</label>
+                      <div class="col-md-10">
+                        <input class="tags" id="keywords" type="text" name="">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Anexar arquivo(s)</label>
+                      <div class="col-md-2">
+                        <input id="file" type="file" name="" accept="application/pdf" multiple>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
+                      <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
                     </div>
                   </form>
                 </div>
