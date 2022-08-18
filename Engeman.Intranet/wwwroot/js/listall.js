@@ -13,6 +13,7 @@ $(document).ready(function () {
     //columnSelection: false,
     css: {
       dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
+      left: "text-left",
     },
     url: "getdatagrid",
     labels: {
@@ -73,13 +74,18 @@ $(document).ready(function () {
         "</div>"
     },
     formatters: {
-
       "id": function (column, row) {
         return row.id
       },
-      "attachment": function (column, row) {
+      "postType": function (column, row) {
         if (row.postType === "A") {
-          return "<i class=\"fa-solid fa-paperclip\"></i>";
+          if (row.archiveType === "D") {
+            return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
+          } else if (row.archiveType === "M") {
+            return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
+          }
+        } else if (row.postType === "Q") {
+          return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>"
         }
       },
       "userAccountName": function (column, row) {
@@ -170,7 +176,7 @@ $(document).ready(function () {
 
 function dropdownHideItens() {
   if ($(".dropdown-menu-grid").length) {
-    var attachment = $("input[name = 'attachment']");
+    var attachment = $("input[name = 'postType']");
     var action = $("input[name = 'action']")
     attachment.parent().css("display", "none");
     action.parent().css("display", "none");

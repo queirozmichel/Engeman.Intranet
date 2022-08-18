@@ -45,3 +45,11 @@
 .pagination {
   cursor: pointer;
 }
+
+#post-grid > tbody > tr > td:nth-child(1){
+  text-align:center;
+}
+
+.actions > div:nth-child(3) {
+  display: none;
+}
