@@ -8,10 +8,10 @@
   $("#tab_1_3").removeClass("active");
 })
 
-$("#answer-form").on("submit", function (event) {
+$("#comment-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
   event.preventDefault();
-  if ($("#answer-form").valid()) {
+  if ($("#comment-form").valid()) {
     console.log("ok");
   }
 })
