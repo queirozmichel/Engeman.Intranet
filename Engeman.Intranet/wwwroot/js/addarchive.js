@@ -32,6 +32,7 @@ $("#archive-form").on("submit", function (event) {
   event.preventDefault();
   //usado para receber além dos dados texto, o arquivo também
   if ($("#archive-form").valid()) {
+    debugger;
     var formData = new FormData(this);
     //contentType e processData são obrigatórios
     $.ajax({

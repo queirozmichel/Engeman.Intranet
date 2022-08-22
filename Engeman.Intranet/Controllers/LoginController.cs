@@ -66,7 +66,7 @@ namespace Engeman.Intranet.Controllers
           ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
           await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
 
-          HttpContext.Session.SetInt32("_Id", userAccount.Id);
+          HttpContext.Session.SetInt32("_UserAccountId", userAccount.Id);
           HttpContext.Session.SetInt32 ("_DepartmentId", userAccount.DepartmentId);
           HttpContext.Session.SetString("_DomainUsername", loginViewModel.DomainAccount.ToString());
           HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());
@@ -77,7 +77,7 @@ namespace Engeman.Intranet.Controllers
     public async Task<IActionResult> Logout()
     {
       await HttpContext.SignOutAsync("CookieAuthentication");
-      HttpContext.Session.Remove("_Id");
+      HttpContext.Session.Remove("_UserAccountId");
       HttpContext.Session.Remove("_DepartmentId");
       HttpContext.Session.Remove("_DomainUsername");
       HttpContext.Session.Remove("_Password");
@@ -87,7 +87,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public JsonResult ConfirmSessionUserByAjax(int userAccountIdPost)
     {
-      var userSessionId = HttpContext.Session.GetInt32("_Id");
+      var userSessionId = HttpContext.Session.GetInt32("_UserAccountId");
 
       if (userSessionId == userAccountIdPost)
       {

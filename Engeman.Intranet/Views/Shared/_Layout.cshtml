@@ -323,7 +323,7 @@
           <ul class="dropdown-menu">
             <li><a asp-area="" asp-controller="useraccount" asp-action="Index"><i class="icon-user"></i> Meu Perfil</a></li>
             <li class="divider"></li>
-            <li><a asp-area="" asp-controller="login" asp-action="logout"><i class="fa-solid fa-right-from-bracket"></i>Sair</a></li>
+            <li><a onclick="sessionStorage.clear()" asp-area="" asp-controller="login" asp-action="logout"><i class="fa-solid fa-right-from-bracket"></i>Sair</a></li>
           </ul>
         </li>
         <!-- /user login dropdown -->

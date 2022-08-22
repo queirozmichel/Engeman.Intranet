@@ -18,13 +18,16 @@ namespace Engeman.Intranet.Controllers
     private readonly IPostRepository _postRepository;
     private readonly IDepartmentRepository _departmentRepository;
     private readonly IArchiveRepository _archiveRepository;
+    private readonly IPostCommentRepository _postCommentRepository;
 
-    public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository, IDepartmentRepository departmentRepository, IArchiveRepository archiveRepository)
+    public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
+      IDepartmentRepository departmentRepository, IArchiveRepository archiveRepository, IPostCommentRepository postCommentRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
       _departmentRepository = departmentRepository;
       _archiveRepository = archiveRepository;
+      _postCommentRepository = postCommentRepository;
     }
     [HttpGet]
     public IActionResult Index()
@@ -60,7 +63,7 @@ namespace Engeman.Intranet.Controllers
     public IQueryable<PostDto> FilterPosts(string filter)
     {
       int departmentIdSession = (int)HttpContext.Session.GetInt32("_DepartmentId");
-      int userIdSession = (int)HttpContext.Session.GetInt32("_Id");
+      int userIdSession = (int)HttpContext.Session.GetInt32("_UserAccountId");
       IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(departmentIdSession, userIdSession).AsQueryable();
 
       if (filter == "manual")
@@ -141,7 +144,7 @@ namespace Engeman.Intranet.Controllers
       }
 
       paginatedPosts = OrderedPosts(posts, orderedField, current, rowCount);
-      
+
       return Json(new { rows = paginatedPosts, current, rowCount, total });
     }
 
@@ -405,6 +408,47 @@ namespace Engeman.Intranet.Controllers
       _postRepository.AddArchive(askQuestionDto, archiveList);
 
       return View("InsertArchive");
+    }
+
+    [HttpPost]
+    public IActionResult MakeComment(PostComment postComment, List<IFormFile> files)
+    {
+      if (!ModelState.IsValid)
+      {
+        return Json(-1);
+      }
+
+      postComment.UserAccountId = (int)HttpContext.Session.GetInt32("_UserAccountId");
+      postComment.DepartmentId = (int)HttpContext.Session.GetInt32("_DepartmentId");
+      postComment.CleanDescription = postComment.Description;
+
+      if (files.Count > 0)
+      {
+        List<Archive> archiveList = new List<Archive>();
+
+        for (int i = 0; i < files.Count; i++)
+        {
+          Archive archive = new Archive();
+          archive.Name = files[i].FileName;
+          archive.Description = postComment.Description;
+          //archive.PostId = 0;
+          if (files[i].Length > 0)
+          {
+            using (var stream = new MemoryStream())
+            {
+              files[i].CopyTo(stream);
+              archive.BinaryData = stream.ToArray();
+            }
+          }
+          archiveList.Add(archive);
+        }
+        _postCommentRepository.AddPostComment(postComment, archiveList);
+      }
+      else
+      {
+        _postCommentRepository.AddPostComment(postComment);
+      }
+      return Json("ListAll");
     }
   }
 }

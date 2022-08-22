@@ -157,6 +157,7 @@ $(document).ready(function () {
       var postType = actionButtons.data("post-type");
       actionButtons.on("click", function () {
         if (action == "details") {
+          sessionStorage.setItem("postId", idPost);
           postDetails(idPost, postType);
         } else if (action == "edit") {
           confirmSessionUser(userIdPost, idPost, postType, action);

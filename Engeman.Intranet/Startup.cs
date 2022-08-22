@@ -53,6 +53,7 @@ namespace Engeman.Intranet
       services.AddTransient<IPostRepository, PostRepository>();
       services.AddTransient<IDepartmentRepository, DepartmentRepository>();
       services.AddTransient<IArchiveRepository, ArchiveRepository>();
+      services.AddTransient<IPostCommentRepository, PostCommentRepository>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
