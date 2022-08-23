@@ -126,5 +126,19 @@ namespace Engeman.Intranet.Repositories
         return userAccount;
       }
     }
+
+    public string GetUserAccountNameById(int id)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+        $"SELECT NAME " +
+        $"FROM USERACCOUNT " +
+        $"WHERE ID = {id} ";
+
+        var result = sq.GetDataToString(query);
+        return result;
+      };
+    }
   }
 }

@@ -58,5 +58,19 @@ namespace Engeman.Intranet.Repositories
         return departments;
       }
     }
+
+    public string GetDepartmentNameById(int id)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+        $"SELECT DESCRIPTION " +
+        $"FROM DEPARTMENT " +
+        $"WHERE ID = {id}";
+
+        var result = sq.GetDataToString(query);
+        return result;
+      }
+    }
   }
 }

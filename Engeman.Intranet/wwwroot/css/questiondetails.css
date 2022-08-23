@@ -21,3 +21,13 @@ h2, h3 {
 .well{
   text-align:center;
 }
+
+.file {
+  padding-bottom: 0;
+  padding-top: 0px;
+  margin-left: -10px;
+}
+
+.file-list{
+  margin-top: 20px;
+}

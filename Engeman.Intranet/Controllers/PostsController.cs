@@ -19,15 +19,18 @@ namespace Engeman.Intranet.Controllers
     private readonly IDepartmentRepository _departmentRepository;
     private readonly IArchiveRepository _archiveRepository;
     private readonly IPostCommentRepository _postCommentRepository;
+    private readonly IPostCommentFileRepository _postCommentFileRepository;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
-      IDepartmentRepository departmentRepository, IArchiveRepository archiveRepository, IPostCommentRepository postCommentRepository)
+      IDepartmentRepository departmentRepository, IArchiveRepository archiveRepository, IPostCommentRepository postCommentRepository,
+      IPostCommentFileRepository postCommentFileRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
       _departmentRepository = departmentRepository;
       _archiveRepository = archiveRepository;
       _postCommentRepository = postCommentRepository;
+      _postCommentFileRepository = postCommentFileRepository;
     }
     [HttpGet]
     public IActionResult Index()
@@ -322,14 +325,29 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult QuestionDetails(int idPost)
     {
+      var comments = new List<PostCommentViewModel>();
+      var postComments = _postCommentRepository.GetPostCommentsByPostId(idPost);
+      var filesByComment = _postCommentFileRepository.GetFilesByPostCommentId(idPost);
       var post = _postRepository.GetPostById(idPost);
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
       var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
+
+      for (int i = 0; i < postComments.Count; i++)
+      {
+        var postCommentViewModel = new PostCommentViewModel();
+        postCommentViewModel.Description = postComments[i].Description;
+        postCommentViewModel.Username = _userAccountRepository.GetUserAccountNameById(postComments[i].UserAccountId);
+        postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(postComments[i].DepartmentId);
+        postCommentViewModel.ChangeDate = postComments[i].ChangeDate;
+        postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(postComments[i].Id).ToList();
+        comments.Add(postCommentViewModel);
+      }
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
       ViewBag.PostsCount = postsCount;
+      ViewBag.PostComments = comments;
 
       return PartialView();
     }

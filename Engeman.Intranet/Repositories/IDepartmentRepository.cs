@@ -7,5 +7,6 @@ namespace Engeman.Intranet.Repositories
   {
     public Department GetDepartmentById(int id);
     public List<Department> GetAllDepartments();
+    public string GetDepartmentNameById(int id);
   }
 }

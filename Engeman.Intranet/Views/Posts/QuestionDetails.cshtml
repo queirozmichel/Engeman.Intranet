@@ -70,6 +70,72 @@
                   </form>
                 </div>
               </div>
+              <!--=== Accordion ===-->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="widget">
+                    <div class="widget-header">
+                      <h4><i class="icon-reorder"></i>Respostas</h4>
+                    </div>
+                    <div class="widget-content">
+                      <div class="panel-group" id="accordion">
+                        @if (ViewBag.PostComments.Count == 0)
+                        {
+                          <h3>Sem respostas</h3>
+                        }
+                        else
+                        {
+                          @for (int i = 0; i < ViewBag.PostComments.Count; i++)
+                          {
+                            <div class="panel panel-default">
+                              <div class="row panel-heading">
+                                <div class="col-md-4">
+                                  <h3 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@i">
+                                      @ViewBag.PostComments[i].Username
+                                    </a>
+                                  </h3>
+                                </div>
+                                <div class="col-md-4">
+                                  <h3 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@i">
+                                      @ViewBag.PostComments[i].DepartmentName
+                                    </a>
+                                  </h3>
+                                </div>
+                                <div class="col-md-4">
+                                  <h3 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@i">
+                                      @ViewBag.PostComments[i].ChangeDate
+                                    </a>
+                                  </h3>
+                                </div>
+                              </div>
+                              <div id="@i" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                  @ViewBag.PostComments[i].Description
+
+                                  @if (@ViewBag.PostComments[i].Files.Count > 0)
+                                  {
+                                    <dl class="file-list">
+
+                                      @foreach (var file in @ViewBag.PostComments[i].Files)
+                                      {
+                                        <dd class="file"><a>@file.Name</a></dd>
+                                      }
+                                    </dl>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          }
+                        }
+                      </div>
+                    </div> <!-- /.widget-content -->
+                  </div> <!-- /.widget .box -->
+                </div> <!-- /.col-md-12 -->
+              </div> <!-- /.row -->
+              <!-- /Accordion -->
             </div>
           </div>
           <div class="tab-pane" id="tab_1_2">
