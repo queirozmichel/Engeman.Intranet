@@ -89,6 +89,13 @@
                           {
                             <div class="panel panel-default">
                               <div class="row panel-heading">
+                                <div class="col-md-1">
+                                  <h3 class="panel-title">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@i">
+                                      #@(i+1)
+                                    </a>
+                                  </h3>
+                                </div>
                                 <div class="col-md-4">
                                   <h3 class="panel-title">
                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@i">
@@ -103,7 +110,7 @@
                                     </a>
                                   </h3>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                   <h3 class="panel-title">
                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@i">
                                       @ViewBag.PostComments[i].ChangeDate
@@ -117,11 +124,10 @@
 
                                   @if (@ViewBag.PostComments[i].Files.Count > 0)
                                   {
-                                    <dl class="file-list">
-
-                                      @foreach (var file in @ViewBag.PostComments[i].Files)
+                                    <dl class="file-list">        
+                                      @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
                                       {
-                                        <dd class="file"><a>@file.Name</a></dd>
+                                        <dd class="file"><a href="@Url.Action("showcommentfile", "posts", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
                                       }
                                     </dl>
                                   }

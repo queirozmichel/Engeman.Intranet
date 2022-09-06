@@ -326,21 +326,21 @@ namespace Engeman.Intranet.Controllers
     public IActionResult QuestionDetails(int idPost)
     {
       var comments = new List<PostCommentViewModel>();
-      var postComments = _postCommentRepository.GetPostCommentsByPostId(idPost);
-      var filesByComment = _postCommentFileRepository.GetFilesByPostCommentId(idPost);
+      var orderedPostComments = _postCommentRepository.GetPostCommentsByPostId(idPost);
       var post = _postRepository.GetPostById(idPost);
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
       var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
 
-      for (int i = 0; i < postComments.Count; i++)
+      for (int i = 0; i < orderedPostComments.Count; i++)
       {
         var postCommentViewModel = new PostCommentViewModel();
-        postCommentViewModel.Description = postComments[i].Description;
-        postCommentViewModel.Username = _userAccountRepository.GetUserAccountNameById(postComments[i].UserAccountId);
-        postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(postComments[i].DepartmentId);
-        postCommentViewModel.ChangeDate = postComments[i].ChangeDate;
-        postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(postComments[i].Id).ToList();
+        postCommentViewModel.Id = orderedPostComments[i].Id;
+        postCommentViewModel.Description = orderedPostComments[i].Description;
+        postCommentViewModel.Username = _userAccountRepository.GetUserAccountNameById(orderedPostComments[i].UserAccountId);
+        postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
+        postCommentViewModel.ChangeDate = orderedPostComments[i].ChangeDate;
+        postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(orderedPostComments[i].Id).OrderBy(x => x.Name).ToList();
         comments.Add(postCommentViewModel);
       }
       ViewBag.Post = post;
@@ -373,6 +373,15 @@ namespace Engeman.Intranet.Controllers
     public ActionResult ShowArchive(int idPost, int file)
     {
       var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
+      //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
+      Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedArchives[file].Name);
+
+      return File(orderedArchives[file].BinaryData, "application/pdf");
+    }
+    [HttpGet]
+    public ActionResult ShowCommentFile(int idComment, int file)
+    {
+      var orderedArchives = _postCommentFileRepository.GetFilesByPostCommentId(idComment).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedArchives[file].Name);
 
