@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@{var baseAux = Convert.ToBase64String(ViewBag.UserAccount.Photo);
+  var imasrcAux = string.Format("data:image/png;base64,{0}", baseAux);
+}
+
+<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -44,7 +49,7 @@
         <ul class="nav nav-tabs">
           <li class="active"><a href="#tab_1_1" data-toggle="tab">Postagem</a></li>
           <li><a href="#tab_1_2" data-toggle="tab">Autor</a></li>
-          <li><a href="#tab_1_3" data-toggle="tab">Responder</a></li>
+          <li><a href="#tab_1_3" data-toggle="tab">Comentar</a></li>
         </ul>
         <div class="tab-content row">
           <div class="tab-pane active" id="tab_1_1">
@@ -74,11 +79,49 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="widget">
-                    <div class="widget-header">
-                      <h4><i class="icon-reorder"></i>Respostas</h4>
+                    <div>
+                      @if (ViewBag.PostComments.Count == 0)
+                      {
+                        <h4>0 comentários</h4>
+                      }
+                      else
+                      {
+                        <h4>@ViewBag.PostComments.Count comentários</h4>
+                      }
                     </div>
-                    <div class="widget-content">
-                      <div class="panel-group" id="accordion">
+                    @for (int i = 0; i < ViewBag.PostComments.Count; i++)
+                    {
+                      <div class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].UserId">
+                        <blockquote>
+                          <p>Autem ut takimata nibh dolore amet et eirmod dolores sit dolore kasd voluptua dolor invidunt in exerci tation amet sea stet amet ad sit sanctus sea est magna commodo aliquyam iriure magna justo aliquip stet stet kasd rebum stet erat feugiat delenit clita dolores ea clita clita nonumy no tempor dolor dolores dolores ea enim sit sanctus est accumsan vero sed dolor est tempor invidunt invidunt eirmod sed tincidunt voluptua kasd quod amet dolor commodo consequat tempor et tempor sadipscing dolor et sanctus erat duis sed sit takimata diam commodo takimata vero no sanctus feugiat facilisis sed vero ea duis vero facer erat odio facer nulla et tempor invidunt dolore no nostrud dolor nonummy diam vero veniam eros sed sea in duis dolores diam et gubergren ut nonumy et eos est feugiat sit voluptua justo et ullamcorper illum vero lorem diam no et sea eum luptatum est nostrud aliquyam takimata clita amet ea takimata diam eum eos dolor sanctus adipiscing exerci consequat et stet diam imperdiet elitr sadipscing voluptua magna consectetuer amet ipsum vero duo vel vero no soluta praesent est placerat no diam amet vulputate volutpat kasd justo amet dolor lorem sit eros enim at tempor tincidunt magna dolor</p>
+                          <div>
+                            @if (@ViewBag.PostComments[i].Files.Count > 0)
+                            {
+                              <dl class="file-list">
+                                Anexos:
+                                @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
+                                {
+                                  <dd class="file"><a href="@Url.Action("showcommentfile", "posts", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
+                                }
+                              </dl>
+                            }
+                          </div>
+                        </blockquote>
+                        <figure class="fir-image-figure pull-right">
+                          <a class="fir-imageover" rel="noopener" target="_blank" href="#">
+                            <img class="fir-author-image fir-clickcircle" src='@imasrcAux' />
+                          </a>
+                          <figcaption>
+                            <div class="fig-author-figure-title">@ViewBag.PostComments[i].Username</div>
+                            <div class="fig-author-figure-title">@ViewBag.PostComments[i].DepartmentName</div>
+                            <div class="fig-author-figure-title">@ViewBag.PostComments[i].ChangeDate</div>
+                          </figcaption>
+                        </figure>
+                        <div class="widget-header"></div>
+                      </div>
+                    }
+
+                    @*<div class="panel-group" id="accordion">
                         @if (ViewBag.PostComments.Count == 0)
                         {
                           <h3>Sem respostas</h3>
@@ -87,7 +130,7 @@
                         {
                           @for (int i = 0; i < ViewBag.PostComments.Count; i++)
                           {
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" data-user-id="@ViewBag.PostComments[i].UserId">
                               <div class="row panel-heading">
                                 <div class="col-md-1">
                                   <h3 class="panel-title">
@@ -103,7 +146,7 @@
                                     </a>
                                   </h3>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                   <h3 class="panel-title">
                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@i">
                                       @ViewBag.PostComments[i].DepartmentName
@@ -117,6 +160,14 @@
                                     </a>
                                   </h3>
                                 </div>
+                                <div class="col-md-1">
+                                  <h4 class="panel-title">
+                                    @{ if (Context.Session.GetInt32("_UserAccountId") == ViewBag.PostComments[i].UserId)
+                                      {
+                                        <i class="fa fa-trash-o" title="Apagar"></i>
+                                      }}
+                                  </h4>
+                                </div>
                               </div>
                               <div id="@i" class="panel-collapse collapse">
                                 <div class="panel-body">
@@ -124,7 +175,7 @@
 
                                   @if (@ViewBag.PostComments[i].Files.Count > 0)
                                   {
-                                    <dl class="file-list">        
+                                    <dl class="file-list">
                                       @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
                                       {
                                         <dd class="file"><a href="@Url.Action("showcommentfile", "posts", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
@@ -136,8 +187,7 @@
                             </div>
                           }
                         }
-                      </div>
-                    </div> <!-- /.widget-content -->
+                      </div>*@
                   </div> <!-- /.widget .box -->
                 </div> <!-- /.col-md-12 -->
               </div> <!-- /.row -->
@@ -155,7 +205,7 @@
                           @{ var base64 = Convert.ToBase64String(ViewBag.UserAccount.Photo);
                             var imasrc = string.Format("data:image/png;base64,{0}", base64);
                           }
-                          <img src='@imasrc' />
+                          <img id="author-img" src='@imasrc' />
                           <a href="javascript:void(0);" class="list-group-item"><span class="badge">@ViewBag.PostsCount</span>Postagens realizadas</a>
                           <a href="javascript:void(0);" class="list-group-item">Postagens respondidas</a>
                         </div>

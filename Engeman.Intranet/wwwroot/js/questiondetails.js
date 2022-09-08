@@ -60,3 +60,7 @@ $(".back-to-list-button").on("click", function () {
     }
   });
 })
+
+$(".fa-trash-o").on("click", function () {
+  console.log("ok");
+})

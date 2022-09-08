@@ -338,6 +338,7 @@ namespace Engeman.Intranet.Controllers
         postCommentViewModel.Id = orderedPostComments[i].Id;
         postCommentViewModel.Description = orderedPostComments[i].Description;
         postCommentViewModel.Username = _userAccountRepository.GetUserAccountNameById(orderedPostComments[i].UserAccountId);
+        postCommentViewModel.UserId = orderedPostComments[i].UserAccountId;
         postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
         postCommentViewModel.ChangeDate = orderedPostComments[i].ChangeDate;
         postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(orderedPostComments[i].Id).OrderBy(x => x.Name).ToList();

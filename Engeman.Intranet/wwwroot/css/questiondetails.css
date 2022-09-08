@@ -2,10 +2,17 @@
   margin-bottom: 0px;
 }
 
-img {
+#author-img {
   border: double;
   width: 100%;
   height: 250px;
+  object-fit: cover;
+}
+
+#comment-img {
+  border: double;
+  width: 10%;
+  height: 80%;
   object-fit: cover;
 }
 
@@ -14,12 +21,12 @@ h2, h3 {
   margin-bottom: 10px;
 }
 
-.answer-box{
+.answer-box {
   margin-top: 25px;
 }
 
-.well{
-  text-align:center;
+.well {
+  text-align: center;
 }
 
 .file {
@@ -28,6 +35,46 @@ h2, h3 {
   margin-left: -10px;
 }
 
-.file-list{
+.file-list {
   margin-top: 20px;
+}
+
+.fa-trash-o {
+  cursor: pointer;
+}
+
+.comment-box{
+  margin-left: -15px;
+}
+
+:root {
+  --fir-color-grey: rgba(0,0,0, 0.40);
+}
+
+.fir-clickcircle {
+  height: 80px;
+  width: 80px;
+  border-radius: 100px;
+  cursor: pointer;
+}
+
+.fir-image-figure {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  position: relative;
+  text-decoration: none;
+}
+
+  .fir-image-figure .caption, .fir-image-figure figcaption {
+    padding-left: 15px;
+  }
+
+.fir-image-figure .fig-author-figure-title {
+  color: var(--fir-color-grey);
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  margin-top: 2px;
 }
