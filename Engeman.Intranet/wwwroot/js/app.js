@@ -583,7 +583,8 @@ var App = function() {
 
 		// Hide project switcher on click elsewhere the element
 		$('body').click(function(e) {
-			var classes = e.target.className.split(' ');
+			//var classes = e.target.className.split(' ');
+			  var classes = typeof (e.target.className) === 'string' ? e.target.className.split(' ') : '';
 
 			if ($.inArray('project-switcher', classes) == -1 && $.inArray('project-switcher-btn', classes) == -1
 				&& $(e.target).parents().index($('.project-switcher')) == -1 && $(e.target).parents('.project-switcher-btn').length == 0) {

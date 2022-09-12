@@ -10,7 +10,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @*CSS*@
-  <link rel="stylesheet" href="~/css/questiondetails.css" />
+  <link rel="stylesheet" href="~/css/questionDetails/questiondetails.css" />
+  <link rel="stylesheet" href="~/plugins/wysiwyg/css/style.css" />
   @*JavasScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
@@ -250,7 +251,17 @@
                     <div class="form-group">
                       <label class="col-md-2 control-label">Resposta<span class="required">*</span></label>
                       <div class="col-md-10">
-                        <textarea id="description" class="form-control required" rows="3" cols="5" name="description"></textarea>
+                        <div id="editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
+                        <div id="editor-text-area"></div>
+                        <input id="description" class="form-control" name="description" type="hidden">
+                      </div>
+                      <div class="col-md-offset-2 col-md-10 pull-left">
+                        <p class="info-text">
+                          Tamanho do texto: <span id="total-length">0</span>
+                        </p>
+                        <p class="info-text">
+                          Tamanho do texto selecionado: <span id="selected-length">0</span>
+                        </p>
                       </div>
                     </div>
                     <div class="form-group">
@@ -282,4 +293,6 @@
 
 </html>
 
-<script type="text/javascript" src="~/js/questiondetails.js"></script>
+<script type="text/javascript" src="~/plugins/wysiwyg/js/index.js"></script>
+<script type="text/javascript" src="~/js/questionDetails/richtextbox.js"></script>
+<script type="text/javascript" src="~/js/questionDetails/questiondetails.js"></script>

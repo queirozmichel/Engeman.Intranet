@@ -6,11 +6,23 @@
   });
 
   $("#tab_1_3").removeClass("active");
+
+  $("#comment-form").validate({
+    rules: {
+      description: {
+        required: true
+      }
+    },
+    ignore: []
+  });
+
+  richTextBox();
+
 })
 
 $("#comment-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
-  event.preventDefault();
+  event.preventDefault();  
   if ($("#comment-form").valid()) {
     //usado para receber além dos dados texto, o arquivo também
     var formData = new FormData(this);
@@ -58,7 +70,7 @@ $(".back-to-list-button").on("click", function () {
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");
     }
-  });
+  });  
 })
 
 $(".fa-trash-o").on("click", function () {

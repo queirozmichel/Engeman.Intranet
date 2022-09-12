@@ -21,10 +21,6 @@ h2, h3 {
   margin-bottom: 10px;
 }
 
-.answer-box {
-  margin-top: 25px;
-}
-
 .well {
   text-align: center;
 }
@@ -43,7 +39,7 @@ h2, h3 {
   cursor: pointer;
 }
 
-.comment-box{
+.comment-box {
   margin-left: -15px;
 }
 
@@ -71,10 +67,20 @@ h2, h3 {
     padding-left: 15px;
   }
 
-.fir-image-figure .fig-author-figure-title {
-  color: var(--fir-color-grey);
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: 400;
-  font-size: 12px;
-  margin-top: 2px;
+  .fir-image-figure .fig-author-figure-title {
+    color: var(--fir-color-grey);
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+/*Rich Text Box*/
+.answer-box {
+  margin-top: 25px;
+}
+
+.info-text {
+  color: lightgray;
+  margin-bottom: 0px;
 }
