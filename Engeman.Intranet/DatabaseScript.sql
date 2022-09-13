@@ -110,15 +110,14 @@ GO
 CREATE TABLE POST_COMMENT ( 
      ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOST_COMMENT) CONSTRAINT PK_POST_COMMENT PRIMARY KEY CLUSTERED,
      ACTIVE                        CHAR(1) DEFAULT 'S'                 NOT NULL,
-	 DESCRIPTION                   VARCHAR(MAX)                        NOT NULL,
+	 DESCRIPTION                   NVARCHAR(MAX)                       NOT NULL,
 	 CLEAN_DESCRIPTION             VARCHAR(MAX)                        NOT NULL,
 	 KEYWORDS                      VARCHAR(MAX)                            NULL,
 	 USERACCOUNT_ID                NUMERIC(18)                         NOT NULL,
 	 DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
 	 POST_ID                       NUMERIC(18)                         NOT NULL,
 	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
-	 CONSTRAINT FK_POST_POST_COMMENT FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE,
-     CHECK (DESCRIPTION <> ''))ON [PRIMARY]
+	 CONSTRAINT FK_POST_POST_COMMENT FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE)ON [PRIMARY]
 GO
 
 CREATE TABLE ARCHIVE ( 
@@ -283,7 +282,7 @@ GO
 SELECT * FROM ARCHIVE
 
 INSERT INTO POST_COMMENT (ACTIVE, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID)
-VALUES ('S', 'Melhorias para o Engeman Client/Server.pdf', 'Melhorias', 'Engeman', 9, 1, 279)
+VALUES ('S', N'Melhorias para o Engeman Client/Server 😀', 'Melhorias', 'Engeman', 9, 1, 279)
 GO
 SELECT * FROM POST_COMMENT
 
