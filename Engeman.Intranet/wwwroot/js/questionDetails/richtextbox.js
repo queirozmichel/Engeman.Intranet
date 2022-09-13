@@ -13,17 +13,15 @@
       }
     },
     onChange(editor) {
-      var aux = editor.getHtml()
-      const selectionText = editor.getSelectionText()
-      document.getElementById('selected-length').innerHTML = selectionText.length
-      const text = editor.getText().replace(/\n|\r/mg, '')
-      document.getElementById('total-length').innerHTML = text.length
+      const html = editor.getHtml()
 
-      if (aux != "<p><br></p>") {
-        $("#description").val(aux);
+      if (html != "<p><br></p>") {
+        $("#description").val(html);
       } else {
         $("#description").val("");
-      }
+      }    
+      
+      document.getElementById('preview').innerHTML = html;
     }
   }
 
@@ -50,8 +48,6 @@
       'justifyRight',
       'justifyJustify',
       '|',
-      'indent',
-      'delIndent',
       'emotion',
       'insertLink',
       'uploadImage',

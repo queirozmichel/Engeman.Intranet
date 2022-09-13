@@ -15,7 +15,7 @@ namespace Engeman.Intranet.Repositories
         $"INSERT INTO " +
         $"POST_COMMENT " +
         $"(DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID) " +
-        $"VALUES('{postComment.Description}', '{postComment.CleanDescription}', '{postComment.Keywords}', " +
+        $"VALUES(N'{postComment.Description}', '{postComment.CleanDescription}', '{postComment.Keywords}', " +
         $"'{postComment.UserAccountId}', '{postComment.DepartmentId}', '{postComment.PostId}') ";
 
         sq.ExecuteCommand(query);
@@ -32,7 +32,7 @@ namespace Engeman.Intranet.Repositories
         $"INSERT INTO " +
         $"POST_COMMENT " +
         $"(DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID) OUTPUT INSERTED.ID " +
-        $"VALUES('{postComment.Description}', '{postComment.CleanDescription}', '{postComment.Keywords}', " +
+        $"VALUES(N'{postComment.Description}', '{postComment.CleanDescription}', '{postComment.Keywords}', " +
         $"'{postComment.UserAccountId}', '{postComment.DepartmentId}', '{postComment.PostId}') ";
 
         var outputPostId = sq.GetDataToInt(query);

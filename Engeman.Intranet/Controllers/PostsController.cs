@@ -335,9 +335,11 @@ namespace Engeman.Intranet.Controllers
       for (int i = 0; i < orderedPostComments.Count; i++)
       {
         var postCommentViewModel = new PostCommentViewModel();
+        var userAccountComment = _userAccountRepository.GetUserAccountById(orderedPostComments[i].UserAccountId);
         postCommentViewModel.Id = orderedPostComments[i].Id;
         postCommentViewModel.Description = orderedPostComments[i].Description;
-        postCommentViewModel.Username = _userAccountRepository.GetUserAccountNameById(orderedPostComments[i].UserAccountId);
+        postCommentViewModel.Username = userAccountComment.Name;
+        postCommentViewModel.Photo = userAccountComment.Photo;
         postCommentViewModel.UserId = orderedPostComments[i].UserAccountId;
         postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
         postCommentViewModel.ChangeDate = orderedPostComments[i].ChangeDate;
