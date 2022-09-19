@@ -480,5 +480,12 @@ namespace Engeman.Intranet.Controllers
       }
       return Json("ListAll");
     }
+
+    [HttpDelete]
+    public IActionResult DeleteComment(int idComment)
+    {
+      var result = _postCommentRepository.DeletePostCommentById(idComment);
+      return Json(result);
+    }
   }
 }

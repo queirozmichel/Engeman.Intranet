@@ -87,6 +87,23 @@ namespace Engeman.Intranet.Repositories
         }
       }
     }
+    public bool DeletePostCommentById(int id)
+    {
+      bool result = true;
+      var query =
+      $"DELETE " +
+      $"FROM POST_COMMENT " +
+      $"WHERE ID = {id}";
 
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var aux = sq.ExecuteCommand(query);
+        if (aux != 1)
+        {
+          result = false;
+        }
+        return result;
+      }
+    }
   }
 }

@@ -8,5 +8,6 @@ namespace Engeman.Intranet.Repositories
     public void AddPostComment(PostComment postComment);
     public void AddPostComment(PostComment postComment, List<Archive> archives);
     public List<PostComment> GetPostCommentsByPostId(int postId);
+    public bool DeletePostCommentById(int id);
   }
 }
