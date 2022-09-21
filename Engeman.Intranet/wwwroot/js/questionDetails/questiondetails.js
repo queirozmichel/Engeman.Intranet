@@ -130,3 +130,5 @@ function deleteComment(id, comment) {
     comment.remove();
   }, 700)
 }
+
+$("pre").addClass("line-numbers");

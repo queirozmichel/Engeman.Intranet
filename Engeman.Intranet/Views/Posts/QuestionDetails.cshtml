@@ -7,10 +7,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @*CSS*@
+  <link rel="stylesheet" href="~/plugins/prism/css/prism.css" />
   <link rel="stylesheet" href="~/css/questionDetails/questiondetails.css" />
-  <link rel="stylesheet" href="~/plugins/wysiwyg/css/style.css" />
   @*JavasScript*@
-  <script type="text/javascript" src="~/js/custom.js"></script>  
+  <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
 
 <body>
@@ -29,8 +29,7 @@
         </div>
       </div>
     </div>
-  </div>
-
+  </div>  
   <div class="page-header">
     <div class="page-title">
       <h3>Detalhes da Postagem</h3>
@@ -128,24 +127,24 @@
                               <button class="comment-edit-btn btn btn-xs">Editar</button>
                               <button class="comment-delete-btn btn btn-xs">Apagar</button>
                             </div>
-                          }                          
-                            <figure class="fir-image-figure pull-right">
-                              <a class="fir-imageover" rel="noopener" target="_blank" href="#">
-                                @{var baseAux = Convert.ToBase64String(ViewBag.PostComments[i].Photo);
-                                  var imasrcAux = string.Format("data:image/png;base64,{0}", baseAux);
-                                }
-                                <img class="fir-author-image fir-clickcircle" src='@imasrcAux' />
-                              </a>
-                              <figcaption>
-                                <div class="fig-author-figure-title">@ViewBag.PostComments[i].Username</div>
-                                <div class="fig-author-figure-title">@ViewBag.PostComments[i].DepartmentName</div>
-                                <div class="fig-author-figure-title">@ViewBag.PostComments[i].ChangeDate</div>
-                              </figcaption>
-                            </figure>                        
+                          }
+                          <figure class="fir-image-figure pull-right">
+                            <a class="fir-imageover" rel="noopener" target="_blank" href="#">
+                              @{var baseAux = Convert.ToBase64String(ViewBag.PostComments[i].Photo);
+                                var imasrcAux = string.Format("data:image/png;base64,{0}", baseAux);
+                              }
+                              <img class="fir-author-image fir-clickcircle" src='@imasrcAux' />
+                            </a>
+                            <figcaption>
+                              <div class="fig-author-figure-title">@ViewBag.PostComments[i].Username</div>
+                              <div class="fig-author-figure-title">@ViewBag.PostComments[i].DepartmentName</div>
+                              <div class="fig-author-figure-title">@ViewBag.PostComments[i].ChangeDate</div>
+                            </figcaption>
+                          </figure>
                           <div class="widget-header"></div>
                         </div>
                       </div>
-                    }                    
+                    }
                   </div> <!-- /.widget .box -->
                 </div> <!-- /.col-md-12 -->
               </div> <!-- /.row -->
@@ -195,7 +194,7 @@
           <div class="tab-pane active" id="tab_1_3">
             <div class="col-md-12">
               <div class="row">
-                <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-12 col-md-offset-1 align-center">
                   <h3>@ViewBag.Post.Subject</h3>
                   <div class="well">
                     @ViewBag.Post.Description
@@ -215,7 +214,7 @@
                       </div>
                       <div class="col-md-offset-2 col-md-10 panel-group">
                         <div class="panel panel-default">
-                          <div class="panel-heading">
+                          <div class="panel-heading align-center">
                             <h3 class="panel-title">
                               <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                                 Pré-visualizar comentário
@@ -259,6 +258,6 @@
 
 </html>
 
-<script type="text/javascript" src="~/plugins/wysiwyg/js/index.js"></script>
+<script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/questionDetails/richtextbox.js"></script>
 <script type="text/javascript" src="~/js/questionDetails/questiondetails.js"></script>

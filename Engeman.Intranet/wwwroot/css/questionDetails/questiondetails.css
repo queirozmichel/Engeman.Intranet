@@ -16,11 +16,6 @@
   object-fit: cover;
 }
 
-h2, h3 {
-  text-align: center;
-  margin-bottom: 10px;
-}
-
 .well {
   text-align: center;
 }
@@ -49,7 +44,7 @@ h2, h3 {
   word-break: break-all;
 }
 
-/*Informações sobre o autor do comentário*/
+Informações sobre o autor do comentário
 :root {
   --fir-color-grey: rgba(0,0,0, 0.40);
 }
@@ -83,7 +78,7 @@ h2, h3 {
     margin-top: 2px;
   }
 
-/*Rich Text Box Write*/
+Rich Text Box Write
 .answer-box {
   margin-top: 25px;
 }
@@ -93,9 +88,9 @@ h2, h3 {
   margin-bottom: 0px;
 }
 
-/*Rich Text Box View*/
+Rich Text Box View
 .editor-content-view {
-  /*border: 3px solid #ccc;*/
+  border: 3px solid #ccc;
   border-radius: 5px;
   padding: 0 10px;
   margin-top: 20px;
@@ -104,7 +99,7 @@ h2, h3 {
 
   .editor-content-view p,
   .editor-content-view li {
-    white-space: pre-wrap; /* 保留空格 */
+    white-space: pre-wrap;  保留空格 
   }
 
   .editor-content-view blockquote {
@@ -116,14 +111,14 @@ h2, h3 {
 
   .editor-content-view code {
     font-family: monospace;
-    background-color: #eee;
-    padding: 3px;
+    /*background-color: #eee;*/
+    /*padding: 3px;*/
     border-radius: 3px;
   }
 
   .editor-content-view pre > code {
     display: block;
-    padding: 10px;
+    /*padding: 10px;*/
   }
 
   .editor-content-view table {
@@ -148,4 +143,9 @@ h2, h3 {
 
   .editor-content-view input[type="checkbox"] {
     margin-right: 5px;
+  }
+
+  /*Área de código na pré-visualização*/
+  #preview pre {
+    /*margin: 0.5em 0 0 0;*/
   }

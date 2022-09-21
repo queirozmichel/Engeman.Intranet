@@ -9,7 +9,7 @@
     MENU_CONF: {
       uploadImage: {
         fieldName: 'your-fileName',
-        base64LimitSize: 5 * 1024 * 1024 // 10M 以下插入 base64
+        base64LimitSize: 5 * 1024 * 1024 // 5M 以下插入 base64
       }
     },
     onChange(editor) {
@@ -19,12 +19,32 @@
         $("#description").val(html);
       } else {
         $("#description").val("");
-      }    
-      
+      }
+
       document.getElementById('preview').innerHTML = html;
+      Prism.highlightAll();
     }
   }
 
+  editorConfig.MENU_CONF['fontSize'] = {
+    fontSizeList: ['10px', '12px', '20px', '30px', '50px']
+  }
+
+  editorConfig.MENU_CONF['fontFamily'] = {
+    fontFamilyList: ['Arial', 'Times', 'Tahoma', 'Verdana', 'Sans-serif']
+  }
+
+  editorConfig.MENU_CONF['codeSelectLang'] = {
+    codeLangs: [
+      { text: 'CSS', value: 'css' },
+      { text: 'HTML', value: 'html' },
+      { text: 'C#', value: 'csharp' },
+      { text: 'SQL', value: 'sql' },
+      { text: 'JSON', value: 'json' },
+      // others...
+    ]
+  }
+ 
   const toolbarConfig = {
     toolbarKeys: [
       'headerSelect',
@@ -74,5 +94,5 @@
     selector: '#editor-toolbar',
     config: toolbarConfig,
     mode: 'default', // or 'simple'
-  }) 
+  })
 }
