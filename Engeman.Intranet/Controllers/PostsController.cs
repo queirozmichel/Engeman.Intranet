@@ -32,11 +32,6 @@ namespace Engeman.Intranet.Controllers
       _postCommentRepository = postCommentRepository;
       _postCommentFileRepository = postCommentFileRepository;
     }
-    [HttpGet]
-    public IActionResult Index()
-    {
-      return View();
-    }
 
     [HttpGet]
     public IActionResult ListAll()
@@ -45,22 +40,100 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult AskQuestion()
+    public IActionResult NewQuestion()
     {
       ViewBag.Departments = _departmentRepository.GetAllDepartments();
       return View();
+    }
+
+    [HttpPost]
+    public IActionResult NewQuestion(AskQuestionDto askQuestionDto)
+    {
+      if (!ModelState.IsValid)
+      {
+        return Json(0);
+      }
+
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+      askQuestionDto.UserAccountId = userAccount.Id;
+      askQuestionDto.DepartmentId = userAccount.DepartmentId;
+      askQuestionDto.PostType = 'Q';
+      askQuestionDto.Active = 'S';
+      askQuestionDto.CleanDescription = askQuestionDto.Description;
+      askQuestionDto.DomainAccount = sessionDomainUsername;
+
+      _postRepository.AddQuestion(askQuestionDto);
+
+      return View("NewQuestion");
+    }
+
+    [HttpGet]
+    public IActionResult NewDocument()
+    {
+      ViewBag.DocumentOrManual = 'D';
+      ViewBag.Departments = _departmentRepository.GetAllDepartments();
+      return View("NewDocumentManual");
+    }
+
+    [HttpGet]
+    public IActionResult NewManual()
+    {
+      ViewBag.DocumentOrManual = 'M';
+      ViewBag.Departments = _departmentRepository.GetAllDepartments();
+      return View("NewDocumentManual");
+    }
+
+    [HttpPost]
+    public IActionResult NewDocumentManual(PostArchiveDto postArchiveDto, List<IFormFile> binaryData, char fileType)
+    {
+      if (!ModelState.IsValid || binaryData.Count == 0)
+      {
+        return Json(0);
+      }
+
+      AskQuestionDto askQuestionDto = new AskQuestionDto();
+      List<Archive> archiveList = new List<Archive>();
+
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+      askQuestionDto.Restricted = postArchiveDto.Post.Restricted;
+      askQuestionDto.Subject = postArchiveDto.Post.Subject;
+      askQuestionDto.Description = postArchiveDto.Post.Description;
+      askQuestionDto.CleanDescription = askQuestionDto.Description;
+      askQuestionDto.Keywords = postArchiveDto.Post.Keywords;
+      askQuestionDto.DepartmentsList = postArchiveDto.DepartmentsList;
+      askQuestionDto.UserAccountId = userAccount.Id;
+      askQuestionDto.DomainAccount = sessionDomainUsername;
+      askQuestionDto.DepartmentId = userAccount.DepartmentId;
+      askQuestionDto.PostType = 'A';
+
+      for (int i = 0; i < binaryData.Count; i++)
+      {
+        Archive archive = new Archive();
+        archive.ArchiveType = fileType;
+        archive.Name = binaryData[i].FileName;
+        archive.Description = postArchiveDto.Post.Description;
+        archive.PostId = 0;
+        if (binaryData[i].Length > 0)
+        {
+          using (var stream = new MemoryStream())
+          {
+            binaryData[i].CopyTo(stream);
+            archive.BinaryData = stream.ToArray();
+          }
+        }
+        archiveList.Add(archive);
+      }
+
+      _postRepository.AddArchive(askQuestionDto, archiveList);
+
+      return View("NewDocumentManual");
     }
 
     public IActionResult BackToList()
     {
       return PartialView("ListAll");
-    }
-
-    [HttpGet]
-    public IActionResult InsertArchive()
-    {
-      ViewBag.Departments = _departmentRepository.GetAllDepartments();
-      return View();
     }
 
     public IQueryable<PostDto> FilterPosts(string filter)
@@ -149,29 +222,7 @@ namespace Engeman.Intranet.Controllers
       paginatedPosts = OrderedPosts(posts, orderedField, current, rowCount);
 
       return Json(new { rows = paginatedPosts, current, rowCount, total });
-    }
-
-    [HttpPost]
-    public IActionResult SaveQuestion(AskQuestionDto askQuestionDto)
-    {
-      if (!ModelState.IsValid)
-      {
-        return Json(0);
-      }
-
-      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
-      askQuestionDto.UserAccountId = userAccount.Id;
-      askQuestionDto.DepartmentId = userAccount.DepartmentId;
-      askQuestionDto.PostType = 'Q';
-      askQuestionDto.Active = 'S';
-      askQuestionDto.CleanDescription = askQuestionDto.Description;
-      askQuestionDto.DomainAccount = sessionDomainUsername;
-
-      _postRepository.AddQuestion(askQuestionDto);
-
-      return View("AskQuestion");
-    }
+    }   
 
     [HttpGet]
     public IActionResult QuestionEdit(int idPost)
@@ -389,55 +440,6 @@ namespace Engeman.Intranet.Controllers
       Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedArchives[file].Name);
 
       return File(orderedArchives[file].BinaryData, "application/pdf");
-    }
-
-    [HttpPost]
-    public IActionResult AddArchive(PostArchiveDto postArchiveDto, List<IFormFile> binaryData)
-    {
-      if (!ModelState.IsValid || binaryData.Count == 0)
-      {
-        return Json(0);
-      }
-
-      AskQuestionDto askQuestionDto = new AskQuestionDto();
-      List<Archive> archiveList = new List<Archive>();
-
-      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
-      askQuestionDto.Active = 'S';
-      askQuestionDto.Restricted = postArchiveDto.Post.Restricted;
-      askQuestionDto.Subject = postArchiveDto.Post.Subject;
-      askQuestionDto.Description = postArchiveDto.Post.Description;
-      askQuestionDto.CleanDescription = askQuestionDto.Description;
-      askQuestionDto.Keywords = postArchiveDto.Post.Keywords;
-      askQuestionDto.DepartmentsList = postArchiveDto.DepartmentsList;
-      askQuestionDto.UserAccountId = userAccount.Id;
-      askQuestionDto.DomainAccount = sessionDomainUsername;
-      askQuestionDto.DepartmentId = userAccount.DepartmentId;
-      askQuestionDto.PostType = 'A';
-
-      for (int i = 0; i < binaryData.Count; i++)
-      {
-        Archive archive = new Archive();
-        archive.Active = 'S';
-        archive.ArchiveType = postArchiveDto.Archive.ArchiveType;
-        archive.Name = binaryData[i].FileName;
-        archive.Description = postArchiveDto.Post.Description;
-        archive.PostId = 0;
-        if (binaryData[i].Length > 0)
-        {
-          using (var stream = new MemoryStream())
-          {
-            binaryData[i].CopyTo(stream);
-            archive.BinaryData = stream.ToArray();
-          }
-        }
-        archiveList.Add(archive);
-      }
-
-      _postRepository.AddArchive(askQuestionDto, archiveList);
-
-      return View("InsertArchive");
     }
 
     [HttpPost]

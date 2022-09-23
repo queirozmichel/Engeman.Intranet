@@ -147,8 +147,8 @@ namespace Engeman.Intranet.Repositories
         query =
         $"INSERT INTO " +
         $"ENGEMANINTRANET.POST " +
-        $"(ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE) OUTPUT INSERTED.ID " +
-        $"VALUES ('{askQuestionDto.Active}', '{askQuestionDto.Restricted}', '{askQuestionDto.Subject}', '{askQuestionDto.Description}', " +
+        $"(RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE) OUTPUT INSERTED.ID " +
+        $"VALUES ('{askQuestionDto.Restricted}', '{askQuestionDto.Subject}', '{askQuestionDto.Description}', " +
         $"'{askQuestionDto.CleanDescription}', '{askQuestionDto.Keywords}', {askQuestionDto.UserAccountId}, {askQuestionDto.DepartmentId}, " +
         $"'{askQuestionDto.PostType}')";
 
@@ -159,8 +159,8 @@ namespace Engeman.Intranet.Repositories
           Object[] values = { archives[i].BinaryData };
           query =
           "INSERT " +
-          "INTO ARCHIVE(ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-          $"VALUES('{archives[i].Active}', '{archives[i].ArchiveType}', '{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
+          "INTO ARCHIVE(ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
+          $"VALUES('{archives[i].ArchiveType}', '{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
 
           sq.ExecuteCommand(query, paramters, values);
         }

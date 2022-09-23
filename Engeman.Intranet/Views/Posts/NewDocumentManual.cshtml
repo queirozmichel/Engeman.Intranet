@@ -10,7 +10,7 @@
   @*Inicializa o Spinner*@
   <script>startSpinner();</script>
   @*CSS*@
-  <link rel="stylesheet" href="~/css/insertarchive.css" />
+  <link rel="stylesheet" href="~/css/new-document-manual.css" />
   @*JavaScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
@@ -20,7 +20,14 @@
     <!--=== Page Header ===-->
     <div class="page-header">
       <div class="page-title">
-        <h3>Inserir um Documento/Manual</h3>
+        @if (ViewBag.DocumentOrManual == 'D')
+        {
+          <h3>Documento</h3>
+        }
+        else
+        {
+          <h3>Manual</h3>
+        }
         <span>Good morning, John!</span>
       </div>
       <!-- Page Stats -->
@@ -52,10 +59,23 @@
       <div class="col-md-12">
         <div class="widget box">
           <div class="widget-header">
-            <h4><i class="icon-reorder"></i> Novo Documento/Manual</h4>
+            @if (ViewBag.DocumentOrManual == 'D')
+            {
+              <h4>
+                <i class="icon-reorder"></i>
+                Novo Documento
+              </h4>
+            }
+            else
+            {
+              <h4>
+                <i class="icon-reorder"></i>
+                Novo Manual
+              </h4>
+            }
           </div>
           <div class="widget-content">
-            <form class="form-horizontal row-border" id="archive-form" method="post" enctype="multipart/form-data">
+            <form class="form-horizontal row-border" id="document-manual-form" method="post" enctype="multipart/form-data">
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
@@ -75,21 +95,6 @@
                       }
                     }
                   </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
-                <div class="col-md-3">
-                  <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "D", new { @class = "archive-type required" })
-                    Documento
-                  </label>
-                  <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive.ArchiveType, "M", new { @class = "archive-type" })
-                    Manual
-                  </label>
-                  <label for="Archive.ArchiveType" class="has-error help-block" generated="true"
-                         style="display:none;"></label>
                 </div>
               </div>
               <div class="form-group">
@@ -117,7 +122,15 @@
                 </div>
               </div>
               <div class="form-actions">
-                <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
+                @{if (ViewBag.DocumentOrManual == 'D')
+                  {
+                    <button class="btn btn-primary pull-right" id="submit-button" data-file-type="D" type="submit">Salvar</button>
+                  }
+                  else
+                  {
+                    <button class="btn btn-primary pull-right" id="submit-button" data-file-type="M" type="submit">Salvar</button>
+                  }
+                }
                 <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
               </div>
             </form>
@@ -132,4 +145,4 @@
 
 </html>
 
-<script type="text/javascript" src="~/js/addarchive.js"></script>
+<script type="text/javascript" src="~/js/new-document-manual.js"></script>

@@ -34,7 +34,7 @@ $("#ask-form").on("submit", function (event) {
       type: "POST",
       dataType: 'text',
       async: true,
-      url: "savequestion",
+      url: "newquestion",
       data: formData,
       success: function (response) {
         if (response == 0) {

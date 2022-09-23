@@ -27,16 +27,22 @@ function clearForm() {
   $("#restricted").bootstrapSwitch("state", false);
 }
 
-$("#archive-form").on("submit", function (event) {
+$("#document-manual-form").on("submit", function (event) {
+  var formType = $("#submit-button").attr("data-file-type");
   //ignora o submit padrão do formulário
   event.preventDefault();
   //usado para receber além dos dados texto, o arquivo também
-  if ($("#archive-form").valid()) {
+  if ($("#document-manual-form").valid()) {
     var formData = new FormData(this);
-    //contentType e processData são obrigatórios
+    //contentType e processData são obrigatórios para upload de arquivos
+    if (formType == 'D') {
+      formData.append('fileType', 'D');
+    } else {
+      formData.append('fileType', 'M');
+    }
     $.ajax({
       type: "POST",
-      url: "addarchive",
+      url: "newdocumentmanual",
       contentType: false,
       processData: false,
       data: formData,
@@ -44,7 +50,7 @@ $("#archive-form").on("submit", function (event) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
-          toastr.success("O arquivo foi salvo", "Sucesso!");
+          toastr.success("O documento/manual foi salvo", "Sucesso!");
           $.ajax({
             type: "POST",
             url: "BackToList",
@@ -59,7 +65,7 @@ $("#archive-form").on("submit", function (event) {
         }
       },
       error: function (response) {
-        toastr.error("O arquivo não foi salvo", "Erro!");
+        toastr.error("O documento/manual não foi salvo", "Erro!");
       }
     });
   }
