@@ -11,9 +11,9 @@ namespace Engeman.Intranet.Repositories
     public List<int> GetRestrictedDepartmentsIdByPost(int id);
     public void AddQuestion(AskQuestionDto askQuestionDto);
     public void UpdateQuestion(int id, AskQuestionDto askQuestionDto);
-    public void UpdateArchivePost(int id, AskQuestionDto postInformation, List<Archive> archives);
-    public void AddArchive(AskQuestionDto askQuestionDto, List<Archive> archives);
-    public void AddArchive(int id, List<Archive> archives);
+    public void UpdatePostFile(int id, AskQuestionDto postInformation, List<PostFile> files);
+    public void AddPostFile(AskQuestionDto askQuestionDto, List<PostFile> files);
+    public void AddPostFile(int id, List<PostFile> files);
     public void DeletePost(int postId);
   }
 }

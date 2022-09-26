@@ -31,14 +31,14 @@ function countFiles() {
   return qty;
 }
 
-$("#archive-post-edit-form").on("submit", function (event) {
+$("#document-manual-edit-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
   event.preventDefault();
-  if ($("#archive-post-edit-form").valid()) {
+  if ($("#document-manual-edit-form").valid()) {
     var formData = new FormData(this);
     $.ajax({
       type: "POST",
-      url: "UpdateArchive",
+      url: "documentmanualupdate",
       contentType: false,
       processData: false,
       data: formData,
@@ -75,7 +75,7 @@ $(".back-to-list-button").on("click", function () {
 
 $(".icon-remove-circle").on("click", function () {
   $(this).parent().css("display", "none");
-  $(this).parent().find(".archive-active").val("N");
+  $(this).parent().find(".file-active").val("N");
   var qty = countFiles();
   if (qty == 0) {
     $("#file").addClass("required");

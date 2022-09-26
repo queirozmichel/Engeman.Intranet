@@ -79,9 +79,9 @@ $(document).ready(function () {
       },
       "postType": function (column, row) {
         if (row.postType === "A") {
-          if (row.archiveType === "D") {
+          if (row.fileType === "D") {
             return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
-          } else if (row.archiveType === "M") {
+          } else if (row.fileType === "M") {
             return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
           }
         } else if (row.postType === "Q") {
@@ -214,7 +214,7 @@ function postDetails(idPost, postType) {
       type: "GET",
       data: { "idPost": idPost },
       dataType: "html",
-      url: "/posts/archivepostdetails",
+      url: "/posts/documentmanualdetails",
       error: function () {
         toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
       },
@@ -242,12 +242,12 @@ function postEdit(idPost) {
   })
 }
 
-function archivePostEdit(idPost) {
+function postFileEdit(idPost) {
   $.ajax({
     type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
-    url: "/posts/archivepostedit",
+    url: "/posts/documentmanualedit",
     error: function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
@@ -306,7 +306,7 @@ function confirmSessionUser(userIdPost, idPost, postType, action) {
           if (postType === "Q") {
             postEdit(idPost);
           } else if (postType === "A") {
-            archivePostEdit(idPost);
+            postFileEdit(idPost);
           }
         }
       }

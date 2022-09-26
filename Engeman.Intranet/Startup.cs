@@ -52,7 +52,7 @@ namespace Engeman.Intranet
       services.AddTransient<IUserAccountRepository, UserAccountRepository>();
       services.AddTransient<IPostRepository, PostRepository>();
       services.AddTransient<IDepartmentRepository, DepartmentRepository>();
-      services.AddTransient<IArchiveRepository, ArchiveRepository>();
+      services.AddTransient<IPostFileRepository, PostFileRepository>();
       services.AddTransient<IPostCommentRepository, PostCommentRepository>();
       services.AddTransient<IPostCommentFileRepository, PostCommentFileRepository>();
     }

@@ -16,13 +16,13 @@ namespace Engeman.Intranet.Repositories
       {
         var query = "SELECT " +
           "POST.ID as POST_ID, POST.RESTRICTED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USERACCOUNT_ID, " +
-          "POST.CHANGEDATE, POST.POST_TYPE, UA.NAME, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, A.ARCHIVE_TYPE " +
+          "POST.CHANGEDATE, POST.POST_TYPE, UA.NAME, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, PF.FILE_TYPE " +
           "FROM POST " +
-          "LEFT JOIN ARCHIVE AS A ON A.POST_ID = POST.ID " +
+          "LEFT JOIN POST_FILE AS PF ON PF.POST_ID = POST.ID " +
           "INNER JOIN USERACCOUNT AS UA ON POST.USERACCOUNT_ID = UA.ID " +
           "INNER JOIN DEPARTMENT AS D ON POST.DEPARTMENT_ID = D.ID " +
           "WHERE POST.ACTIVE = 'S' " +
-          "GROUP BY POST.ID, POST.RESTRICTED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID, POST.CHANGEDATE, A.ARCHIVE_TYPE, " +
+          "GROUP BY POST.ID, POST.RESTRICTED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID, POST.CHANGEDATE, PF.FILE_TYPE, " +
           "POST.POST_TYPE, UA.NAME, D.ID, D.DESCRIPTION";
 
         var result = sq.GetDataSet(query).Tables[0];
@@ -54,7 +54,7 @@ namespace Engeman.Intranet.Repositories
           postDto.UserAccountId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
           postDto.DepartmentDescription = result.Rows[i]["Department"].ToString();
           postDto.UserAccountName = result.Rows[i]["Name"].ToString();
-          postDto.ArchiveType = result.Rows[i]["Archive_Type"].ToString();
+          postDto.FileType = result.Rows[i]["File_Type"].ToString();
 
           posts.Add(postDto);
         }
@@ -136,7 +136,7 @@ namespace Engeman.Intranet.Repositories
       return post;
     }
 
-    public void AddArchive(AskQuestionDto askQuestionDto, List<Archive> archives)
+    public void AddPostFile(AskQuestionDto askQuestionDto, List<PostFile> files)
     {
       var query = "";
 
@@ -154,13 +154,13 @@ namespace Engeman.Intranet.Repositories
 
         var outputPostId = sq.GetDataToInt(query);
 
-        for (int i = 0; i < archives.Count; i++)
+        for (int i = 0; i < files.Count; i++)
         {
-          Object[] values = { archives[i].BinaryData };
+          Object[] values = { files[i].BinaryData };
           query =
           "INSERT " +
-          "INTO ARCHIVE(ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-          $"VALUES('{archives[i].ArchiveType}', '{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
+          "INTO POST_FILE(FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
+          $"VALUES('{files[i].FileType}', '{files[i].Name}', '{files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
@@ -181,21 +181,21 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void AddArchive(int id, List<Archive> archives)
+    public void AddPostFile(int id, List<PostFile> files)
     {
       using (StaticQuery sq = new StaticQuery())
       {
         var query = "";
         string[] paramters = { "BinaryData;byte" };
 
-        for (int i = 0; i < archives.Count; i++)
+        for (int i = 0; i < files.Count; i++)
         {
-          Object[] values = { archives[i].BinaryData };
+          Object[] values = { files[i].BinaryData };
 
           query =
           "INSERT " +
-          "INTO ARCHIVE(ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-          $"VALUES('{archives[i].Active}', '{archives[i].ArchiveType}', '{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {id}) ";
+          "INTO POST_FILE(FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
+          $"VALUES('{files[i].FileType}', '{files[i].Name}', '{files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {id}) ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
@@ -240,7 +240,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void UpdateArchivePost(int id, AskQuestionDto postInformation, List<Archive> archives)
+    public void UpdatePostFile(int id, AskQuestionDto postInformation, List<PostFile> files)
     {
       using (StaticQuery sq = new StaticQuery())
       {
@@ -249,12 +249,12 @@ namespace Engeman.Intranet.Repositories
 
         UpdateQuestion(id, postInformation);
 
-        for (int i = 0; i < archives.Count; i++)
+        for (int i = 0; i < files.Count; i++)
         {
           update =
           $"UPDATE " +
-          $"ENGEMANINTRANET.ARCHIVE " +
-          $"SET ARCHIVE_TYPE = '{archives[i].ArchiveType}', DESCRIPTION = '{postInformation.Description}' " +
+          $"ENGEMANINTRANET.POST_FILE " +
+          $"SET FILE_TYPE = '{files[i].FileType}', DESCRIPTION = '{postInformation.Description}' " +
           $"WHERE POST_ID = {id}";
 
           sq.ExecuteCommand(update);
@@ -268,50 +268,7 @@ namespace Engeman.Intranet.Repositories
 
             sq.ExecuteCommand(delete);
           }
-        }
-
-        //var update =
-        //$"UPDATE " +
-        //$"ENGEMANINTRANET.POST " +
-        //$"SET RESTRICTED = '{postInformation.Restricted}', SUBJECT = '{postInformation.Subject}', DESCRIPTION = '{postInformation.Description}', " +
-        //$"CLEAN_DESCRIPTION = '{postInformation.Description}', KEYWORDS = '{postInformation.Keywords}' " +
-        //$"WHERE ID = {id}";
-
-        //var delete =
-        //$"DELETE " +
-        //$"FROM POST_DEPARTMENT " +
-        //$"WHERE POST_ID = {id} ";
-
-        //sq.ExecuteCommand(update);
-
-        //for (int i = 0; i < archives.Count; i++)
-        //{
-        //  update =
-        //  $"UPDATE " +
-        //  $"ENGEMANINTRANET.ARCHIVE " +
-        //  $"SET ARCHIVE_TYPE = '{archives[i].ArchiveType}', DESCRIPTION = '{postInformation.Description}' " +
-        //  $"WHERE POST_ID = {id}";
-
-        //  sq.ExecuteCommand(update);
-
-        //  if (postInformation.Restricted == 'N')
-        //  {
-        //    sq.ExecuteCommand(delete);
-        //  }
-        //  else
-        //  {
-        //    sq.ExecuteCommand(delete);
-
-        //    for (i = 0; i < postInformation.DepartmentsList.Count; i++)
-        //    {
-        //      var insert =
-        //      $"INSERT INTO " +
-        //      $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
-        //      $"VALUES({id},{postInformation.DepartmentsList[i]}) ";
-        //      sq.ExecuteCommand(insert);
-        //    }
-        //  }
-        //}
+        }        
       }
     }
 

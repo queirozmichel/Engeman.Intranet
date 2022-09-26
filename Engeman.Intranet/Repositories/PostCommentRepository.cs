@@ -22,7 +22,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void AddPostComment(PostComment postComment, List<Archive> archives)
+    public void AddPostComment(PostComment postComment, List<PostFile> files)
     {
       using (StaticQuery sq = new StaticQuery())
       {
@@ -37,14 +37,14 @@ namespace Engeman.Intranet.Repositories
 
         var outputPostId = sq.GetDataToInt(query);
 
-        for (int i = 0; i < archives.Count; i++)
+        for (int i = 0; i < files.Count; i++)
         {
-          Object[] values = { archives[i].BinaryData };
+          Object[] values = { files[i].BinaryData };
           query =
           $"INSERT INTO " +
           $"POST_COMMENT_FILE " +
           $"(NAME, DESCRIPTION, BINARY_DATA, POST_COMMENT_ID) " +
-          $"VALUES('{archives[i].Name}', '{archives[i].Description}', Convert(VARBINARY(MAX),@BinaryData), '{outputPostId}') ";
+          $"VALUES('{files[i].Name}', '{files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), '{outputPostId}') ";
 
           sq.ExecuteCommand(query, paramters, values);
         }

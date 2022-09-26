@@ -2,14 +2,14 @@
 
 namespace Engeman.Intranet.Models
 {
-  public class PostArchiveViewModel
+  public class PostFileViewModel
   {
-    public PostArchiveViewModel()
+    public PostFileViewModel()
     {
-      this.Archive = new List<Archive>();
+      this.Files = new List<PostFile>();
     }
     public Post Post { get; set; }
-    public List<Archive> Archive { get; set; }
+    public List<PostFile> Files { get; set; }
     public List<int> DepartmentsList { get; set; }
   }
 }

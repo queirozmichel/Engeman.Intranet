@@ -17,18 +17,18 @@ namespace Engeman.Intranet.Controllers
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IPostRepository _postRepository;
     private readonly IDepartmentRepository _departmentRepository;
-    private readonly IArchiveRepository _archiveRepository;
+    private readonly IPostFileRepository _postFileRepository;
     private readonly IPostCommentRepository _postCommentRepository;
     private readonly IPostCommentFileRepository _postCommentFileRepository;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
-      IDepartmentRepository departmentRepository, IArchiveRepository archiveRepository, IPostCommentRepository postCommentRepository,
+      IDepartmentRepository departmentRepository, IPostFileRepository postFileRepository, IPostCommentRepository postCommentRepository,
       IPostCommentFileRepository postCommentFileRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
       _departmentRepository = departmentRepository;
-      _archiveRepository = archiveRepository;
+      _postFileRepository = postFileRepository;
       _postCommentRepository = postCommentRepository;
       _postCommentFileRepository = postCommentFileRepository;
     }
@@ -93,7 +93,7 @@ namespace Engeman.Intranet.Controllers
       }
 
       AskQuestionDto askQuestionDto = new AskQuestionDto();
-      List<Archive> archiveList = new List<Archive>();
+      List<PostFile> archiveList = new List<PostFile>();
 
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
@@ -110,23 +110,23 @@ namespace Engeman.Intranet.Controllers
 
       for (int i = 0; i < binaryData.Count; i++)
       {
-        Archive archive = new Archive();
-        archive.ArchiveType = fileType;
-        archive.Name = binaryData[i].FileName;
-        archive.Description = postArchiveDto.Post.Description;
-        archive.PostId = 0;
+        PostFile file = new PostFile();
+        file.FileType = fileType;
+        file.Name = binaryData[i].FileName;
+        file.Description = postArchiveDto.Post.Description;
+        file.PostId = 0;
         if (binaryData[i].Length > 0)
         {
           using (var stream = new MemoryStream())
           {
             binaryData[i].CopyTo(stream);
-            archive.BinaryData = stream.ToArray();
+            file.BinaryData = stream.ToArray();
           }
         }
-        archiveList.Add(archive);
+        archiveList.Add(file);
       }
 
-      _postRepository.AddArchive(askQuestionDto, archiveList);
+      _postRepository.AddPostFile(askQuestionDto, archiveList);
 
       return View("NewDocumentManual");
     }
@@ -222,7 +222,7 @@ namespace Engeman.Intranet.Controllers
       paginatedPosts = OrderedPosts(posts, orderedField, current, rowCount);
 
       return Json(new { rows = paginatedPosts, current, rowCount, total });
-    }   
+    }
 
     [HttpGet]
     public IActionResult QuestionEdit(int idPost)
@@ -242,28 +242,28 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult ArchivePostEdit(int idPost)
+    public IActionResult DocumentManualEdit(int idPost)
     {
-      PostArchiveViewModel postArchiveViewModel = new PostArchiveViewModel();
+      PostFileViewModel postFileViewModel = new PostFileViewModel();
       List<int> restrictedDepartments;
       var post = _postRepository.GetPostById(idPost);
-      var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
+      var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
       ViewBag.Departments = _departmentRepository.GetAllDepartments();
       ViewBag.RestrictedDepartments = null;
-      postArchiveViewModel.Post = post;
+      postFileViewModel.Post = post;
 
-      for (int i = 0; i < orderedArchives.Count; i++)
+      for (int i = 0; i < orderedFiles.Count; i++)
       {
-        postArchiveViewModel.Archive.Add(orderedArchives[i]);
+        postFileViewModel.Files.Add(orderedFiles[i]);
       }
 
       if (post.Restricted == 'S')
       {
         restrictedDepartments = _postRepository.GetRestrictedDepartmentsIdByPost(idPost);
         ViewBag.RestrictedDepartments = restrictedDepartments;
-        return PartialView(postArchiveViewModel);
+        return PartialView(postFileViewModel);
       }
-      return PartialView(postArchiveViewModel);
+      return PartialView(postFileViewModel);
     }
 
     [HttpPost]
@@ -288,51 +288,51 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public ActionResult UpdateArchive(PostArchiveViewModel postArchives, List<IFormFile> binaryData)
+    public ActionResult DocumentManualUpdate(PostFileViewModel postFiles, List<IFormFile> binaryData)
     {
       if (!ModelState.IsValid)
       {
         return Json(0);
       }
 
-      char archiveType = postArchives.Archive[0].ArchiveType;
+      char fileType = postFiles.Files[0].FileType;
       AskQuestionDto postInformation = new AskQuestionDto();
-      List<Archive> archives = new List<Archive>();
+      List<PostFile> files = new List<PostFile>();
 
-      for (int i = 0; i < postArchives.Archive.Count; i++)
+      for (int i = 0; i < postFiles.Files.Count; i++)
       {
-        if (postArchives.Archive[i].Active == 'N')
+        if (postFiles.Files[i].Active == 'N')
         {
-          _archiveRepository.DeleteArchiveById(postArchives.Archive[i].Id);
-          postArchives.Archive.RemoveAt(i);
+          _postFileRepository.DeleteFileById(postFiles.Files[i].Id);
+          postFiles.Files.RemoveAt(i);
           i--;
         }
       }
 
-      for (int i = 0; i < postArchives.Archive.Count; i++)
+      for (int i = 0; i < postFiles.Files.Count; i++)
       {
-        Archive archiveUpdate = new Archive();
-        archiveUpdate.ArchiveType = archiveType;
-        archiveUpdate.Description = postArchives.Post.Description;
-        archives.Add(archiveUpdate);
+        PostFile fileUpdate = new PostFile();
+        fileUpdate.FileType = fileType;
+        fileUpdate.Description = postFiles.Post.Description;
+        files.Add(fileUpdate);
       }
 
-      postInformation.Restricted = postArchives.Post.Restricted;
-      postInformation.Subject = postArchives.Post.Subject;
-      postInformation.Description = postArchives.Post.Description;
+      postInformation.Restricted = postFiles.Post.Restricted;
+      postInformation.Subject = postFiles.Post.Subject;
+      postInformation.Description = postFiles.Post.Description;
       postInformation.CleanDescription = postInformation.Description;
-      postInformation.Keywords = postArchives.Post.Keywords;
-      postInformation.DepartmentsList = postArchives.DepartmentsList;
+      postInformation.Keywords = postFiles.Post.Keywords;
+      postInformation.DepartmentsList = postFiles.DepartmentsList;
 
-      _postRepository.UpdateArchivePost(postArchives.Post.Id, postInformation, archives);
+      _postRepository.UpdatePostFile(postFiles.Post.Id, postInformation, files);
 
       if (binaryData.Count != 0)
       {
-        archives.Clear();
+        files.Clear();
 
         for (int i = 0; i < binaryData.Count; i++)
         {
-          Archive newArchive = new Archive();
+          Models.PostFile newArchive = new Models.PostFile();
           if (binaryData[i].Length > 0)
           {
             using (var stream = new MemoryStream())
@@ -341,13 +341,13 @@ namespace Engeman.Intranet.Controllers
               newArchive.BinaryData = stream.ToArray();
               newArchive.Name = binaryData[i].FileName;
               newArchive.Active = 'S';
-              newArchive.ArchiveType = archiveType;
+              newArchive.FileType = fileType;
               newArchive.Description = postInformation.Description;
-              archives.Add(newArchive);
+              files.Add(newArchive);
             }
           }
         }
-        _postRepository.AddArchive(postArchives.Post.Id, archives);
+        _postRepository.AddPostFile(postFiles.Post.Id, files);
       }
       return PartialView("ListAll");
     }
@@ -407,39 +407,39 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult ArchivePostDetails(int idPost)
+    public IActionResult DocumentManualDetails(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
-      var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
+      var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
       var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
-      ViewBag.Archives = orderedArchives;
+      ViewBag.Files = orderedFiles;
       ViewBag.PostsCount = postsCount;
 
       return PartialView();
     }
 
     [HttpGet]
-    public ActionResult ShowArchive(int idPost, int file)
+    public ActionResult ShowFile(int idPost, int file)
     {
-      var orderedArchives = _archiveRepository.GetArchiveByPostId(idPost).OrderBy(a => a.Name).ToList();
+      var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
-      Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedArchives[file].Name);
+      Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedFiles[file].Name);
 
-      return File(orderedArchives[file].BinaryData, "application/pdf");
+      return File(orderedFiles[file].BinaryData, "application/pdf");
     }
     [HttpGet]
     public ActionResult ShowCommentFile(int idComment, int file)
     {
-      var orderedArchives = _postCommentFileRepository.GetFilesByPostCommentId(idComment).OrderBy(a => a.Name).ToList();
+      var orderedFiles = _postCommentFileRepository.GetFilesByPostCommentId(idComment).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
-      Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedArchives[file].Name);
+      Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedFiles[file].Name);
 
-      return File(orderedArchives[file].BinaryData, "application/pdf");
+      return File(orderedFiles[file].BinaryData, "application/pdf");
     }
 
     [HttpPost]
@@ -456,11 +456,11 @@ namespace Engeman.Intranet.Controllers
 
       if (files.Count > 0)
       {
-        List<Archive> archiveList = new List<Archive>();
+        List<Models.PostFile> archiveList = new List<Models.PostFile>();
 
         for (int i = 0; i < files.Count; i++)
         {
-          Archive archive = new Archive();
+          Models.PostFile archive = new Models.PostFile();
           archive.Name = files[i].FileName;
           archive.Description = postComment.Description;
           //archive.PostId = 0;

@@ -1,4 +1,4 @@
-﻿@model Engeman.Intranet.Models.PostArchiveViewModel;
+﻿@model Engeman.Intranet.Models.PostFileViewModel;
 @{List<Department> departments = ViewBag.Departments;}
 @{List<int> restrictedDepartments = ViewBag.RestrictedDepartments;}
 
@@ -9,7 +9,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @*CSS*@
-  <link rel="stylesheet" href="~/css/archivepostedit.css" />
+  <link rel="stylesheet" href="~/css/document-manual-edit.css" />
   @*JavaScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
@@ -54,7 +54,7 @@
             <h4><i class="icon-reorder"></i>Arquivo</h4>
           </div>
           <div class="widget-content">
-            <form class="form-horizontal row-border" id="archive-post-edit-form" method="post">
+            <form class="form-horizontal row-border" id="document-manual-edit-form" method="post">
               <div class="form-group">
                 <label class="col-md-2 control-label">Id</label>
                 <div class="col-md-1">
@@ -115,29 +115,29 @@
                 <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
                 <div class="col-md-3">
                   <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive[0].ArchiveType, "D", new { @class = "archive-type required" })
+                    @Html.RadioButtonFor(model => model.Files[0].FileType, "D", new { @class = "file-type required" })
                     Documento
                   </label>
                   <label class="radio">
-                    @Html.RadioButtonFor(model => model.Archive[0].ArchiveType, "M", new { @class = "archive-type" })
+                    @Html.RadioButtonFor(model => model.Files[0].FileType, "M", new { @class = "file-type" })
                     Manual
                   </label>
-                  <label for="Archive.ArchiveType" class="has-error help-block" generated="true"
+                  <label for="File.FileType" class="has-error help-block" generated="true"
                          style="display:none;"></label>
                 </div>
               </div>
               <div class="form-group files">
-                <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span><span class="archives-qty">0</span></label>
+                <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span><span class="files-qty">0</span></label>
                 <div class="col-md-10">
-                  @for (int i = 0; i < Model.Archive.Count; i++)
+                  @for (int i = 0; i < Model.Files.Count; i++)
                   {
                     <label class="checkbox">
-                      @Html.HiddenFor(model => model.Archive[i].Id, new { @class = "archive-id" })
-                      @Html.HiddenFor(model => model.Archive[i].Active, new { @class = "archive-active" })
-                      <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showarchive", "posts", new { idPost = Model.Post.Id, file = i })" target="_blank">@Model.Archive[i].Name</a>
+                      @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
+                      @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
+                      <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts", new { idPost = Model.Post.Id, file = i })" target="_blank">@Model.Files[i].Name</a>
                     </label>
                   }
-                  <span class="archives-qty">0</span>
+                  <span class="files-qty">0</span>
                 </div>
               </div>
               <div class="form-group">
@@ -160,4 +160,4 @@
 
 </html>
 
-<script type="text/javascript" src="~/js/archivepostedit.js"></script>
+<script type="text/javascript" src="~/js/document-manual-edit.js"></script>
