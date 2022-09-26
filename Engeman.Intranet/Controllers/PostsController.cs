@@ -144,11 +144,11 @@ namespace Engeman.Intranet.Controllers
 
       if (filter == "manual")
       {
-        return posts = posts.Where("archiveType == (@0)", "M");
+        return posts = posts.Where("fileType == (@0)", "M");
       }
       if (filter == "document")
       {
-        return posts = posts.Where("archiveType == (@0)", "D");
+        return posts = posts.Where("fileType == (@0)", "D");
       }
       if (filter == "question")
       {
