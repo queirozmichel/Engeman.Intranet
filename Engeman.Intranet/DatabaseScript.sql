@@ -46,33 +46,21 @@ GO
 /* ===================================== Criação das Sequences ===================================================== */
 
 CREATE SEQUENCE GENDEPARTMENT START WITH 1 AS NUMERIC(18);
-GO
-
 CREATE SEQUENCE GENUSERACCOUNT START WITH 1 AS NUMERIC(18);
-GO
-
 CREATE SEQUENCE GENPOST START WITH 1 AS NUMERIC(18);
-GO
-
 CREATE SEQUENCE GENPOST_COMMENT START WITH 1 AS NUMERIC(18);
-GO
-
-CREATE SEQUENCE GENARCHIVE START WITH 1 AS NUMERIC(18);
-GO
-
+CREATE SEQUENCE GENPOST_FILE START WITH 1 AS NUMERIC(18);
 CREATE SEQUENCE GENPOST_DEPARTMENT START WITH 1 AS NUMERIC(18);
-GO
-
 CREATE SEQUENCE GENPOST_COMMENT_FILE START WITH 1 AS NUMERIC(18);
-GO
+
 
 /* ====================================== Criação das Tabelas ====================================================== */
 
 CREATE TABLE DEPARTMENT ( 
      ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENDEPARTMENT) CONSTRAINT PK_DEPARTMENT PRIMARY KEY CLUSTERED,       
+	 ACTIVE                        CHAR(1) DEFAULT 'S'                  NOT NULL,
      CODE                          VARCHAR(25)                          NOT NULL,
 	 DESCRIPTION                   VARCHAR(100)                         NOT NULL,
-	 ACTIVE                        CHAR(1) DEFAULT 'S'                  NOT NULL,
      CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP       NULL,
      CHECK (DESCRIPTION <> ''))ON [PRIMARY]
 GO
@@ -86,7 +74,12 @@ CREATE TABLE USERACCOUNT (
      EMAIL                         VARCHAR(50)                         NOT NULL,
 	 PHOTO                         VARBINARY(MAX)					   DEFAULT 0x89504E470D0A1A0A0000000D49484452000000E1000000E10803000000096D224800000033504C5445E4E6E7AEB4B7AAB1B4E7E9EAA9AFB3C9CDCFE3E5E6DFE1E2D9DCDDB0B6B9C1C6C8CDD0D2C6CACCBABFC1D3D6D8ACB2B6BCC0C3714CA3BD0000050E49444154789CED9DDD7A83200C4095F8AFA0EFFFB443995B3BDB55312989CDB9D96DCF17480021CB3245511445511445511445511445511445511445511445511445511445F9600052FF022AC0AB35CEF51ED734155CCBD4DBB8C1E6C6337A96BF7670D5552CA12EAD57CAFF308E455BD6F225019C2D36763F96A6ED33D18E9095A379A6173066A8E43A42B91D9C8F0239088D23B87C875F70EC052A42655F8CCFBBB1DAD6D21CC11DF05B1C858511BA83825ED18A523C324257C6B64AFDB37753B5C7FD96303642C258C7F9C951AC77D608B18AF1110C8AA97FFF6B22E7E0CA58A71678019C14CCF336B5C2FF44D4C10DACEBE2E195CC234CC958B14210CCF3826FB6018B21E8A722D720428F12423F4E07AE8A274AFD1F459E25033A3443A6F9B4461AA3332C973630E109F20C625D601A320C22E62C9C611844C45938C32E9DA2D5C295915B4D3CBFA7D8283233C42C1501E3523BDD01256E9E99E95805117F907A581956A8C530C06B1385B1F3FDCBC869278C5DEE039C8A3EC934643511816090F25AD6340489865745A44834AC520D45BD9FE153F3695229A7648ABBBDFF85CFA922D639E9063E8634E5302F2E6F68AE6F985AEC07A011E464A8A334124699E6FAD5E2FA15FFFAABB6CBAFBCAFBF7BCA1A1A43463BE08C668FCFE81483A62072FA72011D85219F54EA7104C99453A2F984537D8A89C8691A7EC2D7B5EB7F21FD80AFDCD0230FD391D920CDAE7FDB04BDE8B32AF781CBDFFA42DEE8F3D9DEDF70F9DB971F708316E9A6FE4CC12E9106D06EEFB1BBB5F703D6C286659A09E0241B5EDBA67B705E05B11DA33318F994691E5D41988AA9155E519DF4E3B7E2DE702EDBC878087C42B190209841FC636EE3240866F1CFB9450CD140D5468551527F1398223A7FA4FED1C738DEBD85D519FE1E2EDF81275BC2B8BB8B92B8000600865D9DB08A4E6EB72FA806F362AC8EA69338407F81AC6F9F07726EBB27377E2B00F5D0160F2CBDDED0C8EF2AB80050B9CE7EF785FCEE0DD976FD059A26DE025EB3717D5F96737BCFFA62DD3D6F80ABAAC12352FF28141691DAB97EE8266BDB156BA76E28FD68AD04AB86AEBA65D7E6C59262B6A974CE3785696DD7CB6BBA3BCBF59D2F11BB966D8BAA1D9C94EC137A06EF73FBE3D94EFC0B0840F3B067F06E4D93778E6F436CAFD7E5CF7B06EFC514B6E7B8929BF5C6F8E0DD331ACBAD813254E53FEBEB38C9C9B119ADFF37B48EC7E43CF61D007E7B84AFB7E0F78EC9CF17217BB9C53D87B1491D673F9A77083C1C615F4372B98ED0EF6D488EE038BDFF2C071AB2FCF290E2CD9FBEA13A7E6A7F92317FE77729940B098731D3BBCAE3B1F37A54C7F784314D00BF15A7770822740A8E67CCA90B07447EFBC4A3A0FD1F0A40F30CEF98E244A8083DC92BBC838C741DBF61481FC100D10A27E2DB3C15349736C026CE31B75028B212A4506426887F3F8C9D207614D32E649E80794F134A0E75700B9EA0E3298877A71FFF7D2812586F14A9FAEB2080B36184895D1AFD0523DBA4DCF0EE00632A328E608ED17881AA41121AA79FB931D8F2BEE0E4131BC67974A538D59900FDFF019070268854ED0251194F9C4D51F5F042E644F3419A26D6E8C4FF9356F45E1764441BF24FA481E8462FFC6BE14A644DA469E04542EC025C4C086357A7BC3715F7446D31040DD2C8F5374829153351EB1ADC8E3AD4447C729353EE03118692A66154BD10B3A009442C6B84ACBA57222A22DB63E0271C3F1CA6E8484AC9F1A5A988F38B1B0EAF6A60981FF308A2381AC2ECC97B33B644082A8AA2288AA2288AA2288AA228EFE40BC9C65651C8D5962F0000000049454E44AE426082,
 	 DESCRIPTION				   VARCHAR(MAX)                        NULL,
-	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,     
+	 CREATE_POST			       BIT DEFAULT 1					   NOT NULL,
+	 EDIT_OWNER_POST               BIT DEFAULT 1					   NOT NULL,
+	 DELETE_OWNER_POST             BIT DEFAULT 1					   NOT NULL,
+	 EDIT_ALL_POST                 BIT DEFAULT 0					   NOT NULL,
+	 DELETE_ALL_POST               BIT DEFAULT 0					   NOT NULL,
+	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
      CHECK (NAME <> ''),
      CHECK (DOMAINACCOUNT <> ''))ON [PRIMARY]
 GO
@@ -101,8 +94,8 @@ CREATE TABLE POST (
 	 KEYWORDS                      VARCHAR(MAX)                            NULL,
 	 USERACCOUNT_ID                NUMERIC(18)                         NOT NULL,
 	 DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
-	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
-     POST_TYPE	                   CHAR(1) DEFAULT 'Q'                 NOT NULL, /*A-ARCHIVE, Q-QUESTION */
+     POST_TYPE	                   CHAR(1)                             NOT NULL, /*F-FILE, Q-QUESTION */
+	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP      NULL,
      CHECK (SUBJECT <> ''),
      CHECK (DESCRIPTION <> ''))ON [PRIMARY]
 GO
@@ -116,20 +109,20 @@ CREATE TABLE POST_COMMENT (
 	 USERACCOUNT_ID                NUMERIC(18)                         NOT NULL,
 	 DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
 	 POST_ID                       NUMERIC(18)                         NOT NULL,
-	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
+	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP      NULL,
 	 CONSTRAINT FK_POST_POST_COMMENT FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE)ON [PRIMARY]
 GO
 
-CREATE TABLE ARCHIVE ( 
-     ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENARCHIVE) CONSTRAINT PK_ARCHIVE PRIMARY KEY CLUSTERED,
+CREATE TABLE POST_FILE ( 
+     ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOST_FILE) CONSTRAINT PK_POST_FILE PRIMARY KEY CLUSTERED,
      ACTIVE                        CHAR(1) DEFAULT 'S'                 NOT NULL,
-     ARCHIVE_TYPE	               CHAR(1) DEFAULT 'D'                 NOT NULL, /*D-DOCUMENT, M-MANUAL*/
+     FILE_TYPE	                   CHAR(1)                             NOT NULL, /*D-DOCUMENT, M-MANUAL*/
 	 NAME                          VARCHAR(100)                        NOT NULL,
 	 DESCRIPTION                   VARCHAR(MAX)                        NOT NULL,
 	 BINARY_DATA				   VARBINARY(MAX)                      NOT NULL,
 	 POST_ID                       NUMERIC(18)                         NOT NULL,
 	 CHANGEDATE                    DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
-	 CONSTRAINT FK_POST_ARCHIVE FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE,
+	 CONSTRAINT FK_POST_POST_FILE FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE,
      CHECK (NAME <> ''),
 	 CHECK (DESCRIPTION <> ''),
      CHECK (BINARY_DATA <> ''))ON [PRIMARY]
@@ -138,7 +131,7 @@ GO
 CREATE TABLE POST_COMMENT_FILE ( 
      ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOST_COMMENT_FILE) CONSTRAINT PK_POST_COMMENT_FILE PRIMARY KEY CLUSTERED,
      ACTIVE                        CHAR(1) DEFAULT 'S'                 NOT NULL,
-     FILE_TYPE	                   CHAR(1) DEFAULT 'D'                 NOT NULL, /*D-DOCUMENT, M-MANUAL*/
+     FILE_TYPE	                   CHAR(1)                             NOT NULL, /*D-DOCUMENT, M-MANUAL*/
 	 NAME                          VARCHAR(100)                        NOT NULL,
 	 DESCRIPTION                   VARCHAR(MAX)                        NOT NULL,
 	 BINARY_DATA				   VARBINARY(MAX)                      NOT NULL,
@@ -196,12 +189,12 @@ BEGIN
 END
 GO
 
-CREATE TRIGGER ARCHIVE_CHANGEDATE ON ARCHIVE AFTER UPDATE
+CREATE TRIGGER POST_FILE_CHANGEDATE ON POST_FILE AFTER UPDATE
 AS 
  SET NOCOUNT ON
 BEGIN
-  UPDATE ARCHIVE SET CHANGEDATE = CURRENT_TIMESTAMP FROM ARCHIVE
-  INNER JOIN INSERTED ON ARCHIVE.ID = INSERTED.ID;
+  UPDATE POST_FILE SET CHANGEDATE = CURRENT_TIMESTAMP FROM POST_FILE
+  INNER JOIN INSERTED ON POST_FILE.ID = INSERTED.ID;
 END
 GO
 
@@ -216,79 +209,52 @@ GO
 
 /* =================================== Inserção de Dados para Testes =============================================== */
 
-INSERT INTO DEPARTMENT (CODE, DESCRIPTION, ACTIVE) VALUES ('001', 'TI Engeman Web', 'S')
-GO
-INSERT INTO DEPARTMENT (CODE, DESCRIPTION, ACTIVE) VALUES ('002', 'TI Engeman Client/Server', 'S')
-GO
-INSERT INTO DEPARTMENT (CODE, DESCRIPTION, ACTIVE) VALUES ('003', 'TI Engeman Mobile', 'S')
-GO
-INSERT INTO DEPARTMENT (CODE, DESCRIPTION, ACTIVE) VALUES ('004', 'TI Engeman Personalização', 'N')
-GO
+INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('001', 'TI Engeman Web')
+INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('002', 'TI Engeman Client/Server')
+INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('003', 'TI Engeman Mobile')
+INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('004', 'TI Engeman Personalização')
 SELECT * FROM DEPARTMENT
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Michel Queiroz', 'michel.queiroz', 'S', 1, 'michel.queiroz@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Samuel Moreira', 'samuel.moreira', 'S', 1, 'samuel.moreira@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Alan Vasconcelos', 'alan.vasconcelos', 'S', 3, 'alan.vasconcelos@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Durval Ferreira', 'durval.ferreira', 'S', 1, 'durval.ferreira@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Monique Santiago', 'monique.santiago', 'S', 1, 'monique.santiago@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Cruz', 'gustavo.cruz', 'S', 1, 'gustavo.cruz@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Fonseca', 'gustavo.fonseca', 'S', 1, 'gustavo.fonseca@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Bruno Gonçalves', 'bruno.goncalves', 'S', 4, 'bruno.goncalves@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Pedro Silva', 'pedro.silva', 'S', 4, 'pedro.silva@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Luan Santos', 'luan.santos', 'S', 4, 'luan.santos@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Matheus Correa', 'matheus.correa', 'S', 2, 'matheus.correa@engeman.com.br')
-GO
-INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, ACTIVE, DEPARTMENT_ID, EMAIL) VALUES ('Luciano Rodrigues', 'luciano.rodrigues', 'S', 2, 'luciano.rodrigues@engeman.com.br')
-GO
-SELECT * FROM USERACCOUNT
-GO
 
-INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
-VALUES ('S', 'N', 'Como instalar o Engeman Web?', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'Instalação;Engeman Web', 1, 1, 'Q')
-GO
-INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
-VALUES ('S', 'N', 'Manual de instalação do Engeman Web e SSW', 'Este manual contém instruções para instalação do Engeman Web e SSW, bem como de todos os seus requisitos.', 'Este manual contém instruções para instalação do Engeman Web e SSW, bem como de todos os seus requisitos.', 'Instalação;Engeman Web, SSW', 1, 1, 'M')
-GO
-INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
-VALUES ('S', 'N', 'Documentação de Integração Supermercados Itaúna', 'Este documento contém informações sobre a integração levantada pelo consultor Danny Lage entre Engeman e Sapiens.', 'Este documento contém informações sobre a integração levantada pelo consultor Danny Lage entre Engeman e Sapiens.', 'Integração;Engeman, Sapiens', 1, 1, 'M')
-GO
-INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
-VALUES ('S', 'N', 'Como instalar o Engeman Client/Server?', 'Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?', 'Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?', 'Instalação;Engeman Client/Server', 8, 1, 'Q')
-GO
-INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
-VALUES ('S', 'N', 'Manual de instalação do Engeman Client/Server', 'Este manual contém instruções para instalação do Engeman Client/Server, bem como de todos os seus requisitos.', 'Este manual contém instruções para instalação do Engeman Client/Server, bem como de todos os seus requisitos.', 'Instalação;Engeman Web, SSW', 18, 2, 'M')
-GO
-INSERT INTO POST (ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
-VALUES ('S', 'N', 'Como instalar o Engeman Mobile?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Instalação;Engeman Mobile', 10, 3, 'Q')
-GO
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Michel Queiroz', 'michel.queiroz', 1, 'michel.queiroz@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Samuel Moreira', 'samuel.moreira', 1, 'samuel.moreira@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Durval Ferreira', 'durval.ferreira', 1, 'durval.ferreira@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Monique Santiago', 'monique.santiago', 1, 'monique.santiago@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Cruz', 'gustavo.cruz', 1, 'gustavo.cruz@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Fonseca', 'gustavo.fonseca', 1, 'gustavo.fonseca@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Matheus Correa', 'matheus.correa', 2, 'matheus.correa@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Luciano Rodrigues', 'luciano.rodrigues', 2, 'luciano.rodrigues@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Alan Vasconcelos', 'alan.vasconcelos', 3, 'alan.vasconcelos@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Bruno Gonçalves', 'bruno.goncalves', 4, 'bruno.goncalves@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Pedro Silva', 'pedro.silva', 4, 'pedro.silva@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, DOMAINACCOUNT, DEPARTMENT_ID, EMAIL) VALUES ('Luan Santos', 'luan.santos', 4, 'luan.santos@engeman.com.br')
+SELECT * FROM USERACCOUNT
+
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('Como instalar o Engeman Web?', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'Instalação;Engeman Web', 1, 1, 'Q')
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('Manual de instalação do Engeman Web e SSW', 'Este manual contém instruções para instalação do Engeman Web e SSW, bem como de todos os seus requisitos.', 'Este manual contém instruções para instalação do Engeman Web e SSW, bem como de todos os seus requisitos.', 'Instalação;Engeman Web, SSW', 1, 1, 'F')
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('Documentação de Integração Supermercados Itaúna', 'Este documento contém informações sobre a integração levantada pelo consultor Danny Lage entre Engeman e Sapiens.', 'Este documento contém informações sobre a integração levantada pelo consultor Danny Lage entre Engeman e Sapiens.', 'Integração;Engeman, Sapiens', 2, 1, 'F')
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('Como instalar o Engeman Client/Server?', 'Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?', 'Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?', 'Instalação;Engeman Client/Server', 8, 2, 'Q')
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('Manual de instalação do Engeman Client/Server', 'Este manual contém instruções para instalação do Engeman Client/Server, bem como de todos os seus requisitos.', 'Este manual contém instruções para instalação do Engeman Client/Server, bem como de todos os seus requisitos.', 'Instalação;Engeman Web, SSW', 9, 3, 'F')
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE)
+VALUES ('Como instalar o Engeman Mobile?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?', 'Instalação;Engeman Mobile', 10, 4, 'Q')
 SELECT * FROM POST
 
-INSERT INTO ARCHIVE (ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
-VALUES ('S', 'M', 'Instalação do Engeman Web.pdf', 'Passo a passo de como instalar o Engeman Web.', CAST('Teste' AS VARBINARY(MAX)), 155)
-GO
-INSERT INTO ARCHIVE (ACTIVE, ARCHIVE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
-VALUES ('S', 'D', 'Melhorias para o Engeman Client/Server.pdf', 'Melhorias sugeridas por clientes no ano de 2022.', CAST('Documento' AS VARBINARY(MAX)), 10)
-GO
-SELECT * FROM ARCHIVE
+INSERT INTO POST_FILE (FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
+VALUES ('M', 'Instalação do Engeman Web.pdf', 'Passo a passo de como instalar o Engeman Web.', CAST('Teste' AS VARBINARY(MAX)), 2)
+INSERT INTO POST_FILE (FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
+VALUES ('D', 'Melhorias para o Engeman Client/Server.pdf', 'Melhorias sugeridas por clientes no ano de 2022.', CAST('Documento' AS VARBINARY(MAX)), 3)
+SELECT * FROM POST_FILE
 
-INSERT INTO POST_COMMENT (ACTIVE, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID)
-VALUES ('S', N'Melhorias para o Engeman Client/Server 😀', 'Melhorias', 'Engeman', 9, 1, 279)
-GO
+INSERT INTO POST_COMMENT (DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID)
+VALUES (N'Melhorias para o Engeman Client/Server 😀', 'Melhorias', 'Engeman', 8, 2, 4)
 SELECT * FROM POST_COMMENT
 
-INSERT INTO POST_COMMENT_FILE (ACTIVE, FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
-VALUES ('S', 'D', 'Melhorias para o Engeman Client/Server.pdf', 'Melhorias sugeridas por clientes no ano de 2022.', CAST('Documento' AS VARBINARY(MAX)), 10)
-GO
+INSERT INTO POST_COMMENT_FILE (FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_COMMENT_ID)
+VALUES ('D', 'Melhorias para o Engeman Client/Server.pdf', 'Melhorias sugeridas por clientes no ano de 2022.', CAST('Documento' AS VARBINARY(MAX)), 1)
 SELECT * FROM POST_COMMENT_FILE
 
 UPDATE DEPARTMENT SET ACTIVE = 'N' WHERE CODE = '004'
