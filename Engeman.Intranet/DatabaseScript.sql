@@ -131,7 +131,7 @@ GO
 CREATE TABLE POST_COMMENT_FILE ( 
      ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOST_COMMENT_FILE) CONSTRAINT PK_POST_COMMENT_FILE PRIMARY KEY CLUSTERED,
      ACTIVE                        CHAR(1) DEFAULT 'S'                 NOT NULL,
-     FILE_TYPE	                   CHAR(1)                             NOT NULL, /*D-DOCUMENT, M-MANUAL*/
+     FILE_TYPE	                   CHAR(1) DEFAULT 'D'                 NOT NULL, /*D-DOCUMENT, M-MANUAL*/
 	 NAME                          VARCHAR(100)                        NOT NULL,
 	 DESCRIPTION                   VARCHAR(MAX)                        NOT NULL,
 	 BINARY_DATA				   VARBINARY(MAX)                      NOT NULL,
