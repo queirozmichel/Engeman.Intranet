@@ -14,6 +14,7 @@
 
 <body>
   <div class="body-content">
+    @Html.Partial("modals/_ConfirmModal", "post")
     <div class="page-header">
       <div class="page-title">
         <h3>Postagens</h3>
@@ -28,8 +29,8 @@
           </div>
           <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
           <!-- Use instead of sparkline e.g. this:
-          <div class="graph circular-chart" data-percent="73">73%</div>
-          -->
+        <div class="graph circular-chart" data-percent="73">73%</div>
+        -->
         </li>
         <li>
           <div class="summary">
@@ -42,48 +43,48 @@
       <!-- /Page Stats -->
     </div>
     @*Modal de confirmação para apagar uma psotagem*@
-    <div data-backdrop="true" id="confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-title"><h5>Apagar a postagem?</h5></div>
-          </div>
-          <div class="modal-body">
-            Se houver quaisquer arquivos associados à postagem, eles também serão excluídos
-          </div>
-          <div class="modal-footer">
-            <button id="confirm-delete" type="button" class="btn btn-success">Sim</button>
-            <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
-          </div>
+    <!--<div data-backdrop="true" id="confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title"><h5>Apagar a postagem?</h5></div>
+        </div>
+        <div class="modal-body">
+          Se houver quaisquer arquivos associados à postagem, eles também serão excluídos
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-delete" type="button" class="btn btn-success">Sim</button>
+          <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
         </div>
       </div>
     </div>
+  </div>-->
     @*Modal de restrição ao tentar apagar uma postagem de outra pessoa*@
-    <div data-backdrop="true" id="restrict-delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-title"><h5>Operação não suportada!</h5></div>
-          </div>
-          <div class="modal-body">
-            Não é possível apagar uma postagem que não seja sua
-          </div>
+    <!--<div data-backdrop="true" id="restrict-delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title"><h5>Operação não suportada!</h5></div>
+        </div>
+        <div class="modal-body">
+          Não é possível apagar uma postagem que não seja sua
         </div>
       </div>
     </div>
+  </div>-->
     @*Modal de restrição ao tentar editar uma postagem de outra pessoa*@
-    <div data-backdrop="true" id="restrict-edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-title"><h5>Operação não suportada!</h5></div>
-          </div>
-          <div class="modal-body">
-            Não é possível editar uma postagem que não seja sua
-          </div>
+    <!--<div data-backdrop="true" id="restrict-edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title"><h5>Operação não suportada!</h5></div>
+        </div>
+        <div class="modal-body">
+          Não é possível editar uma postagem que não seja sua
         </div>
       </div>
     </div>
+  </div>-->
     <table id="post-grid" class="table table-condensed table-hover table-striped">
       <thead>
         <tr>
@@ -103,4 +104,5 @@
 
 </html>
 
+<script src="~/js/modal.js"></script>
 <script src="~/js/listall.js"></script>

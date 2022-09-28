@@ -84,23 +84,14 @@
   @*Wysiwyg*@
   <link rel="stylesheet" href="~/plugins/wysiwyg/css/style.css" />
   <script type="text/javascript" src="~/plugins/wysiwyg/js/index.js"></script>
+  @*Modal*@
+  <link rel="stylesheet" href="~/css/modal.css"/>
   @*CSS personalizado*@
   <link rel="stylesheet" type="text/css" href="~/css/custom.css" />
 </head>
 
 <body>
-  <div data-backdrop="true" id="restrict-edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title"><h5>Operação não suportada!</h5></div>
-        </div>
-        <div class="modal-body">
-          Não é possível editar uma postagem que não seja sua
-        </div>
-      </div>
-    </div>
-  </div>
+  @Html.Partial("modals/_DangerModal")
   <!-- Header -->
   <header class="header navbar navbar-fixed-top" role="banner">
     <!-- Top Navigation Bar -->
@@ -618,6 +609,7 @@
   <script type="text/javascript" src="~/js/app.js"></script>
   <script type="text/javascript" src="~/js/plugins.js"></script>
   <script type="text/javascript" src="~/js/plugins.form-components.js"></script>
+  <script type="text/javascript" src="~/js/modal.js"></script>
   <script src="~/js/layout.js"></script>
 </body>
 </html>

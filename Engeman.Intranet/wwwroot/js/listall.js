@@ -184,14 +184,14 @@ function dropdownHideItens() {
   }
 }
 
-$("#confirm-delete").on("click", function () {
+$(".btn-yes-post").on("click", function () {
   postDelete(idPostAux, elementAux);
   toastr.success("A postagem foi apagada", "Sucesso!");
-  $("#confirm-modal").modal("toggle");
+  hideConfirmModal();
 })
 
-$("#cancel-delete").on("click", function () {
-  $("#confirm-modal").modal("toggle");
+$(".btn-no-post").on("click", function () {
+  hideConfirmModal();
 })
 
 function postDetails(idPost, postType) {
@@ -294,14 +294,14 @@ function confirmSessionUser(userIdPost, idPost, postType, action) {
     success: function (response) {
       if (response == "false") {
         if (action == "delete") {
-          $("#restrict-delete-modal").modal("toggle");
+          showDangerModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de outra pessoa");
         } else if (action == "edit") {
-          $("#restrict-edit-modal").modal("toggle");
+          showDangerModal("Operação não suportada!", "Você não tem permissão para editar uma postagem de outra pessoa");
         }
       }
       if (response == "true") {
         if (action == "delete") {
-          $("#confirm-modal").modal("toggle");
+          showConfirmModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos");          
         } else if (action == "edit") {
           if (postType === "Q") {
             postEdit(idPost);
@@ -311,5 +311,5 @@ function confirmSessionUser(userIdPost, idPost, postType, action) {
         }
       }
     }
-  });
+  });  
 }

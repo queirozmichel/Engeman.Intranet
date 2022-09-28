@@ -40,7 +40,7 @@ $("#new-question-btn").on("click", function (event) {
         $(".body-content").html(response);
         window.history.pushState({}, '', '/posts/newquestion');
       } else {
-        $("#restrict-edit-modal").modal("toggle");
+        showDangerModal("Operação não suportada!","Você não tem permissão para criar uma nova postagem")
       }
     },
     error: function (response) {

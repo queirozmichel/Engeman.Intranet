@@ -74,20 +74,20 @@ $(".back-to-list-button").on("click", function () {
 })
 
 $(".comment-delete-btn").on("click", function () {
-  $("#confirm-modal").modal("toggle");
+  showConfirmModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos");
 })
 
-$(".comment-delete-btn, #confirm-delete, #cancel-delete").on("click", function () {
+$(".comment-delete-btn, .btn-yes-comment, .btn-no-comment").on("click", function () {
   var id;
   if ($(this).hasClass("comment-delete-btn")) {
     id = $(this).parent().parent().parent().attr("data-comment-id");
-    $("#confirm-delete").attr("data-comment-id", id);
-  } else if (this.id == "confirm-delete") {
+    $(".btn-yes-comment").attr("data-comment-id", id);
+  } else if ($(this).hasClass("btn-yes-comment")) {
     id = $(this).attr("data-comment-id");
     var comment = getCommentElement(id);
-    deleteComment(id, comment);  
-  } else if (this.id == "cancel-delete") {
-    $("#confirm-modal").modal("toggle");
+    deleteComment(id, comment);
+  } else if ($(this).hasClass("btn-no-comment")) {
+    hideConfirmModal();
   }
 })
 
@@ -112,7 +112,7 @@ function deleteComment(id, comment) {
     dataType: "text",
     success: function (response) {
       if (response == "true") {
-        $("#confirm-modal").modal("toggle");
+        hideConfirmModal();
         comment.fadeOut(700);
         setTimeout(() => {
           comment.remove();

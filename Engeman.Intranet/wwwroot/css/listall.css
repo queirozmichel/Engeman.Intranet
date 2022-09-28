@@ -1,36 +1,4 @@
-﻿#confirm-modal, #restrict-delete-modal, #restrict-edit-modal {
-  overflow: hidden;
-}
-
-.modal-header, .modal-content, .modal-footer {
-  text-align: center;
-}
-
-#confirm-modal .modal-header, #confirm-modal .modal-footer {
-  background-color: lightyellow;
-}
-
-.modal-header, .modal-footer{
-  padding: 10px;
-}
-
-.modal-footer{
-  margin-top: 0px;
-}
-
-#restrict-delete-modal .modal-header {
-  background-color: lightcoral;
-}
-
-#restrict-edit-modal .modal-header {
-  background-color: lightcoral;
-}
-
-#confirm-modal .modal-content {
-  background-color: whitesmoke;
-}
-
-.dropdown-item {
+﻿.dropdown-item {
   cursor: pointer;
   display: block;
   margin: 0;

@@ -14,22 +14,7 @@
 </head>
 
 <body>
-  <div data-backdrop="true" id="confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title"><h5>Apagar o comentário?</h5></div>
-        </div>
-        <div class="modal-body">
-          Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos
-        </div>
-        <div class="modal-footer">
-          <button id="confirm-delete" type="button" class="btn btn-success" data-comment-id="">Sim</button>
-          <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
-        </div>
-      </div>
-    </div>
-  </div>  
+  @Html.Partial("modals/_ConfirmModal", "comment")
   <div class="page-header">
     <div class="page-title">
       <h3>Detalhes da Postagem</h3>
@@ -260,4 +245,5 @@
 
 <script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/questionDetails/richtextbox.js"></script>
+<script type="text/javascript" src="~/js//modal.js"></script>
 <script type="text/javascript" src="~/js/questionDetails/questiondetails.js"></script>
