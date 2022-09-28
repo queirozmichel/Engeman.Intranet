@@ -4,7 +4,7 @@
   App.init(); // Init layout and core plugins
   Plugins.init(); // Init all plugins
   FormComponents.init(); // Init all form-specific plugins
-  toastrConfig();
+  toastrConfig();  
 
 })
 
@@ -27,3 +27,24 @@ function toastrConfig () {
       "hideMethod": "fadeOut"
     };
 }
+
+
+$("#new-question-btn").on("click", function (event) {
+  event.preventDefault();
+  $.ajax({
+    type: "GET",
+    url: "/posts/newquestion",
+    success: function (response) {
+      if (response != false) {
+        $(".body-content").empty();
+        $(".body-content").html(response);
+        window.history.pushState({}, '', '/posts/newquestion');
+      } else {
+        $("#restrict-edit-modal").modal("toggle");
+      }
+    },
+    error: function (response) {
+      console.log(response);
+    },
+  })
+})

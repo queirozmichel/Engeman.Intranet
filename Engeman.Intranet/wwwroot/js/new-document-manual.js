@@ -42,7 +42,7 @@ $("#document-manual-form").on("submit", function (event) {
     }
     $.ajax({
       type: "POST",
-      url: "newdocumentmanual",
+      url: "/posts/newdocumentmanual",
       contentType: false,
       processData: false,
       data: formData,
@@ -53,10 +53,10 @@ $("#document-manual-form").on("submit", function (event) {
           toastr.success("O documento/manual foi salvo", "Sucesso!");
           $.ajax({
             type: "POST",
-            url: "BackToList",
+            url: "/posts/backtolist",
             success: function (response) {
-              $("#question-details").empty();
-              $("#question-details").html(response);
+              $(".body-content").empty();
+              $(".body-content").html(response);
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");
@@ -94,10 +94,10 @@ $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
 $(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
-    url: "BackToList",
+    url: "/posts/backtolist",
     success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
+      $(".body-content").empty();
+      $(".body-content").html(response);
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");

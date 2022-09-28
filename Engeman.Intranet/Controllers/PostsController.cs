@@ -42,8 +42,17 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult NewQuestion()
     {
-      ViewBag.Departments = _departmentRepository.GetAllDepartments();
-      return View();
+
+      if (_userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername")).CreatePost == true)
+      {
+        ViewBag.Departments = _departmentRepository.GetAllDepartments();
+        return PartialView();
+      }
+      else
+      {
+        return Ok(false);
+      }
+
     }
 
     [HttpPost]

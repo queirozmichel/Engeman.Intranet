@@ -15,7 +15,7 @@ $(document).ready(function () {
       dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
       left: "text-left",
     },
-    url: "getdatagrid",
+    url: "/posts/getdatagrid",
     labels: {
       all: "Tudo",
       infos: "Exibindo {{ctx.start}} até {{ctx.end}} de {{ctx.total}} registros",
@@ -205,8 +205,8 @@ function postDetails(idPost, postType) {
         toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
       },
       success: function (response) {
-        $("#question-details").empty();
-        $("#question-details").html(response);
+        $(".body-content").empty();
+        $(".body-content").html(response);
       }
     })
   } else if (postType === 'A') {
@@ -219,8 +219,8 @@ function postDetails(idPost, postType) {
         toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
       },
       success: function (response) {
-        $("#question-details").empty();
-        $("#question-details").html(response);
+        $(".body-content").empty();
+        $(".body-content").html(response);
       }
     })
   }
@@ -236,8 +236,8 @@ function postEdit(idPost) {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
     success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
+      $(".body-content").empty();
+      $(".body-content").html(response);
     }
   })
 }
@@ -252,8 +252,8 @@ function postFileEdit(idPost) {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
     success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
+      $(".body-content").empty();
+      $(".body-content").html(response);
     }
   })
 }
@@ -265,7 +265,7 @@ function postDelete(idElement, element) {
     data: {
       'idPost': idElement
     },
-    url: "removepost",
+    url: "/posts/removepost",
     dataType: "text",
     success: function (result) {
       $(element).parent().parent().fadeOut(700);

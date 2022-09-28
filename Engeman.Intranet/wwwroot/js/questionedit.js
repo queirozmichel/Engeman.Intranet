@@ -27,15 +27,15 @@ $("#edit-question-form").on("submit", function (event) {
       type: "POST",
       dataType: 'text',
       async: true,
-      url: "UpdateQuestion",
+      url: "/posts/updatequestion",
       data: formData,
       success: function (response) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
           toastr.success("A pergunta foi atualizada", "Sucesso!");
-          $("#question-details").empty();
-          $("#question-details").html(response);
+          $(".body-content").empty();
+          $(".body-content").html(response);
           window.history.pushState({}, '', '/posts/listall');
         }
       },
@@ -49,10 +49,10 @@ $("#edit-question-form").on("submit", function (event) {
 $(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
-    url: "BackToList",
+    url: "/posts/backtolist",
     success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
+      $(".body-content").empty();
+      $(".body-content").html(response);
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");

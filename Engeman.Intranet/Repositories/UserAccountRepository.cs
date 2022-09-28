@@ -140,5 +140,27 @@ namespace Engeman.Intranet.Repositories
         return result;
       };
     }
+
+    public UserPermissionsViewModel GetUserPermissionsByDomainUsername(string domainUsername)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        UserPermissionsViewModel userPermissions = new UserPermissionsViewModel();
+        var query =
+        $"SELECT CREATE_POST, EDIT_OWNER_POST, DELETE_OWNER_POST, EDIT_ANY_POST, DELETE_ANY_POST " +
+        $"FROM USERACCOUNT " +
+        $"WHERE DOMAINACCOUNT = '{domainUsername}'";
+
+        var result = sq.GetDataSet(query).Tables[0].Rows[0];
+
+        userPermissions.CreatePost = Convert.ToBoolean(result["create_post"]);
+        userPermissions.EditOwnerPost = Convert.ToBoolean(result["edit_owner_post"]);
+        userPermissions.DeleteOwnerPost = Convert.ToBoolean(result["delete_owner_post"]);
+        userPermissions.EditAnyPost = Convert.ToBoolean(result["edit_any_post"]);
+        userPermissions.DeleteAnyPost = Convert.ToBoolean(result["delete_any_post"]);
+
+        return userPermissions;
+      }
+    }
   }
 }

@@ -30,7 +30,7 @@ $("#comment-form").on("submit", function (event) {
     //contentType e processData são obrigatórios
     $.ajax({
       type: "POST",
-      url: "MakeComment",
+      url: "/posts/makecomment",
       contentType: false,
       processData: false,
       data: formData,
@@ -41,10 +41,10 @@ $("#comment-form").on("submit", function (event) {
           toastr.success("O comentário foi salvo", "Sucesso!");
           $.ajax({
             type: "POST",
-            url: "BackToList",
+            url: "/posts/backtolist",
             success: function (response) {
-              $("#question-details").empty();
-              $("#question-details").html(response);
+              $(".body-content").empty();
+              $(".body-content").html(response);
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");
@@ -62,10 +62,10 @@ $("#comment-form").on("submit", function (event) {
 $(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
-    url: "BackToList",
+    url: "/posts/backtolist",
     success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
+      $(".body-content").empty();
+      $(".body-content").html(response);
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");

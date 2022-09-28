@@ -11,5 +11,6 @@ namespace Engeman.Intranet.Repositories
     public string GetUserAccountNameById(int id);
     public void UpdateUserAccount(UserAccount userAccount);
     public List<UserAccountDto> GetAllUserAccounts();
+    public UserPermissionsViewModel GetUserPermissionsByDomainUsername(string domainUsername);
   }
 }

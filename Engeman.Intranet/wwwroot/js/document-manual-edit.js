@@ -46,8 +46,8 @@ $("#document-manual-edit-form").on("submit", function (event) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
-          $("#question-details").empty();
-          $("#question-details").html(response);
+          $(".body-content").empty();
+          $(".body-content").html(response);
           toastr.success("O arquivo foi salvo", "Sucesso!");
           window.history.pushState({}, '', '/posts/listall');
         }
@@ -62,10 +62,10 @@ $("#document-manual-edit-form").on("submit", function (event) {
 $(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
-    url: "BackToList",
+    url: "/posts/backtolist",
     success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
+      $(".body-content").empty();
+      $(".body-content").html(response);
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");

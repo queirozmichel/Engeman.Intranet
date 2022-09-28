@@ -3,6 +3,7 @@
 });
 
 $(document).ready(function () {
+  FormComponents.init();
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
@@ -14,7 +15,7 @@ $(document).ready(function () {
     offText: "Não",
     size: "normal",
     state: false,
-  });
+  }); 
 })
 
 function clearForm() {
@@ -34,7 +35,7 @@ $("#ask-form").on("submit", function (event) {
       type: "POST",
       dataType: 'text',
       async: true,
-      url: "newquestion",
+      url: "/posts/newquestion",
       data: formData,
       success: function (response) {
         if (response == 0) {
@@ -43,10 +44,10 @@ $("#ask-form").on("submit", function (event) {
           toastr.success("A pergunta foi salva", "Sucesso!");
           $.ajax({
             type: "POST",
-            url: "BackToList",
+            url: "/posts/backtolist",
             success: function (response) {
-              $("#question-details").empty();
-              $("#question-details").html(response);
+              $(".body-content").empty();
+              $(".body-content").html(response);
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");
@@ -80,10 +81,10 @@ $("#multiselect-department").on("change", function () {
 $(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
-    url: "BackToList",
+    url: "/posts/backtolist",
     success: function (response) {
-      $("#question-details").empty();
-      $("#question-details").html(response);
+      $(".body-content").empty();
+      $(".body-content").html(response);
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");

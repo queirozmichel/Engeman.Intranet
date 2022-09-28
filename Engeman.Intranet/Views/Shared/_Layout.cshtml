@@ -56,11 +56,6 @@
   @*Forms*@
   <script type="text/javascript" src="~/plugins/uniform/jquery.uniform.min.js"></script>
   <script type="text/javascript" src="~/plugins/select2/select2.min.js"></script>
-  @*App*@
-  <script type="text/javascript" src="~/js/app.js"></script>
-  <script type="text/javascript" src="~/js/plugins.js"></script>
-  <script type="text/javascript" src="~/js/plugins.form-components.js"></script>
-  <script src="~/js/layout.js"></script>
   @*Jquery-UI*@
   <script>
     let origButton = jQuery.fn.button;
@@ -94,6 +89,18 @@
 </head>
 
 <body>
+  <div data-backdrop="true" id="restrict-edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title"><h5>Operação não suportada!</h5></div>
+        </div>
+        <div class="modal-body">
+          Não é possível editar uma postagem que não seja sua
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- Header -->
   <header class="header navbar navbar-fixed-top" role="banner">
     <!-- Top Navigation Bar -->
@@ -499,25 +506,25 @@
             </a>
             <ul class="sub-menu">
               <li>
-                <a asp-area="" asp-controller="posts" asp-action="listall">
+                <a href="@Url.Action("listall","posts")">
                   <i class="icon-angle-right"></i>
                   Listar
                 </a>
               </li>
               <li>
-                <a asp-area="" asp-controller="posts" asp-action="newquestion">
+                <a id="new-question-btn" href="#">
                   <i class="icon-angle-right"></i>
                   Nova Pergunta
                 </a>
               </li>
               <li>
-                <a asp-area="" asp-controller="posts" asp-action="newdocument">
+                <a href="@Url.Action("newdocument","posts")">
                   <i class="icon-angle-right"></i>
                   Novo Documento
                 </a>
               </li>
               <li>
-                <a asp-area="" asp-controller="posts" asp-action="newmanual">
+                <a href="@Url.Action("newmanual","posts")">
                   <i class="icon-angle-right"></i>
                   Novo Manual
                 </a>
@@ -606,7 +613,12 @@
 
       </div>
     </div>
-  </div>  
+  </div>
+  @*App*@
+  <script type="text/javascript" src="~/js/app.js"></script>
+  <script type="text/javascript" src="~/js/plugins.js"></script>
+  <script type="text/javascript" src="~/js/plugins.form-components.js"></script>
+  <script src="~/js/layout.js"></script>
 </body>
 </html>
 
