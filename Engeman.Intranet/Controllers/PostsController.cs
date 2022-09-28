@@ -80,17 +80,31 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult NewDocument()
     {
-      ViewBag.DocumentOrManual = 'D';
-      ViewBag.Departments = _departmentRepository.GetAllDepartments();
-      return View("NewDocumentManual");
+      if (_userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername")).CreatePost == true)
+      {
+        ViewBag.DocumentOrManual = 'D';
+        ViewBag.Departments = _departmentRepository.GetAllDepartments();
+        return PartialView("NewDocumentManual");
+      }
+      else
+      {
+        return Ok(false);
+      }
     }
 
     [HttpGet]
     public IActionResult NewManual()
     {
-      ViewBag.DocumentOrManual = 'M';
-      ViewBag.Departments = _departmentRepository.GetAllDepartments();
-      return View("NewDocumentManual");
+      if (_userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername")).CreatePost == true)
+      {
+        ViewBag.DocumentOrManual = 'M';
+        ViewBag.Departments = _departmentRepository.GetAllDepartments();
+        return PartialView("NewDocumentManual");
+      }
+      else
+      {
+        return Ok(false);
+      }
     }
 
     [HttpPost]

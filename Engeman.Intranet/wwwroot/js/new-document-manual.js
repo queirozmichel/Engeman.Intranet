@@ -3,6 +3,7 @@
 });
 
 $(document).ready(function () {
+  FormComponents.init();
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
