@@ -10,7 +10,7 @@ using System.Linq;
 namespace Engeman.Intranet.Repositories
 {
   public class UserAccountRepository : IUserAccountRepository
-  {   
+  {
     public bool UserAccountValidate(string domainUsername)
     {
       using (StaticQuery sq = new StaticQuery())
@@ -21,7 +21,8 @@ namespace Engeman.Intranet.Repositories
         if (result == "")
         {
           return false;
-        } else
+        }
+        else
         {
           return true;
         }
@@ -42,7 +43,7 @@ namespace Engeman.Intranet.Repositories
           $"ON UA.DEPARTMENT_ID = D.ID " +
           $"WHERE DOMAINACCOUNT = '{domainUsername.ToUpper()}'";
 
-        var result =  sq.GetDataSet(query).Tables[0].Rows[0];
+        var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
         userAccount.Id = Convert.ToInt32(result["ID"]);
         userAccount.Active = Convert.ToChar(result["active"]);
@@ -96,7 +97,7 @@ namespace Engeman.Intranet.Repositories
           users.Add(userAccountDto);
         }
       }
-     return users;
+      return users;
     }
 
     public UserAccount GetUserAccountById(int id)
@@ -161,6 +162,20 @@ namespace Engeman.Intranet.Repositories
 
         return userPermissions;
       }
+    }
+
+    public string GetDomainAccountById(int id)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var query =
+        $"SELECT DOMAINACCOUNT " +
+        $"FROM USERACCOUNT " +
+        $"WHERE ID = {id} ";
+
+        var result = sq.GetDataToString(query);
+        return result;
+      };
     }
   }
 }

@@ -9,6 +9,7 @@ namespace Engeman.Intranet.Repositories
     public UserAccount GetUserAccountByDomainUsername(string domainUsername);
     public UserAccount GetUserAccountById(int id);
     public string GetUserAccountNameById(int id);
+    public string GetDomainAccountById(int id);
     public void UpdateUserAccount(UserAccount userAccount);
     public List<UserAccountDto> GetAllUserAccounts();
     public UserPermissionsViewModel GetUserPermissionsByDomainUsername(string domainUsername);
