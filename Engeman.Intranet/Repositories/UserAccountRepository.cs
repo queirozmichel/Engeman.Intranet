@@ -38,7 +38,8 @@ namespace Engeman.Intranet.Repositories
         var query =
           $"SELECT " +
           $"UA.ID,UA.ACTIVE,NAME,DOMAINACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
-          $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CHANGEDATE " +
+          $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CREATE_POST, UA.EDIT_OWNER_POST, UA.DELETE_OWNER_POST, UA.EDIT_ANY_POST, " +
+          $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGEDATE " +
           $"FROM ENGEMANINTRANET.USERACCOUNT UA INNER JOIN ENGEMANINTRANET.DEPARTMENT D " +
           $"ON UA.DEPARTMENT_ID = D.ID " +
           $"WHERE DOMAINACCOUNT = '{domainUsername.ToUpper()}'";
@@ -54,6 +55,13 @@ namespace Engeman.Intranet.Repositories
         userAccount.Email = result["email"].ToString();
         userAccount.Photo = (byte[])result["photo"];
         userAccount.Description = result["userdescription"].ToString();
+        userAccount.CreatePost = Convert.ToBoolean(result["create_post"]);
+        userAccount.EditOwnerPost = Convert.ToBoolean(result["edit_owner_post"]);
+        userAccount.DeleteOwnerPost = Convert.ToBoolean(result["delete_owner_post"]);
+        userAccount.EditAnyPost = Convert.ToBoolean(result["edit_any_post"]);
+        userAccount.DeleteAnyPost = Convert.ToBoolean(result["delete_any_post"]);
+        userAccount.Moderator = Convert.ToBoolean(result["moderator"]);
+        userAccount.NoviceUser = Convert.ToBoolean(result["novice_user"]);
         userAccount.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
 
         return userAccount;
@@ -122,6 +130,7 @@ namespace Engeman.Intranet.Repositories
         userAccount.Email = result["email"].ToString();
         userAccount.Photo = (byte[])result["photo"];
         userAccount.Description = result["description"].ToString();
+        userAccount.Moderator = Convert.ToBoolean(result["Moderator"]);
         userAccount.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
 
         return userAccount;
@@ -148,7 +157,7 @@ namespace Engeman.Intranet.Repositories
       {
         UserPermissionsViewModel userPermissions = new UserPermissionsViewModel();
         var query =
-        $"SELECT CREATE_POST, EDIT_OWNER_POST, DELETE_OWNER_POST, EDIT_ANY_POST, DELETE_ANY_POST " +
+        $"SELECT CREATE_POST, EDIT_OWNER_POST, DELETE_OWNER_POST, EDIT_ANY_POST, DELETE_ANY_POST, MODERATOR, NOVICE_USER " +
         $"FROM USERACCOUNT " +
         $"WHERE DOMAINACCOUNT = '{domainUsername}'";
 
@@ -159,6 +168,8 @@ namespace Engeman.Intranet.Repositories
         userPermissions.DeleteOwnerPost = Convert.ToBoolean(result["delete_owner_post"]);
         userPermissions.EditAnyPost = Convert.ToBoolean(result["edit_any_post"]);
         userPermissions.DeleteAnyPost = Convert.ToBoolean(result["delete_any_post"]);
+        userPermissions.Moderator = Convert.ToBoolean(result["moderator"]);
+        userPermissions.NoviceUser = Convert.ToBoolean(result["novice_user"]);
 
         return userPermissions;
       }

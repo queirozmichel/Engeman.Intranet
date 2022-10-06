@@ -5,7 +5,7 @@ namespace Engeman.Intranet.Repositories
 {
   public interface IPostRepository
   {
-    public List<PostDto> GetPostsByRestriction(int userDepartmentId, int userIdSession);
+    public List<PostDto> GetPostsByRestriction(UserAccount user);
     public Post GetPostById(int id);
     public int GetPostsCountByUserId(int id);
     public List<int> GetRestrictedDepartmentsIdByPost(int id);

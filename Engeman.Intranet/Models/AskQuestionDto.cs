@@ -6,6 +6,10 @@ namespace Engeman.Intranet.Models
 {
   public class AskQuestionDto
   {
+    public AskQuestionDto()
+    {
+      Revised = false;
+    }
     public int Id { get; set; }
     public char Active { get; set; }
     [Required]
@@ -20,8 +24,9 @@ namespace Engeman.Intranet.Models
     public int UserAccountId { get; set; }
     public string DomainAccount { get; set; }
     public int DepartmentId { get; set; }
-    public DateTime ChangeDate { get; set; }
     public char PostType { get; set; }
+    public bool Revised { get; set; }
+    public DateTime ChangeDate { get; set; }
     public bool CheckIsRestricted
     {
       get

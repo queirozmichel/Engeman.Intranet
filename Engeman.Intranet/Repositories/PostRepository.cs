@@ -8,38 +8,51 @@ namespace Engeman.Intranet.Repositories
 {
   public class PostRepository : IPostRepository
   {
-    public List<PostDto> GetPostsByRestriction(int userDepartmentId, int userIdSession)
+    public List<PostDto> GetPostsByRestriction(UserAccount user)
     {
       List<PostDto> posts = new List<PostDto>();
 
       using (StaticQuery sq = new StaticQuery())
       {
         var query = "SELECT " +
-          "POST.ID as POST_ID, POST.RESTRICTED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USERACCOUNT_ID, " +
-          "POST.CHANGEDATE, POST.POST_TYPE, UA.NAME, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, PF.FILE_TYPE " +
+          "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USERACCOUNT_ID, " +
+          "POST.POST_TYPE, POST.CHANGEDATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, PF.FILE_TYPE " +
           "FROM POST " +
           "LEFT JOIN POST_FILE AS PF ON PF.POST_ID = POST.ID " +
           "INNER JOIN USERACCOUNT AS UA ON POST.USERACCOUNT_ID = UA.ID " +
           "INNER JOIN DEPARTMENT AS D ON POST.DEPARTMENT_ID = D.ID " +
           "WHERE POST.ACTIVE = 'S' " +
-          "GROUP BY POST.ID, POST.RESTRICTED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID, POST.CHANGEDATE, PF.FILE_TYPE, " +
-          "POST.POST_TYPE, UA.NAME, D.ID, D.DESCRIPTION";
+          "GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID, POST.POST_TYPE, POST.CHANGEDATE, PF.FILE_TYPE, " +
+          "UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION";
 
         var result = sq.GetDataSet(query).Tables[0];
 
+        bool revised;
+        char restricted;
+        int authorPostId;
+        bool moderator;
         for (int i = 0; i < result.Rows.Count; i++)
         {
+          revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
+          authorPostId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
+          restricted = Convert.ToChar(result.Rows[i]["Restricted"]);
+          moderator = user.Moderator;
 
-          if (Convert.ToChar(result.Rows[i]["Restricted"]) == 'S')
+          if (revised == false && authorPostId != user.Id && moderator == false)
+          {
+            continue;
+          }
+
+          if (restricted == 'S')
           {
             query =
             $"SELECT COUNT(*)" +
             $"FROM POST_DEPARTMENT " +
-            $"WHERE POST_ID = {result.Rows[i]["Post_Id"]} AND DEPARTMENT_ID = {userDepartmentId}";
+            $"WHERE POST_ID = {result.Rows[i]["Post_Id"]} AND DEPARTMENT_ID = {user.DepartmentId}";
 
             var aux = sq.GetDataToInt(query);
-            //se não houver registro na tabela de restrição e se noa for o autor da postagem
-            if (aux == 0 && Convert.ToInt32(result.Rows[i]["UserAccount_Id"]) != userIdSession)
+            //se não fizer parte do setor que há na tabela de restrição e se não for o autor da postagem
+            if (aux == 0 && authorPostId != user.Id && moderator == false)
             {
               continue;
             }
@@ -47,6 +60,7 @@ namespace Engeman.Intranet.Repositories
           PostDto postDto = new PostDto();
           postDto.Id = Convert.ToInt32(result.Rows[i]["Post_Id"]);
           postDto.Restricted = Convert.ToChar(result.Rows[i]["Restricted"]);
+          postDto.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
           postDto.Subject = result.Rows[i]["Subject"].ToString();
           postDto.ChangeDate = result.Rows[i]["ChangeDate"].ToString();
           postDto.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
@@ -69,10 +83,10 @@ namespace Engeman.Intranet.Repositories
         var query =
         $"INSERT INTO " +
         $"ENGEMANINTRANET.POST " +
-        $"(ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE) OUTPUT INSERTED.ID " +
+        $"(ACTIVE, RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
         $"VALUES ('{askQuestionDto.Active}', '{askQuestionDto.Restricted}', '{askQuestionDto.Subject}', '{askQuestionDto.Description}', " +
         $"'{askQuestionDto.CleanDescription}', '{askQuestionDto.Keywords}', {askQuestionDto.UserAccountId}, {askQuestionDto.DepartmentId}, " +
-        $"'{askQuestionDto.PostType}')";
+        $"'{askQuestionDto.PostType}', '{askQuestionDto.Revised}')";
 
         var outputPostId = sq.GetDataToInt(query);
 
@@ -147,10 +161,10 @@ namespace Engeman.Intranet.Repositories
         query =
         $"INSERT INTO " +
         $"ENGEMANINTRANET.POST " +
-        $"(RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE) OUTPUT INSERTED.ID " +
+        $"(RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
         $"VALUES ('{askQuestionDto.Restricted}', '{askQuestionDto.Subject}', '{askQuestionDto.Description}', " +
         $"'{askQuestionDto.CleanDescription}', '{askQuestionDto.Keywords}', {askQuestionDto.UserAccountId}, {askQuestionDto.DepartmentId}, " +
-        $"'{askQuestionDto.PostType}')";
+        $"'{askQuestionDto.PostType}', '{askQuestionDto.Revised}')";
 
         var outputPostId = sq.GetDataToInt(query);
 
@@ -210,7 +224,7 @@ namespace Engeman.Intranet.Repositories
         $"UPDATE " +
         $"ENGEMANINTRANET.POST " +
         $"SET RESTRICTED = '{askQuestionDto.Restricted}', SUBJECT = '{askQuestionDto.Subject}', DESCRIPTION = '{askQuestionDto.Description}', " +
-        $"CLEAN_DESCRIPTION = '{askQuestionDto.Description}', KEYWORDS = '{askQuestionDto.Keywords}' " +
+        $"CLEAN_DESCRIPTION = '{askQuestionDto.Description}', KEYWORDS = '{askQuestionDto.Keywords}', REVISED = '{askQuestionDto.Revised}' " +
         $"WHERE ID = {id}";
 
         var delete =

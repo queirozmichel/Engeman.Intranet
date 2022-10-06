@@ -42,8 +42,9 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult NewQuestion()
     {
+      var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
 
-      if (_userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername")).CreatePost == true)
+      if (permissions.CreatePost == true)
       {
         ViewBag.Departments = _departmentRepository.GetAllDepartments();
         return PartialView();
@@ -65,6 +66,12 @@ namespace Engeman.Intranet.Controllers
 
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+
+      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
+      {
+        askQuestionDto.Revised = true;
+      }
+
       askQuestionDto.UserAccountId = userAccount.Id;
       askQuestionDto.DepartmentId = userAccount.DepartmentId;
       askQuestionDto.PostType = 'Q';
@@ -80,7 +87,9 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult NewDocument()
     {
-      if (_userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername")).CreatePost == true)
+      var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
+
+      if (permissions.CreatePost == true)
       {
         ViewBag.DocumentOrManual = 'D';
         ViewBag.Departments = _departmentRepository.GetAllDepartments();
@@ -95,7 +104,9 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult NewManual()
     {
-      if (_userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername")).CreatePost == true)
+      var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
+
+      if (permissions.CreatePost == true)
       {
         ViewBag.DocumentOrManual = 'M';
         ViewBag.Departments = _departmentRepository.GetAllDepartments();
@@ -120,6 +131,12 @@ namespace Engeman.Intranet.Controllers
 
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+
+      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
+      {
+        askQuestionDto.Revised = true;
+      }
+
       askQuestionDto.Restricted = postArchiveDto.Post.Restricted;
       askQuestionDto.Subject = postArchiveDto.Post.Subject;
       askQuestionDto.Description = postArchiveDto.Post.Description;
@@ -159,11 +176,10 @@ namespace Engeman.Intranet.Controllers
       return PartialView("ListAll");
     }
 
-    public IQueryable<PostDto> FilterPosts(string filter)
+    public IQueryable<PostDto> FilterPostsByType(string filter)
     {
-      int departmentIdSession = (int)HttpContext.Session.GetInt32("_DepartmentId");
-      int userIdSession = (int)HttpContext.Session.GetInt32("_UserAccountId");
-      IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(departmentIdSession, userIdSession).AsQueryable();
+      var user = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
+      IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(user).AsQueryable();
 
       if (filter == "manual")
       {
@@ -179,7 +195,7 @@ namespace Engeman.Intranet.Controllers
       }
       if (filter == "my")
       {
-        return posts = posts.Where(x => x.UserAccountId == userIdSession);
+        return posts = posts.Where(x => x.UserAccountId == user.Id);
       }
       else
       {
@@ -228,7 +244,7 @@ namespace Engeman.Intranet.Controllers
       var field = key.Replace("sort[", "").Replace("]", "");
       string orderedField = String.Format("{0} {1}", field, order);
 
-      posts = FilterPosts(filter);
+      posts = FilterPostsByType(filter);
       total = posts.Count();
 
       if (!String.IsNullOrWhiteSpace(searchPhrase))
@@ -299,6 +315,10 @@ namespace Engeman.Intranet.Controllers
 
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+      if (userAccount.Moderator == true || userAccount.NoviceUser != true)
+      {
+        askQuestionDto.Revised = true;
+      }
       askQuestionDto.UserAccountId = userAccount.Id;
       askQuestionDto.DepartmentId = userAccount.DepartmentId;
       askQuestionDto.PostType = 'Q';
@@ -321,6 +341,13 @@ namespace Engeman.Intranet.Controllers
       char fileType = postFiles.Files[0].FileType;
       AskQuestionDto postInformation = new AskQuestionDto();
       List<PostFile> files = new List<PostFile>();
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+
+      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
+      {
+        postInformation.Revised = true;
+      }
 
       for (int i = 0; i < postFiles.Files.Count; i++)
       {
@@ -340,6 +367,7 @@ namespace Engeman.Intranet.Controllers
         files.Add(fileUpdate);
       }
 
+
       postInformation.Restricted = postFiles.Post.Restricted;
       postInformation.Subject = postFiles.Post.Subject;
       postInformation.Description = postFiles.Post.Description;
@@ -355,7 +383,7 @@ namespace Engeman.Intranet.Controllers
 
         for (int i = 0; i < binaryData.Count; i++)
         {
-          Models.PostFile newArchive = new Models.PostFile();
+          PostFile newArchive = new PostFile();
           if (binaryData[i].Length > 0)
           {
             using (var stream = new MemoryStream())
@@ -375,25 +403,10 @@ namespace Engeman.Intranet.Controllers
       return PartialView("ListAll");
     }
 
+    [HttpDelete]
     public void RemovePost(int idPost)
     {
-      var post = _postRepository.GetPostById(idPost);
-      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
-      var postCanBeDeleted = CheckIfPostCanBeDeleted(userAccount, post);
-
-      if (postCanBeDeleted == true)
-      {
-        _postRepository.DeletePost(idPost);
-      }
-    }
-
-    public bool CheckIfPostCanBeDeleted(UserAccount userAccount, Post post)
-    {
-      if (userAccount.Id == post.UserAccountId)
-      {
-        return true;
-      }
-      return false;
+      _postRepository.DeletePost(idPost);
     }
 
     [HttpGet]

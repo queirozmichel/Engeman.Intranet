@@ -7,5 +7,7 @@
     public bool DeleteOwnerPost { get; set; }
     public bool EditAnyPost { get; set; }
     public bool DeleteAnyPost { get; set; }
+    public bool Moderator { get; set; }
+    public bool NoviceUser { get; set; }
   }
 }

@@ -5,6 +5,7 @@
     public int Id { get; set; }
     public char Active { get; set; }
     public char Restricted { get; set; }
+    public bool Revised { get; set; }
     public string Subject { get; set; }
     public string Description { get; set; }
     public string CleanDescription { get; set; }

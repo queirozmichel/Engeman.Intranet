@@ -160,10 +160,8 @@ $(document).ready(function () {
           sessionStorage.setItem("postId", idPost);
           postDetails(idPost, postType);
         } else if (action == "edit") {
-          //confirmSessionUser(userIdPost, idPost, postType, action);
           postPermissions(userIdPost, idPost, postType, action);
         } else if (action == "delete") {
-          //confirmSessionUser(userIdPost, idPost, postType, action);
           postPermissions(userIdPost, idPost, postType, action);
           elementAux = element;
           idPostAux = idPost;
@@ -199,7 +197,7 @@ $(document).ready(function () {
             showDangerModal("Operação não suportada!", "Você não tem permissão para editar uma postagem");
           }
           else if (response == "CannotEditOwnerPost") {
-            showDangerModal("Operação não suportada!", "Você não tem permissão para Editar uma postagem");
+            showDangerModal("Operação não suportada!", "Você não tem permissão para editar uma postagem");
           }
         }
         else if (method == "delete") {
@@ -334,34 +332,3 @@ function postDelete(idElement, element) {
     }
   });
 }
-
-//function confirmSessionUser(userIdPost, idPost, postType, action) {
-//  $.ajax({
-//    type: "GET",
-//    data: {
-//      'userAccountIdPost': userIdPost
-//    },
-//    dataType: "text",
-//    url: "/login/confirmSessionUserByAjax",
-//    success: function (response) {
-//      if (response == "false") {
-//        if (action == "delete") {
-//          showDangerModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de outra pessoa");
-//        } else if (action == "edit") {
-//          showDangerModal("Operação não suportada!", "Você não tem permissão para editar uma postagem de outra pessoa");
-//        }
-//      }
-//      if (response == "true") {
-//        if (action == "delete") {
-//          showConfirmModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos");
-//        } else if (action == "edit") {
-//          if (postType === "Q") {
-//            postEdit(idPost);
-//          } else if (postType === "A") {
-//            postFileEdit(idPost);
-//          }
-//        }
-//      }
-//    }
-//  });
-//}
