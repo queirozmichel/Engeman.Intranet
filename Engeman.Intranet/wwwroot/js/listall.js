@@ -74,19 +74,24 @@ $(document).ready(function () {
         "</div>"
     },
     formatters: {
+      //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
       "id": function (column, row) {
         return row.id
       },
       "postType": function (column, row) {
-        if (row.postType === "A") {
-          if (row.fileType === "D") {
-            return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
-          } else if (row.fileType === "M") {
-            return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
+        if (row.revised == true) {
+          if (row.postType === "A") {
+            if (row.fileType === "D") {
+              return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
+            } else if (row.fileType === "M") {
+              return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
+            }
+          } else if (row.postType === "Q") {
+            return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>"
           }
-        } else if (row.postType === "Q") {
-          return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>"
-        }
+        } else {
+          return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
+        }    
       },
       "userAccountName": function (column, row) {
         return row.userAccountName;

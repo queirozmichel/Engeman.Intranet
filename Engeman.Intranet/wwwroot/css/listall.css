@@ -9,7 +9,11 @@
 #filter-button{
   width: 160px;
 }
-
+/*Grid-----------------------------------------------*/
+.not-revised{
+  color: red;
+  text-align: left;
+}
 .pagination {
   cursor: pointer;
 }
