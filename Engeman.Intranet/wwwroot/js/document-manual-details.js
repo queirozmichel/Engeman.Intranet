@@ -1,7 +1,4 @@
-﻿$(document).ready(function () {
-})
-
-$(".back-to-list-button").on("click", function () {
+﻿$(".back-to-list-button").on("click", function () {
   $.ajax({
     type: "POST",
     url: "/posts/backtolist",

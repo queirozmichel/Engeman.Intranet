@@ -5,12 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @*CSS*@
+  <link rel="stylesheet" href="~/plugins/prism/css/prism.css" />
   <link rel="stylesheet" href="~/css/document-manual-details.css" />
   @*JavaScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
 
 <body>
+  @Html.Partial("modals/_ConfirmModal", "comment")
   <div class="page-header">
     <div class="page-title">
       <h3>Detalhes da Postagem</h3>
@@ -44,6 +46,7 @@
         <ul class="nav nav-tabs">
           <li class="active"><a href="#tab_1_1" data-toggle="tab">Postagem</a></li>
           <li><a href="#tab_1_2" data-toggle="tab">Autor</a></li>
+          <li><a href="#tab_1_3" data-toggle="tab">Comentar</a></li>
         </ul>
         <div class="tab-content row">
           <div class="tab-pane active" id="tab_1_1">
@@ -85,6 +88,7 @@
                   </form>
                 </div>
               </div>
+              @await Component.InvokeAsync("CommentList", ViewBag.PostComments)
             </div>
           </div>
           <div class="tab-pane" id="tab_1_2">
@@ -127,6 +131,9 @@
               </div>
             </div>
           </div>
+          <div class="tab-pane active" id="tab_1_3">
+            @await Component.InvokeAsync("NewComment", ViewBag.Post)
+          </div>
         </div>
       </div>
     </div>
@@ -134,4 +141,6 @@
 </body>
 </html>
 
+<script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
+<script type="text/javascript" src="~/js/modal.js"></script>
 <script type="text/javascript" src="~/js/document-manual-details.js"></script>

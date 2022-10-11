@@ -1,6 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http;
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -9,7 +7,7 @@
   @*CSS*@
   <link rel="stylesheet" href="~/plugins/prism/css/prism.css" />
   <link rel="stylesheet" href="~/css/questionDetails/questiondetails.css" />
-  @*JavasScript*@
+  @*JavaScript*@
   <script type="text/javascript" src="~/js/custom.js"></script>
 </head>
 
@@ -74,66 +72,7 @@
                   </form>
                 </div>
               </div>
-              <!--=== Accordion ===-->
-              <div class="row">
-                <div class="comments col-md-12">
-                  <div class="widget">
-                    <div>
-                      @if (ViewBag.PostComments.Count == 0)
-                      {
-                        <h4>0 comentários</h4>
-                      }
-                      else
-                      {
-                        <h4><span id="comment-count">@ViewBag.PostComments.Count</span> comentário(s)</h4>
-                      }
-                    </div>
-                    @for (int i = 0; i < ViewBag.PostComments.Count; i++)
-                    {
-                      <div class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].UserId" data-comment-id="@ViewBag.PostComments[i].Id">
-
-                        <div id="editor-content-view" class="editor-content-view">@Html.Raw(@ViewBag.PostComments[i].Description)</div>
-                        <div>
-                          @if (@ViewBag.PostComments[i].Files.Count > 0)
-                          {
-                            <dl class="file-list">
-                              Anexo(s):
-                              @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
-                              {
-                                <dd class="file"><a href="@Url.Action("showcommentfile", "posts", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
-                              }
-                            </dl>
-                          }
-                        </div>
-                        <div>
-                          @if (ViewBag.PostComments[i].UserId == Context.Session.GetInt32("_UserAccountId"))
-                          {
-                            <div id="comment-action-buttons" class="col-md-10">
-                              <button class="comment-edit-btn btn btn-xs">Editar</button>
-                              <button class="comment-delete-btn btn btn-xs">Apagar</button>
-                            </div>
-                          }
-                          <figure class="fir-image-figure pull-right">
-                            <a class="fir-imageover" rel="noopener" target="_blank" href="#">
-                              @{var baseAux = Convert.ToBase64String(ViewBag.PostComments[i].Photo);
-                                var imasrcAux = string.Format("data:image/png;base64,{0}", baseAux);
-                              }
-                              <img class="fir-author-image fir-clickcircle" src='@imasrcAux' />
-                            </a>
-                            <figcaption>
-                              <div class="fig-author-figure-title">@ViewBag.PostComments[i].Username</div>
-                              <div class="fig-author-figure-title">@ViewBag.PostComments[i].DepartmentName</div>
-                              <div class="fig-author-figure-title">@ViewBag.PostComments[i].ChangeDate</div>
-                            </figcaption>
-                          </figure>
-                          <div class="widget-header"></div>
-                        </div>
-                      </div>
-                    }
-                  </div> <!-- /.widget .box -->
-                </div> <!-- /.col-md-12 -->
-              </div> <!-- /.row -->
-              <!-- /Accordion -->
+              @await Component.InvokeAsync("CommentList", ViewBag.PostComments)
             </div>
           </div>
           <div class="tab-pane" id="tab_1_2">
@@ -177,63 +116,7 @@
             </div>
           </div>
           <div class="tab-pane active" id="tab_1_3">
-            <div class="col-md-12">
-              <div class="row">
-                <div class="col-md-12 col-md-offset-1 align-center">
-                  <h3>@ViewBag.Post.Subject</h3>
-                  <div class="well">
-                    @ViewBag.Post.Description
-                  </div>
-                </div>
-              </div>
-
-              <div class="widget box answer-box">
-                <div class="widget-content">
-                  <form class="form-horizontal row-border" id="comment-form" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Comentário<span class="required">*</span></label>
-                      <div class="col-md-10">
-                        <div id="editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
-                        <div id="editor-text-area"></div>
-                        <input id="description" class="form-control" name="description" type="hidden">
-                      </div>
-                      <div class="col-md-offset-2 col-md-10 panel-group">
-                        <div class="panel panel-default">
-                          <div class="panel-heading align-center">
-                            <h3 class="panel-title">
-                              <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                Pré-visualizar comentário
-                              </a>
-                            </h3>
-                          </div>
-                          <div id="collapseOne" class="panel-collapse collapse">
-                            <div class="preview-box panel-body">
-                              <div id="preview" class="editor-content-view"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Palavras chave</label>
-                      <div class="col-md-10">
-                        <input class="tags" id="keywords" type="text" name="keywords">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Anexar arquivo(s)</label>
-                      <div class="col-md-2">
-                        <input id="file" type="file" name="files" accept="application/pdf" multiple>
-                      </div>
-                    </div>
-                    <div class="form-actions">
-                      <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-                      <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+            @await Component.InvokeAsync("NewComment", ViewBag.Post)
           </div>
         </div>
       </div>
@@ -244,6 +127,5 @@
 </html>
 
 <script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
-<script type="text/javascript" src="~/js/questionDetails/richtextbox.js"></script>
-<script type="text/javascript" src="~/js//modal.js"></script>
+<script type="text/javascript" src="~/js/modal.js"></script>
 <script type="text/javascript" src="~/js/questionDetails/questiondetails.js"></script>
