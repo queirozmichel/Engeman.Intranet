@@ -34,8 +34,10 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult ListAll()
+    public IActionResult ListAll(string filter)
     {
+      ViewBag.FilterGrid = filter;
+
       return View();
     }
 
@@ -176,24 +178,29 @@ namespace Engeman.Intranet.Controllers
       return PartialView("ListAll");
     }
 
-    public IQueryable<PostDto> FilterPostsByType(string filter)
+    public IQueryable<PostDto> FilterPosts(string filterGrid, string filterHeader)
     {
       var user = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
       IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(user).AsQueryable();
 
-      if (filter == "manual")
+      if (filterGrid == "notRevised")
+      {
+        posts = posts.Where("revised == (@0)", false);
+      }
+
+      if (filterHeader == "manual")
       {
         return posts = posts.Where("fileType == (@0)", "M");
       }
-      if (filter == "document")
+      else if (filterHeader == "document")
       {
         return posts = posts.Where("fileType == (@0)", "D");
       }
-      if (filter == "question")
+      else if (filterHeader == "question")
       {
         return posts = posts.Where(x => x.PostType == 'Q');
       }
-      if (filter == "my")
+      else if (filterHeader == "my")
       {
         return posts = posts.Where(x => x.UserAccountId == user.Id);
       }
@@ -233,7 +240,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public JsonResult GetDataGrid(string filter, int rowCount, string searchPhrase, int current)
+    public JsonResult GetDataGrid(string filterGrid, string filterHeader, int rowCount, string searchPhrase, int current)
     {
       IQueryable<PostDto> posts = null;
       IQueryable paginatedPosts;
@@ -244,7 +251,7 @@ namespace Engeman.Intranet.Controllers
       var field = key.Replace("sort[", "").Replace("]", "");
       string orderedField = String.Format("{0} {1}", field, order);
 
-      posts = FilterPostsByType(filter);
+      posts = FilterPosts(filterGrid, filterHeader);
       total = posts.Count();
 
       if (!String.IsNullOrWhiteSpace(searchPhrase))
@@ -445,16 +452,35 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult DocumentManualDetails(int idPost)
     {
+      var comments = new List<PostCommentViewModel>();
+      var orderedPostComments = _postCommentRepository.GetPostCommentsByPostId(idPost);
       var post = _postRepository.GetPostById(idPost);
       var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
       var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
       var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
+
+      for (int i = 0; i < orderedPostComments.Count; i++)
+      {
+        var postCommentViewModel = new PostCommentViewModel();
+        var userAccountComment = _userAccountRepository.GetUserAccountById(orderedPostComments[i].UserAccountId);
+        postCommentViewModel.Id = orderedPostComments[i].Id;
+        postCommentViewModel.Description = orderedPostComments[i].Description;
+        postCommentViewModel.Username = userAccountComment.Name;
+        postCommentViewModel.Photo = userAccountComment.Photo;
+        postCommentViewModel.UserId = orderedPostComments[i].UserAccountId;
+        postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
+        postCommentViewModel.ChangeDate = orderedPostComments[i].ChangeDate;
+        postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(orderedPostComments[i].Id).OrderBy(x => x.Name).ToList();
+        comments.Add(postCommentViewModel);
+      }
+
       ViewBag.Post = post;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
       ViewBag.Files = orderedFiles;
       ViewBag.PostsCount = postsCount;
+      ViewBag.PostComments = comments;
 
       return PartialView();
     }
@@ -479,7 +505,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public IActionResult MakeComment(PostComment postComment, List<IFormFile> files)
+    public IActionResult NewComment(PostComment postComment, List<IFormFile> files)
     {
       if (!ModelState.IsValid)
       {
@@ -492,14 +518,13 @@ namespace Engeman.Intranet.Controllers
 
       if (files.Count > 0)
       {
-        List<Models.PostFile> archiveList = new List<Models.PostFile>();
+        List<PostFile> archiveList = new List<PostFile>();
 
         for (int i = 0; i < files.Count; i++)
         {
-          Models.PostFile archive = new Models.PostFile();
+          PostFile archive = new PostFile();
           archive.Name = files[i].FileName;
           archive.Description = postComment.Description;
-          //archive.PostId = 0;
           if (files[i].Length > 0)
           {
             using (var stream = new MemoryStream())

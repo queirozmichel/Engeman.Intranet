@@ -8,7 +8,9 @@ $(window).on("load", function () {
 
 $(document).ready(function () {
 
-  var postGrid = $("#post-grid").bootgrid({
+  var postGrid = $("#post-grid").on("initialize.rs.jquery.bootgrid", function (e) {
+    /* your code after grid initialize goes here */
+  }).bootgrid({
     ajax: true,
     //columnSelection: false,
     css: {
@@ -31,9 +33,10 @@ $(document).ready(function () {
       var filterElements = $(".filter-type");
       filterElements.each(function () {
         if ($(this).data("filter") != null) {
-          request.filter = $(this).data('filter');
+          request.filterHeader = $(this).data('filter');
         }
       })
+      request.filterGrid = $("#post-grid").data("filter-grid");
       return request;
     },
     responseHandler: function (response) {
@@ -91,7 +94,7 @@ $(document).ready(function () {
           }
         } else {
           return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
-        }    
+        }
       },
       "userAccountName": function (column, row) {
         return row.userAccountName;

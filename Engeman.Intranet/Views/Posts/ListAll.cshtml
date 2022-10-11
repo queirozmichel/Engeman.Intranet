@@ -42,53 +42,9 @@
       </ul>
       <!-- /Page Stats -->
     </div>
-    @*Modal de confirmação para apagar uma psotagem*@
-    <!--<div data-backdrop="true" id="confirm-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title"><h5>Apagar a postagem?</h5></div>
-        </div>
-        <div class="modal-body">
-          Se houver quaisquer arquivos associados à postagem, eles também serão excluídos
-        </div>
-        <div class="modal-footer">
-          <button id="confirm-delete" type="button" class="btn btn-success">Sim</button>
-          <button id="cancel-delete" type="button" class="btn btn-danger">Não</button>
-        </div>
-      </div>
-    </div>
-  </div>-->
-    @*Modal de restrição ao tentar apagar uma postagem de outra pessoa*@
-    <!--<div data-backdrop="true" id="restrict-delete-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title"><h5>Operação não suportada!</h5></div>
-        </div>
-        <div class="modal-body">
-          Não é possível apagar uma postagem que não seja sua
-        </div>
-      </div>
-    </div>
-  </div>-->
-    @*Modal de restrição ao tentar editar uma postagem de outra pessoa*@
-    <!--<div data-backdrop="true" id="restrict-edit-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title"><h5>Operação não suportada!</h5></div>
-        </div>
-        <div class="modal-body">
-          Não é possível editar uma postagem que não seja sua
-        </div>
-      </div>
-    </div>
-  </div>-->
-    <table id="post-grid" class="table table-condensed table-hover table-striped">
+    <table id="post-grid" class="table table-condensed table-hover table-striped" data-filter-grid="@ViewBag.FilterGrid">
       <thead>
         <tr>
-          @*<th data-column-id="id" data-width="4%" data-formatter="id">Id</th>*@
           <th data-column-id="postType" data-formatter="postType">Tipo</th>
           <th data-column-id="userAccountName" data-formatter="userAccountName">Nome</th>
           <th data-column-id="departmentDescription" data-formatter="departmentDescription">Setor</th>

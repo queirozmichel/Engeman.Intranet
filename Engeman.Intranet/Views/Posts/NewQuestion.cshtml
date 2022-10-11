@@ -1,6 +1,10 @@
 ﻿@model Engeman.Intranet.Models.AskQuestionDto;
 @{List<Department> departments = ViewBag.Departments;}
 
+@*@{
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -8,7 +12,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @*Inicializa o Spinner*@
-  <script>startSpinner();</script>
+  @*<script>startSpinner();</script>*@
   @*CSS*@
   <link rel="stylesheet" href="~/css/new-question.css" />
   @*JavasScript*@
