@@ -1,0 +1,146 @@
+﻿@using Microsoft.AspNetCore.Http;
+
+@{
+  Layout = null;
+}
+
+<div class="row">
+  <div class="comments col-md-12">
+    <div class="widget">
+      <div>
+        @if (ViewBag.PostComments.Count == 0)
+        {
+          <h4>0 comentários</h4>
+        }
+        else
+        {
+          <h4><span id="comment-count">@ViewBag.PostComments.Count</span> comentário(s)</h4>
+        }
+      </div>
+      @for (int i = 0; i < ViewBag.PostComments.Count; i++)
+      {
+        <div class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].UserId" data-comment-id="@ViewBag.PostComments[i].Id">
+
+          <div id="editor-content-view" class="editor-content-view">@Html.Raw(@ViewBag.PostComments[i].Description)</div>
+          <div>
+            @if (@ViewBag.PostComments[i].Files.Count > 0)
+            {
+              <dl class="file-list">
+                Anexo(s):
+                @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
+                {
+                  <dd class="file"><a href="@Url.Action("showcommentfile", "posts", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
+                }
+              </dl>
+            }
+          </div>
+          <div>
+            @if (ViewBag.PostComments[i].UserId == Context.Session.GetInt32("_UserAccountId"))
+            {
+              <div id="comment-action-buttons" class="col-md-10">
+                <button class="comment-edit-btn btn btn-xs">Editar</button>
+                <button class="comment-delete-btn btn btn-xs">Apagar</button>
+              </div>
+            }
+            <figure class="fir-image-figure pull-right">
+              <a class="fir-imageover" rel="noopener" target="_blank" href="#">
+                @{var baseAux = Convert.ToBase64String(ViewBag.PostComments[i].Photo);
+                  var imasrcAux = string.Format("data:image/png;base64,{0}", baseAux);
+                }
+                <img class="fir-author-image fir-clickcircle" src='@imasrcAux' />
+              </a>
+              <figcaption>
+                <div class="fig-author-figure-title">@ViewBag.PostComments[i].Username</div>
+                <div class="fig-author-figure-title">@ViewBag.PostComments[i].DepartmentName</div>
+                <div class="fig-author-figure-title">@ViewBag.PostComments[i].ChangeDate</div>
+              </figcaption>
+            </figure>
+            <div class="widget-header"></div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<script>  
+  $(".comment-delete-btn").on("click", function () {
+    showConfirmModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos");
+  })
+
+  $(".comment-delete-btn, .btn-yes-comment, .btn-no-comment").on("click", function () {
+    var id;
+    if ($(this).hasClass("comment-delete-btn")) {
+      id = $(this).parent().parent().parent().attr("data-comment-id");
+      $(".btn-yes-comment").attr("data-comment-id", id);
+    } else if ($(this).hasClass("btn-yes-comment")) {
+      id = $(this).attr("data-comment-id");
+      var comment = getCommentElement(id);
+      deleteComment(id, comment);
+    } else if ($(this).hasClass("btn-no-comment")) {
+      hideConfirmModal();
+    }
+  })
+
+  function getCommentElement(id) {
+    var aux;
+    var comments = $(".comments").find("div.comment-box");
+    comments.each(function (index, element) {
+      if ($(element).attr("data-comment-id") == id) {
+        aux = element;
+      }
+    })
+    return $(aux);
+  }
+
+  function deleteComment(id, comment) {
+    $.ajax({
+      type: "DELETE",
+      data: {
+        "idComment": id
+      },
+      url: "deletecomment",
+      dataType: "text",
+      success: function (response) {
+        if (response == "true") {
+          hideConfirmModal();
+          comment.fadeOut(700);
+          setTimeout(() => {
+            comment.remove();
+          }, 700)
+          toastr.success("O comentário foi apagado com sucesso", "Sucesso!");
+          $("#comment-count").text($("#comment-count").text() - 1);
+        }
+      },
+      error: function (response) {
+        toastr.error("Não foi possível apagar o comentário", "Erro!");
+      }
+    })
+    comment.fadeOut(700);
+    setTimeout(() => {
+      comment.remove();
+    }, 700)
+  }
+
+  $("pre").addClass("line-numbers");
+
+  //Adicionar a referência de um arquivo .js
+  //if (!$("#teste").length) {
+  //  function addScript(attribute, text, callback) {
+  //    var s = document.createElement('script');
+  //    for (var attr in attribute) {
+  //      s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
+  //    }
+  //    s.innerHTML = text;
+  //    s.onload = callback;
+  //    document.body.appendChild(s);
+  //  }
+
+  //  addScript({
+  //    id: 'teste',
+  //    src: '../js/components/commentlist.js',
+  //    type: 'text/javascript',
+  //    async: null
+  //  }, '<div>innerHTML</div>', function () { });
+  //}
+</script>

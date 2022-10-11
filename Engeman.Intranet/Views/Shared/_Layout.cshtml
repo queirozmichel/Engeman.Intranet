@@ -85,7 +85,7 @@
   <link rel="stylesheet" href="~/plugins/wysiwyg/css/style.css" />
   <script type="text/javascript" src="~/plugins/wysiwyg/js/index.js"></script>
   @*Modal*@
-  <link rel="stylesheet" href="~/css/modal.css"/>
+  <link rel="stylesheet" href="~/css/modal.css" />
   @*CSS personalizado*@
   <link rel="stylesheet" type="text/css" href="~/css/custom.css" />
 </head>
@@ -432,7 +432,7 @@
         <!-- Search Results -->
         <!--<div class="sidebar-search-results">
 
-          <i class="icon-remove close"></i>-->
+        <i class="icon-remove close"></i>-->
         <!-- Documents -->
         <!--<div class="title">
           Documents
@@ -482,6 +482,7 @@
         </div>-->
         <!-- /.sidebar-search-results -->
         <!--=== Navigation ===-->
+
         <ul id="nav">
           <li>
             <a asp-area="" asp-controller="dashboard" asp-action="Index">
@@ -489,39 +490,7 @@
               Dashboard
             </a>
           </li>
-          <li>
-            <a href="javascript:void(0);">
-              <i class="icon-edit"></i>
-              Postagens
-              <span class="label label-info pull-right">6</span>
-            </a>
-            <ul class="sub-menu">
-              <li>
-                <a href="@Url.Action("listall","posts")">
-                  <i class="icon-angle-right"></i>
-                  Listar
-                </a>
-              </li>
-              <li>
-                <a id="new-question-btn" href="#">
-                  <i class="icon-angle-right"></i>
-                  Nova Pergunta
-                </a>
-              </li>
-              <li>
-                <a id="new-document-btn" href="#">
-                  <i class="icon-angle-right"></i>
-                  Novo Documento
-                </a>
-              </li>
-              <li>
-                <a id="new-manual-btn" href="#">
-                  <i class="icon-angle-right"></i>
-                  Novo Manual
-                </a>
-              </li>
-            </ul>
-          </li>
+          @await Component.InvokeAsync("PostsMenu")
           <li>
             <a asp-controller="useraccount" asp-action="Index">
               <i class="icon-user"></i>

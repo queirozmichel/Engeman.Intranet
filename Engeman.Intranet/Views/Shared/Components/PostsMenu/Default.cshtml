@@ -1,0 +1,49 @@
+﻿@model UserAccount
+
+@{
+  Layout = null;
+}
+
+<li>
+  <a id="posts" href="javascript:void(0);">
+    <i class="icon-edit"></i>Postagens
+  </a>
+  <ul class="sub-menu">
+    <li>
+      <a href="@Url.Action("listall","posts", new {filter="all" })">
+        <i class="icon-angle-right"></i>Listar
+      </a>
+    </li>
+    @if (Model.Moderator == true && @ViewBag.PostsNotRevisedCount > 0)
+    {
+      <li>
+        <a href="@Url.Action("listall","posts", new {filter="notRevised" })">
+          <i class="icon-angle-right"></i>Postagens não revisadas
+          <span id="postsCount" class="label label-info pull-right">
+            @ViewBag.PostsNotRevisedCount
+          </span>
+        </a>
+      </li>
+    }
+    <li>
+      <a href="#">
+        <i class="icon-angle-right"></i>Comentários não revisados
+      </a>
+    </li>
+    <li>
+      <a id="new-question-btn" href="#">
+        <i class="icon-angle-right"></i>Nova Pergunta
+      </a>
+    </li>
+    <li>
+      <a id="new-document-btn" href="#">
+        <i class="icon-angle-right"></i>Novo Documento
+      </a>
+    </li>
+    <li>
+      <a id="new-manual-btn" href="#">
+        <i class="icon-angle-right"></i>Novo Manual
+      </a>
+    </li>
+  </ul>
+</li>
