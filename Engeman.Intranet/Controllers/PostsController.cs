@@ -183,9 +183,13 @@ namespace Engeman.Intranet.Controllers
       var user = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
       IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(user).AsQueryable();
 
-      if (filterGrid == "notRevised")
+      if (filterGrid == "unrevisedPosts")
       {
         posts = posts.Where("revised == (@0)", false);
+      }
+      else if (filterGrid == "unrevisedComments")
+      {
+        posts = _postRepository.GetPostsWithUnrevisedComments().AsQueryable();
       }
 
       if (filterHeader == "manual")
@@ -245,6 +249,7 @@ namespace Engeman.Intranet.Controllers
       IQueryable<PostDto> posts = null;
       IQueryable paginatedPosts;
       int total = 0;
+      bool isModerator = checkIsModerator();
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       var order = requestKeys[key];
@@ -267,7 +272,7 @@ namespace Engeman.Intranet.Controllers
 
       paginatedPosts = OrderedPosts(posts, orderedField, current, rowCount);
 
-      return Json(new { rows = paginatedPosts, current, rowCount, total });
+      return Json(new { rows = paginatedPosts, current, rowCount, total, isModerator });
     }
 
     [HttpGet]
@@ -420,11 +425,12 @@ namespace Engeman.Intranet.Controllers
     public IActionResult QuestionDetails(int idPost)
     {
       var comments = new List<PostCommentViewModel>();
-      var orderedPostComments = _postCommentRepository.GetPostCommentsByPostId(idPost);
       var post = _postRepository.GetPostById(idPost);
-      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var userAccount = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
+      var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var orderedPostComments = _postCommentRepository.GetPostCommentsByRestriction(userAccount, idPost);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
-      var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
+      var postsCount = _postRepository.GetPostsCountByUserId(postAuthor.Id);
 
       for (int i = 0; i < orderedPostComments.Count; i++)
       {
@@ -437,10 +443,12 @@ namespace Engeman.Intranet.Controllers
         postCommentViewModel.UserId = orderedPostComments[i].UserAccountId;
         postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
         postCommentViewModel.ChangeDate = orderedPostComments[i].ChangeDate;
+        postCommentViewModel.Revised = orderedPostComments[i].Revised;
         postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(orderedPostComments[i].Id).OrderBy(x => x.Name).ToList();
         comments.Add(postCommentViewModel);
       }
       ViewBag.Post = post;
+      ViewBag.PostAuthor = postAuthor;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
       ViewBag.PostsCount = postsCount;
@@ -453,12 +461,13 @@ namespace Engeman.Intranet.Controllers
     public IActionResult DocumentManualDetails(int idPost)
     {
       var comments = new List<PostCommentViewModel>();
-      var orderedPostComments = _postCommentRepository.GetPostCommentsByPostId(idPost);
       var post = _postRepository.GetPostById(idPost);
+      var userAccount = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
+      var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
+      var orderedPostComments = _postCommentRepository.GetPostCommentsByRestriction(userAccount, idPost);
       var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
-      var userAccount = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
-      var postsCount = _postRepository.GetPostsCountByUserId(userAccount.Id);
+      var postsCount = _postRepository.GetPostsCountByUserId(postAuthor.Id);
 
       for (int i = 0; i < orderedPostComments.Count; i++)
       {
@@ -471,11 +480,13 @@ namespace Engeman.Intranet.Controllers
         postCommentViewModel.UserId = orderedPostComments[i].UserAccountId;
         postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
         postCommentViewModel.ChangeDate = orderedPostComments[i].ChangeDate;
+        postCommentViewModel.Revised = orderedPostComments[i].Revised;
         postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(orderedPostComments[i].Id).OrderBy(x => x.Name).ToList();
         comments.Add(postCommentViewModel);
       }
 
       ViewBag.Post = post;
+      ViewBag.PostAuthor = postAuthor;
       ViewBag.UserAccount = userAccount;
       ViewBag.Department = department;
       ViewBag.Files = orderedFiles;
@@ -510,6 +521,14 @@ namespace Engeman.Intranet.Controllers
       if (!ModelState.IsValid)
       {
         return Json(-1);
+      }
+
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+
+      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
+      {
+        postComment.Revised = true;
       }
 
       postComment.UserAccountId = (int)HttpContext.Session.GetInt32("_UserAccountId");
@@ -549,6 +568,38 @@ namespace Engeman.Intranet.Controllers
     {
       var result = _postCommentRepository.DeletePostCommentById(idComment);
       return Json(result);
+    }
+
+    [HttpPut]
+    public IActionResult AproveComment(int idComment)
+    {
+      var comment = _postCommentRepository.GetPostCommentById(idComment);
+      comment.Revised = true;
+      var result = _postCommentRepository.UpdatePostCommentById(idComment, comment);
+
+      return Json(result);
+    }
+
+    [HttpPut]
+    public IActionResult AprovePost(int idPost)
+    {
+      var post = _postRepository.GetPostById(idPost);
+      post.Revised = true;
+      var result = _postRepository.UpdatePost(idPost, post);
+
+      return Json(result);
+    }
+
+    public bool checkIsModerator()
+    {
+      if (HttpContext.Session.GetInt32("_Moderator") == 1)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
   }
 }

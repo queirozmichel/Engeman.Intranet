@@ -1,6 +1,7 @@
 ﻿//variáveis para armazenar o id da postagem e o elemento linha
 var idPostAux;
 var elementAux;
+var isModerator;
 
 $(window).on("load", function () {
   closeSpinner();
@@ -40,6 +41,7 @@ $(document).ready(function () {
       return request;
     },
     responseHandler: function (response) {
+      isModerator = response.isModerator;
       return response;
     },
     templates: {
@@ -112,9 +114,17 @@ $(document).ready(function () {
         return row.changeDate;
       },
       "action": function (column, row) {
-        return "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> " +
-          "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> " +
-          "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        var buttons;
+        var btn1;
+        var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
+        var btn3 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        if (row.revised == false && isModerator == true) {
+          btn1 = "<button title=\"Aprovar\" type=\"button\" class=\"btn btn-xs btn-success\" data-action=\"aprove\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"icon-ok\"></i></button> ";
+        } else {
+          btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> ";
+        }
+        buttons = btn1 + btn2 + btn3;
+        return buttons;
       },
     }
   })
@@ -173,6 +183,8 @@ $(document).ready(function () {
           postPermissions(userIdPost, idPost, postType, action);
           elementAux = element;
           idPostAux = idPost;
+        } else if (action == "aprove") {
+          aprovePost(idPost);
         }
       })
     });
@@ -339,4 +351,22 @@ function postDelete(idElement, element) {
       }, 700);
     }
   });
+}
+
+function aprovePost(idElement) {
+  $.ajax({
+    type: "PUT",
+    data: {
+      'idPost': idElement
+    },
+    url: "/posts/aprovepost",
+    dataType: "text",
+    success: function (result) {
+    },
+    error: function (result) {
+    },
+    complete: function () {
+      $("#post-grid").bootgrid("reload");
+    }
+  })
 }

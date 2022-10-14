@@ -16,6 +16,7 @@ namespace Engeman.Intranet.Models
     public string DepartmentName { get; set; }
     public byte[] Photo { get; set; }
     public List<PostCommentFile> Files { get; set; }
+    public bool Revised { get; set; }
     public DateTime ChangeDate { get; set; }
   }
 }

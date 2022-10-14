@@ -68,8 +68,9 @@ namespace Engeman.Intranet.Controllers
 
           HttpContext.Session.SetInt32("_UserAccountId", userAccount.Id);
           HttpContext.Session.SetInt32 ("_DepartmentId", userAccount.DepartmentId);
+          HttpContext.Session.SetInt32("_Moderator", Convert.ToInt32(userAccount.Moderator));
           HttpContext.Session.SetString("_DomainUsername", loginViewModel.DomainAccount.ToString());
-          HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());
+          HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());          
           return RedirectToAction("index", "dashboard");
         }
       }
@@ -79,6 +80,7 @@ namespace Engeman.Intranet.Controllers
       await HttpContext.SignOutAsync("CookieAuthentication");
       HttpContext.Session.Remove("_UserAccountId");
       HttpContext.Session.Remove("_DepartmentId");
+      HttpContext.Session.Remove("_Moderator");
       HttpContext.Session.Remove("_DomainUsername");
       HttpContext.Session.Remove("_Password");
       return RedirectToAction("index", "login");

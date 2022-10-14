@@ -144,8 +144,9 @@ namespace Engeman.Intranet.Repositories
         post.Keywords = result["Keywords"].ToString();
         post.UserAccountId = Convert.ToInt32(result["UserAccount_Id"]);
         post.DepartmentId = Convert.ToInt32(result["Department_Id"]);
-        post.ChangeDate = (DateTime)result["ChangeDate"];
         post.PostType = Convert.ToChar(result["Post_Type"].ToString());
+        post.Revised = Convert.ToBoolean(result["Revised"]);
+        post.ChangeDate = (DateTime)result["ChangeDate"];
       }
       return post;
     }
@@ -282,7 +283,7 @@ namespace Engeman.Intranet.Repositories
 
             sq.ExecuteCommand(delete);
           }
-        }        
+        }
       }
     }
 
@@ -316,6 +317,64 @@ namespace Engeman.Intranet.Repositories
         $"WHERE USERACCOUNT_ID = {id}";
 
         var result = sq.GetDataToInt(query);
+
+        return result;
+      }
+    }
+
+    public List<PostDto> GetPostsWithUnrevisedComments()
+    {
+      List<PostDto> posts = new List<PostDto>();
+
+      string query =
+      "SELECT DISTINCT " +
+          "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USERACCOUNT_ID, " +
+          "POST.POST_TYPE, POST.CHANGEDATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, PF.FILE_TYPE " +
+      "FROM POST " +
+      "INNER JOIN POST_COMMENT AS PC ON PC.POST_ID = POST.ID " +
+      "LEFT JOIN POST_FILE AS PF ON PF.POST_ID = POST.ID " +
+      "INNER JOIN USERACCOUNT AS UA ON POST.USERACCOUNT_ID = UA.ID " +
+      "INNER JOIN DEPARTMENT AS D ON POST.DEPARTMENT_ID = D.ID " +
+      "WHERE PC.REVISED = 0 ";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = sq.GetDataSet(query).Tables[0];
+
+        for (int i = 0; i < result.Rows.Count; i++)
+        {
+          PostDto postDto = new PostDto();
+          postDto.Id = Convert.ToInt32(result.Rows[i]["Post_Id"]);
+          postDto.Restricted = Convert.ToChar(result.Rows[i]["Restricted"]);
+          postDto.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
+          postDto.Subject = result.Rows[i]["Subject"].ToString();
+          postDto.ChangeDate = result.Rows[i]["ChangeDate"].ToString();
+          postDto.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
+          postDto.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
+          postDto.UserAccountId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
+          postDto.DepartmentDescription = result.Rows[i]["Department"].ToString();
+          postDto.UserAccountName = result.Rows[i]["Name"].ToString();
+          postDto.FileType = result.Rows[i]["File_Type"].ToString();
+
+          posts.Add(postDto);
+        }
+        return posts;
+      }
+    }
+
+    public bool UpdatePost(int id, Post post)
+    {
+      string query =
+      $"UPDATE " +
+      $"POST " +
+      $"SET ACTIVE = '{post.Active}', RESTRICTED = '{post.Restricted}', SUBJECT = '{post.Subject}', DESCRIPTION = '{post.Description}', CLEAN_DESCRIPTION = '{post.CleanDescription}', " +
+      $"KEYWORDS = '{post.Keywords}', USERACCOUNT_ID = {post.UserAccountId}, DEPARTMENT_ID = {post.DepartmentId}, " +
+      $"POST_TYPE = '{post.PostType}', REVISED = '{post.Revised}' " +
+      $"WHERE ID = '{id}'";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = Convert.ToBoolean(sq.ExecuteCommand(query));
 
         return result;
       }

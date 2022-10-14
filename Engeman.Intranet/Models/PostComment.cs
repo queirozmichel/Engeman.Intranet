@@ -12,6 +12,7 @@ namespace Engeman.Intranet.Models
     public int UserAccountId { get; set; }
     public int DepartmentId { get; set; }
     public int PostId { get; set; }
+    public bool Revised { get; set; }
     public DateTime ChangeDate { get; set; }
   }
 }

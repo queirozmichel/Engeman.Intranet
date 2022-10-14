@@ -24,8 +24,9 @@ namespace Engeman.Intranet.Models
     public UserAccount UserAccount { get; set; }
     public int DepartmentId { get; set; }
     public Department Department { get; set; }
-    public DateTime ChangeDate { get; set; }
     public char PostType { get; set; }
+    public bool Revised { get; set; }
+    public DateTime ChangeDate { get; set; }
     public bool CheckIsRestricted
     {
       get
