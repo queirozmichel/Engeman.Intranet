@@ -27,7 +27,7 @@ $("#edit-question-form").on("submit", function (event) {
       type: "POST",
       dataType: 'text',
       async: true,
-      url: "/posts/updatequestion",
+      url: "/posts/updatequestion" + window.location.search,
       data: formData,
       success: function (response) {
         if (response == 0) {
@@ -36,7 +36,7 @@ $("#edit-question-form").on("submit", function (event) {
           toastr.success("A pergunta foi atualizada", "Sucesso!");
           $(".body-content").empty();
           $(".body-content").html(response);
-          window.history.pushState({}, '', '/posts/listall');
+          //window.history.pushState({}, '', '/posts/listall');
         }
       },
       error: function () {
@@ -44,20 +44,6 @@ $("#edit-question-form").on("submit", function (event) {
       }
     });
   }
-})
-
-$(".back-to-list-button").on("click", function () {
-  $.ajax({
-    type: "POST",
-    url: "/posts/backtolist",
-    success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
-    },
-    error: function () {
-      toastr.error("Não foi possível voltar", "Erro!");
-    }
-  });
 })
 
 $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {

@@ -52,7 +52,7 @@
         </div>
         <div class="form-actions">
           <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-          <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
+          @await Component.InvokeAsync("BtnBackToList")
         </div>
       </form>
     </div>

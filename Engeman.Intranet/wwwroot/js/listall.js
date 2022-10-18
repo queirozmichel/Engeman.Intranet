@@ -301,7 +301,7 @@ function postEdit(idPost) {
     type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
-    url: "/posts/questionedit",
+    url: "/posts/questionedit" + window.location.search, //assim é passado os parâmetros da url na chamada ajax "ViewBag.FilterGrid = Request.Query["filter"]"
     error: function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },

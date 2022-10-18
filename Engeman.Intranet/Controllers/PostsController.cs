@@ -34,9 +34,9 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult ListAll(string filter)
-    {
-      ViewBag.FilterGrid = filter;
+    public IActionResult ListAll()
+    { 
+      ViewBag.FilterGrid = Request.Query["filter"];
 
       return View();
     }
@@ -173,8 +173,10 @@ namespace Engeman.Intranet.Controllers
       return View("NewDocumentManual");
     }
 
-    public IActionResult BackToList()
-    {
+    public IActionResult BackToList(int postId)
+    {   
+      ViewBag.FilterGrid = Request.Query["filter"];
+
       return PartialView("ListAll");
     }
 
@@ -183,7 +185,14 @@ namespace Engeman.Intranet.Controllers
       var user = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
       IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(user).AsQueryable();
 
-      if (filterGrid == "unrevisedPosts")
+      if (filterGrid == "allPosts")
+      {
+        if (user.Moderator == true)
+        {
+          posts = posts.Where("revised == (@0)", true);
+        }
+      }
+      else if (filterGrid == "unrevisedPosts")
       {
         posts = posts.Where("revised == (@0)", false);
       }
@@ -325,20 +334,23 @@ namespace Engeman.Intranet.Controllers
         return Json(0);
       }
 
+      var post = _postRepository.GetPostById(askQuestionDto.Id);
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
-      if (userAccount.Moderator == true || userAccount.NoviceUser != true)
-      {
-        askQuestionDto.Revised = true;
-      }
-      askQuestionDto.UserAccountId = userAccount.Id;
+
       askQuestionDto.DepartmentId = userAccount.DepartmentId;
       askQuestionDto.PostType = 'Q';
       askQuestionDto.Active = 'S';
       askQuestionDto.CleanDescription = askQuestionDto.Description;
       askQuestionDto.DomainAccount = sessionDomainUsername;
+      if (post.Revised == true && userAccount.NoviceUser == false)
+      {
+        askQuestionDto.Revised = true;
+      }
 
       _postRepository.UpdateQuestion(askQuestionDto.Id, askQuestionDto);
+      ViewBag.FilterGrid = Request.Query["filter"];
+
       return PartialView("ListAll");
     }
 
@@ -350,16 +362,13 @@ namespace Engeman.Intranet.Controllers
         return Json(0);
       }
 
+      var post = _postRepository.GetPostById(postFiles.Post.Id);
       char fileType = postFiles.Files[0].FileType;
       AskQuestionDto postInformation = new AskQuestionDto();
       List<PostFile> files = new List<PostFile>();
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
 
-      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
-      {
-        postInformation.Revised = true;
-      }
 
       for (int i = 0; i < postFiles.Files.Count; i++)
       {
@@ -379,13 +388,17 @@ namespace Engeman.Intranet.Controllers
         files.Add(fileUpdate);
       }
 
-
       postInformation.Restricted = postFiles.Post.Restricted;
       postInformation.Subject = postFiles.Post.Subject;
       postInformation.Description = postFiles.Post.Description;
       postInformation.CleanDescription = postInformation.Description;
       postInformation.Keywords = postFiles.Post.Keywords;
       postInformation.DepartmentsList = postFiles.DepartmentsList;
+
+      if (post.Revised == true && userAccount.NoviceUser == false)
+      {
+        postInformation.Revised = true;
+      }
 
       _postRepository.UpdatePostFile(postFiles.Post.Id, postInformation, files);
 
@@ -412,6 +425,8 @@ namespace Engeman.Intranet.Controllers
         }
         _postRepository.AddPostFile(postFiles.Post.Id, files);
       }
+      ViewBag.FilterGrid = Request.Query["filter"];
+
       return PartialView("ListAll");
     }
 

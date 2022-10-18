@@ -38,7 +38,7 @@ $("#document-manual-edit-form").on("submit", function (event) {
     var formData = new FormData(this);
     $.ajax({
       type: "POST",
-      url: "documentmanualupdate",
+      url: "/posts/documentmanualupdate" + window.location.search,
       contentType: false,
       processData: false,
       data: formData,
@@ -48,8 +48,8 @@ $("#document-manual-edit-form").on("submit", function (event) {
         } else {
           $(".body-content").empty();
           $(".body-content").html(response);
-          toastr.success("O arquivo foi salvo", "Sucesso!");
-          window.history.pushState({}, '', '/posts/listall');
+          toastr.success("A postagem foi salva", "Sucesso!");
+          //window.history.pushState({}, '', '/posts/listall');
         }
       },
       error: function (response) {
@@ -57,20 +57,6 @@ $("#document-manual-edit-form").on("submit", function (event) {
       }
     });
   }
-})
-
-$(".back-to-list-button").on("click", function () {
-  $.ajax({
-    type: "POST",
-    url: "/posts/backtolist",
-    success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
-    },
-    error: function () {
-      toastr.error("Não foi possível voltar", "Erro!");
-    }
-  });
 })
 
 $(".icon-remove-circle").on("click", function () {

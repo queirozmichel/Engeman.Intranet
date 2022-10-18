@@ -17,7 +17,18 @@
     @Html.Partial("modals/_ConfirmModal", "post")
     <div class="page-header">
       <div class="page-title">
-        <h3>Postagens</h3>
+        @if (ViewBag.FilterGrid == "allPosts")
+        {
+          <h3>Todas as Postagens</h3>
+        }
+        else if (ViewBag.FilterGrid == "unrevisedPosts")
+        {
+          <h3>Postagens não Revisadas</h3>
+        }
+        else if (ViewBag.FilterGrid == "unrevisedComments")
+        {
+          <h3>Comentários não Revisados</h3>
+        }
         @*<span>Good morning, John!</span>*@
       </div>
       <!-- Page Stats -->

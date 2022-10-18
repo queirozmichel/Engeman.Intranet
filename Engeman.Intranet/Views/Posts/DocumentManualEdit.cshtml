@@ -19,7 +19,7 @@
     <!--=== Page Header ===-->
     <div class="page-header">
       <div class="page-title">
-        <h3>Detalhes da Postagem</h3>
+        <h3>Editar Postagem</h3>
         <span>Good morning, John!</span>
       </div>
       <!-- Page Stats -->
@@ -148,7 +148,7 @@
               </div>
               <div class="form-actions">
                 <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-                <a class="btn pull-left back-to-list-button">Voltar para a lista</a>
+                @await Component.InvokeAsync("BtnBackToList")
               </div>
             </form>
           </div>
