@@ -6,13 +6,13 @@ using System.Linq.Dynamic.Core;
 
 namespace Engeman.Intranet.ViewComponents
 {
-  public class PostsMenuViewComponent : ViewComponent
+  public class UnrevisedListViewComponent : ViewComponent
   {
     private readonly IUserAccountRepository _userAccount;
     private readonly IPostRepository _postRepository;
     private readonly IPostCommentRepository _postCommentRepository;
 
-    public PostsMenuViewComponent(IUserAccountRepository userAccount, IPostRepository postRepository, IPostCommentRepository postCommentRepository)
+    public UnrevisedListViewComponent(IUserAccountRepository userAccount, IPostRepository postRepository, IPostCommentRepository postCommentRepository)
     {
       _userAccount = userAccount;
       _postRepository = postRepository;

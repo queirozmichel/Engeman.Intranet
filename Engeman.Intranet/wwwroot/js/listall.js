@@ -362,8 +362,14 @@ function aprovePost(idElement) {
     url: "/posts/aprovepost",
     dataType: "text",
     success: function (result) {
+      $(".sub-menu > li.all-posts").remove();
+      $(".sub-menu > li.unrevised-posts").remove();
+      $(".sub-menu > li.unrevised-comments").remove();
+      $("#list-posts-content").html(result);
+      toastr.success("Postagem aprovada", "Sucesso!");
     },
     error: function (result) {
+      toastr.error("Não foi possível aprovar a postagem", "Erro!");
     },
     complete: function () {
       $("#post-grid").bootgrid("reload");

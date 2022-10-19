@@ -490,7 +490,32 @@
               Dashboard
             </a>
           </li>
-          @await Component.InvokeAsync("PostsMenu")
+          <li>
+            <a id="posts" href="javascript:void(0);">
+              <i class="icon-edit"></i>Postagens
+            </a>
+            <ul class="sub-menu">
+              <li id="list-posts-content">
+                @await Component.InvokeAsync("UnrevisedList")
+              </li>            
+              <li>
+                <a id="new-question-btn" href="#">
+                  <i class="icon-angle-right"></i>Nova Pergunta
+                </a>
+              </li>
+              <li>
+                <a id="new-document-btn" href="#">
+                  <i class="icon-angle-right"></i>Novo Documento
+                </a>
+              </li>
+              <li>
+                <a id="new-manual-btn" href="#">
+                  <i class="icon-angle-right"></i>Novo Manual
+                </a>
+              </li>
+            </ul>
+          </li>
+
           <li>
             <a asp-controller="useraccount" asp-action="Index">
               <i class="icon-user"></i>

@@ -55,7 +55,6 @@ namespace Engeman.Intranet.Controllers
       {
         return Ok(false);
       }
-
     }
 
     [HttpPost]
@@ -590,9 +589,9 @@ namespace Engeman.Intranet.Controllers
     {
       var comment = _postCommentRepository.GetPostCommentById(idComment);
       comment.Revised = true;
-      var result = _postCommentRepository.UpdatePostCommentById(idComment, comment);
+      _postCommentRepository.UpdatePostCommentById(idComment, comment);
 
-      return Json(result);
+      return ViewComponent("UnrevisedList");
     }
 
     [HttpPut]
@@ -600,9 +599,9 @@ namespace Engeman.Intranet.Controllers
     {
       var post = _postRepository.GetPostById(idPost);
       post.Revised = true;
-      var result = _postRepository.UpdatePost(idPost, post);
+      _postRepository.UpdatePost(idPost, post);
 
-      return Json(result);
+      return ViewComponent("UnrevisedList");
     }
 
     public bool checkIsModerator()
