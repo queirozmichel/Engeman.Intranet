@@ -76,6 +76,10 @@
             </div>
           </div>
           <div class="tab-pane" id="tab_1_2">
+            <div>
+              <div id="toolbar-container-2"></div>
+              <div id="editor-container-2"></div>
+            </div>
             <div class="col-md-12">
               <div class="widget box">
                 <div class="widget-content">
@@ -116,7 +120,41 @@
             </div>
           </div>
           <div class="tab-pane active" id="tab_1_3">
-            @await Component.InvokeAsync("NewComment", ViewBag.Post)
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-12 col-md-offset-1 align-center">
+                  <h3>@ViewBag.Post.Subject</h3>
+                  <div class="well">
+                    @ViewBag.Post.Description
+                  </div>
+                </div>
+              </div>
+              <div class="widget box answer-box">
+                <div class="widget-content">
+                  <form class="form-horizontal row-border" id="comment-form" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      @await Component.InvokeAsync("WangEditor", new { selectorId = "new-comment" })
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Palavras chave</label>
+                      <div class="col-md-10">
+                        <input class="tags" id="keywords" type="text" name="keywords">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Anexar arquivo(s)</label>
+                      <div class="col-md-2">
+                        <input id="file" type="file" name="files" accept="application/pdf" multiple>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
+                      @await Component.InvokeAsync("BtnBackToList")
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -128,3 +166,4 @@
 
 <script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/modal.js"></script>
+<script type="text/javascript" src="~/js/question-details.js"></script>

@@ -8,6 +8,7 @@
     success: function (response) {
       $(".body-content").empty();
       $(".body-content").html(response);
+      if ($("#wang-editor-script").length) $("#wang-editor-script").remove();
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");
