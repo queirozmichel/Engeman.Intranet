@@ -11,6 +11,7 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
+        //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
         var query =
         $"INSERT INTO " +
         $"POST_COMMENT " +
@@ -153,7 +154,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public PostComment GetPostCommentById(int postId)
+    public PostComment GetPostCommentById(int commentId)
     {
       PostComment comment = new PostComment();
 
@@ -162,7 +163,7 @@ namespace Engeman.Intranet.Repositories
         string query =
         $"SELECT * " +
         $"FROM POST_COMMENT " +
-        $"WHERE ID = '{postId}'";
+        $"WHERE ID = '{commentId}'";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
@@ -173,7 +174,7 @@ namespace Engeman.Intranet.Repositories
         comment.Keywords = Convert.ToString(result["keywords"]);
         comment.UserAccountId = Convert.ToInt32(result["useraccount_id"]);
         comment.DepartmentId = Convert.ToInt32(result["department_id"]);
-        comment.PostId = postId;
+        comment.PostId = Convert.ToInt32(result["post_id"]);
         comment.ChangeDate = (DateTime)result["changedate"];
         comment.Revised = Convert.ToBoolean(result["revised"]);
 
@@ -186,9 +187,8 @@ namespace Engeman.Intranet.Repositories
       string query =
       $"UPDATE " +
       $"POST_COMMENT " +
-      $"SET ACTIVE = '{comment.Active}', DESCRIPTION = '{comment.Description}', CLEAN_DESCRIPTION = '{comment.CleanDescription}', " +
-      $"KEYWORDS = '{comment.Keywords}', USERACCOUNT_ID = {comment.UserAccountId}, DEPARTMENT_ID = {comment.DepartmentId}, " +
-      $"REVISED = '{comment.Revised}' " +
+      $"SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description}', CLEAN_DESCRIPTION = '{comment.CleanDescription}', " +
+      $"KEYWORDS = '{comment.Keywords}', REVISED = '{comment.Revised}' " +
       $"WHERE ID = '{id}'";
 
       using (StaticQuery sq = new StaticQuery())
@@ -197,6 +197,28 @@ namespace Engeman.Intranet.Repositories
 
         return result;
       }
+    }
+
+    public bool UpdatePostCommentById(int id, PostComment comment, List<PostCommentFile> files)
+    {
+      string update;
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        UpdatePostCommentById(id, comment);
+
+        for (int i = 0; i < files.Count; i++)
+        {
+          update =
+          $"UPDATE " +
+          $"POST_COMMENT_FILE " +
+          $"SET DESCRIPTION = N'{comment.Description}' " +
+          $"WHERE POST_COMMENT_ID = {id}";
+
+          sq.ExecuteCommand(update);
+        }
+      }
+      return true;
     }
 
     public List<PostComment> GetUnrevisedComments()

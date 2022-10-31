@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="~/css/components/comment-list.css" />
 
 <div class="row">
-  <div class="comments col-md-12">
+  <div class="comments col-md-12" data-post-id="@ViewBag.PostId">
     <div class="widget">
       <div>
         @if (ViewBag.PostComments.Count == 0)
@@ -31,7 +31,7 @@
                 Anexo(s):
                 @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
                 {
-                  <dd class="file"><a href="@Url.Action("showcommentfile", "posts", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
+                  <dd class="file"><a href="@Url.Action("showcommentfile", "comments", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
                 }
               </dl>
             }
@@ -40,7 +40,7 @@
           <div>
             @if (ViewBag.PostComments[i].UserId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
             {
-              <div id="comment-action-buttons" class="col-md-10">
+              <div class="col-md-10 comment-action-buttons">
                 <button class="comment-edit-btn btn btn-xs">Editar</button>
                 <button class="comment-delete-btn btn btn-xs">Apagar</button>
                 @if (ViewBag.PostComments[i].Revised == false && Context.Session.GetInt32("_Moderator") == 1)
@@ -75,4 +75,5 @@
   </div>
 </div>
 
+<script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/components/comment-list.js"></script>

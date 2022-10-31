@@ -10,7 +10,7 @@ namespace Engeman.Intranet.Models
     public string Name { get; set; }
     public string Description { get; set; }
     public byte[] BinaryData { get; set; }
-    public int PostCommentId { get; set; }
+    public int CommentId { get; set; }
     public DateTime ChangeDate { get; set; }
   }
 }

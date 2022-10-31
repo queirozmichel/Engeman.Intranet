@@ -1,0 +1,13 @@
+﻿.checkbox {
+  padding: 0;
+}
+
+.icon-remove-circle {
+  color: orangered;
+  cursor: pointer;
+  padding-right: 10px;
+}
+
+.files-qty {
+  display: none;
+}

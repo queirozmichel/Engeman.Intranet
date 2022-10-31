@@ -16,7 +16,6 @@ namespace Engeman.Intranet.Repositories
     public void AddPostFile(AskQuestionDto askQuestionDto, List<PostFile> files);
     public void AddPostFile(int id, List<PostFile> files);
     public void DeletePost(int postId);
-
     public bool UpdatePost(int id, Post post);
   }
 }

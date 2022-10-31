@@ -1,39 +1,34 @@
 ﻿$(document).ready(function () {
-
   richTextBox();
-
 });
 
 function richTextBox() {
 
   const { createEditor, createToolbar } = window.wangEditor
 
-  wangEditor.i18nChangeLanguage("en");  
+  wangEditor.i18nChangeLanguage("en");
 
   var wangEditors = $(".wang-editor");
-
   $(wangEditors).each(function () {
     var toolbarId = $(this).find(".wang-editor-toolbar").attr("id");
     var editorId = $(this).find(".wang-editor-editor").attr("id");
     var editorDescription = $(this).find(".wang-editor-description").attr("id");
     var editorPreview = $(this).find(".editor-content-view").attr("id");
     var editor = createE(editorId, editorDescription, editorPreview);
-    createT(toolbarId, editor);  
+    createT(toolbarId, editor);
   })
 
   function createE(editorId, editorDescription, editorPreview) {
-
     const editorConfig = {
       placeholder: 'Digite aqui',
       MENU_CONF: {
         uploadImage: {
           fieldName: 'your-fileName',
-          base64LimitSize: 5 * 1024 * 1024 // 5M 以下插入 base64
+          base64LimitSize: 10 * 1024 * 1024 // 10M 以下插入 base64
         }
       },
       onChange(editor) {
         const html = editor.getHtml()
-
         if (html != "<p><br></p>") {
           $('#' + editorDescription).val(html);
         } else {
@@ -43,7 +38,10 @@ function richTextBox() {
           document.getElementById(editorPreview).innerHTML = html
         }
         Prism.highlightAll();
-      }
+      },
+      onCreated(editor) {
+        editor.setHtml($('#' + editorDescription).val());
+      },      
     }
 
     editorConfig.MENU_CONF['fontSize'] = {
@@ -71,7 +69,6 @@ function richTextBox() {
       config: editorConfig,
       mode: 'default'
     })
-
     return editor;
   }
 

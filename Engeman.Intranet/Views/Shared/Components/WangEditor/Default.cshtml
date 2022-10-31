@@ -4,11 +4,11 @@
 
 @model string
 
-<div class="col-md-12 wang-editor">
+<div class="col-md-12 wang-editor" id="@Model">
   <div id="@Model-toolbar" class="wang-editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
   <div id="@Model-editor" class="wang-editor-editor"></div>
   <input id="@Model-description" class="form-control wang-editor-description" name="description" type="hidden">
-  <div class="col-md-12 panel-group wang-editor-preview">
+<div class="col-md-12 panel-group wang-editor-preview">
     <div class="panel panel-default">
       <div class="panel-heading align-center">
         <h3 class="panel-title">
@@ -38,7 +38,7 @@
       document.body.appendChild(s);
     }
     addScript({
-      id: 'wang-editor-script',
+    id: 'wang-editor-script',
       src: '../js/components/wang-editor.js',
       type: 'text/javascript',
       async: null

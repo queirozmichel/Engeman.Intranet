@@ -33,7 +33,6 @@ function getCommentElement(id) {
   return $(aux);
 }
 
-
 function aproveComment(id, comment) {
   $.ajax({
     type: "PUT",
@@ -57,8 +56,6 @@ function aproveComment(id, comment) {
     }
   })
 }
-
-
 
 function deleteComment(id, comment) {
   $.ajax({
@@ -91,22 +88,24 @@ function deleteComment(id, comment) {
 
 $("pre").addClass("line-numbers");
 
-  //Adicionar a referência de um arquivo .js
-  //if (!$("#teste").length) {
-  //  function addScript(attribute, text, callback) {
-  //    var s = document.createElement('script');
-  //    for (var attr in attribute) {
-  //      s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
-  //    }
-  //    s.innerHTML = text;
-  //    s.onload = callback;
-  //    document.body.appendChild(s);
-  //  }
-
-  //  addScript({
-  //    id: 'teste',
-  //    src: '../js/components/commentlist.js',
-  //    type: 'text/javascript',
-  //    async: null
-  //  }, '<div>innerHTML</div>', function () { });
-  //}
+$(".comment-edit-btn").on("click", function () {
+  $(".wang-editor").remove();
+  $(".comment-action-buttons").css("display", "none");
+  var comment = $(this).parents(".comment-box");
+  var id = $(this).parents(".comment-box").data("comment-id");
+  var commentDescription = $(comment).children("#editor-content-view").html();
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    data: { "commentId": id },
+    url: "/comments/commenteditform",
+    success: function (response) {
+      $("#wang-editor-script").remove();
+      $(comment).css("background", "white");
+      $(comment).html(response);      
+    },
+    error: function (response) {
+      console.log("error");
+    }
+  })
+})

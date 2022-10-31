@@ -23,6 +23,7 @@ $("#comment-form").on("submit", function (event) {
     //contentType e processData são obrigatórios
     $.ajax({
       type: "POST",
+      dataType: "html",
       url: "/posts/newcomment",
       contentType: false,
       processData: false,
@@ -51,4 +52,37 @@ $("#comment-form").on("submit", function (event) {
       }
     })
   }
+})
+
+$("#post-tab").on("click", function () {
+  var idPost = $("#id-post").text();
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    data: { "idPost": idPost },
+    url: "/comments/commentlist",
+    success: function (response) {
+      $("#comment-list").empty();
+      $("#comment-list").html(response);
+    },
+    error: function (response) {
+      toastr.error("", "Erro!");
+    }
+  })
+})
+
+$("#comment-tab").on("click", function () {
+  $(".wang-editor").remove();
+  $("#wang-editor-script").remove();
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    url: "/comments/newcomment",
+    success: function (response) {
+      $("#form-group-wang-editor").html(response);
+    },
+    error: function (response) {
+      toastr.error("", "Erro!");
+    }
+  })
 })

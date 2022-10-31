@@ -44,9 +44,9 @@
     <div class="col-md-12">
       <div class="tabbable tabbable-custom tabbable-full-width">
         <ul class="nav nav-tabs">
-          <li class="active"><a href="#tab_1_1" data-toggle="tab">Postagem</a></li>
+          <li id="post-tab" class="active"><a href="#tab_1_1" data-toggle="tab">Postagem</a></li>
           <li><a href="#tab_1_2" data-toggle="tab">Autor</a></li>
-          <li><a href="#tab_1_3" data-toggle="tab">Comentar</a></li>
+          <li><a id="comment-tab" href="#tab_1_3" data-toggle="tab">Comentar</a></li>
         </ul>
         <div class="tab-content row">
           <div class="tab-pane active" id="tab_1_1">
@@ -57,7 +57,7 @@
                     <div class="widget-content">
                       <dl class="dl-horizontal">
                         <dt>Id:</dt>
-                        <dd>@ViewBag.Post.Id</dd>
+                        <dd id="id-post">@ViewBag.Post.Id</dd>
                         <dt>Data:</dt>
                         <dd>@ViewBag.Post.ChangeDate</dd>
                         <dt>Assunto:</dt>
@@ -72,7 +72,9 @@
                   </form>
                 </div>
               </div>
-              @await Component.InvokeAsync("CommentList", ViewBag.PostComments)
+              <div id="comment-list">
+                @await Component.InvokeAsync("CommentList", ViewBag.Post.Id)
+              </div>
             </div>
           </div>
           <div class="tab-pane" id="tab_1_2">
@@ -132,9 +134,7 @@
               <div class="widget box answer-box">
                 <div class="widget-content">
                   <form class="form-horizontal row-border" id="comment-form" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                      @await Component.InvokeAsync("WangEditor", new { selectorId = "new-comment" })
-                    </div>
+                    <div class="form-group" id="form-group-wang-editor"></div>
                     <div class="form-group">
                       <label class="col-md-2 control-label">Palavras chave</label>
                       <div class="col-md-10">
@@ -164,6 +164,5 @@
 
 </html>
 
-<script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/modal.js"></script>
 <script type="text/javascript" src="~/js/question-details.js"></script>

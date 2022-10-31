@@ -34,6 +34,7 @@ $("#comment-form").on("submit", function (event) {
           toastr.success("O comentário foi salvo", "Sucesso!");
           $.ajax({
             type: "POST",
+            dataType: "html",
             url: "/posts/backtolist",
             success: function (response) {
               $(".body-content").empty();
@@ -51,4 +52,37 @@ $("#comment-form").on("submit", function (event) {
       }
     })
   }
+})
+
+$("#comment-tab").on("click", function () {
+  $(".wang-editor").remove();
+  $("#wang-editor-script").remove();
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    url: "/comments/newcomment",
+    success: function (response) {      
+      $("#form-group-wang-editor").html(response);
+    },
+    error: function (response) {
+      toastr.error("", "Erro!");
+    }
+  })
+})
+
+$("#post-tab").on("click", function () {
+  var idPost = $("#id-post").text();
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    data: {"idPost" : idPost},
+    url: "/comments/commentlist",
+    success: function (response) {
+      $("#comment-list").empty();
+      $("#comment-list").html(response);
+    },
+    error: function (response) {
+      toastr.error("", "Erro!");
+    }
+  })
 })

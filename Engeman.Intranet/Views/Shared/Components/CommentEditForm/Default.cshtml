@@ -1,0 +1,94 @@
+﻿@model Engeman.Intranet.Models.CommentEditViewModel;
+
+@{
+  Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/components/comment-edit-form.css" />
+
+<div class="widget box comment-edit-box">
+  <div class="widget-content">
+    <form class="form-horizontal row-border" id="comment-edit-form" method="post" enctype="multipart/form-data" data-post-id="">
+      <div class="form-group">
+        <div class="col-md-12 wang-editor" id="@ViewBag.SelectorId">
+          <div id="@ViewBag.SelectorId-toolbar" class="wang-editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
+          <div id="@ViewBag.SelectorId-editor" class="wang-editor-editor"></div>
+          <input id="@ViewBag.SelectorId-description" class="form-control wang-editor-description" name="comment.description" type="hidden" value="@Model.Comment.Description">
+          <div class="col-md-12 panel-group wang-editor-preview">
+            <div class="panel panel-default">
+              <div class="panel-heading align-center">
+                <h3 class="panel-title">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#@ViewBag.SelectorId-collapse">
+                    Pré-visualizar comentário
+                  </a>
+                </h3>
+              </div>
+              <div id="@ViewBag.SelectorId-collapse" class="panel-collapse collapse">
+                <div class="preview-box panel-body">
+                  <div id="@ViewBag.SelectorId-preview" class="editor-content-view"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-2 control-label">Palavras chave</label>
+        <div class="col-md-10">
+          <input class="tags" id="tags-comment-edit-form" type="text" name="comment.keywords" value="@Model.Comment.Keywords">
+        </div>
+      </div>
+      @if (@Model.Files.Count > 0)
+      {
+        <div class="form-group files">
+          <label class="col-md-2 control-label">Arquivo(s)<span class="files-qty">0</span></label>
+         <div class="col-md-10">
+           @for (int i = 0; i < Model.Files.Count; i++)
+           {
+             <label class="checkbox">
+               @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
+               @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
+               <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showcommentfile", "comments", new { idComment = Model.Comment.Id, file = i })" target="_blank">@Model.Files[i].Name</a>
+             </label>
+           }
+           <span class="files-qty">0</span>
+         </div>
+        </div>
+      }
+      <div class="form-group">
+        <label class="col-md-2 control-label">Anexar arquivo(s)</label>
+        <div class="col-md-2">
+          <input type="file" name="binarydata" accept="application/pdf" multiple>
+        </div>
+      </div>
+      <input class="form-control" name="comment.id" type="hidden" value="@Model.Comment.Id">
+      <input class="form-control" name="comment.postId" type="hidden" value="@Model.Comment.PostId">
+      <div class="form-actions">
+        <button id="submit-comment-edit-btn" class="btn btn-primary pull-right" type="submit">Salvar</button>
+        <button id="cancel-comment-edit-btn" class="btn pull-left">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  if (!$("#wang-editor-script").length) {
+    function addScript(attribute, text, callback) {
+      var s = document.createElement('script');
+      for (var attr in attribute) {
+        s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
+      }
+      s.innerHTML = text;
+      s.onload = callback;
+      document.body.appendChild(s);
+    }
+    addScript({
+      id: 'wang-editor-script',
+      src: '../js/components/wang-editor.js',
+      type: 'text/javascript',
+      async: null
+    });
+  }
+</script>
+
+<script type="text/javascript" src="~/js/components/comment-edit-form.js"></script>
