@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="~/css/components/comment-list.css" />
 
 <div class="row">
+  @await Component.InvokeAsync("ConfirmationModal")
   <div class="comments col-md-12" data-post-id="@ViewBag.PostId">
     <div class="widget">
       <div>

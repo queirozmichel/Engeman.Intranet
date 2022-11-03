@@ -84,14 +84,12 @@
   @*Wysiwyg*@
   <link rel="stylesheet" href="~/plugins/wysiwyg/css/style.css" />
   <script type="text/javascript" src="~/plugins/wysiwyg/js/index.js"></script>
-  @*Modal*@
-  <link rel="stylesheet" href="~/css/modal.css" />
   @*CSS personalizado*@
   <link rel="stylesheet" type="text/css" href="~/css/custom.css" />
 </head>
 
 <body>
-  @Html.Partial("modals/_DangerModal")
+  @await Component.InvokeAsync("AlertModal")
   <!-- Header -->
   <header class="header navbar navbar-fixed-top" role="banner">
     <!-- Top Navigation Bar -->
@@ -497,7 +495,7 @@
             <ul class="sub-menu">
               <li id="list-posts-content">
                 @await Component.InvokeAsync("UnrevisedList")
-              </li>            
+              </li>
               <li>
                 <a id="new-question-btn" href="#">
                   <i class="icon-angle-right"></i>Nova Pergunta
@@ -603,7 +601,6 @@
   <script type="text/javascript" src="~/js/app.js"></script>
   <script type="text/javascript" src="~/js/plugins.js"></script>
   <script type="text/javascript" src="~/js/plugins.form-components.js"></script>
-  <script type="text/javascript" src="~/js/modal.js"></script>
   <script src="~/js/layout.js"></script>
 </body>
 </html>

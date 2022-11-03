@@ -47,7 +47,7 @@ $("#new-question-btn, #new-document-btn, #new-manual-btn").on("click", function 
         $(".body-content").html(response);
         window.history.pushState({}, '', url);
       } else {
-        showDangerModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem")
+        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem")
       }
     },
     error: function (response) {

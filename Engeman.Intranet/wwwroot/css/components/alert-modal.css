@@ -1,0 +1,11 @@
+﻿.alert-modal {
+  overflow: hidden;
+}
+
+  .alert-modal .modal-header, .modal-content {
+    text-align: center;
+  }
+
+  .alert-modal .modal-header {
+    background-color: lightcoral;
+  }

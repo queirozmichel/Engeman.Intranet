@@ -14,7 +14,7 @@
 
 <body>
   <div class="body-content">
-    @Html.Partial("modals/_ConfirmModal", "post")
+    @await Component.InvokeAsync("ConfirmationModal")
     <div class="page-header">
       <div class="page-title">
         @if (ViewBag.FilterGrid == "allPosts")
@@ -71,5 +71,4 @@
 
 </html>
 
-<script src="~/js/modal.js"></script>
 <script src="~/js/listall.js"></script>

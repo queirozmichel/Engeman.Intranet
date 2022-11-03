@@ -1,25 +1,27 @@
-﻿$(".comment-delete-btn").on("click", function () {
-  showConfirmModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos");
+﻿$(".comment-aprove-btn").on("click", function () {
+  var id = $(this).parent().parent().parent().attr("data-comment-id");
+  showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove", id);
 })
 
-$(".comment-delete-btn, .btn-yes-comment, .btn-no-comment").on("click", function () {
-  var id;
-  if ($(this).hasClass("comment-delete-btn")) {
-    id = $(this).parent().parent().parent().attr("data-comment-id");
-    $(".btn-yes-comment").attr("data-comment-id", id);
-  } else if ($(this).hasClass("btn-yes-comment")) {
-    id = $(this).attr("data-comment-id");
+$(".comment-delete-btn").on("click", function () {
+  var id = $(this).parent().parent().parent().attr("data-comment-id");
+  showConfirmationModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos.", "delete", id);
+})
+
+$(".btn-yes, .btn-no").on("click", function (event) {
+  if ($(this).attr("id") == "aprove") {
+    var id = $(this).attr("data-id");
+    var comment = getCommentElement(id);
+    aproveComment(id, comment);
+    hideConfirmationModal();
+  } else if ($(this).attr("id") == "delete") {
+    var id = $(this).attr("data-id");
     var comment = getCommentElement(id);
     deleteComment(id, comment);
-  } else if ($(this).hasClass("btn-no-comment")) {
-    hideConfirmModal();
+    hideConfirmationModal();
+  } else if ($(this).hasClass("btn-no")) {
+    hideConfirmationModal();
   }
-})
-
-$(".comment-aprove-btn").on("click", function () {
-  var id = $(this).parent().parent().parent().attr("data-comment-id");
-  var comment = getCommentElement(id);
-  aproveComment(id, comment);
 })
 
 function getCommentElement(id) {
@@ -67,7 +69,6 @@ function deleteComment(id, comment) {
     dataType: "text",
     success: function (response) {
       if (response == "true") {
-        hideConfirmModal();
         comment.fadeOut(700);
         setTimeout(() => {
           comment.remove();
@@ -102,7 +103,7 @@ $(".comment-edit-btn").on("click", function () {
     success: function (response) {
       $("#wang-editor-script").remove();
       $(comment).css("background", "white");
-      $(comment).html(response);      
+      $(comment).html(response);
     },
     error: function (response) {
       console.log("error");

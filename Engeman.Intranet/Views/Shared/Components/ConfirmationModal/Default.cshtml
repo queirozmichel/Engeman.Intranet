@@ -1,0 +1,44 @@
+﻿@{
+  Layout = null;
+}
+
+@model string
+
+<link rel="stylesheet" href="~/css/components/confirmation-modal.css" />
+
+<div id="@Model-modal" data-backdrop="true" class="confirmation-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title"><h5></h5></div>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn-yes btn btn-success">Sim</button>
+        <button type="button" class="btn-no btn btn-danger">Não</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    if (!$("#confirmation-modal-script").length) {
+      function addScript(attribute, text, callback) {
+        var s = document.createElement('script');
+        for (var attr in attribute) {
+          s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
+        }
+        s.innerHTML = text;
+        s.onload = callback;
+        document.body.appendChild(s);
+      }
+      addScript({
+        id: 'confirmation-modal-script',
+        src: '../js/components/confirmation-modal.js',
+        type: 'text/javascript',
+        async: null
+      });
+    }
+  </script>
+
+@*<script type="text/javascript" src="~/js/components/confirmation-modal.js"></script>*@

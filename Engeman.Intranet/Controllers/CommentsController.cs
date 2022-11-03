@@ -111,7 +111,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public ActionResult ShowCommentFile(int idComment, int file)
+    public IActionResult ShowCommentFile(int idComment, int file)
     {
       var orderedFiles = _postCommentFileRepository.GetFilesByPostCommentId(idComment).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar

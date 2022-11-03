@@ -1,0 +1,38 @@
+﻿@{
+  Layout = null;
+}
+
+@model string
+
+<link rel="stylesheet" href="~/css/components/alert-modal.css" />
+
+<div id="@Model-modal" data-backdrop="true" class="alert-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title"><h5></h5></div>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+    if (!$("#alert-modal-script").length) {
+      function addScript(attribute, text, callback) {
+        var s = document.createElement('script');
+        for (var attr in attribute) {
+          s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
+        }
+        s.innerHTML = text;
+        s.onload = callback;
+        document.body.appendChild(s);
+      }
+      addScript({
+        id: 'alert-modal-script',
+        src: '../js/components/alert-modal.js',
+        type: 'text/javascript',
+        async: null
+      });
+    }
+</script>
