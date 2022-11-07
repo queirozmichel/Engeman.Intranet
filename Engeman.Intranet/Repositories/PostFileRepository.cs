@@ -15,7 +15,7 @@ namespace Engeman.Intranet.Repositories
       {
         var query =
         $"SELECT * " +
-        $"FROM ENGEMANINTRANET.POST_FILE " +
+        $"FROM POST_FILE " +
         $"WHERE POST_ID = {postId}";
 
         var result = sq.GetDataSet(query).Tables[0].Rows;
@@ -24,12 +24,12 @@ namespace Engeman.Intranet.Repositories
         {
           PostFile file = new PostFile();
           file.Id = Convert.ToInt32(result[i]["id"]);
-          file.Active = Convert.ToChar(result[i]["Active"]);
+          file.Active = Convert.ToBoolean(result[i]["Active"]);
           file.FileType = Convert.ToChar(result[i]["File_Type"]);
           file.Name = result[i]["Name"].ToString();
           file.Description = result[i]["Description"].ToString();
           file.BinaryData = (byte[])result[i]["Binary_Data"];
-          file.ChangeDate = (DateTime)result[i]["ChangeDate"];
+          file.ChangeDate = (DateTime)result[i]["Change_Date"];
           files.Add(file);
         }
         return files;

@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System;
 
-namespace Engeman.Intranet.Models
+namespace Engeman.Intranet.Models.ViewModels
 {
-  public class PostFile
+  public class EditedPostFileViewModel
   {
     public int Id { get; set; }
     public bool Active { get; set; }
@@ -12,6 +12,5 @@ namespace Engeman.Intranet.Models
     public string Description { get; set; }
     public byte[] BinaryData { get; set; }
     public int PostId { get; set; }
-    public DateTime ChangeDate { get; set; }
   }
 }

@@ -14,17 +14,13 @@ namespace Engeman.Intranet.Controllers
   {
     private readonly IPostCommentRepository _postCommentRepository;
     private readonly IPostCommentFileRepository _postCommentFileRepository;
-    private readonly IPostRepository _postRepository;
     private readonly IUserAccountRepository _userAccountRepository;
-    private readonly IDepartmentRepository _departmentRepository;
 
     public CommentsController(IPostCommentRepository postCommentRepository, IPostFileRepository postFileRepository, IPostCommentFileRepository postCommentFileRepository, IPostRepository postRepository, IUserAccountRepository userAccountRepository, IDepartmentRepository departmentRepository)
     {
       _postCommentRepository = postCommentRepository;
       _postCommentFileRepository = postCommentFileRepository;
-      _postRepository = postRepository;
       _userAccountRepository = userAccountRepository;
-      _departmentRepository = departmentRepository;
     }
    
     public IActionResult Index()
@@ -33,7 +29,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult NewComment()
+    public IActionResult WangEditor()
     {
       return ViewComponent("WangEditor");
     }
@@ -51,7 +47,7 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult UpdateComment(CommentEditViewModel editedComment, List<IFormFile> binaryData)
     {
-      List<PostCommentFile> files = new List<PostCommentFile>();
+      List<CommentFile> files = new List<CommentFile>();
       PostComment comment = new PostComment();
       var currentComment = _postCommentRepository.GetPostCommentById(editedComment.Comment.Id);
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
@@ -59,7 +55,7 @@ namespace Engeman.Intranet.Controllers
 
       for (int i = 0; i < editedComment.Files.Count; i++)
       {
-        if (editedComment.Files[i].Active == 'N')
+        if (editedComment.Files[i].Active == false)
         {
           _postCommentFileRepository.DeleteFileById(editedComment.Files[i].Id);
           editedComment.Files.RemoveAt(i);
@@ -69,7 +65,7 @@ namespace Engeman.Intranet.Controllers
 
       for (int i = 0; i < editedComment.Files.Count; i++)
       {
-        PostCommentFile fileUpdate = new PostCommentFile();
+        CommentFile fileUpdate = new CommentFile();
         fileUpdate.Description = editedComment.Comment.Description;
         files.Add(fileUpdate);
       }
@@ -91,7 +87,7 @@ namespace Engeman.Intranet.Controllers
 
         for (int i = 0; i < binaryData.Count; i++)
         {
-          PostCommentFile newFile = new PostCommentFile();
+          CommentFile newFile = new CommentFile();
           if (binaryData[i].Length > 0)
           {
             using (var stream = new MemoryStream())

@@ -16,7 +16,7 @@ namespace Engeman.Intranet.Repositories
         var query =
           $"SELECT " +
           $"* " +
-          $"FROM ENGEMANINTRANET.DEPARTMENT " +
+          $"FROM DEPARTMENT " +
           $"WHERE ID = {idDepartment}";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
@@ -24,8 +24,8 @@ namespace Engeman.Intranet.Repositories
         department.Id = Convert.ToInt32(result["Id"]);
         department.Code = result["Code"].ToString();
         department.Description = result["Description"].ToString();
-        department.Active = Convert.ToChar(result["Active"]);
-        department.ChangeDate = (DateTime)result["ChangeDate"];
+        department.Active = Convert.ToBoolean(result["Active"]);
+        department.ChangeDate = (DateTime)result["Change_Date"];
 
         return department;
       }
@@ -50,8 +50,8 @@ namespace Engeman.Intranet.Repositories
           department.Id = Convert.ToInt32(result.Rows[i]["Id"]);
           department.Code = result.Rows[i]["Code"].ToString();
           department.Description = result.Rows[i]["Description"].ToString();
-          department.Active = Convert.ToChar(result.Rows[i]["Active"]);
-          department.ChangeDate = (DateTime)result.Rows[i]["ChangeDate"];
+          department.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
+          department.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
 
           departments.Add(department);
         }

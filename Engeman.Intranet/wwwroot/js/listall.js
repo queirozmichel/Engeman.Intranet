@@ -85,7 +85,7 @@ $(document).ready(function () {
       },
       "postType": function (column, row) {
         if (row.revised == true) {
-          if (row.postType === "A") {
+          if (row.postType === "F") {
             if (row.fileType === "D") {
               return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
             } else if (row.fileType === "M") {
@@ -184,7 +184,7 @@ $(document).ready(function () {
           elementAux = element;
           idPostAux = idPost;
         } else if (action == "aprove") {  
-          showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove", idPost);
+          showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove", idPost);
         }
       })
     });
@@ -284,7 +284,7 @@ function postDetails(idPost, postType) {
         $(".body-content").html(response);
       }
     })
-  } else if (postType === 'A') {
+  } else if (postType === 'F') {
     $.ajax({
       type: "GET",
       data: { "idPost": idPost },
@@ -332,7 +332,6 @@ function postFileEdit(idPost) {
     }
   })
 }
-
 
 function postDelete(idElement, element) {
   $.ajax({

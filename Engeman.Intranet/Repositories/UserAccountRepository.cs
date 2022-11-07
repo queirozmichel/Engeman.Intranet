@@ -15,7 +15,7 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = $"SELECT 0 FROM USERACCOUNT WHERE DOMAINACCOUNT = '{domainUsername.ToUpper()}' AND ACTIVE = 'S'";
+        var query = $"SELECT 0 FROM USER_ACCOUNT WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}' AND ACTIVE = 1";
         string result = sq.GetDataToString(query);
 
         if (result == "")
@@ -37,21 +37,20 @@ namespace Engeman.Intranet.Repositories
       {
         var query =
           $"SELECT " +
-          $"UA.ID,UA.ACTIVE,NAME,DOMAINACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
+          $"UA.ID,UA.ACTIVE,NAME,DOMAIN_ACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
           $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CREATE_POST, UA.EDIT_OWNER_POST, UA.DELETE_OWNER_POST, UA.EDIT_ANY_POST, " +
-          $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGEDATE " +
-          $"FROM ENGEMANINTRANET.USERACCOUNT UA INNER JOIN ENGEMANINTRANET.DEPARTMENT D " +
+          $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGE_DATE " +
+          $"FROM USER_ACCOUNT UA INNER JOIN DEPARTMENT D " +
           $"ON UA.DEPARTMENT_ID = D.ID " +
-          $"WHERE DOMAINACCOUNT = '{domainUsername.ToUpper()}'";
+          $"WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}'";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
-        userAccount.Id = Convert.ToInt32(result["ID"]);
-        userAccount.Active = Convert.ToChar(result["active"]);
+        userAccount.Id = Convert.ToInt32(result["id"]);
+        userAccount.Active = Convert.ToBoolean(result["active"]);
         userAccount.Name = result["name"].ToString();
-        userAccount.DomainAccount = result["domainaccount"].ToString();
+        userAccount.DomainAccount = result["domain_account"].ToString();
         userAccount.DepartmentId = Convert.ToInt32(result["department_id"]);
-        userAccount.Department.Description = result["department_description"].ToString();
         userAccount.Email = result["email"].ToString();
         userAccount.Photo = (byte[])result["photo"];
         userAccount.Description = result["userdescription"].ToString();
@@ -62,7 +61,7 @@ namespace Engeman.Intranet.Repositories
         userAccount.DeleteAnyPost = Convert.ToBoolean(result["delete_any_post"]);
         userAccount.Moderator = Convert.ToBoolean(result["moderator"]);
         userAccount.NoviceUser = Convert.ToBoolean(result["novice_user"]);
-        userAccount.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
+        userAccount.ChangeDate = Convert.ToDateTime(result["change_date"].ToString());
 
         return userAccount;
       }
@@ -76,9 +75,9 @@ namespace Engeman.Intranet.Repositories
         Object[] values = { userAccount.Photo };
 
         var query =
-        $"UPDATE ENGEMANINTRANET.USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
+        $"UPDATE USER_ACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
         $"DESCRIPTION = '{userAccount.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
-        $"WHERE DOMAINACCOUNT = '{userAccount.DomainAccount}'";
+        $"WHERE DOMAIN_ACCOUNT = '{userAccount.DomainAccount}'";
 
         sq.ExecuteCommand(query, paramters, values);
       }
@@ -90,7 +89,7 @@ namespace Engeman.Intranet.Repositories
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = "SELECT * FROM ENGEMANINTRANET.USERACCOUNT WHERE ACTIVE = 'S'";
+        var query = "SELECT * FROM USER_ACCOUNT WHERE ACTIVE = 'S'";
         var result = sq.GetDataSet(query).Tables[0];
 
         for (int i = 0; i < result.Rows.Count; i++)
@@ -99,8 +98,8 @@ namespace Engeman.Intranet.Repositories
           userAccountDto.Id = Convert.ToInt32(result.Rows[i]["id"]);
           userAccountDto.Name = result.Rows[i]["name"].ToString();
           userAccountDto.Email = result.Rows[i]["email"].ToString();
-          userAccountDto.DomainAccount = result.Rows[i]["domainaccount"].ToString();
-          userAccountDto.ChangeDate = Convert.ToString(result.Rows[i]["changeDate"]);
+          userAccountDto.DomainAccount = result.Rows[i]["domain_account"].ToString();
+          userAccountDto.ChangeDate = Convert.ToString(result.Rows[i]["change_date"]);
 
           users.Add(userAccountDto);
         }
@@ -117,21 +116,21 @@ namespace Engeman.Intranet.Repositories
         var query =
           $"SELECT " +
           $"* " +
-          $"FROM ENGEMANINTRANET.USERACCOUNT " +
+          $"FROM USER_ACCOUNT " +
           $"WHERE ID = {id}";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
         userAccount.Id = Convert.ToInt32(result["id"]);
-        userAccount.Active = Convert.ToChar(result["active"]);
+        userAccount.Active = Convert.ToBoolean(result["active"]);
         userAccount.Name = result["name"].ToString();
-        userAccount.DomainAccount = result["domainaccount"].ToString();
+        userAccount.DomainAccount = result["domain_account"].ToString();
         userAccount.DepartmentId = Convert.ToInt32(result["department_id"]);
         userAccount.Email = result["email"].ToString();
         userAccount.Photo = (byte[])result["photo"];
         userAccount.Description = result["description"].ToString();
         userAccount.Moderator = Convert.ToBoolean(result["Moderator"]);
-        userAccount.ChangeDate = Convert.ToDateTime(result["changedate"].ToString());
+        userAccount.ChangeDate = Convert.ToDateTime(result["change_date"].ToString());
 
         return userAccount;
       }
@@ -143,7 +142,7 @@ namespace Engeman.Intranet.Repositories
       {
         var query =
         $"SELECT NAME " +
-        $"FROM USERACCOUNT " +
+        $"FROM USER_ACCOUNT " +
         $"WHERE ID = {id} ";
 
         var result = sq.GetDataToString(query);
@@ -158,8 +157,8 @@ namespace Engeman.Intranet.Repositories
         UserPermissionsViewModel userPermissions = new UserPermissionsViewModel();
         var query =
         $"SELECT CREATE_POST, EDIT_OWNER_POST, DELETE_OWNER_POST, EDIT_ANY_POST, DELETE_ANY_POST, MODERATOR, NOVICE_USER " +
-        $"FROM USERACCOUNT " +
-        $"WHERE DOMAINACCOUNT = '{domainUsername}'";
+        $"FROM USER_ACCOUNT " +
+        $"WHERE DOMAIN_ACCOUNT = '{domainUsername}'";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
@@ -180,8 +179,8 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var query =
-        $"SELECT DOMAINACCOUNT " +
-        $"FROM USERACCOUNT " +
+        $"SELECT DOMAIN_ACCOUNT " +
+        $"FROM USER_ACCOUNT " +
         $"WHERE ID = {id} ";
 
         var result = sq.GetDataToString(query);

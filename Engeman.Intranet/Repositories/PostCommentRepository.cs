@@ -1,5 +1,6 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
+using Engeman.Intranet.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 
@@ -7,45 +8,30 @@ namespace Engeman.Intranet.Repositories
 {
   public class PostCommentRepository : IPostCommentRepository
   {
-    public void AddPostComment(PostComment postComment)
-    {
-      using (StaticQuery sq = new StaticQuery())
-      {
-        //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
-        var query =
-        $"INSERT INTO " +
-        $"POST_COMMENT " +
-        $"(DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID, REVISED) " +
-        $"VALUES(N'{postComment.Description}', '{postComment.CleanDescription}', '{postComment.Keywords}', " +
-        $"'{postComment.UserAccountId}', '{postComment.DepartmentId}', '{postComment.PostId}', '{postComment.Revised}')";
-
-        sq.ExecuteCommand(query);
-      }
-    }
-
-    public void AddPostComment(PostComment postComment, List<PostFile> files)
+    public void AddPostComment(NewCommentViewModel newComment)
     {
       using (StaticQuery sq = new StaticQuery())
       {
         string[] paramters = { "BinaryData;byte" };
 
+        //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
         var query =
         $"INSERT INTO " +
         $"POST_COMMENT " +
-        $"(DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
-        $"VALUES(N'{postComment.Description}', '{postComment.CleanDescription}', '{postComment.Keywords}', " +
-        $"'{postComment.UserAccountId}', '{postComment.DepartmentId}', '{postComment.PostId}', '{postComment.Revised}')";
+        $"(DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, DEPARTMENT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
+        $"VALUES(N'{newComment.Description}', '{newComment.CleanDescription}', '{newComment.Keywords}', " +
+        $"'{newComment.UserAccountId}', '{newComment.DepartmentId}', '{newComment.PostId}', '{newComment.Revised}')";
 
         var outputPostId = sq.GetDataToInt(query);
 
-        for (int i = 0; i < files.Count; i++)
+        for (int i = 0; i < newComment.Files.Count; i++)
         {
-          Object[] values = { files[i].BinaryData };
+          Object[] values = { newComment.Files[i].BinaryData };
           query =
           $"INSERT INTO " +
           $"POST_COMMENT_FILE " +
           $"(NAME, DESCRIPTION, BINARY_DATA, POST_COMMENT_ID) " +
-          $"VALUES('{files[i].Name}', '{files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), '{outputPostId}') ";
+          $"VALUES('{newComment.Files[i].Name}', '{newComment.Files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), '{outputPostId}') ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
@@ -74,7 +60,7 @@ namespace Engeman.Intranet.Repositories
           {
             PostComment postComment = new PostComment();
             postComment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
-            postComment.Active = Convert.ToChar(result.Rows[i]["Active"]);
+            postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
             postComment.Description = result.Rows[i]["Description"].ToString();
             postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
             postComment.Keywords = result.Rows[i]["Keywords"].ToString();
@@ -116,7 +102,7 @@ namespace Engeman.Intranet.Repositories
       {
         string query =
         $"SELECT " +
-        $"ID, ACTIVE, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, CHANGEDATE, REVISED " +
+        $"ID, ACTIVE, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, DEPARTMENT_ID, CHANGE_DATE, REVISED " +
         $"FROM POST_COMMENT " +
         $"WHERE POST_ID = '{postId}'";
 
@@ -129,7 +115,7 @@ namespace Engeman.Intranet.Repositories
         for (int i = 0; i < result.Rows.Count; i++)
         {
           revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
-          authorCommentId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
+          authorCommentId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
           moderator = user.Moderator;
 
           if (revised == false && authorCommentId != user.Id && moderator == false)
@@ -139,15 +125,15 @@ namespace Engeman.Intranet.Repositories
 
           PostComment postComment = new PostComment();
           postComment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
-          postComment.Active = Convert.ToChar(result.Rows[i]["Active"]);
+          postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
           postComment.Description = result.Rows[i]["Description"].ToString();
           postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
           postComment.Keywords = result.Rows[i]["Keywords"].ToString();
-          postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
+          postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
           postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
           postComment.PostId = postId;
           postComment.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
-          postComment.ChangeDate = (DateTime)result.Rows[i]["ChangeDate"];
+          postComment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
           postComments.Add(postComment);
         }
         return postComments;
@@ -168,14 +154,14 @@ namespace Engeman.Intranet.Repositories
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
         comment.Id = Convert.ToInt32(result["id"]);
-        comment.Active = Convert.ToChar(result["active"]);
+        comment.Active = Convert.ToBoolean(result["active"]);
         comment.Description = Convert.ToString(result["description"]);
         comment.CleanDescription = Convert.ToString(result["clean_description"]);
         comment.Keywords = Convert.ToString(result["keywords"]);
-        comment.UserAccountId = Convert.ToInt32(result["useraccount_id"]);
+        comment.UserAccountId = Convert.ToInt32(result["user_account_id"]);
         comment.DepartmentId = Convert.ToInt32(result["department_id"]);
         comment.PostId = Convert.ToInt32(result["post_id"]);
-        comment.ChangeDate = (DateTime)result["changedate"];
+        comment.ChangeDate = (DateTime)result["change_date"];
         comment.Revised = Convert.ToBoolean(result["revised"]);
 
         return comment;
@@ -199,7 +185,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public bool UpdatePostCommentById(int id, PostComment comment, List<PostCommentFile> files)
+    public bool UpdatePostCommentById(int id, PostComment comment, List<CommentFile> files)
     {
       string update;
 
@@ -239,14 +225,14 @@ namespace Engeman.Intranet.Repositories
           PostComment comment = new PostComment();
 
           comment.Id = Convert.ToInt32(result.Rows[i]["id"]);
-          comment.Active = Convert.ToChar(result.Rows[i]["active"]);
+          comment.Active = Convert.ToBoolean(result.Rows[i]["active"]);
           comment.Description = Convert.ToString(result.Rows[i]["description"]);
           comment.CleanDescription = Convert.ToString(result.Rows[i]["clean_description"]);
           comment.Keywords = Convert.ToString(result.Rows[i]["keywords"]);
-          comment.UserAccountId = Convert.ToInt32(result.Rows[i]["useraccount_id"]);
+          comment.UserAccountId = Convert.ToInt32(result.Rows[i]["user_account_id"]);
           comment.DepartmentId = Convert.ToInt32(result.Rows[i]["department_id"]);
           comment.PostId = Convert.ToInt32(result.Rows[i]["post_id"]);
-          comment.ChangeDate = (DateTime)result.Rows[i]["changedate"];
+          comment.ChangeDate = (DateTime)result.Rows[i]["change_date"];
           comment.Revised = Convert.ToBoolean(result.Rows[i]["revised"]);
 
           comments.Add(comment);

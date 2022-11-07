@@ -77,7 +77,7 @@ $("#comment-tab").on("click", function () {
   $.ajax({
     type: "GET",
     dataType: "html",
-    url: "/comments/newcomment",
+    url: "/comments/wangeditor",
     success: function (response) {
       $("#form-group-wang-editor").html(response);
     },

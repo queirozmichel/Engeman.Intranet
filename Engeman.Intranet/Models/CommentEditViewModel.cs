@@ -6,9 +6,9 @@ namespace Engeman.Intranet.Models
   {
     public CommentEditViewModel()
     {
-      Files = new List<PostCommentFile>();
+      Files = new List<CommentFile>();
     }
     public PostComment Comment { get; set; }
-    public List<PostCommentFile> Files { get; set; }
+    public List<CommentFile> Files { get; set; }
   }
 }

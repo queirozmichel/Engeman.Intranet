@@ -63,13 +63,13 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input type="checkbox" id="restricted" name="CheckIsRestricted" asp-for="@Model.CheckIsRestricted">
+                  @Html.CheckBox("Restricted", new { id = "restricted" })
                 </div>
               </div>
               <div class="form-group departments-list">
                 <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <select class=" required" id="multiselect-department" multiple="multiple" asp-for="@Model.DepartmentsList" name="DepartmentsList">
+                  <select class=" required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
                     @{if (departments != null)
                       {
                         for (int i = 0; i < departments.Count; i++)
@@ -84,19 +84,19 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input class="form-control required" id="subject" asp-for="@Model.Subject" type="text" name="subject">
+                  <input class="form-control required" id="subject" type="text" name="subject">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave</label>
                 <div class="col-md-10">
-                  <input id="keywords" class="tags" asp-for="@Model.Keywords" type="text" name="keywords">
+                  <input id="keywords" class="tags" type="text" name="keywords">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Pergunta<span class="required">*</span></label>
+                <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <textarea class="form-control required" id="description" rows="3" cols="5" asp-for="@Model.Description" name="description"></textarea>
+                  <textarea class="form-control required" id="description" rows="3" cols="5" name="description"></textarea>
                 </div>
               </div>
               <div class="form-actions">

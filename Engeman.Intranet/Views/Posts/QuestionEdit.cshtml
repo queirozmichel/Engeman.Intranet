@@ -19,7 +19,7 @@
     <!--=== Page Header ===-->
     <div class="page-header">
       <div class="page-title">
-        <h3>Editar Pergunta</h3>
+        <h3>Editar Postagem</h3>
         <span>Good morning, John!</span>
       </div>
       <!-- Page Stats -->
@@ -51,12 +51,12 @@
       <div class="col-md-12">
         <div class="widget box">
           <div class="widget-header">
-            <h4><i class="icon-reorder"></i> Pergunta</h4>
+            <h4><i class="icon-reorder"></i>Postagem</h4>
           </div>
           <div class="widget-content">
             <form class="form-horizontal row-border" id="edit-question-form" method="post">
               <div class="form-group">
-                <label class="col-md-2 control-label">Código da pergunta</label>
+                <label class="col-md-2 control-label">Código da postagem</label>
                 <div class="col-md-1">
                   <input id="id-post" class="form-control" name="id" type="text" readonly value="@Model.Id" />
                 </div>
@@ -64,7 +64,7 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input type="checkbox" id="restricted" name="CheckIsRestricted" asp-for="@Model.CheckIsRestricted">
+                  @Html.CheckBox("Restricted", new { id = "restricted" })
                 </div>
               </div>
               <div class="form-group departments-list">
@@ -96,17 +96,17 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input class="form-control required" id="subject" type="text" name="subject" asp-for="@Model.Subject" value="@Model.Subject">
+                  <input class="form-control required" id="subject" type="text" name="subject" value="@Model.Subject">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave</label>
                 <div class="col-md-10">
-                  <input class="tags" id="keywords" type="text" name="keywords" asp-for="@Model.Keywords" value="@Model.Keywords">
+                  <input class="tags" id="keywords" type="text" name="keywords" value="@Model.Keywords">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-2 control-label">Pergunta<span class="required">*</span></label>
+                <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
                 <div class="col-md-10">
                   <textarea class="form-control required" id="description" rows="3" cols="5" name="description">@Model.Description</textarea>
                 </div>

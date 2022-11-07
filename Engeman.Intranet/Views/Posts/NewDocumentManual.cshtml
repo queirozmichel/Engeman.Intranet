@@ -1,5 +1,4 @@
-﻿@model PostArchiveDto;
-@{List<Department> departments = ViewBag.Departments;}
+﻿@{List<Department> departments = ViewBag.Departments;}
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -79,13 +78,13 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input type="checkbox" id="restricted" name="Post.CheckIsRestricted" asp-for="@Model.Post.CheckIsRestricted">
+                  @Html.CheckBox("newPostWithFiles.post.restricted", new { id = "restricted" })
                 </div>
               </div>
               <div class="form-group departments-list">
                 <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <select class="required" id="multiselect-department" multiple="multiple" asp-for="@Model.DepartmentsList" name="DepartmentsList">
+                  <select class="required" id="multiselect-department" multiple="multiple" name="newPostWithFiles.departmentsList">
                     @{if (departments != null)
                       {
                         for (int i = 0; i < departments.Count; i++)
@@ -100,19 +99,19 @@
               <div class="form-group">
                 <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <input id="subject" class="form-control required" type="text" name="post.subject">
+                  <input id="subject" class="form-control required" type="text" name="newPostWithFiles.post.subject">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Palavras chave</label>
                 <div class="col-md-10">
-                  <input class="tags" id="keywords" type="text" name="post.keywords">
+                  <input class="tags" id="keywords" type="text" name="newPostWithFiles.post.keywords">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
                 <div class="col-md-10">
-                  <textarea id="description" class="form-control required" rows="3" cols="5" name="post.description"></textarea>
+                  <textarea id="description" class="form-control required" rows="3" cols="5" name="newPostWithFiles.post.description"></textarea>
                 </div>
               </div>
               <div class="form-group">

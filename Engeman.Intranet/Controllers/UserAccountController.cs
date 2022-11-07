@@ -15,14 +15,17 @@ namespace Engeman.Intranet.Controllers
   {
 
     private readonly IUserAccountRepository _userAccountRepository;
+    private readonly IDepartmentRepository _departmentRepository;
 
-    public UserAccountController(IUserAccountRepository userAccountRepository)
+    public UserAccountController(IUserAccountRepository userAccountRepository, IDepartmentRepository departmentRepository)
     {
       _userAccountRepository = userAccountRepository;
+      _departmentRepository = departmentRepository;
     }
     public IActionResult Index()
     {
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(HttpContext.Session.GetString("_DomainUsername").ToString());
+      ViewBag.Department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
 
       return View(userAccount);
     }

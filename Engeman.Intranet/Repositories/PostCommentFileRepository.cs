@@ -7,9 +7,9 @@ namespace Engeman.Intranet.Repositories
 {
   public class PostCommentFileRepository : IPostCommentFileRepository
   {
-    public IEnumerable<PostCommentFile> GetFilesByPostCommentId(int id)
+    public List<CommentFile> GetFilesByPostCommentId(int id)
     {
-      List<PostCommentFile> files = new List<PostCommentFile>();
+      List<CommentFile> files = new List<CommentFile>();
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -22,15 +22,14 @@ namespace Engeman.Intranet.Repositories
 
         for (int i = 0; i < result.Count; i++)
         {
-          var file = new PostCommentFile();
+          var file = new CommentFile();
           file.Id = Convert.ToInt32(result[i]["Id"]);
-          file.Active = Convert.ToChar(result[i]["Active"]);
-          file.FileType = Convert.ToChar(result[i]["File_Type"]);
+          file.Active = Convert.ToBoolean(result[i]["Active"]);
           file.Name = result[i]["Name"].ToString();
           file.Description = result[i]["Description"].ToString();
           file.BinaryData = (byte[])result[i]["Binary_Data"];
           file.CommentId = Convert.ToInt32(result[i]["Post_Comment_Id"]);
-          file.ChangeDate = (DateTime)result[i]["ChangeDate"];
+          file.ChangeDate = (DateTime)result[i]["Change_Date"];
           files.Add(file);
         }
         return files;
@@ -50,7 +49,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void AddFilesToComment(int id, List<PostCommentFile> files)
+    public void AddFilesToComment(int id, List<CommentFile> files)
     {
       using (StaticQuery sq = new StaticQuery())
       {

@@ -1,4 +1,5 @@
 ﻿using Engeman.Intranet.Models;
+using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,24 +25,26 @@ namespace Engeman.Intranet.ViewComponents
 
     public IViewComponentResult Invoke(int postId)
     {
-      var comments = new List<PostCommentViewModel>();
+      var comments = new List<CommentViewModel>();
       var userAccount = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
       var orderedPostComments = _postCommentRepository.GetPostCommentsByRestriction(userAccount, postId);
+      List<CommentFile> commentFiles = new List<CommentFile>();
 
       for (int i = 0; i < orderedPostComments.Count; i++)
       {
-        var postCommentViewModel = new PostCommentViewModel();
+        var comment = new CommentViewModel();
         var userAccountComment = _userAccountRepository.GetUserAccountById(orderedPostComments[i].UserAccountId);
-        postCommentViewModel.Id = orderedPostComments[i].Id;
-        postCommentViewModel.Description = orderedPostComments[i].Description;
-        postCommentViewModel.Username = userAccountComment.Name;
-        postCommentViewModel.Photo = userAccountComment.Photo;
-        postCommentViewModel.UserId = orderedPostComments[i].UserAccountId;
-        postCommentViewModel.DepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
-        postCommentViewModel.ChangeDate = orderedPostComments[i].ChangeDate;
-        postCommentViewModel.Revised = orderedPostComments[i].Revised;
-        postCommentViewModel.Files = _postCommentFileRepository.GetFilesByPostCommentId(orderedPostComments[i].Id).OrderBy(x => x.Name).ToList();
-        comments.Add(postCommentViewModel);
+        commentFiles = _postCommentFileRepository.GetFilesByPostCommentId(orderedPostComments[i].Id).OrderBy(x => x.Name).ToList();
+        comment.Id = orderedPostComments[i].Id;
+        comment.Description = orderedPostComments[i].Description;
+        comment.Username = userAccountComment.Name;
+        comment.UserPhoto = userAccountComment.Photo;
+        comment.UserId = orderedPostComments[i].UserAccountId;
+        comment.UserDepartmentName = _departmentRepository.GetDepartmentNameById(orderedPostComments[i].DepartmentId);
+        comment.ChangeDate = orderedPostComments[i].ChangeDate;
+        comment.Revised = orderedPostComments[i].Revised;
+        comment.Files = commentFiles;
+        comments.Add(comment);
       }
 
       ViewBag.PostComments = comments;

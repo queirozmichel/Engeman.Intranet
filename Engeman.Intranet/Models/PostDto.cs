@@ -3,8 +3,8 @@
   public class PostDto
   {
     public int Id { get; set; }
-    public char Active { get; set; }
-    public char Restricted { get; set; }
+    public bool Active { get; set; }
+    public bool Restricted { get; set; }
     public bool Revised { get; set; }
     public string Subject { get; set; }
     public string Description { get; set; }

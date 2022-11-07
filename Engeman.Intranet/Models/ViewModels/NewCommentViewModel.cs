@@ -1,11 +1,13 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
-namespace Engeman.Intranet.Models
+namespace Engeman.Intranet.Models.ViewModels
 {
-  public class PostComment
+  public class NewCommentViewModel
   {
-    public int Id { get; set; }
-    public bool Active { get; set; }
+    public NewCommentViewModel()
+    {
+      Files = new List<NewCommentFileViewModel>();
+    }
     public string Description { get; set; }
     public string CleanDescription { get; set; }
     public string Keywords { get; set; }
@@ -13,6 +15,6 @@ namespace Engeman.Intranet.Models
     public int DepartmentId { get; set; }
     public int PostId { get; set; }
     public bool Revised { get; set; }
-    public DateTime ChangeDate { get; set; }
+    public List<NewCommentFileViewModel> Files { get; set; }
   }
 }
