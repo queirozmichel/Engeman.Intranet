@@ -13,12 +13,11 @@ function richTextBox() {
     var toolbarId = $(this).find(".wang-editor-toolbar").attr("id");
     var editorId = $(this).find(".wang-editor-editor").attr("id");
     var editorDescription = $(this).find(".wang-editor-description").attr("id");
-    var editorPreview = $(this).find(".editor-content-view").attr("id");
-    var editor = createE(editorId, editorDescription, editorPreview);
+    var editor = createE(editorId, editorDescription);
     createT(toolbarId, editor);
   })
 
-  function createE(editorId, editorDescription, editorPreview) {
+  function createE(editorId, editorDescription) {
     const editorConfig = {
       placeholder: 'Digite aqui',
       MENU_CONF: {
@@ -34,14 +33,11 @@ function richTextBox() {
         } else {
           $('#' + editorDescription).val("");
         }
-        if (document.getElementById(editorPreview)) {
-          document.getElementById(editorPreview).innerHTML = html
-        }
         Prism.highlightAll();
       },
       onCreated(editor) {
         editor.setHtml($('#' + editorDescription).val());
-      },      
+      },
     }
 
     editorConfig.MENU_CONF['fontSize'] = {

@@ -1,20 +1,20 @@
 ﻿$(".comment-aprove-btn").on("click", function () {
   var id = $(this).parents(".comment-box").attr("data-comment-id");
-  showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove", id);
+  showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove-comment", id);
 })
 
 $(".comment-delete-btn").on("click", function () {
   var id = $(this).parents(".comment-box").attr("data-comment-id");
-  showConfirmationModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos.", "delete", id);
+  showConfirmationModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos.", "delete-comment", id);
 })
 
 $(".btn-yes, .btn-no").on("click", function (event) {
-  if ($(this).attr("id") == "aprove") {
+  if ($(this).attr("id") == "aprove-comment") {
     var id = $(this).attr("data-id");
     var comment = getCommentElement(id);
     aproveComment(id, comment);
     hideConfirmationModal();
-  } else if ($(this).attr("id") == "delete") {
+  } else if ($(this).attr("id") == "delete-comment") {
     var id = $(this).attr("data-id");
     var comment = getCommentElement(id);
     deleteComment(id, comment);
@@ -91,10 +91,11 @@ $("pre").addClass("line-numbers");
 
 $(".comment-edit-btn").on("click", function () {
   $(".wang-editor").remove();
-  $(".comment-action-buttons").css("display", "none");
+  $(".comment-edit-btn").css("display", "none");
+  $(".comment-delete-btn").css("display", "none");
+  $(".comment-aprove-btn").css("display", "none");
   var comment = $(this).parents(".comment-box");
   var id = $(this).parents(".comment-box").data("comment-id");
-  var commentDescription = $(comment).children("#editor-content-view").html();
   $.ajax({
     type: "GET",
     dataType: "html",

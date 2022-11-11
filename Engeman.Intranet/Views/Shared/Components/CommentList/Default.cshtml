@@ -18,8 +18,6 @@
     }
   </div>
   <div class="comments col-md-12" data-post-id="@ViewBag.PostId">
-    @*@await Component.InvokeAsync("ConfirmationModal")*@
-
     @for (int i = 0; i < ViewBag.PostComments.Count; i++)
     {
       <div style="margin: 0 0 50px 0; padding: 0px; @(ViewBag.PostComments[i].Revised == false ? "background: Cornsilk" : "")" class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].AuthorId" data-comment-id="@ViewBag.PostComments[i].Id">
