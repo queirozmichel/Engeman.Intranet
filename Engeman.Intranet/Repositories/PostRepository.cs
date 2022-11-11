@@ -1,6 +1,7 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 
@@ -74,6 +75,45 @@ namespace Engeman.Intranet.Repositories
         }
       }
       return posts;
+    }
+    public List<Post> GetPostsByUserId(int userId)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        List<Post> posts = new List<Post>();
+
+        var query =
+        $"SELECT * " +
+        $"FROM POST " +
+        $"WHERE USER_ACCOUNT_ID = {userId} ";
+
+        var result = sq.GetDataSet(query).Tables[0];
+        if (result.Rows.Count == 0)
+        {
+          return new List<Post>();
+        }
+        else
+        {
+          for (int i = 0; i < result.Rows.Count; i++)
+          {
+            Post post = new Post();
+            post.Id = Convert.ToInt32(result.Rows[i]["Id"]);
+            post.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
+            post.Restricted = Convert.ToBoolean(result.Rows[i]["Restricted"]);
+            post.Subject = result.Rows[i]["Subject"].ToString();
+            post.Description = result.Rows[i]["Description"].ToString();
+            post.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
+            post.Keywords = result.Rows[i]["Keywords"].ToString();
+            post.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
+            post.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
+            post.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
+            post.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
+            post.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
+            posts.Add(post);
+          }
+          return posts;
+        }
+      }
     }
 
     public void AddQuestion(NewPostViewModel newPost)
@@ -304,21 +344,6 @@ namespace Engeman.Intranet.Repositories
           departments.Add(Convert.ToInt32(result.Rows[i]["Department_Id"]));
         }
         return departments;
-      }
-    }
-
-    public int GetPostsCountByUserId(int id)
-    {
-      using (StaticQuery sq = new StaticQuery())
-      {
-        var query =
-        $"SELECT COUNT(*) " +
-        $"FROM POST " +
-        $"WHERE USER_ACCOUNT_ID = {id}";
-
-        var result = sq.GetDataToInt(query);
-
-        return result;
       }
     }
 

@@ -8,6 +8,7 @@ namespace Engeman.Intranet.Repositories
   {
     public void AddPostComment(NewCommentViewModel newComment);
     public List<PostComment> GetPostCommentsByPostId(int postId);
+    public List<PostComment> GetPostCommentsByUserId(int userId);
     public PostComment GetPostCommentById(int commentId);
     public List<PostComment> GetUnrevisedComments();
     public List<PostComment> GetPostCommentsByRestriction(UserAccount user, int postId);

@@ -64,10 +64,10 @@ namespace Engeman.Intranet.Repositories
             postComment.Description = result.Rows[i]["Description"].ToString();
             postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
             postComment.Keywords = result.Rows[i]["Keywords"].ToString();
-            postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["UserAccount_Id"]);
+            postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
             postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
             postComment.PostId = postId;
-            postComment.ChangeDate = (DateTime)result.Rows[i]["ChangeDate"];
+            postComment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
             postComments.Add(postComment);
           }
           return postComments;
@@ -239,6 +239,43 @@ namespace Engeman.Intranet.Repositories
         }
 
         return comments;
+      }
+    }
+
+    public List<PostComment> GetPostCommentsByUserId(int userId)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        List<PostComment> postComments = new List<PostComment>();
+
+        var query =
+        $"SELECT * " +
+        $"FROM POST_COMMENT " +
+        $"WHERE USER_ACCOUNT_ID = {userId} ";
+
+        var result = sq.GetDataSet(query).Tables[0];
+        if (result.Rows.Count == 0)
+        {
+          return new List<PostComment>();
+        }
+        else
+        {
+          for (int i = 0; i < result.Rows.Count; i++)
+          {
+            PostComment postComment = new PostComment();
+            postComment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
+            postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
+            postComment.Description = result.Rows[i]["Description"].ToString();
+            postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
+            postComment.Keywords = result.Rows[i]["Keywords"].ToString();
+            postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
+            postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
+            postComment.PostId = postComment.PostId;
+            postComment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
+            postComments.Add(postComment);
+          }
+          return postComments;
+        }
       }
     }
   }

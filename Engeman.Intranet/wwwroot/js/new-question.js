@@ -27,6 +27,7 @@ function clearForm() {
 }
 
 $("#ask-form").on("submit", function (event) {
+  var filter = "?filter=allPosts";
   //ignora o submit padrão do formulário
   event.preventDefault();
   if ($("#ask-form").valid()) {
@@ -44,7 +45,7 @@ $("#ask-form").on("submit", function (event) {
           toastr.success("A pergunta foi salva", "Sucesso!");
           $.ajax({
             type: "POST",
-            url: "/posts/backtolist",
+            url: "/posts/backtolist" + filter,
             success: function (response) {
               $(".body-content").empty();
               $(".body-content").html(response);

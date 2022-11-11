@@ -1,10 +1,10 @@
 ﻿$(".comment-aprove-btn").on("click", function () {
-  var id = $(this).parent().parent().parent().attr("data-comment-id");
+  var id = $(this).parents(".comment-box").attr("data-comment-id");
   showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove", id);
 })
 
 $(".comment-delete-btn").on("click", function () {
-  var id = $(this).parent().parent().parent().attr("data-comment-id");
+  var id = $(this).parents(".comment-box").attr("data-comment-id");
   showConfirmationModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos.", "delete", id);
 })
 

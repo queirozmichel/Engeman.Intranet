@@ -115,14 +115,9 @@ $(document).ready(function () {
       },
       "action": function (column, row) {
         var buttons;
-        var btn1;
+        var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> ";;
         var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
         var btn3 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
-        if (row.revised == false && isModerator == true) {
-          btn1 = "<button title=\"Aprovar\" type=\"button\" class=\"btn btn-xs btn-success\" data-action=\"aprove\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"icon-ok\"></i></button> ";
-        } else {
-          btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> ";
-        }
         buttons = btn1 + btn2 + btn3;
         return buttons;
       },
@@ -346,6 +341,21 @@ function postDelete(idElement, element) {
       setTimeout(() => {
         $(element).parent().parent().remove();
       }, 700);
+      $.ajax({
+        type: "GET",
+        url: "/posts/unrevisedlist",
+        dataType: "html",
+        success: function (result) {
+          $(".sub-menu > li.all-posts").remove();
+          $(".sub-menu > li.unrevised-posts").remove();
+          $(".sub-menu > li.unrevised-comments").remove();
+          $(".aprove-post-button").remove();
+          $("#list-posts-content").html(result);
+        },
+        error: function (result) {
+          toastr.error("Não foi possível atualizar o menu de postagens", "Erro!");
+        },
+      })
     },
     error: function (result) {
     },
@@ -355,28 +365,4 @@ function postDelete(idElement, element) {
       }, 700);
     }
   });
-}
-
-function aprovePost(idElement) {
-  $.ajax({
-    type: "PUT",
-    data: {
-      'idPost': idElement
-    },
-    url: "/posts/aprovepost",
-    dataType: "text",
-    success: function (result) {
-      $(".sub-menu > li.all-posts").remove();
-      $(".sub-menu > li.unrevised-posts").remove();
-      $(".sub-menu > li.unrevised-comments").remove();
-      $("#list-posts-content").html(result);
-      toastr.success("Postagem aprovada", "Sucesso!");
-    },
-    error: function (result) {
-      toastr.error("Não foi possível aprovar a postagem", "Erro!");
-    },
-    complete: function () {
-      $("#post-grid").bootgrid("reload");
-    }
-  })
 }

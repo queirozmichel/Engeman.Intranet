@@ -29,6 +29,7 @@ function clearForm() {
 }
 
 $("#document-manual-form").on("submit", function (event) {
+  var filter = "?filter=allPosts";
   var formType = $("#submit-button").attr("data-file-type");
   //ignora o submit padrão do formulário
   event.preventDefault();
@@ -43,7 +44,7 @@ $("#document-manual-form").on("submit", function (event) {
     }
     $.ajax({
       type: "POST",
-      url: "/posts/newdocumentmanual",
+      url: "/posts/newdocumentmanual/",
       contentType: false,
       processData: false,
       data: formData,
@@ -54,7 +55,7 @@ $("#document-manual-form").on("submit", function (event) {
           toastr.success("O documento/manual foi salvo", "Sucesso!");
           $.ajax({
             type: "POST",
-            url: "/posts/backtolist",
+            url: "/posts/backtolist" + filter,
             success: function (response) {
               $(".body-content").empty();
               $(".body-content").html(response);

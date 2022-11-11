@@ -5,74 +5,75 @@
 }
 
 <link rel="stylesheet" href="~/css/components/comment-list.css" />
-
 <div class="row">
-  @await Component.InvokeAsync("ConfirmationModal")
+  <div class="col-md-12">
+    <hr />
+    @if (ViewBag.PostComments.Count == 0)
+    {
+      <h4>0 comentários</h4>
+    }
+    else
+    {
+      <h4><span id="comment-count">@ViewBag.PostComments.Count</span> comentário(s)</h4>
+    }
+  </div>
   <div class="comments col-md-12" data-post-id="@ViewBag.PostId">
-    <div class="widget">
-      <div>
-        @if (ViewBag.PostComments.Count == 0)
-        {
-          <h4>0 comentários</h4>
-        }
-        else
-        {
-          <h4><span id="comment-count">@ViewBag.PostComments.Count</span> comentário(s)</h4>
-        }
-      </div>
-      @for (int i = 0; i < ViewBag.PostComments.Count; i++)
-      {
-        <div style="@(ViewBag.PostComments[i].Revised == false ? "background: Cornsilk" : "")" class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].UserId" data-comment-id="@ViewBag.PostComments[i].Id">
+    @*@await Component.InvokeAsync("ConfirmationModal")*@
 
-          <div id="editor-content-view" class="editor-content-view">@Html.Raw(@ViewBag.PostComments[i].Description)</div>
-          <div>
-            @if (@ViewBag.PostComments[i].Files.Count > 0)
-            {
-              <dl class="file-list">
-                Anexo(s):
-                @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
-                {
-                  <dd class="file"><a href="@Url.Action("showcommentfile", "comments", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
-                }
-              </dl>
-            }
-          </div>
-
-          <div>
-            @if (ViewBag.PostComments[i].UserId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
-            {
-              <div class="col-md-10 comment-action-buttons">
-                <button class="comment-edit-btn btn btn-xs">Editar</button>
-                <button class="comment-delete-btn btn btn-xs">Apagar</button>
-                @if (ViewBag.PostComments[i].Revised == false && Context.Session.GetInt32("_Moderator") == 1)
-                {
-                  <button class="comment-aprove-btn btn btn-xs">Aprovar</button>
-                }
-              </div>
-            }
-
-            <figure class="fir-image-figure pull-right">
-              <a class="fir-imageover" rel="noopener" target="_blank" href="#">
-                @{var baseAux = Convert.ToBase64String(ViewBag.PostComments[i].UserPhoto);
-                  var imasrcAux = string.Format("data:image/png;base64,{0}", baseAux);
-                }
-                <img class="fir-author-image fir-clickcircle" src='@imasrcAux' />
-              </a>
-              <figcaption>
-                <div class="fig-author-figure-title">@ViewBag.PostComments[i].Username</div>
-                <div class="fig-author-figure-title">@ViewBag.PostComments[i].UserDepartmentName</div>
-                <div class="fig-author-figure-title">@ViewBag.PostComments[i].ChangeDate</div>
-              </figcaption>
-            </figure>
-            <div class="widget-header"></div>
-            @if (ViewBag.PostComments[i].Revised == false && (ViewBag.UserAccount.Moderator == true || ViewBag.UserAccount.Id == ViewBag.PostComments[i].UserId))
-            {
-              <p id="awaiting-review" style="color:red" class="align-center">AGUARDANDO REVISÂO</p>
-            }
-          </div>
+    @for (int i = 0; i < ViewBag.PostComments.Count; i++)
+    {
+      <div style="margin: 0 0 50px 0; padding: 0px; @(ViewBag.PostComments[i].Revised == false ? "background: Cornsilk" : "")" class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].AuthorId" data-comment-id="@ViewBag.PostComments[i].Id">
+        <div id="editor-content-view" class="col-md-12 editor-content-view">@Html.Raw(@ViewBag.PostComments[i].Description)</div>
+        <div class="col-md-12">
+          @if (@ViewBag.PostComments[i].Files.Count > 0)
+          {
+            <dl class="file-list">
+              Anexo(s):
+              @for (int j = 0; j < @ViewBag.PostComments[i].Files.Count; j++)
+              {
+                <dd class="file"><a href="@Url.Action("showcommentfile", "comments", new { idComment = ViewBag.PostComments[i].Id, file = j })" target="_blank">@ViewBag.PostComments[i].Files[j].Name</a></dd>
+              }
+            </dl>
+          }
         </div>
-      }
-    </div>
+        <div style="margin-top: 50px;" class="col-md-9 comment-action-buttons">
+          @if (ViewBag.PostComments[i].AuthorId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
+          {
+            <button title="Editar a postagem" class="comment-edit-btn btn btn-xs"><i class="fa fa-pencil" style="margin-right: 2px; color: blue;"></i>Editar</button>
+            <button title="Excluir a postagem" class="comment-delete-btn btn btn-xs"><i class="fa fa-trash-o" style="margin-right: 2px; color: red;"></i>Excluir</button>
+            @if (ViewBag.PostComments[i].Revised == false && Context.Session.GetInt32("_Moderator") == 1)
+            {
+              <button title="Aprovar a postagem" class="comment-aprove-btn btn btn-xs"><i class="fa-solid fa-check" style="margin-right: 2px; color: green;"></i>Aprovar</button>
+            }
+          }
+        </div>
+        <div class="col-md-3" style="background: #e1ecf4; padding: 10px; border-radius: 10px; margin-top: 50px;">
+          <span style="opacity: 0.7">comentada&nbsp</span>
+          <span>@ViewBag.PostComments[i].ChangeDate.GetDateTimeFormats()[0] às @ViewBag.PostComments[i].ChangeDate.GetDateTimeFormats()[22]</span>
+          <figure class="fir-image-figure">
+            <a class="fir-imageover">
+              @{ var base64 = Convert.ToBase64String(ViewBag.PostComments[i].AuthorPhoto);
+                var imasrc = string.Format("data:image/png;base64,{0}", base64);
+              }
+              <img class="fir-author-image fir-clickcircle" src='@imasrc'>
+            </a>
+            <figcaption>
+              <div class="fig-author-figure-title">@ViewBag.PostComments[i].AuthorUsername</div>
+              <div class="fig-author-figure-title">@ViewBag.PostComments[i].AuthorDepartment</div>
+              <span title="Postagens realizadas" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-comment"></i>@ViewBag.PostComments[i].AuthorPostsMade</span>
+              <span title="Postagens respondidas" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-pen-to-square"></i>@ViewBag.PostComments[i].AuthorCommentsMade</span>
+            </figcaption>
+          </figure>
+        </div>
+        @if (ViewBag.PostComments[i].Revised == false && (ViewBag.UserAccount.Moderator == true || ViewBag.UserAccount.Id == ViewBag.PostComments[i].AuthorId))
+        {
+          <p id="awaiting-review" style="color:red" class="align-center">AGUARDANDO REVISÂO</p>
+        }
+        <div style="padding: 0px" class="col-md-12">
+          <hr />
+        </div>
+      </div>
+    }
   </div>
 </div>
 

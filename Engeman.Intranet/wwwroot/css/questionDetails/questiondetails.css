@@ -28,15 +28,10 @@
 
 .file-list {
   margin-top: 0px;
-  padding-left: 10px;
 }
 
 .fa-trash-o {
   cursor: pointer;
-}
-
-.comment-box {
-  margin-left: -15px;
 }
 
 .preview-box {
@@ -44,7 +39,7 @@
   word-break: break-all;
 }
 
-Informações sobre o autor do comentário
+/*Informações sobre o autor do comentário*/
 :root {
   --fir-color-grey: rgba(0,0,0, 0.40);
 }
@@ -52,8 +47,7 @@ Informações sobre o autor do comentário
 .fir-clickcircle {
   height: 80px;
   width: 80px;
-  border-radius: 100px;
-  cursor: pointer;
+  border-radius: 10px;
 }
 
 .fir-image-figure {
@@ -61,7 +55,6 @@ Informações sobre o autor do comentário
   width: 250px;
   display: flex;
   align-items: center;
-  margin-bottom: 40px;
   position: relative;
   text-decoration: none;
 }
@@ -78,7 +71,7 @@ Informações sobre o autor do comentário
     margin-top: 2px;
   }
 
-Rich Text Box Write
+/*Rich Text Box Write*/
 .answer-box {
   margin-top: 25px;
 }
@@ -88,19 +81,9 @@ Rich Text Box Write
   margin-bottom: 0px;
 }
 
-Rich Text Box View
-.editor-content-view {
-  border: 3px solid #ccc;
-  border-radius: 5px;
-  padding: 0 10px;
-  margin-top: 20px;
-  overflow-x: auto;
-}
-
 .editor-content-view p,
 .editor-content-view li {
   white-space: pre-wrap;
-  保留空格
 }
 
 .editor-content-view blockquote {
@@ -112,14 +95,11 @@ Rich Text Box View
 
 .editor-content-view code {
   font-family: monospace;
-  /*background-color: #eee;*/
-  /*padding: 3px;*/
   border-radius: 3px;
 }
 
 .editor-content-view pre > code {
   display: block;
-  /*padding: 10px;*/
 }
 
 .editor-content-view table {
@@ -144,9 +124,4 @@ Rich Text Box View
 
 .editor-content-view input[type="checkbox"] {
   margin-right: 5px;
-}
-
-/*Área de código na pré-visualização*/
-#preview pre {
-  /*margin: 0.5em 0 0 0;*/
 }

@@ -155,7 +155,7 @@ namespace Engeman.Intranet.Controllers
       return View("NewDocumentManual");
     }
 
-    public IActionResult BackToList(int postId)
+    public IActionResult BackToList(string filter)
     {
       ViewBag.FilterGrid = Request.Query["filter"];
 
@@ -394,9 +394,10 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpDelete]
-    public void RemovePost(int idPost)
+    public IActionResult RemovePost(int idPost)
     {
       _postRepository.DeletePost(idPost);
+      return PartialView("ListAll");
     }
 
     [HttpGet]
@@ -405,12 +406,45 @@ namespace Engeman.Intranet.Controllers
       var post = _postRepository.GetPostById(idPost);
       var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(postAuthor.DepartmentId);
-      var postsCount = _postRepository.GetPostsCountByUserId(postAuthor.Id);
+      var postsCount = _postRepository.GetPostsByUserId(postAuthor.Id).Count();
+      var commentsCount = _postCommentRepository.GetPostCommentsByUserId(postAuthor.Id).Count();
+      PostDetailsViewModel postDetails = new PostDetailsViewModel();
+      string[] keywords;
 
-      ViewBag.Post = post;
-      ViewBag.PostAuthor = postAuthor;
-      ViewBag.Department = department;
-      ViewBag.PostsCount = postsCount;
+      postDetails.Id = post.Id;
+      postDetails.Subject = post.Subject;
+      postDetails.Description = post.Description;
+      if (post.Keywords == "")
+      {
+        keywords = null;
+      }
+      else
+      {
+        keywords = post.Keywords.Split(';');
+      }      
+      postDetails.Keywords = keywords;
+      postDetails.Revised = post.Revised;
+      postDetails.ChangeDate = post.ChangeDate;
+      postDetails.PostedDaysAgo = (DateTime.Now - postDetails.ChangeDate).Days;
+      if (postDetails.PostedDaysAgo == 0)
+      {
+        TimeSpan aux = postDetails.ChangeDate.TimeOfDay;
+        TimeSpan now = DateTime.Now.TimeOfDay;
+        if (aux > now)
+        {
+          postDetails.PostedDaysAgo = -1;
+        }        
+      }
+      postDetails.AuthorId = postAuthor.Id;
+      postDetails.AuthorUsername = postAuthor.Name;
+      postDetails.AuthorDepartment = department.Description;
+      postDetails.AuthorPostsMade = postsCount; 
+      postDetails.AuthorCommentsMade = commentsCount; 
+      postDetails.AuthorPhoto = postAuthor.Photo;
+
+
+
+      ViewBag.PostDetails = postDetails;
 
       return PartialView();
     }
@@ -419,18 +453,47 @@ namespace Engeman.Intranet.Controllers
     public IActionResult DocumentManualDetails(int idPost)
     {
       var post = _postRepository.GetPostById(idPost);
-      var userAccount = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
       var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
-      var department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
-      var postsCount = _postRepository.GetPostsCountByUserId(postAuthor.Id);
+      var department = _departmentRepository.GetDepartmentById(postAuthor.DepartmentId);
+      var postsCount = _postRepository.GetPostsByUserId(postAuthor.Id).Count();
+      var commentsCount = _postCommentRepository.GetPostCommentsByUserId(postAuthor.Id).Count();
+      PostDetailsViewModel postDetails = new PostDetailsViewModel();
+      string[] keywords;
 
-      ViewBag.Post = post;
-      ViewBag.PostAuthor = postAuthor;
-      ViewBag.UserAccount = userAccount;
-      ViewBag.Department = department;
-      ViewBag.Files = orderedFiles;
-      ViewBag.PostsCount = postsCount;
+      postDetails.Id = post.Id;
+      postDetails.Subject = post.Subject;
+      postDetails.Description = post.Description;
+      if (post.Keywords == "")
+      {
+        keywords = null;
+      }
+      else
+      {
+        keywords = post.Keywords.Split(';');
+      }
+      postDetails.Keywords = keywords;
+      postDetails.Revised = post.Revised;
+      postDetails.ChangeDate = post.ChangeDate;
+      postDetails.Files = orderedFiles;
+      postDetails.PostedDaysAgo = (DateTime.Now - postDetails.ChangeDate).Days;
+      if (postDetails.PostedDaysAgo == 0)
+      {
+        TimeSpan aux = postDetails.ChangeDate.TimeOfDay;
+        TimeSpan now = DateTime.Now.TimeOfDay;
+        if (aux > now)
+        {
+          postDetails.PostedDaysAgo = -1;
+        }
+      }
+      postDetails.AuthorId = postAuthor.Id;
+      postDetails.AuthorUsername = postAuthor.Name;
+      postDetails.AuthorDepartment = department.Description;
+      postDetails.AuthorPostsMade = postsCount;
+      postDetails.AuthorCommentsMade = commentsCount;
+      postDetails.AuthorPhoto = postAuthor.Photo;
+
+      ViewBag.postDetails = postDetails;
 
       return PartialView();
     }
@@ -512,6 +575,12 @@ namespace Engeman.Intranet.Controllers
       post.Revised = true;
       _postRepository.UpdatePost(idPost, post);
 
+      return ViewComponent("UnrevisedList");
+    }
+
+    [HttpGet]
+    public IActionResult UnrevisedList()
+    {
       return ViewComponent("UnrevisedList");
     }
 

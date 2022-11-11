@@ -35,7 +35,7 @@ $("#comment-form").on("submit", function (event) {
           $.ajax({
             type: "POST",
             dataType: "html",
-            url: "/posts/backtolist",
+            url: "/posts/backtolist" + window.location.search,
             success: function (response) {
               $(".body-content").empty();
               $(".body-content").html(response);
@@ -61,7 +61,7 @@ $("#comment-tab").on("click", function () {
     type: "GET",
     dataType: "html",
     url: "/comments/wangeditor",
-    success: function (response) {      
+    success: function (response) {
       $("#form-group-wang-editor").html(response);
     },
     error: function (response) {
@@ -75,7 +75,7 @@ $("#post-tab").on("click", function () {
   $.ajax({
     type: "GET",
     dataType: "html",
-    data: {"idPost" : idPost},
+    data: { "idPost": idPost },
     url: "/comments/commentlist",
     success: function (response) {
       $("#comment-list").empty();
@@ -86,3 +86,122 @@ $("#post-tab").on("click", function () {
     }
   })
 })
+
+$(".edit-post-button").on("click", function () {
+  var idPost = $("#id-post").text();
+  $.ajax({
+    type: "GET",
+    data: { "idPost": idPost },
+    dataType: "html",
+    url: "/posts/questionedit" + window.location.search, //assim é passado os parâmetros da url na chamada ajax "ViewBag.FilterGrid = Request.Query["filter"]"
+    error: function () {
+      toastr.error("Não foi possível editar a postagem", "Erro!");
+    },
+    success: function (response) {
+      $(".body-content").empty();
+      $(".body-content").html(response);
+    }
+  })
+})
+
+$(".delete-post-button").on("click", function () {
+  var idPost = $("#id-post").text();
+  showConfirmationModal("Apagar a postagem?", "Esta ação não poderá ser revertida.", "delete-post", idPost);
+})
+
+$(".aprove-post-button").on("click", function () {
+  var idPost = $("#id-post").text();
+  showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove-post", idPost);
+})
+
+$(".btn-yes, .btn-no").on("click", function () {
+  var filter = "?filter=allPosts";
+  var postId = $("#id-post").text();
+  if ($(this).attr("id") == "delete-post") {
+    deletePost(postId).then((response) => {
+      $.ajax({
+        type: "POST",
+        dataType: "html",        
+        url: "/posts/backtolist" + filter,
+        success: function (response) {
+          $(".body-content").empty();
+          $(".body-content").html(response);
+          $.ajax({
+            type: "GET", 
+            url: "/posts/unrevisedlist",
+            dataType: "html",
+            success: function (result) {
+              $(".sub-menu > li.all-posts").remove();
+              $(".sub-menu > li.unrevised-posts").remove();
+              $(".sub-menu > li.unrevised-comments").remove();
+              $(".aprove-post-button").remove();
+              $("#list-posts-content").html(result);
+            },
+            error: function (result) {
+              toastr.error("Não foi possível atualizar o menu de postagens", "Erro!");
+            },  
+          })
+        },
+        error: function () {
+          toastr.error("Não foi possível voltar", "Erro!");
+        }
+      });
+    })
+      .catch((error) => {
+        console.log(error)
+      })
+  } else if ($(this).attr("id") == "aprove-post") {
+    aprovePost(postId);
+  }
+})
+
+
+function deletePost(postId) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "DELETE",
+      data: {
+        'idPost': postId
+      },
+      url: "/posts/removepost",
+      dataType: "html",
+      success: function (response) {
+        hideConfirmationModal();
+        toastr.success("A postagem foi apagada", "Sucesso!");
+        setTimeout(() => {
+          resolve(response)
+        }, 350);
+      },
+      error: function (error) {
+        reject(error)
+      },
+    })
+
+  })
+}
+
+function aprovePost(idPost) {
+  $.ajax({
+    type: "PUT",
+    data: {
+      'idPost': idPost
+    },
+    url: "/posts/aprovepost",
+    dataType: "text",
+    success: function (result) {
+      $(".sub-menu > li.all-posts").remove();
+      $(".sub-menu > li.unrevised-posts").remove();
+      $(".sub-menu > li.unrevised-comments").remove();
+      $(".aprove-post-button").remove();
+      $("#list-posts-content").html(result);
+      hideConfirmationModal();
+      toastr.success("Postagem aprovada", "Sucesso!");
+    },
+    error: function (result) {
+      toastr.error("Não foi possível aprovar a postagem", "Erro!");
+    },
+    complete: function () {
+      $("#post-grid").bootgrid("reload");
+    }
+  })
+}
