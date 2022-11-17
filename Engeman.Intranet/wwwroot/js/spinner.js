@@ -1,12 +1,10 @@
 ﻿function startSpinner() {
-  $('body').loadingModal({
-    color: '#fff',
-    opacity: '0.5',
-    backgroundColor: 'rgb(0,0,0)',
-    animation: 'circle',
+  EasyLoading.show({
+    type: EasyLoading.TYPE.BALL_SPIN_FADE_LOADER,
+    background_color: "rgba(0, 0, 0, .5)",
   });
 }
 
 function closeSpinner() {
-  $('body').loadingModal('hide');
+  EasyLoading.hide();
 }

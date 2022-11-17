@@ -22,6 +22,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\lib\toastr\" />
+    <Folder Include="wwwroot\plugins\easy-loading\" />
   </ItemGroup>
 
   <ItemGroup>
