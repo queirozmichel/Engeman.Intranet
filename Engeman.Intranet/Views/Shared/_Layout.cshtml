@@ -78,8 +78,8 @@
   @*jQuery Validation*@
   <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
   @*Spinner*@
-  <link rel="stylesheet" href="~/lib/spinner/jquery.loadingModal.css" />
-  <script src="~/lib/spinner/jquery.loadingModal.js"></script>
+  <link rel="stylesheet" href="~/css/plugins/easy-loading.min.css" />
+  <script type="text/javascript" src="~/plugins/easy-loading/easy-loading.min.js"></script>
   <script src="~/js/spinner.js"></script>
   @*Wysiwyg*@
   <link rel="stylesheet" href="~/plugins/wysiwyg/css/style.css" />
@@ -87,7 +87,6 @@
   @*CSS personalizado*@
   <link rel="stylesheet" type="text/css" href="~/css/custom.css" />
 </head>
-
 <body>
   @await Component.InvokeAsync("AlertModal")
   <!-- Header -->
@@ -591,17 +590,15 @@
           </ul>
         </div>
         <!-- /Breadcrumbs line -->
-
-        @RenderBody()
-
+        <div id="render-body">
+          @RenderBody()
+        </div>
       </div>
     </div>
   </div>
-  @*App*@
   <script type="text/javascript" src="~/js/app.js"></script>
   <script type="text/javascript" src="~/js/plugins.js"></script>
   <script type="text/javascript" src="~/js/plugins.form-components.js"></script>
-  <script src="~/js/layout.js"></script>
+  <script type="text/javascript" src="~/js/layout.js"></script>
 </body>
 </html>
-

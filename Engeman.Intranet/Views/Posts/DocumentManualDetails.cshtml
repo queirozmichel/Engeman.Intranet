@@ -1,166 +1,165 @@
 ﻿@using Microsoft.AspNetCore.Http;
+@{string layout = null;}
 
-<!DOCTYPE html>
-<html lang="pt-br">
+@if (ViewBag.IsAjaxCall == false)
+{
+  layout = "~/Views/Shared/_Layout.cshtml";
+  <script>startSpinner();</script>
+}
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  @*CSS*@
-  <link rel="stylesheet" href="~/plugins/prism/css/prism.css" />
-  <link rel="stylesheet" href="~/css/document-manual-details.css" />
-  @*JavaScript*@
-  <script type="text/javascript" src="~/js/custom.js"></script>
-</head>
+@{
+  Layout = layout;
+}
 
-<body>
-  @await Component.InvokeAsync("ConfirmationModal")
-  <div class="page-header">
-    <div class="page-title">
-      <h3>Detalhes da Postagem</h3>
-      @*<span>Good morning, @Model.Name!</span>*@
-    </div>
-    <!-- Page Stats -->
-    <ul class="page-stats">
-      <li>
-        <div class="summary">
-          <span>New orders</span>
-          <h3>17,561</h3>
-        </div>
-        <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-        <!-- Use instead of sparkline e.g. this:
-        <div class="graph circular-chart" data-percent="73">73%</div>
-        -->
-      </li>
-      <li>
-        <div class="summary">
-          <span>My balance</span>
-          <h3>$21,561.21</h3>
-        </div>
-        <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-      </li>
-    </ul>
-    <!-- /Page Stats -->
+<link rel="stylesheet" href="~/plugins/prism/css/prism.css" />
+<link rel="stylesheet" href="~/css/document-manual-details.css" />
+
+@await Component.InvokeAsync("ConfirmationModal")
+<div class="page-header">
+  <div class="page-title">
+    <h3>Detalhes da Postagem</h3>
+    @*<span>Good morning, @Model.Name!</span>*@
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="tabbable tabbable-custom tabbable-full-width">
-        <ul class="nav nav-tabs">
-          <li class="active"><a id="post-tab" href="#tab_1_1" data-toggle="tab">Postagem</a></li>
-          <li id="comment-tab"><a id="comment-tab" href="#tab_1_3" data-toggle="tab">Comentar</a></li>
-        </ul>
-        <div class="tab-content row">
-          <div class="tab-pane active" id="tab_1_1">
-            <div class="col-md-12">
-              <h2>@ViewBag.PostDetails.Subject</h2>
-              <div style="display:flex">
-                <div>
-                  <span style="opacity: 0.7">Identificador&nbsp</span>
-                  <span id="id-post">@ViewBag.PostDetails.Id &nbsp &nbsp</span>
-                </div>
-                <div>
-                  @if (ViewBag.PostDetails.PostedDaysAgo == 0)
-                  {
-                    <span style="opacity: 0.7">Postada&nbsp</span>
-                    <span>hoje</span>
-                  }
-                  else
-                  {
-                    <span style="opacity: 0.7">Postada&nbsp</span>
-                    <span>@ViewBag.PostDetails.PostedDaysAgo dia(s) atrás</span>
-                  }
-                </div>
+  <!-- Page Stats -->
+  <ul class="page-stats">
+    <li>
+      <div class="summary">
+        <span>New orders</span>
+        <h3>17,561</h3>
+      </div>
+      <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+      <!-- Use instead of sparkline e.g. this:
+      <div class="graph circular-chart" data-percent="73">73%</div>
+      -->
+    </li>
+    <li>
+      <div class="summary">
+        <span>My balance</span>
+        <h3>$21,561.21</h3>
+      </div>
+      <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+    </li>
+  </ul>
+  <!-- /Page Stats -->
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="tabbable tabbable-custom tabbable-full-width">
+      <ul class="nav nav-tabs">
+        <li class="active"><a id="post-tab" href="#tab_1_1" data-toggle="tab">Postagem</a></li>
+        <li id="comment-tab"><a id="comment-tab" href="#tab_1_3" data-toggle="tab">Comentar</a></li>
+      </ul>
+      <div class="tab-content row">
+        <div class="tab-pane active" id="tab_1_1">
+          <div class="col-md-12">
+            <h2>@ViewBag.PostDetails.Subject</h2>
+            <div style="display:flex">
+              <div>
+                <span style="opacity: 0.7">Identificador&nbsp</span>
+                <span id="id-post">@ViewBag.PostDetails.Id &nbsp &nbsp</span>
               </div>
-              <hr />
-              <div class="col-md-12">
-                @ViewBag.PostDetails.Description
-              </div>
-              @if (ViewBag.PostDetails.Files.Count > 0)
-              {
-                <div class="col-md-12" style="margin-top: 10px;">
-                  @for (int i = 0; i < ViewBag.PostDetails.Files.Count; i++)
-                  {
-                    <span class="file-post-list">@(i+1) -  <a href="@Url.Action("showfile", "posts", new { idPost = ViewBag.PostDetails.Id, file = i })" target="_blank">@ViewBag.PostDetails.Files[i].Name</a></span><br />
-                  }
-                </div>
-              }
-
-              @if (@ViewBag.PostDetails.Keywords != null)
-              {
-                <div class="col-md-12" style="margin-top: 50px;">
-                  @for (int i = 0; i < ViewBag.PostDetails.Keywords.Length; i++)
-                  {
-                    <span style="border: 1px solid #a5d24a; border-radius: 3px; padding: 4px; background: #cde69c; color: #638421; margin: 5px 5px 5px 0; line-height: 23px;">@ViewBag.PostDetails.Keywords[i]</span>
-                  }
-                </div>
-              }
-              <div class="col-md-9" style="margin-top: 50px;">
-                @if (ViewBag.PostDetails.AuthorId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
+              <div>
+                @if (ViewBag.PostDetails.PostedDaysAgo == 0)
                 {
-                  <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil" style="margin-right: 2px; color: blue;"></i>Editar</button>
-                  <button title="Excluir a postagem" class="btn btn-xs delete-post-button"><i class="fa fa-trash-o" style="margin-right: 2px; color: red;"></i>Excluir</button>
-                  @if (ViewBag.PostDetails.Revised == false && Context.Session.GetInt32("_Moderator") == 1)
-                  {
-                    <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check" style="margin-right: 2px; color: green;"></i>Aprovar</button>
-                  }
+                  <span style="opacity: 0.7">Postada&nbsp</span>
+                  <span>hoje</span>
                 }
-                <button title="Voltar para a listagem" class="btn btn-xs back-to-list-button"><i class="fa-solid fa-circle-arrow-left" style="margin-right: 2px;"></i>Voltar</button>
-              </div>
-              <div class="col-md-3" style="padding: 10px; background: #e1ecf4; border-radius: 10px; margin-top: 50px;">
-                <span style="opacity: 0.7">postada&nbsp</span>
-                <span>@ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[0] às @ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[22]</span>
-                <figure class="fir-image-figure">
-                  <a class="fir-imageover">
-                    @{ var base64 = Convert.ToBase64String(ViewBag.PostDetails.AuthorPhoto);
-                      var imasrc = string.Format("data:image/png;base64,{0}", base64);
-                    }
-                    <img class="fir-author-image fir-clickcircle" src='@imasrc'>
-                  </a>
-                  <figcaption>
-                    <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorUsername</div>
-                    <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorDepartment</div>
-                    <span title="Postagens realizadas" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-comment"></i>@ViewBag.PostDetails.AuthorPostsMade</span>
-                    <span title="Comentários realizados" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-pen-to-square"></i>@ViewBag.PostDetails.AuthorCommentsMade</span>
-                  </figcaption>
-                </figure>
+                else
+                {
+                  <span style="opacity: 0.7">Postada&nbsp</span>
+                  <span>@ViewBag.PostDetails.PostedDaysAgo dia(s) atrás</span>
+                }
               </div>
             </div>
-            <div class="col-md-12" id="comment-list">
-              @await Component.InvokeAsync("CommentList", ViewBag.PostDetails.Id)
+            <hr />
+            <div class="col-md-12">
+              @ViewBag.PostDetails.Description
+            </div>
+            @if (ViewBag.PostDetails.Files.Count > 0)
+            {
+              <div class="col-md-12" style="margin-top: 10px;">
+                @for (int i = 0; i < ViewBag.PostDetails.Files.Count; i++)
+                {
+                  <span class="file-post-list">@(i+1) -  <a href="@Url.Action("showfile", "posts", new { idPost = ViewBag.PostDetails.Id, file = i })" target="_blank">@ViewBag.PostDetails.Files[i].Name</a></span><br />
+                }
+              </div>
+            }
+
+            @if (@ViewBag.PostDetails.Keywords != null)
+            {
+              <div class="col-md-12" style="margin-top: 50px;">
+                @for (int i = 0; i < ViewBag.PostDetails.Keywords.Length; i++)
+                {
+                  <span style="border: 1px solid #a5d24a; border-radius: 3px; padding: 4px; background: #cde69c; color: #638421; margin: 5px 5px 5px 0; line-height: 23px;">@ViewBag.PostDetails.Keywords[i]</span>
+                }
+              </div>
+            }
+            <div class="col-md-9" style="margin-top: 50px;">
+              @if (ViewBag.PostDetails.AuthorId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
+              {
+                <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil" style="margin-right: 2px; color: blue;"></i>Editar</button>
+                <button title="Excluir a postagem" class="btn btn-xs delete-post-button"><i class="fa fa-trash-o" style="margin-right: 2px; color: red;"></i>Excluir</button>
+                @if (ViewBag.PostDetails.Revised == false && Context.Session.GetInt32("_Moderator") == 1)
+                {
+                  <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check" style="margin-right: 2px; color: green;"></i>Aprovar</button>
+                }
+              }
+              <button title="Voltar para a listagem" class="btn btn-xs back-to-list-button"><i class="fa-solid fa-circle-arrow-left" style="margin-right: 2px;"></i>Voltar</button>
+            </div>
+            <div class="col-md-3" style="padding: 10px; background: #e1ecf4; border-radius: 10px; margin-top: 50px;">
+              <span style="opacity: 0.7">postada&nbsp</span>
+              <span>@ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[0] às @ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[22]</span>
+              <figure class="fir-image-figure">
+                <a class="fir-imageover">
+                  @{ var base64 = Convert.ToBase64String(ViewBag.PostDetails.AuthorPhoto);
+                    var imasrc = string.Format("data:image/png;base64,{0}", base64);
+                  }
+                  <img class="fir-author-image fir-clickcircle" src='@imasrc'>
+                </a>
+                <figcaption>
+                  <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorUsername</div>
+                  <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorDepartment</div>
+                  <span title="Postagens realizadas" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-comment"></i>@ViewBag.PostDetails.AuthorPostsMade</span>
+                  <span title="Comentários realizados" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-pen-to-square"></i>@ViewBag.PostDetails.AuthorCommentsMade</span>
+                </figcaption>
+              </figure>
             </div>
           </div>
-          <div class="tab-pane active" id="tab_1_3">
-            <div class="col-md-12">
-              <div class="row">
-                <div class="col-md-12 col-md-offset-1 align-center">
-                  <h3>@ViewBag.PostDetails.Subject</h3>
-                  <div class="well">
-                    @ViewBag.PostDetails.Description
-                  </div>
+          <div class="col-md-12" id="comment-list">
+            @await Component.InvokeAsync("CommentList", ViewBag.PostDetails.Id)
+          </div>
+        </div>
+        <div class="tab-pane active" id="tab_1_3">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12 col-md-offset-1 align-center">
+                <h3>@ViewBag.PostDetails.Subject</h3>
+                <div class="well">
+                  @ViewBag.PostDetails.Description
                 </div>
               </div>
-              <div class="widget box answer-box">
-                <div class="widget-content">
-                  <form class="form-horizontal row-border" id="comment-form" method="post" enctype="multipart/form-data">
-                    <div class="form-group" id="form-group-wang-editor"></div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Palavras chave</label>
-                      <div class="col-md-10">
-                        <input class="tags" id="keywords" type="text" name="keywords">
-                      </div>
+            </div>
+            <div class="widget box answer-box">
+              <div class="widget-content">
+                <form class="form-horizontal row-border" id="comment-form" method="post" enctype="multipart/form-data">
+                  <div class="form-group" id="form-group-wang-editor"></div>
+                  <div class="form-group">
+                    <label class="col-md-2 control-label">Palavras chave</label>
+                    <div class="col-md-10">
+                      <input class="tags" id="keywords" type="text" name="keywords">
                     </div>
-                    <div class="form-group">
-                      <label class="col-md-2 control-label">Anexar arquivo(s)</label>
-                      <div class="col-md-2">
-                        <input id="file" type="file" name="files" accept="application/pdf" multiple>
-                      </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-md-2 control-label">Anexar arquivo(s)</label>
+                    <div class="col-md-2">
+                      <input id="file" type="file" name="files" accept="application/pdf" multiple>
                     </div>
-                    <div class="form-actions">
-                      <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-                      @await Component.InvokeAsync("BtnBackToList")
-                    </div>
-                  </form>
-                </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
+                    @await Component.InvokeAsync("BtnBackToList")
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -168,8 +167,8 @@
       </div>
     </div>
   </div>
-</body>
-</html>
+</div>
 
 <script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/document-manual-details.js"></script>
+<script type="text/javascript" src="~/js/custom.js"></script>

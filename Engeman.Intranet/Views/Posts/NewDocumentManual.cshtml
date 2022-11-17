@@ -1,147 +1,143 @@
 ﻿@{List<Department> departments = ViewBag.Departments;}
+@{string layout = null;}
 
-<!DOCTYPE html>
-<html lang="pt-br">
+@if (ViewBag.IsAjaxCall == false)
+{
+  layout = "~/Views/Shared/_Layout.cshtml";
+  <script>startSpinner();</script>
+}
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  @*Inicializa o Spinner*@
-  @*<script>startSpinner();</script>*@
-  @*CSS*@
-  <link rel="stylesheet" href="~/css/new-document-manual.css" />
-  @*JavaScript*@
-  <script type="text/javascript" src="~/js/custom.js"></script>
-</head>
+@{
+  Layout = layout;
+}
 
-<body>
-  <div class="body-content">
-    <!--=== Page Header ===-->
-    <div class="page-header">
-      <div class="page-title">
-        @if (ViewBag.DocumentOrManual == 'D')
-        {
-          <h3>Documento</h3>
-        }
-        else
-        {
-          <h3>Manual</h3>
-        }
-        <span>Good morning, John!</span>
-      </div>
-      <!-- Page Stats -->
-      <ul class="page-stats">
-        <li>
-          <div class="summary">
-            <span>New orders</span>
-            <h3>17,561</h3>
-          </div>
-          <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-          <!-- Use instead of sparkline e.g. this:
-          <div class="graph circular-chart" data-percent="73">73%</div>
-          -->
-        </li>
-        <li>
-          <div class="summary">
-            <span>My balance</span>
-            <h3>$21,561.21</h3>
-          </div>
-          <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-        </li>
-      </ul>
-      <!-- /Page Stats -->
+<link rel="stylesheet" href="~/css/new-document-manual.css" />
+
+<div class="body-content">
+  <!--=== Page Header ===-->
+  <div class="page-header">
+    <div class="page-title">
+      @if (ViewBag.DocumentOrManual == 'D')
+      {
+        <h3>Documento</h3>
+      }
+      else
+      {
+        <h3>Manual</h3>
+      }
+      <span>Good morning, John!</span>
     </div>
-    <!-- /Page Header -->
-    <!--=== Page Content ===-->
-    <div class="row">
-      <!--=== Horizontal Forms ===-->
-      <div class="col-md-12">
-        <div class="widget box">
-          <div class="widget-header">
-            @if (ViewBag.DocumentOrManual == 'D')
-            {
-              <h4>
-                <i class="icon-reorder"></i>
-                Novo Documento
-              </h4>
-            }
-            else
-            {
-              <h4>
-                <i class="icon-reorder"></i>
-                Novo Manual
-              </h4>
-            }
-          </div>
-          <div class="widget-content">
-            <form class="form-horizontal row-border" id="document-manual-form" method="post" enctype="multipart/form-data">
-              <div class="form-group">
-                <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
-                <div class="col-md-10">
-                  @Html.CheckBox("newPostWithFiles.post.restricted", new { id = "restricted" })
-                </div>
+    <!-- Page Stats -->
+    <ul class="page-stats">
+      <li>
+        <div class="summary">
+          <span>New orders</span>
+          <h3>17,561</h3>
+        </div>
+        <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+        <!-- Use instead of sparkline e.g. this:
+        <div class="graph circular-chart" data-percent="73">73%</div>
+        -->
+      </li>
+      <li>
+        <div class="summary">
+          <span>My balance</span>
+          <h3>$21,561.21</h3>
+        </div>
+        <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+      </li>
+    </ul>
+    <!-- /Page Stats -->
+  </div>
+  <!-- /Page Header -->
+  <!--=== Page Content ===-->
+  <div class="row">
+    <!--=== Horizontal Forms ===-->
+    <div class="col-md-12">
+      <div class="widget box">
+        <div class="widget-header">
+          @if (ViewBag.DocumentOrManual == 'D')
+          {
+            <h4>
+              <i class="icon-reorder"></i>
+              Novo Documento
+            </h4>
+          }
+          else
+          {
+            <h4>
+              <i class="icon-reorder"></i>
+              Novo Manual
+            </h4>
+          }
+        </div>
+        <div class="widget-content">
+          <form class="form-horizontal row-border" id="document-manual-form" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+              <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
+              <div class="col-md-10">
+                @Html.CheckBox("newPostWithFiles.post.restricted", new { id = "restricted" })
               </div>
-              <div class="form-group departments-list">
-                <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
-                <div class="col-md-10">
-                  <select class="required" id="multiselect-department" multiple="multiple" name="newPostWithFiles.departmentsList">
-                    @{if (departments != null)
+            </div>
+            <div class="form-group departments-list">
+              <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
+              <div class="col-md-10">
+                <select class="required" id="multiselect-department" multiple="multiple" name="newPostWithFiles.departmentsList">
+                  @{if (departments != null)
+                    {
+                      for (int i = 0; i < departments.Count; i++)
                       {
-                        for (int i = 0; i < departments.Count; i++)
-                        {
-                          <option value="@departments[i].Id">@departments[i].Description</option>
-                        }
+                        <option value="@departments[i].Id">@departments[i].Description</option>
                       }
                     }
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
-                <div class="col-md-10">
-                  <input id="subject" class="form-control required" type="text" name="newPostWithFiles.post.subject">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Palavras chave</label>
-                <div class="col-md-10">
-                  <input class="tags" id="keywords" type="text" name="newPostWithFiles.post.keywords">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
-                <div class="col-md-10">
-                  <textarea id="description" class="form-control required" rows="3" cols="5" name="newPostWithFiles.post.description"></textarea>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Anexar arquivo(s)<span class="required">*</span></label>
-                <div class="col-md-2">
-                  <input class="required" id="file" type="file" name="binarydata" accept="application/pdf" multiple>
-                </div>
-              </div>
-              <div class="form-actions">
-                @{if (ViewBag.DocumentOrManual == 'D')
-                  {
-                    <button class="btn btn-primary pull-right" id="submit-button" data-file-type="D" type="submit">Salvar</button>
                   }
-                  else
-                  {
-                    <button class="btn btn-primary pull-right" id="submit-button" data-file-type="M" type="submit">Salvar</button>
-                  }
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
+              <div class="col-md-10">
+                <input id="subject" class="form-control required" type="text" name="newPostWithFiles.post.subject">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label">Palavras chave</label>
+              <div class="col-md-10">
+                <input class="tags" id="keywords" type="text" name="newPostWithFiles.post.keywords">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
+              <div class="col-md-10">
+                <textarea id="description" class="form-control required" rows="3" cols="5" name="newPostWithFiles.post.description"></textarea>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label">Anexar arquivo(s)<span class="required">*</span></label>
+              <div class="col-md-2">
+                <input class="required" id="file" type="file" name="binarydata" accept="application/pdf" multiple>
+              </div>
+            </div>
+            <div class="form-actions">
+              @{if (ViewBag.DocumentOrManual == 'D')
+                {
+                  <button class="btn btn-primary pull-right" id="submit-button" data-file-type="D" type="submit">Salvar</button>
                 }
-                @await Component.InvokeAsync("BtnBackToList")
-              </div>
-            </form>
-          </div>
+                else
+                {
+                  <button class="btn btn-primary pull-right" id="submit-button" data-file-type="M" type="submit">Salvar</button>
+                }
+              }
+              @await Component.InvokeAsync("BtnBackToList")
+            </div>
+          </form>
         </div>
       </div>
-      <!-- /Horizontal Forms -->
     </div>
-    <!-- /Page Content -->
+    <!-- /Horizontal Forms -->
   </div>
-</body>
-
-</html>
+  <!-- /Page Content -->
+</div>
 
 <script type="text/javascript" src="~/js/new-document-manual.js"></script>
+<script type="text/javascript" src="~/js/custom.js"></script>

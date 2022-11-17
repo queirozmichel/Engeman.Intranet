@@ -37,6 +37,9 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult ListAll()
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+      ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.FilterGrid = Request.Query["filter"];
 
       return View();
@@ -45,10 +48,12 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult NewQuestion()
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
 
       if (permissions.CreatePost == true)
       {
+        ViewBag.IsAjaxCall = isAjaxCall;
         ViewBag.Departments = _departmentRepository.GetAllDepartments();
         return PartialView();
       }
@@ -76,16 +81,18 @@ namespace Engeman.Intranet.Controllers
 
       _postRepository.AddQuestion(newPost);
 
-      return View("NewQuestion");
+      return Json(1);
     }
 
     [HttpGet]
     public IActionResult NewDocument()
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
 
       if (permissions.CreatePost == true)
       {
+        ViewBag.IsAjaxCall = isAjaxCall;
         ViewBag.DocumentOrManual = 'D';
         ViewBag.Departments = _departmentRepository.GetAllDepartments();
         return PartialView("NewDocumentManual");
@@ -99,10 +106,12 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult NewManual()
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
 
       if (permissions.CreatePost == true)
       {
+        ViewBag.IsAjaxCall = isAjaxCall;
         ViewBag.DocumentOrManual = 'M';
         ViewBag.Departments = _departmentRepository.GetAllDepartments();
         return PartialView("NewDocumentManual");
@@ -152,7 +161,7 @@ namespace Engeman.Intranet.Controllers
       }
       _postRepository.AddPostWithFile(newPostWithFiles);
 
-      return View("NewDocumentManual");
+      return Json(1);
     }
 
     public IActionResult BackToList(string filter)
@@ -403,6 +412,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult QuestionDetails(int idPost)
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       var post = _postRepository.GetPostById(idPost);
       var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(postAuthor.DepartmentId);
@@ -442,8 +452,7 @@ namespace Engeman.Intranet.Controllers
       postDetails.AuthorCommentsMade = commentsCount; 
       postDetails.AuthorPhoto = postAuthor.Photo;
 
-
-
+      ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.PostDetails = postDetails;
 
       return PartialView();
@@ -452,6 +461,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult DocumentManualDetails(int idPost)
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       var post = _postRepository.GetPostById(idPost);
       var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
@@ -493,6 +503,7 @@ namespace Engeman.Intranet.Controllers
       postDetails.AuthorCommentsMade = commentsCount;
       postDetails.AuthorPhoto = postAuthor.Photo;
 
+      ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.postDetails = postDetails;
 
       return PartialView();

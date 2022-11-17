@@ -1,9 +1,10 @@
 ﻿$(window).on("load", function () {
-  //closeSpinner();
+  closeSpinner();
 });
 
 $(document).ready(function () {
   FormComponents.init();
+
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
@@ -15,7 +16,7 @@ $(document).ready(function () {
     offText: "Não",
     size: "normal",
     state: false,
-  }); 
+  });
 })
 
 function clearForm() {
@@ -27,9 +28,9 @@ function clearForm() {
 }
 
 $("#ask-form").on("submit", function (event) {
-  var filter = "?filter=allPosts";
   //ignora o submit padrão do formulário
   event.preventDefault();
+  var filter = "?filter=allPosts";
   if ($("#ask-form").valid()) {
     var formData = $("#ask-form").serialize();
     $.ajax({
@@ -38,6 +39,9 @@ $("#ask-form").on("submit", function (event) {
       async: true,
       url: "/posts/newquestion",
       data: formData,
+      beforeSend: function () {
+        startSpinner();
+      },
       success: function (response) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
@@ -47,11 +51,15 @@ $("#ask-form").on("submit", function (event) {
             type: "POST",
             url: "/posts/backtolist" + filter,
             success: function (response) {
-              $(".body-content").empty();
-              $(".body-content").html(response);
+              $("#render-body").empty();
+              $("#render-body").html(response);
+              window.history.pushState({}, '', "/posts/listall?filter=allPosts");
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");
+            },
+            complete: function () {
+              closeSpinner();
             }
           });
         }
@@ -84,8 +92,8 @@ $(".back-to-list-button").on("click", function () {
     type: "POST",
     url: "/posts/backtolist",
     success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
+      $("#render-body").empty();
+      $("#render-body").html(response);
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");

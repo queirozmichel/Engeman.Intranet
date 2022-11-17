@@ -1,4 +1,8 @@
-﻿$(document).ready(function () {
+﻿$(window).on("load", function () {
+  closeSpinner();
+});
+
+$(document).ready(function () {
   FormComponents.init();
 
   $("#tab_1_3").removeClass("active");
@@ -28,6 +32,9 @@ $("#comment-form").on("submit", function (event) {
       contentType: false,
       processData: false,
       data: formData,
+      beforeSend: function () {
+        startSpinner();
+      },
       success: function (response) {
         if (response == -1) {
           toastr.error("Formulário inválido", "Erro!");
@@ -37,13 +44,16 @@ $("#comment-form").on("submit", function (event) {
             type: "POST",
             url: "/posts/backtolist",
             success: function (response) {
-              $(".body-content").empty();
-              $(".body-content").html(response);
+              $("#render-body").empty();
+              $("#render-body").html(response);
               if ($("#wang-editor-script").length) $("#wang-editor-script").remove(); // remove o script do componente WangEditor par aque possa ser criado novamente na próxima chamada
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");
-            }
+            },
+            complete: function () {
+              closeSpinner();
+            },
           });
         }
       },
@@ -98,8 +108,8 @@ $(".edit-post-button").on("click", function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
     success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
+      $("#render-body").empty();
+      $("#render-body").html(response);
     }
   })
 })
@@ -115,17 +125,19 @@ $(".aprove-post-button").on("click", function () {
 })
 
 $(".btn-yes, .btn-no").on("click", function () {
-  var filter = "?filter=allPosts";
   var postId = $("#id-post").text();
   if ($(this).attr("id") == "delete-post") {
     deletePost(postId).then((response) => {
       $.ajax({
         type: "POST",
         dataType: "html",
-        url: "/posts/backtolist" + filter,
+        url: "/posts/backtolist" + window.location.search,
+        beforeSend: function () {
+          startSpinner();
+        },
         success: function (response) {
-          $(".body-content").empty();
-          $(".body-content").html(response);
+          $("#render-body").empty();
+          $("#render-body").html(response);
           $.ajax({
             type: "GET",
             url: "/posts/unrevisedlist",
@@ -144,6 +156,9 @@ $(".btn-yes, .btn-no").on("click", function () {
         },
         error: function () {
           toastr.error("Não foi possível voltar", "Erro!");
+        },
+        complete: function () {
+          closeSpinner();
         }
       });
     })

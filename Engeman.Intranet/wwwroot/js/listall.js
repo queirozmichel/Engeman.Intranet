@@ -178,7 +178,7 @@ $(document).ready(function () {
           postPermissions(userIdPost, idPost, postType, action);
           elementAux = element;
           idPostAux = idPost;
-        } else if (action == "aprove") {  
+        } else if (action == "aprove") {
           showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove", idPost);
         }
       })
@@ -271,12 +271,19 @@ function postDetails(idPost, postType) {
       data: { "idPost": idPost },
       dataType: "html",
       url: "/posts/questiondetails",
+      beforeSend: function () {
+        startSpinner();
+      },
       error: function () {
         toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
       },
       success: function (response) {
-        $(".body-content").empty();
-        $(".body-content").html(response);
+        $("#render-body").empty();
+        $("#render-body").html(response);
+        window.history.pushState({}, {}, this.url);
+      },
+      complete: function () {
+        closeSpinner();
       }
     })
   } else if (postType === 'F') {
@@ -285,12 +292,19 @@ function postDetails(idPost, postType) {
       data: { "idPost": idPost },
       dataType: "html",
       url: "/posts/documentmanualdetails",
+      beforeSend: function () {
+        startSpinner();
+      },
       error: function () {
         toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
       },
       success: function (response) {
-        $(".body-content").empty();
-        $(".body-content").html(response);
+        $("#render-body").empty();
+        $("#render-body").html(response);
+        window.history.pushState({}, {}, this.url);
+      },
+      complete: function () {
+        closeSpinner();
       }
     })
   }
@@ -302,12 +316,18 @@ function postEdit(idPost) {
     data: { "idPost": idPost },
     dataType: "html",
     url: "/posts/questionedit" + window.location.search, //assim é passado os parâmetros da url na chamada ajax "ViewBag.FilterGrid = Request.Query["filter"]"
+    beforeSend: function () {
+      startSpinner();
+    },
     error: function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
     success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
+      $("#render-body").empty();
+      $("#render-body").html(response);
+    },
+    complete: function () {
+      closeSpinner();
     }
   })
 }
@@ -318,12 +338,18 @@ function postFileEdit(idPost) {
     data: { "idPost": idPost },
     dataType: "html",
     url: "/posts/documentmanualedit",
+    beforeSend: function () {
+      startSpinner();
+    },
     error: function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
     success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
+      $("#render-body").empty();
+      $("#render-body").html(response);
+    },
+    complete: function () {
+      closeSpinner();
     }
   })
 }

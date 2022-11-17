@@ -4,6 +4,7 @@
 
 $(document).ready(function () {
   FormComponents.init();
+
   $("#multiselect-department").multiselect({
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
@@ -48,6 +49,9 @@ $("#document-manual-form").on("submit", function (event) {
       contentType: false,
       processData: false,
       data: formData,
+      beforeSend: function () {
+        startSpinner();
+      },
       success: function (response) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
@@ -56,12 +60,19 @@ $("#document-manual-form").on("submit", function (event) {
           $.ajax({
             type: "POST",
             url: "/posts/backtolist" + filter,
+            beforeSend: function () {
+              startSpinner();
+            },
             success: function (response) {
-              $(".body-content").empty();
-              $(".body-content").html(response);
+              $("#render-body").empty();
+              $("#render-body").html(response);
+              window.history.pushState({}, '', "/posts/listall?filter=allPosts");
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");
+            },
+            complete: function () {
+              closeSpinner();
             }
           });
         }
@@ -98,8 +109,8 @@ $(".back-to-list-button").on("click", function () {
     type: "POST",
     url: "/posts/backtolist",
     success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
+      $("#render-body").empty();
+      $("#render-body").html(response);
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");

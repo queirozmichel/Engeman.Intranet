@@ -3,7 +3,7 @@
 
   App.init(); // Init layout and core plugins
   Plugins.init(); // Init all plugins
-  FormComponents.init(); // Init all form-specific plugins
+  //FormComponents.init(); // Init all form-specific plugins
   toastrConfig();
 
 })
@@ -41,10 +41,13 @@ $("#new-question-btn, #new-document-btn, #new-manual-btn").on("click", function 
   $.ajax({
     type: "GET",
     url: url,
+    beforeSend: function () {
+      startSpinner();
+    },
     success: function (response) {
       if (response != false) {
-        $(".body-content").empty();
-        $(".body-content").html(response);
+        $("#render-body").empty();
+        $("#render-body").html(response);
         window.history.pushState({}, '', url);
       } else {
         showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem")
@@ -53,5 +56,8 @@ $("#new-question-btn, #new-document-btn, #new-manual-btn").on("click", function 
     error: function (response) {
       console.log(response);
     },
+    complete: function () {
+      closeSpinner();
+    }
   })
 })

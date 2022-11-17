@@ -2,127 +2,111 @@
 @{List<Department> departments = ViewBag.Departments; }
 @{List<int> restrictedDepartments = ViewBag.RestrictedDepartments;}
 
-<!DOCTYPE html>
-<html lang="pt-br">
+<link rel="stylesheet" href="~/css/questionedit.css" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  @*CSS*@
-  <link rel="stylesheet" href="~/css/questionedit.css" />
-  @*JavasScript*@
-  <script type="text/javascript" src="~/js/custom.js"></script>
-</head>
-
-<body>
-  <div id="container">
-    <!--=== Page Header ===-->
-    <div class="page-header">
-      <div class="page-title">
-        <h3>Editar Postagem</h3>
-        <span>Good morning, John!</span>
+<div class="page-header">
+  <div class="page-title">
+    <h3>Editar Postagem</h3>
+    <span>Good morning, John!</span>
+  </div>
+  <!-- Page Stats -->
+  <ul class="page-stats">
+    <li>
+      <div class="summary">
+        <span>New orders</span>
+        <h3>17,561</h3>
       </div>
-      <!-- Page Stats -->
-      <ul class="page-stats">
-        <li>
-          <div class="summary">
-            <span>New orders</span>
-            <h3>17,561</h3>
+      <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+      <!-- Use instead of sparkline e.g. this:
+      <div class="graph circular-chart" data-percent="73">73%</div>
+      -->
+    </li>
+    <li>
+      <div class="summary">
+        <span>My balance</span>
+        <h3>$21,561.21</h3>
+      </div>
+      <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+    </li>
+  </ul>
+  <!-- /Page Stats -->
+</div>
+<!-- /Page Header -->
+<!--=== Page Content ===-->
+<div class="row">
+  <!--=== Horizontal Forms ===-->
+  <div class="col-md-12">
+    <div class="widget box">
+      <div class="widget-header">
+        <h4><i class="icon-reorder"></i>Postagem</h4>
+      </div>
+      <div class="widget-content">
+        <form class="form-horizontal row-border" id="edit-question-form" method="post">
+          <div class="form-group">
+            <label class="col-md-2 control-label">Código da postagem</label>
+            <div class="col-md-1">
+              <input id="id-post" class="form-control" name="id" type="text" readonly value="@Model.Id" />
+            </div>
           </div>
-          <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-          <!-- Use instead of sparkline e.g. this:
-          <div class="graph circular-chart" data-percent="73">73%</div>
-          -->
-        </li>
-        <li>
-          <div class="summary">
-            <span>My balance</span>
-            <h3>$21,561.21</h3>
+          <div class="form-group">
+            <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
+            <div class="col-md-10">
+              @Html.CheckBox("Restricted", new { id = "restricted" })
+            </div>
           </div>
-          <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-        </li>
-      </ul>
-      <!-- /Page Stats -->
-    </div>
-    <!-- /Page Header -->
-    <!--=== Page Content ===-->
-    <div class="row">
-      <!--=== Horizontal Forms ===-->
-      <div class="col-md-12">
-        <div class="widget box">
-          <div class="widget-header">
-            <h4><i class="icon-reorder"></i>Postagem</h4>
-          </div>
-          <div class="widget-content">
-            <form class="form-horizontal row-border" id="edit-question-form" method="post">
-              <div class="form-group">
-                <label class="col-md-2 control-label">Código da postagem</label>
-                <div class="col-md-1">
-                  <input id="id-post" class="form-control" name="id" type="text" readonly value="@Model.Id" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
-                <div class="col-md-10">
-                  @Html.CheckBox("Restricted", new { id = "restricted" })
-                </div>
-              </div>
-              <div class="form-group departments-list">
-                <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
-                <div class="col-md-10">
-                  <select class="required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
-                    @{for (int i = 0; i < departments.Count; i++)
+          <div class="form-group departments-list">
+            <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
+            <div class="col-md-10">
+              <select class="required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
+                @{for (int i = 0; i < departments.Count; i++)
+                  {
+                    if (restrictedDepartments != null)
+                    {
+                      if (restrictedDepartments.Exists(x => x.Equals(departments[i].Id)))
                       {
-                        if (restrictedDepartments != null)
-                        {
-                          if (restrictedDepartments.Exists(x => x.Equals(departments[i].Id)))
-                          {
-                            <option selected="selected" value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
-                          }
-                          else
-                          {
-                            <option value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
-                          }
-                        }
-                        else
-                        {
-                          <option value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
-                        }
+                        <option selected="selected" value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
+                      }
+                      else
+                      {
+                        <option value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
                       }
                     }
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
-                <div class="col-md-10">
-                  <input class="form-control required" id="subject" type="text" name="subject" value="@Model.Subject">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Palavras chave</label>
-                <div class="col-md-10">
-                  <input class="tags" id="keywords" type="text" name="keywords" value="@Model.Keywords">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
-                <div class="col-md-10">
-                  <textarea class="form-control required" id="description" rows="3" cols="5" name="description">@Model.Description</textarea>
-                </div>
-              </div>
-              <div class="form-actions">
-                <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-                @await Component.InvokeAsync("BtnBackToList") 
-              </div>
-            </form>
+                    else
+                    {
+                      <option value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
+                    }
+                  }
+                }
+              </select>
+            </div>
           </div>
-        </div>
+          <div class="form-group">
+            <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
+            <div class="col-md-10">
+              <input class="form-control required" id="subject" type="text" name="subject" value="@Model.Subject">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2 control-label">Palavras chave</label>
+            <div class="col-md-10">
+              <input class="tags" id="keywords" type="text" name="keywords" value="@Model.Keywords">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
+            <div class="col-md-10">
+              <textarea class="form-control required" id="description" rows="3" cols="5" name="description">@Model.Description</textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
+            @await Component.InvokeAsync("BtnBackToList")
+          </div>
+        </form>
       </div>
     </div>
   </div>
-</body>
-
-</html>
+</div>
 
 <script type="text/javascript" src="~/js/questionedit.js"></script>
+<script type="text/javascript" src="~/js/custom.js"></script>

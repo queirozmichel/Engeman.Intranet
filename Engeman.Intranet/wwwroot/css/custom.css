@@ -1,4 +1,8 @@
-﻿dt, dd {
+﻿body{
+  overflow: scroll;
+}
+
+dt, dd {
   padding: 1%;
 }
 

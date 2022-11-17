@@ -42,18 +42,24 @@ $("#document-manual-edit-form").on("submit", function (event) {
       contentType: false,
       processData: false,
       data: formData,
+      beforeSend: function () {
+        startSpinner();
+      },
       success: function (response) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
-          $(".body-content").empty();
-          $(".body-content").html(response);
+          $("#render-body").empty();
+          $("#render-body").html(response);
           toastr.success("A postagem foi salva", "Sucesso!");
-          //window.history.pushState({}, '', '/posts/listall');
+          window.history.pushState({}, '', window.location.search);
         }
       },
       error: function (response) {
         toastr.error("O arquivo não foi salvo", "Erro!");
+      },
+      complete: function () {
+        closeSpinner();
       }
     });
   }

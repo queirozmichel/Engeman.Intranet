@@ -5,13 +5,19 @@
     type: "POST",
     url: "/posts/backtolist" + window.location.search,
     data: { "postId": postId },
+    beforeSend: function () {
+      startSpinner();
+    },
     success: function (response) {
-      $(".body-content").empty();
-      $(".body-content").html(response);
+      $("#render-body").empty();
+      $("#render-body").html(response);
       if ($("#wang-editor-script").length) $("#wang-editor-script").remove();
     },
     error: function () {
       toastr.error("Não foi possível voltar", "Erro!");
+    },
+    complete: function () {
+      closeSpinner();
     }
   });
 })

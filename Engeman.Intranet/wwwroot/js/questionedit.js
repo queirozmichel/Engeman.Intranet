@@ -29,18 +29,24 @@ $("#edit-question-form").on("submit", function (event) {
       async: true,
       url: "/posts/updatequestion" + window.location.search,
       data: formData,
+      beforeSend: function () {
+        startSpinner();
+      },
       success: function (response) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
           toastr.success("A pergunta foi atualizada", "Sucesso!");
-          $(".body-content").empty();
-          $(".body-content").html(response);
-          //window.history.pushState({}, '', '/posts/listall');
+          $("#render-body").empty();
+          $("#render-body").html(response);
+          window.history.pushState({}, '', window.location.search);
         }
       },
       error: function () {
         toastr.error("A pergunta não foi atualizada", "Erro!");
+      },
+      complete: function () {
+        closeSpinner();
       }
     });
   }
