@@ -11,3 +11,7 @@
 .files-qty {
   display: none;
 }
+
+.wang-editor-toolbar {
+  border-bottom: 1px solid #ccc;
+}

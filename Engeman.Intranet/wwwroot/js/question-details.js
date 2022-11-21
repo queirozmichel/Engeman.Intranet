@@ -28,6 +28,7 @@ $("#comment-form").on("submit", function (event) {
     $.ajax({
       type: "POST",
       url: "/posts/newcomment",
+      dataType: "html",
       contentType: false,
       processData: false,
       data: formData,

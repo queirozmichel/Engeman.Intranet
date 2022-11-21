@@ -125,3 +125,71 @@
 .editor-content-view input[type="checkbox"] {
   margin-right: 5px;
 }
+
+.post-info-div {
+  display: flex;
+}
+
+.post-info {
+  opacity: 0.7
+}
+
+#id-post {
+  margin-right: 10px
+}
+
+.keywords {
+  margin-top: 50px;
+}
+
+span.keywords {
+  border: 1px solid #a5d24a;
+  border-radius: 3px;
+  padding: 4px;
+  background: #cde69c;
+  color: #638421;
+  margin: 5px 5px 5px 0;
+  line-height: 23px;
+}
+
+.buttons {
+  margin-top: 50px;
+}
+
+.fa-pencil {
+  margin-right: 2px;
+  color: blue;
+}
+
+.fa-trash-o {
+  margin-right: 2px;
+  color: red;
+}
+
+.fa-check {
+  margin-right: 2px;
+  color: green;
+}
+
+.fa-circle-arrow-left {
+  margin-right: 2px;
+}
+
+.card {
+  padding: 10px;
+  background: #e1ecf4;
+  border-radius: 10px;
+  margin-top: 50px;
+}
+
+  .card span {
+    opacity: 0.7
+  }
+
+figcaption span {
+  margin-right: 5px;
+}
+
+.fa-comment, .fa-pen-to-square {
+  margin-right: 3px;
+}

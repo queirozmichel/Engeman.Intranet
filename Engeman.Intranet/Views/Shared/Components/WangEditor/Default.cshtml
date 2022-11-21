@@ -4,28 +4,30 @@
 
 @model string
 
-<div class="col-md-12 wang-editor" id="@Model">
-  <div id="@Model-toolbar" class="wang-editor-toolbar" style="border-bottom: 1px solid #ccc;"></div>
-  <div id="@Model-editor" class="wang-editor-editor"></div>
-  <input id="@Model-description" class="form-control wang-editor-description" name="description" type="hidden">
-</div>
+  <link rel="stylesheet" href="~/css/components/wang-editor.css" />
 
-<script>
-  if (!$("#wang-editor-script").length) {
-    function addScript(attribute, text, callback) {
-      var s = document.createElement('script');
-      for (var attr in attribute) {
-        s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
+  <div class="col-md-12 wang-editor" id="@Model">
+    <div id="@Model-toolbar" class="wang-editor-toolbar"></div>
+    <div id="@Model-editor" class="wang-editor-editor"></div>
+    <input id="@Model-description" class="form-control wang-editor-description" name="description" type="hidden">
+  </div>
+
+  <script>
+    if (!$("#wang-editor-script").length) {
+      function addScript(attribute, text, callback) {
+        var s = document.createElement('script');
+        for (var attr in attribute) {
+          s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
+        }
+        s.innerHTML = text;
+        s.onload = callback;
+        document.body.appendChild(s);
       }
-      s.innerHTML = text;
-      s.onload = callback;
-      document.body.appendChild(s);
+      addScript({
+        id: 'wang-editor-script',
+        src: '../js/components/wang-editor.js',
+        type: 'text/javascript',
+        async: null
+      });
     }
-    addScript({
-      id: 'wang-editor-script',
-      src: '../js/components/wang-editor.js',
-      type: 'text/javascript',
-      async: null
-    });
-  }
-</script>
+  </script>

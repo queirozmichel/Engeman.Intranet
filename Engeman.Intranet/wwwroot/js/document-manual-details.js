@@ -27,8 +27,8 @@ $("#comment-form").on("submit", function (event) {
     //contentType e processData são obrigatórios
     $.ajax({
       type: "POST",
-      dataType: "html",
       url: "/posts/newcomment",
+      dataType: "html",
       contentType: false,
       processData: false,
       data: formData,
@@ -40,6 +40,22 @@ $("#comment-form").on("submit", function (event) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
           toastr.success("O comentário foi salvo", "Sucesso!");
+          $.ajax({
+            type: "GET",
+            dataType: "html",
+            url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
+            success: function (response) {
+              $("#render-body").empty();
+              $("#render-body").html(response);
+              if ($("#wang-editor-script").length) $("#wang-editor-script").remove(); // remove o script do componente WangEditor par aque possa ser criado novamente na próxima chamada
+            },
+            error: function () {
+              toastr.error("Não foi possível voltar", "Erro!");
+            },
+            complete: function () {
+              closeSpinner();
+            },
+          });
         }
       },
       error: function (response) {

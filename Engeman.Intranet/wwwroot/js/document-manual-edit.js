@@ -48,7 +48,7 @@ $("#document-manual-edit-form").on("submit", function (event) {
     var formData = new FormData(this);
     $.ajax({
       type: "POST",
-      url: "/posts/documentmanualupdate" + window.location.search,
+      url: "/posts/documentmanualupdate",
       contentType: false,
       processData: false,
       data: formData,
@@ -58,11 +58,24 @@ $("#document-manual-edit-form").on("submit", function (event) {
       success: function (response) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
-        } else {
-          $("#render-body").empty();
-          $("#render-body").html(response);
-          toastr.success("A postagem foi salva", "Sucesso!");
-          window.history.pushState({}, '', window.location.search);
+        } else {          
+          $.ajax({
+            type: "GET",
+            dataType: "html",
+            url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
+            success: function (response) {
+              $("#render-body").empty();
+              $("#render-body").html(response);
+              window.history.pushState({}, '', "/posts/listall?filter=" + sessionStorage.getItem("filterGrid"));
+            },
+            error: function () {
+              toastr.error("Não foi possível voltar", "Erro!");
+            },
+            complete: function () {
+              closeSpinner();
+              toastr.success("A postagem foi atualizada", "Sucesso!");
+            },
+          });
         }
       },
       error: function (response) {

@@ -53,20 +53,20 @@
         <div class="tab-pane active" id="tab_1_1">
           <div class="col-md-12">
             <h2>@ViewBag.PostDetails.Subject</h2>
-            <div style="display:flex">
+            <div class="post-info-div">
               <div>
-                <span style="opacity: 0.7">Identificador&nbsp</span>
-                <span id="id-post">@ViewBag.PostDetails.Id &nbsp &nbsp</span>
+                <span class="post-info">Identificador</span>
+                <span id="id-post">@ViewBag.PostDetails.Id</span>
               </div>
               <div>
                 @if (ViewBag.PostDetails.PostedDaysAgo == 0)
                 {
-                  <span style="opacity: 0.7">Postada&nbsp</span>
+                  <span class="post-info">Postada</span>
                   <span>hoje</span>
                 }
                 else
                 {
-                  <span style="opacity: 0.7">Postada&nbsp</span>
+                  <span class="post-info">Postada</span>
                   <span>@ViewBag.PostDetails.PostedDaysAgo dia(s) atrás</span>
                 }
               </div>
@@ -77,7 +77,7 @@
             </div>
             @if (ViewBag.PostDetails.Files.Count > 0)
             {
-              <div class="col-md-12" style="margin-top: 10px;">
+              <div class="col-md-12 file-post">
                 @for (int i = 0; i < ViewBag.PostDetails.Files.Count; i++)
                 {
                   <span class="file-post-list">@(i+1) -  <a href="@Url.Action("showfile", "posts", new { idPost = ViewBag.PostDetails.Id, file = i })" target="_blank">@ViewBag.PostDetails.Files[i].Name</a></span><br />
@@ -87,27 +87,27 @@
 
             @if (@ViewBag.PostDetails.Keywords != null)
             {
-              <div class="col-md-12" style="margin-top: 50px;">
+              <div class="col-md-12 keywords">
                 @for (int i = 0; i < ViewBag.PostDetails.Keywords.Length; i++)
                 {
-                  <span style="border: 1px solid #a5d24a; border-radius: 3px; padding: 4px; background: #cde69c; color: #638421; margin: 5px 5px 5px 0; line-height: 23px;">@ViewBag.PostDetails.Keywords[i]</span>
+                  <span class="keywords">@ViewBag.PostDetails.Keywords[i]</span>
                 }
               </div>
             }
-            <div class="col-md-9" style="margin-top: 50px;">
+            <div class="col-md-9 buttons">
               @if (ViewBag.PostDetails.AuthorId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
               {
-                <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil" style="margin-right: 2px; color: blue;"></i>Editar</button>
-                <button title="Excluir a postagem" class="btn btn-xs delete-post-button"><i class="fa fa-trash-o" style="margin-right: 2px; color: red;"></i>Excluir</button>
+                <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil"></i>Editar</button>
+                <button title="Excluir a postagem" class="btn btn-xs delete-post-button"><i class="fa fa-trash-o"></i>Excluir</button>
                 @if (ViewBag.PostDetails.Revised == false && Context.Session.GetInt32("_Moderator") == 1)
                 {
-                  <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check" style="margin-right: 2px; color: green;"></i>Aprovar</button>
+                  <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check"></i>Aprovar</button>
                 }
               }
-            <button title="Voltar para a listagem" class="btn btn-xs back-button"><i class="fa-solid fa-circle-arrow-left" style="margin-right: 2px;"></i>Voltar para as postagens</button>
+              <button title="Voltar para as postagens" class="btn btn-xs back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar para as postagens</button>
             </div>
-            <div class="col-md-3" style="padding: 10px; background: #e1ecf4; border-radius: 10px; margin-top: 50px;">
-              <span style="opacity: 0.7">postada&nbsp</span>
+            <div class="col-md-3 card">
+              <span>postada</span>
               <span>@ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[0] às @ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[22]</span>
               <figure class="fir-image-figure">
                 <a class="fir-imageover">
@@ -119,8 +119,8 @@
                 <figcaption>
                   <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorUsername</div>
                   <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorDepartment</div>
-                  <span title="Postagens realizadas" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-comment"></i>@ViewBag.PostDetails.AuthorPostsMade</span>
-                  <span title="Comentários realizados" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-pen-to-square"></i>@ViewBag.PostDetails.AuthorCommentsMade</span>
+                  <span title="Postagens realizadas"><i class="fa-regular fa-comment"></i>@ViewBag.PostDetails.AuthorPostsMade</span>
+                  <span title="Comentários realizados"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.PostDetails.AuthorCommentsMade</span>
                 </figcaption>
               </figure>
             </div>

@@ -4,6 +4,8 @@
   Layout = null;
 }
 
+<link rel="stylesheet" href="~/css/components/unrevised-list.css"/>
+
 <li class="all-posts">
   <a href="@Url.Action("listall","posts", new {filter="allPosts" })">
     <i class="icon-angle-right"></i>Listar
@@ -14,7 +16,7 @@
   <li class="unrevised-posts">
     <a href="@Url.Action("listall","posts", new {filter="unrevisedPosts" })">
       <i class="icon-angle-right"></i>Postagens não revisadas
-      <span style="background: salmon;" class="badge pull-right">
+      <span class="badge pull-right">
         @ViewBag.UnrevisedPosts
       </span>
     </a>
@@ -25,7 +27,7 @@
   <li class="unrevised-comments">
     <a href="@Url.Action("listall","posts", new {filter="unrevisedComments" })">
       <i class="icon-angle-right"></i>Comentários não revisados
-      <span style="background: salmon;" class="badge pull-right">
+      <span class="badge pull-right">
         @ViewBag.UnrevisedComments
       </span>
     </a>

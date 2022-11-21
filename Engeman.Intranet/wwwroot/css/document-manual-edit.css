@@ -1,4 +1,6 @@
-﻿.checkbox{
+﻿@import "questionedit.css";
+
+.checkbox{
   padding:0;
 }
 .icon-remove-circle {
@@ -14,8 +16,4 @@
 p{
   margin: 5px 0 0 0;
   color: darkred;
-}
-
-.departments-list {
-  display: none;
 }
