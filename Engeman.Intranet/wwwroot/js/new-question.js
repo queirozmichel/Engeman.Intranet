@@ -48,8 +48,9 @@ $("#ask-form").on("submit", function (event) {
         } else {
           toastr.success("A pergunta foi salva", "Sucesso!");
           $.ajax({
-            type: "POST",
-            url: "/posts/backtolist" + filter,
+            type: "GET",
+            url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
+            dataType: "html",
             success: function (response) {
               $("#render-body").empty();
               $("#render-body").html(response);
@@ -87,16 +88,26 @@ $("#multiselect-department").on("change", function () {
   $(this).valid();
 })
 
-$(".back-to-list-button").on("click", function () {
+$(".back-button").on("click", function (event) {
+  event.preventDefault();
+  var filter = "?filter=allPosts";
   $.ajax({
-    type: "POST",
-    url: "/posts/backtolist",
+    type: "GET",
+    url: "/posts/listall" + filter,
+    dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
     },
     error: function () {
-      toastr.error("Não foi possível voltar", "Erro!");
-    }
-  });
+      toastr.error("Não foi possível conluir a ação", "Erro!");
+    },
+    complete: function () {
+      closeSpinner();
+      window.history.pushState({}, {}, "/posts/listall" + filter);
+    },
+  })
 })

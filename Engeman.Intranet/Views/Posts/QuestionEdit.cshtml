@@ -1,6 +1,17 @@
 ﻿@model Engeman.Intranet.Models.Post;
 @{List<Department> departments = ViewBag.Departments; }
 @{List<int> restrictedDepartments = ViewBag.RestrictedDepartments;}
+@{string layout = null;}
+
+@if (ViewBag.IsAjaxCall == false)
+{
+  layout = "~/Views/Shared/_Layout.cshtml";
+  <script>startSpinner();</script>
+}
+
+@{
+  Layout = layout;
+}
 
 <link rel="stylesheet" href="~/css/questionedit.css" />
 
@@ -99,8 +110,8 @@
             </div>
           </div>
           <div class="form-actions">
+            <button class="btn btn pull-left back-button"><i class="fa-solid fa-circle-arrow-left" style="margin-right: 4px;"></i>Voltar para as postagens</button>
             <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-            @await Component.InvokeAsync("BtnBackToList")
           </div>
         </form>
       </div>
@@ -110,3 +121,7 @@
 
 <script type="text/javascript" src="~/js/questionedit.js"></script>
 <script type="text/javascript" src="~/js/custom.js"></script>
+@if (ViewBag.IsAjaxCall == false)
+{
+  <script type="text/javascript" src="~/js/listall.js"></script>
+}

@@ -1,4 +1,8 @@
-﻿$(document).ready(function () {
+﻿$(window).on("load", function () {
+  closeSpinner();
+});
+
+$(document).ready(function () {
   FormComponents.init(); // Init all form-specific plugins
   $(document).tooltip();
   countFiles();
@@ -16,6 +20,12 @@
 
   if ($(".bootstrap-switch-on").length) {
     $(".departments-list").css("display", "block");
+  }
+
+  if (sessionStorage.getItem("editAfterDetails") != null) {
+    $(".back-button").contents().filter(function () {
+      return this.nodeType == Node.TEXT_NODE;
+    })[0].nodeValue = "Voltar para os detalhes";
   }
 })
 
@@ -93,3 +103,31 @@ $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
     $(".departments-list").css("display", "none");
   }
 });
+
+$(".back-button").on("click", function (event) {
+  event.preventDefault();
+  if (sessionStorage.getItem("editAfterDetails") != null) {
+    postDetails(sessionStorage.getItem("postId"), sessionStorage.getItem("postType"));
+  } else {
+    filter = "?filter=" + sessionStorage.getItem("filterGrid");
+    $.ajax({
+      type: "GET",
+      url: "/posts/listall" + filter,
+      dataType: "html",
+      beforeSend: function () {
+        startSpinner();
+      },
+      success: function (response) {
+        $("#render-body").empty();
+        $("#render-body").html(response);
+      },
+      error: function () {
+        toastr.error("Não foi possível conluir a ação", "Erro!");
+      },
+      complete: function () {
+        closeSpinner();
+        window.history.pushState({}, {}, "/posts/listall" + filter);
+      },
+    })
+  }
+})

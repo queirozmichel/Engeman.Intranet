@@ -160,6 +160,8 @@ $(document).ready(function () {
 
   //Após carregar o grid
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
+    sessionStorage.setItem("filterGrid", $("#post-grid").attr("data-filter-grid"));
+    sessionStorage.removeItem("editAfterDetails");
     $("#post-grid").tooltip();
     dropdownHideItens();
     postGrid.find("button.btn").each(function (index, element) {
@@ -171,6 +173,7 @@ $(document).ready(function () {
       actionButtons.on("click", function () {
         if (action == "details") {
           sessionStorage.setItem("postId", idPost);
+          sessionStorage.setItem("postType", postType);
           postDetails(idPost, postType);
         } else if (action == "edit") {
           postPermissions(userIdPost, idPost, postType, action);
@@ -277,7 +280,7 @@ function postDetails(idPost, postType) {
       error: function () {
         toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
       },
-      success: function (response) {
+      success: function (response) { 
         $("#render-body").empty();
         $("#render-body").html(response);
         window.history.pushState({}, {}, this.url);
@@ -315,7 +318,7 @@ function postEdit(idPost) {
     type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
-    url: "/posts/questionedit" + window.location.search, //assim é passado os parâmetros da url na chamada ajax "ViewBag.FilterGrid = Request.Query["filter"]"
+    url: "/posts/questionedit",
     beforeSend: function () {
       startSpinner();
     },
@@ -325,6 +328,7 @@ function postEdit(idPost) {
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
+      window.history.pushState({}, {}, this.url);
     },
     complete: function () {
       closeSpinner();
@@ -347,6 +351,7 @@ function postFileEdit(idPost) {
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
+      window.history.pushState({}, {}, this.url);
     },
     complete: function () {
       closeSpinner();

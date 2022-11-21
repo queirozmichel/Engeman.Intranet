@@ -104,7 +104,7 @@
                   <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check" style="margin-right: 2px; color: green;"></i>Aprovar</button>
                 }
               }
-              <button title="Voltar para a listagem" class="btn btn-xs back-to-list-button"><i class="fa-solid fa-circle-arrow-left" style="margin-right: 2px;"></i>Voltar</button>
+            <button title="Voltar para a listagem" class="btn btn-xs back-button"><i class="fa-solid fa-circle-arrow-left" style="margin-right: 2px;"></i>Voltar para as postagens</button>
             </div>
             <div class="col-md-3" style="padding: 10px; background: #e1ecf4; border-radius: 10px; margin-top: 50px;">
               <span style="opacity: 0.7">postada&nbsp</span>
@@ -157,7 +157,6 @@
                   </div>
                   <div class="form-actions">
                     <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
-                    @await Component.InvokeAsync("BtnBackToList")
                   </div>
                 </form>
               </div>

@@ -42,7 +42,7 @@ namespace Engeman.Intranet.Controllers
       ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.FilterGrid = Request.Query["filter"];
 
-      return View();
+      return PartialView();
     }
 
     [HttpGet]
@@ -164,13 +164,6 @@ namespace Engeman.Intranet.Controllers
       return Json(1);
     }
 
-    public IActionResult BackToList(string filter)
-    {
-      ViewBag.FilterGrid = Request.Query["filter"];
-
-      return PartialView("ListAll");
-    }
-
     public IQueryable<PostDto> FilterPosts(string filterGrid, string filterHeader)
     {
       var user = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
@@ -278,9 +271,11 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult QuestionEdit(int idPost)
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       List<int> restrictedDepartments;
       var post = _postRepository.GetPostById(idPost);
       var departments = _departmentRepository.GetAllDepartments();
+      ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.RestrictedDepartments = null;
       ViewBag.Departments = departments;
       if (post.Restricted == true)
@@ -295,10 +290,12 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult DocumentManualEdit(int idPost)
     {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       PostFileViewModel postFileViewModel = new PostFileViewModel();
       List<int> restrictedDepartments;
       var post = _postRepository.GetPostById(idPost);
       var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
+      ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.Departments = _departmentRepository.GetAllDepartments();
       ViewBag.RestrictedDepartments = null;
       postFileViewModel.Post = post;

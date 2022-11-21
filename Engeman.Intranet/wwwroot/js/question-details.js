@@ -17,8 +17,6 @@ $(document).ready(function () {
   });
 })
 
-closeSpinner();
-
 $("#comment-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
   event.preventDefault();
@@ -42,9 +40,9 @@ $("#comment-form").on("submit", function (event) {
         } else {
           toastr.success("O comentário foi salvo", "Sucesso!");
           $.ajax({
-            type: "POST",
+            type: "GET",
             dataType: "html",
-            url: "/posts/backtolist" + window.location.search,
+            url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
             success: function (response) {
               $("#render-body").empty();
               $("#render-body").html(response);
@@ -100,18 +98,20 @@ $("#post-tab").on("click", function () {
 })
 
 $(".edit-post-button").on("click", function () {
+  sessionStorage.setItem("editAfterDetails", "");
   var idPost = $("#id-post").text();
   $.ajax({
     type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
-    url: "/posts/questionedit" + window.location.search, //assim é passado os parâmetros da url na chamada ajax "ViewBag.FilterGrid = Request.Query["filter"]"
+    url: "/posts/questionedit",
     error: function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
+      window.history.pushState({}, {}, this.url);
     }
   })
 })
@@ -131,15 +131,16 @@ $(".btn-yes, .btn-no").on("click", function () {
   if ($(this).attr("id") == "delete-post") {
     deletePost(postId).then((response) => {
       $.ajax({
-        type: "POST",
+        type: "GET",
         dataType: "html",        
-        url: "/posts/backtolist" + window.location.search,
+        url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
         beforeSend: function () {
           startSpinner();
         },
         success: function (response) {
           $("#render-body").empty();
           $("#render-body").html(response);
+          window.history.pushState({}, '', "/posts/listall?filter=" + sessionStorage.getItem("filterGrid"));
           $.ajax({
             type: "GET", 
             url: "/posts/unrevisedlist",
@@ -222,3 +223,27 @@ function aprovePost(idPost) {
     }
   })
 }
+
+$(".back-button").on("click", function (event) {
+  event.preventDefault();
+  filter = "?filter=" + sessionStorage.getItem("filterGrid");
+  $.ajax({
+    type: "GET",
+    url: "/posts/listall" + filter,
+    dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+    },
+    error: function () {
+      toastr.error("Não foi possível conluir a ação", "Erro!");
+    },
+    complete: function () {
+      closeSpinner();
+      window.history.pushState({}, {}, "/posts/listall" + filter);
+    },
+  })
+})

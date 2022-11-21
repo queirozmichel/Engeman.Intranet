@@ -58,8 +58,9 @@ $("#document-manual-form").on("submit", function (event) {
         } else {
           toastr.success("O documento/manual foi salvo", "Sucesso!");
           $.ajax({
-            type: "POST",
-            url: "/posts/backtolist" + filter,
+            type: "GET",
+            url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
+            dataType: "html",
             beforeSend: function () {
               startSpinner();
             },
@@ -104,16 +105,26 @@ $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
   }
 });
 
-$(".back-to-list-button").on("click", function () {
+$(".back-button").on("click", function (event) {
+  event.preventDefault();
+  var filter = "?filter=allPosts";
   $.ajax({
-    type: "POST",
-    url: "/posts/backtolist",
+    type: "GET",
+    url: "/posts/listall" + filter,
+    dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
     },
     error: function () {
-      toastr.error("Não foi possível voltar", "Erro!");
-    }
-  });
+      toastr.error("Não foi possível conluir a ação", "Erro!");
+    },
+    complete: function () {
+      closeSpinner();
+      window.history.pushState({}, {}, "/posts/listall" + filter);
+    },
+  })
 })
