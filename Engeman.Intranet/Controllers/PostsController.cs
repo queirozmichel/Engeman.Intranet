@@ -168,12 +168,26 @@ namespace Engeman.Intranet.Controllers
     {
       var user = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
       IQueryable<PostDto> posts = _postRepository.GetPostsByRestriction(user).AsQueryable();
+      List<PostComment> comments = new List<PostComment>();
+
+      foreach (var post in posts)
+      {
+        comments = _postCommentRepository.GetPostCommentsByPostId(post.Id);
+        for (int i = 0; i < comments.Count; i++)
+        {
+          if (comments[i].Revised == false)
+          {
+            post.HasUnrevisedComments = true;
+            break;
+          }
+        }
+      }
 
       if (filterGrid == "allPosts")
       {
         if (user.Moderator == true)
         {
-          posts = posts.Where("revised == (@0)", true);
+          posts = posts.Where("revised == (@0) && HasUnrevisedComments == (@1) ", true, false);
         }
       }
       else if (filterGrid == "unrevisedPosts")
@@ -428,7 +442,7 @@ namespace Engeman.Intranet.Controllers
       else
       {
         keywords = post.Keywords.Split(';');
-      }      
+      }
       postDetails.Keywords = keywords;
       postDetails.Revised = post.Revised;
       postDetails.ChangeDate = post.ChangeDate;
@@ -440,13 +454,13 @@ namespace Engeman.Intranet.Controllers
         if (aux > now)
         {
           postDetails.PostedDaysAgo = -1;
-        }        
+        }
       }
       postDetails.AuthorId = postAuthor.Id;
       postDetails.AuthorUsername = postAuthor.Name;
       postDetails.AuthorDepartment = department.Description;
-      postDetails.AuthorPostsMade = postsCount; 
-      postDetails.AuthorCommentsMade = commentsCount; 
+      postDetails.AuthorPostsMade = postsCount;
+      postDetails.AuthorCommentsMade = commentsCount;
       postDetails.AuthorPhoto = postAuthor.Photo;
 
       ViewBag.IsAjaxCall = isAjaxCall;

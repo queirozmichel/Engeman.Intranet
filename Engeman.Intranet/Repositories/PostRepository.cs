@@ -380,6 +380,7 @@ namespace Engeman.Intranet.Repositories
           postDto.DepartmentDescription = result.Rows[i]["Department"].ToString();
           postDto.UserAccountName = result.Rows[i]["Name"].ToString();
           postDto.FileType = result.Rows[i]["File_Type"].ToString();
+          postDto.HasUnrevisedComments = true;
 
           posts.Add(postDto);
         }

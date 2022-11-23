@@ -80,10 +80,13 @@ $(document).ready(function () {
     },
     formatters: {
       //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
-      "id": function (column, row) {
+      id: function (column, row) {
         return row.id
       },
-      "postType": function (column, row) {
+      postType: function (column, row) {
+        if ((row.revised == false || row.hasUnrevisedComments == true) && (row.userAccountId == Cookies.get('_UserId') || isModerator == true) ) {
+          return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
+        }
         if (row.revised == true) {
           if (row.postType === "F") {
             if (row.fileType === "D") {
@@ -92,28 +95,26 @@ $(document).ready(function () {
               return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
             }
           } else if (row.postType === "Q") {
-            return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>"
+            return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>";
           }
-        } else {
-          return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
         }
       },
-      "userAccountName": function (column, row) {
+      userAccountName: function (column, row) {
         return row.userAccountName;
       },
-      "departmentDescription": function (column, row) {
+      departmentDescription: function (column, row) {
         return row.departmentDescription;
       },
-      "subject": function (column, row) {
+      subject: function (column, row) {
         return "<span title=\"" + row.subject + "\">" + row.subject + "</span>";
       },
-      "cleanDescription": function (column, row) {
+      cleanDescription: function (column, row) {
         return "<span title=\"" + row.cleanDescription + "\">" + row.cleanDescription + "</span>";
       },
-      "changeDate": function (column, row) {
+      changeDate: function (column, row) {
         return row.changeDate;
       },
-      "action": function (column, row) {
+      action: function (column, row) {
         var buttons;
         var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> ";;
         var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
@@ -280,7 +281,7 @@ function postDetails(idPost, postType) {
       error: function () {
         toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
       },
-      success: function (response) { 
+      success: function (response) {
         $("#render-body").empty();
         $("#render-body").html(response);
         window.history.pushState({}, {}, this.url);

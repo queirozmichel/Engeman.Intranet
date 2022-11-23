@@ -67,6 +67,7 @@ namespace Engeman.Intranet.Repositories
             postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
             postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
             postComment.PostId = postId;
+            postComment.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
             postComment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
             postComments.Add(postComment);
           }

@@ -17,5 +17,6 @@
     public string ChangeDate { get; set; }
     public char PostType { get; set; }
     public string FileType { get; set; }
+    public bool HasUnrevisedComments { get; set; }
   }
 }
