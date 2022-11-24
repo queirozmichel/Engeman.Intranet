@@ -76,6 +76,7 @@ namespace Engeman.Intranet.Controllers
         }
       }
     }
+
     public async Task<IActionResult> Logout()
     {
       await HttpContext.SignOutAsync("CookieAuthentication");

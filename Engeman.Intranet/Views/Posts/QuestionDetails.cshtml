@@ -55,7 +55,7 @@
             <h2>@ViewBag.PostDetails.Subject</h2>
             <div class="post-info-div">
               <div>
-                <span class="post-info" >Identificador</span>
+                <span class="post-info">Identificador</span>
                 <span id="id-post">@ViewBag.PostDetails.Id</span>
               </div>
               <div>
@@ -89,7 +89,7 @@
                 }
               </div>
             }
-            <div class="col-md-9 buttons">
+            <div class="col-md-10 buttons">
               @if (ViewBag.PostDetails.AuthorId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
               {
                 <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil"></i>Editar</button>
@@ -101,7 +101,7 @@
               }
               <button title="Voltar para as postagens" class="btn btn-xs back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar</button>
             </div>
-            <div class="col-md-3 card">
+            <div class="col-md-2 card">
               <span>postada</span>
               <span>@ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[0] às @ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[22]</span>
               <figure class="fir-image-figure">
@@ -118,6 +118,13 @@
                   <span title="Comentários realizados"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.PostDetails.AuthorCommentsMade</span>
                 </figcaption>
               </figure>
+            </div>
+            <div class="status-post align-center">
+              @if (ViewBag.PostDetails.Revised == false && (ViewBag.Moderator == 1 || ViewBag.UserId == ViewBag.PostDetails.AuthorId))
+              {
+                <i id="blinked-exclamation" class="fa-solid fa-triangle-exclamation"></i>
+                <span>Aguardando Revisão</span>
+              }
             </div>
           </div>
           <div class="col-md-12" id="comment-list">

@@ -1,23 +1,10 @@
-﻿.comment-box {
+﻿@import "../questionDetails/questiondetails.css";
+
+.comment-box {
   margin: 0 0 50px 0;
   padding: 0px;
 }
 
 .comment-action-buttons {
   margin-top: 50px;
-}
-
-.fa-pencil {
-  margin-right: 2px;
-  color: blue;
-}
-
-.fa-trash-o {
-  margin-right: 2px;
-  color: red;
-}
-
-.fa-check {
-  margin-right: 2px;
-  color: green;
 }

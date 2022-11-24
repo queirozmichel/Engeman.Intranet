@@ -45,14 +45,14 @@
 }
 
 .fir-clickcircle {
-  height: 80px;
-  width: 80px;
-  border-radius: 10px;
+  height: 50px;
+  width: 50px;
+  border-radius: 5px;
+  margin-left: 2px;
 }
 
 .fir-image-figure {
   margin: 0;
-  width: 250px;
   display: flex;
   align-items: center;
   position: relative;
@@ -143,11 +143,11 @@
 }
 
 span.keywords {
-  border: 1px solid #a5d24a;
+  border: 1px solid #9ec8d36e;
   border-radius: 3px;
   padding: 4px;
-  background: #cde69c;
-  color: #638421;
+  background: #e1ecf4;
+  color: #5b83ad;
   margin: 5px 5px 5px 0;
   line-height: 23px;
 }
@@ -156,30 +156,21 @@ span.keywords {
   margin-top: 50px;
 }
 
-.fa-pencil {
-  margin-right: 2px;
-  color: blue;
+.edit-post-button, .delete-post-button, .aprove-post-button {
+  /*background: #e1ecf4;*/
 }
 
-.fa-trash-o {
-  margin-right: 2px;
-  color: red;
-}
-
-.fa-check {
-  margin-right: 2px;
-  color: green;
-}
-
-.fa-circle-arrow-left {
-  margin-right: 2px;
+.fa-pencil, .fa-trash-o, .fa-check, .fa-circle-arrow-left {
+  margin-right: 3px;
 }
 
 .card {
-  padding: 10px;
+  border: 1px solid #9ec8d36e;
+  padding: 4px;
   background: #e1ecf4;
-  border-radius: 10px;
+  border-radius: 5px;
   margin-top: 50px;
+  /*margin-left: 100px;*/
 }
 
   .card span {

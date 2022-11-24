@@ -5,6 +5,7 @@
   Plugins.init(); // Init all plugins
   //FormComponents.init(); // Init all form-specific plugins
   toastrConfig();
+  setInterval(exclamation, 1000);
 
 })
 
@@ -61,3 +62,14 @@ $("#new-question-btn, #new-document-btn, #new-manual-btn").on("click", function 
     }
   })
 })
+
+function exclamation() {
+  var icon;
+  icon = $("#blinked-exclamation");
+  setTimeout(function () {
+    icon.css("opacity", "0");
+  }, 0);
+  setTimeout(function () {
+    icon.css("opacity", "1");
+  }, 500);
+}

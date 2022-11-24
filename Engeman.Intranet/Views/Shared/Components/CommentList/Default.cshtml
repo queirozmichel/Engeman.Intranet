@@ -21,7 +21,7 @@
   <div class="comments col-md-12" data-post-id="@ViewBag.PostId">
     @for (int i = 0; i < ViewBag.PostComments.Count; i++)
     {
-      <div style="@(ViewBag.PostComments[i].Revised == false ? "background: Cornsilk" : "")" class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].AuthorId" data-comment-id="@ViewBag.PostComments[i].Id">
+      <div class="col-md-12 comment-box" data-user-id="@ViewBag.PostComments[i].AuthorId" data-comment-id="@ViewBag.PostComments[i].Id">
         <div id="editor-content-view" class="col-md-12 editor-content-view">@Html.Raw(@ViewBag.PostComments[i].Description)</div>
         <div class="col-md-12">
           @if (@ViewBag.PostComments[i].Files.Count > 0)
@@ -35,7 +35,7 @@
             </dl>
           }
         </div>
-        <div class="col-md-9 comment-action-buttons">
+        <div class="col-md-10 comment-action-buttons">
           @if (ViewBag.PostComments[i].AuthorId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
           {
             <button title="Editar a postagem" class="comment-edit-btn btn btn-xs"><i class="fa fa-pencil"></i>Editar</button>
@@ -46,8 +46,8 @@
             }
           }
         </div>
-        <div class="col-md-3" style="background: #e1ecf4; padding: 10px; border-radius: 10px; margin-top: 50px;">
-          <span style="opacity: 0.7">comentada&nbsp</span>
+        <div class="col-md-2 card">
+          <span>comentada</span>
           <span>@ViewBag.PostComments[i].ChangeDate.GetDateTimeFormats()[0] às @ViewBag.PostComments[i].ChangeDate.GetDateTimeFormats()[22]</span>
           <figure class="fir-image-figure">
             <a class="fir-imageover">
@@ -59,16 +59,19 @@
             <figcaption>
               <div class="fig-author-figure-title">@ViewBag.PostComments[i].AuthorUsername</div>
               <div class="fig-author-figure-title">@ViewBag.PostComments[i].AuthorDepartment</div>
-              <span title="Postagens realizadas" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-comment"></i>@ViewBag.PostComments[i].AuthorPostsMade</span>
-              <span title="Postagens respondidas" style="margin-right: 5px;"><i style="margin-right: 1px;" class="fa-regular fa-pen-to-square"></i>@ViewBag.PostComments[i].AuthorCommentsMade</span>
+              <span title="Postagens realizadas"><i class="fa-regular fa-comment"></i>@ViewBag.PostComments[i].AuthorPostsMade</span>
+              <span title="Postagens respondidas" ><i class="fa-regular fa-pen-to-square"></i>@ViewBag.PostComments[i].AuthorCommentsMade</span>
             </figcaption>
           </figure>
         </div>
-        @if (ViewBag.PostComments[i].Revised == false && (ViewBag.UserAccount.Moderator == true || ViewBag.UserAccount.Id == ViewBag.PostComments[i].AuthorId))
-        {
-          <p id="awaiting-review" style="color:red" class="align-center">AGUARDANDO REVISÂO</p>
-        }
-        <div style="padding: 0px" class="col-md-12">
+        <div class="status-post align-center">
+          @if (ViewBag.PostComments[i].Revised == false && (ViewBag.UserAccount.Moderator == true || ViewBag.UserAccount.Id == ViewBag.PostComments[i].AuthorId))
+          {
+            <i id="blinked-exclamation" class="fa-solid fa-triangle-exclamation"></i>
+            <span >Aguardando Revisão</span>
+          }
+        </div>
+        <div class="col-md-12">
           <hr />
         </div>
       </div>

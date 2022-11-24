@@ -423,7 +423,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult QuestionDetails(int idPost)
     {
-      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";      
       var post = _postRepository.GetPostById(idPost);
       var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(postAuthor.DepartmentId);
@@ -465,6 +465,8 @@ namespace Engeman.Intranet.Controllers
 
       ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.PostDetails = postDetails;
+      ViewBag.UserId = HttpContext.Session.GetInt32("_UserAccountId");
+      ViewBag.Moderator = HttpContext.Session.GetInt32("_Moderator");
 
       return PartialView();
     }
@@ -516,6 +518,8 @@ namespace Engeman.Intranet.Controllers
 
       ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.postDetails = postDetails;
+      ViewBag.UserId = HttpContext.Session.GetInt32("_UserAccountId");
+      ViewBag.Moderator = HttpContext.Session.GetInt32("_Moderator");
 
       return PartialView();
     }

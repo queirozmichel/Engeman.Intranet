@@ -212,6 +212,7 @@ function aprovePost(idPost) {
       $(".sub-menu > li.unrevised-posts").remove();
       $(".sub-menu > li.unrevised-comments").remove();
       $(".aprove-post-button").remove();
+      $(".status-post").remove();
       $("#list-posts-content").html(result);
       hideConfirmationModal();
       toastr.success("Postagem aprovada", "Sucesso!");

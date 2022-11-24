@@ -42,9 +42,8 @@ function aproveComment(id, comment) {
     url: "aprovecomment",
     dataType: "text",
     success: function (response) {
-      $(comment).css("background", "white");
       $(comment).find(".comment-aprove-btn").remove();
-      $(comment).find("#awaiting-review").remove();
+      $(comment).find(".status-post").remove();
       $(".sub-menu > li.all-posts").remove();
       $(".sub-menu > li.unrevised-posts").remove();
       $(".sub-menu > li.unrevised-comments").remove();
