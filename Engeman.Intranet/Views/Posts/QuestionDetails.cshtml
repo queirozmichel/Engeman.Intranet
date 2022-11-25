@@ -122,7 +122,7 @@
             <div class="status-post align-center">
               @if (ViewBag.PostDetails.Revised == false && (ViewBag.Moderator == 1 || ViewBag.UserId == ViewBag.PostDetails.AuthorId))
               {
-                <i id="blinked-exclamation" class="fa-solid fa-triangle-exclamation"></i>
+                <i class="fa-solid fa-triangle-exclamation blinked-exclamation"></i>
                 <span>Aguardando Revisão</span>
               }
             </div>

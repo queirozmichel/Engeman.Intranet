@@ -65,7 +65,7 @@ $("#new-question-btn, #new-document-btn, #new-manual-btn").on("click", function 
 
 function exclamation() {
   var icon;
-  icon = $("#blinked-exclamation");
+  icon = $(".blinked-exclamation");
   setTimeout(function () {
     icon.css("opacity", "0");
   }, 0);
