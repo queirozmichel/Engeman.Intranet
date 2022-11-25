@@ -423,14 +423,18 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult QuestionDetails(int idPost)
     {
+      PostDetailsViewModel postDetails = new PostDetailsViewModel();
+      List<CommentFile> commentFiles = new List<CommentFile>();
+      var comments = new List<CommentViewModel>();
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";      
       var post = _postRepository.GetPostById(idPost);
       var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
       var department = _departmentRepository.GetDepartmentById(postAuthor.DepartmentId);
       var postsCount = _postRepository.GetPostsByUserId(postAuthor.Id).Count();
-      var commentsCount = _postCommentRepository.GetPostCommentsByUserId(postAuthor.Id).Count();
-      PostDetailsViewModel postDetails = new PostDetailsViewModel();
-      string[] keywords;
+      var commentsCount = _postCommentRepository.GetPostCommentsByUserId(postAuthor.Id).Count();      
+      var userAccount = _userAccountRepository.GetUserAccountById((int)HttpContext.Session.GetInt32("_UserAccountId"));
+      var orderedComments = _postCommentRepository.GetPostCommentsByRestriction(userAccount, idPost);
+      string[] keywords;   
 
       postDetails.Id = post.Id;
       postDetails.Subject = post.Subject;
@@ -463,10 +467,31 @@ namespace Engeman.Intranet.Controllers
       postDetails.AuthorCommentsMade = commentsCount;
       postDetails.AuthorPhoto = postAuthor.Photo;
 
-      ViewBag.IsAjaxCall = isAjaxCall;
-      ViewBag.PostDetails = postDetails;
+      for (int i = 0; i < orderedComments.Count; i++)
+      {
+        var comment = new CommentViewModel();
+        var authorComment = _userAccountRepository.GetUserAccountById(orderedComments[i].UserAccountId);
+        commentFiles = _postCommentFileRepository.GetFilesByPostCommentId(orderedComments[i].Id).OrderBy(x => x.Name).ToList();
+        comment.Id = orderedComments[i].Id;
+        comment.Description = orderedComments[i].Description;
+        comment.AuthorUsername = authorComment.Name;
+        comment.AuthorPhoto = authorComment.Photo;
+        comment.AuthorId = orderedComments[i].UserAccountId;
+        comment.AuthorDepartment = _departmentRepository.GetDepartmentNameById(orderedComments[i].DepartmentId);
+        comment.AuthorPostsMade = _postRepository.GetPostsByUserId(authorComment.Id).Count();
+        comment.AuthorCommentsMade = _postCommentRepository.GetPostCommentsByUserId(authorComment.Id).Count();
+        comment.ChangeDate = orderedComments[i].ChangeDate;
+        comment.Revised = orderedComments[i].Revised;
+        comment.Files = commentFiles;
+        comments.Add(comment);
+      }
+
+      ViewBag.Comments = comments;
+      ViewBag.IsModerator = Convert.ToBoolean(HttpContext.Session.GetInt32("_Moderator"));
       ViewBag.UserId = HttpContext.Session.GetInt32("_UserAccountId");
-      ViewBag.Moderator = HttpContext.Session.GetInt32("_Moderator");
+      ViewBag.PostId = idPost;
+      ViewBag.IsAjaxCall = isAjaxCall;
+      ViewBag.Post = postDetails;
 
       return PartialView();
     }

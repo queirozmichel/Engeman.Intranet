@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.DirectoryServices;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Claims;
 using System.Threading.Tasks;

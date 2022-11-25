@@ -184,3 +184,12 @@ figcaption span {
 .fa-comment, .fa-pen-to-square {
   margin-right: 3px;
 }
+
+.comment-box {
+  margin: 0 0 50px 0;
+  padding: 0px;
+}
+
+.comment-action-buttons {
+  margin-top: 50px;
+}

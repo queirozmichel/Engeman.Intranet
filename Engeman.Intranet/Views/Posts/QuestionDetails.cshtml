@@ -52,19 +52,19 @@
       <div class="tab-content row">
         <div class="tab-pane active" id="tab_1_1">
           <div class="col-md-12">
-            <h2>@ViewBag.PostDetails.Subject</h2>
+            <h2>@ViewBag.Post.Subject</h2>
             <div class="post-info-div">
               <div>
                 <span class="post-info">Identificador</span>
-                <span id="id-post">@ViewBag.PostDetails.Id</span>
+                <span id="id-post">@ViewBag.Post.Id</span>
               </div>
               <div>
-                @if (ViewBag.PostDetails.PostedDaysAgo == 0)
+                @if (ViewBag.Post.PostedDaysAgo == 0)
                 {
                   <span class="post-info">Postada</span>
                   <span>hoje</span>
                 }
-                else if (ViewBag.PostDetails.PostedDaysAgo == -1)
+                else if (ViewBag.Post.PostedDaysAgo == -1)
                 {
                   <span class="post-info">Postada</span>
                   <span>ontem</span>
@@ -72,29 +72,29 @@
                 else
                 {
                   <span class="post-info">Postada</span>
-                  <span>@ViewBag.PostDetails.PostedDaysAgo dia(s) atrás</span>
+                  <span>@ViewBag.Post.PostedDaysAgo dia(s) atrás</span>
                 }
               </div>
             </div>
             <hr />
             <div class="col-md-12">
-              @ViewBag.PostDetails.Description
+              @ViewBag.Post.Description
             </div>
-            @if (@ViewBag.PostDetails.Keywords != null)
+            @if (@ViewBag.Post.Keywords != null)
             {
               <div class="col-md-12 keywords">
-                @for (int i = 0; i < ViewBag.PostDetails.Keywords.Length; i++)
+                @for (int i = 0; i < ViewBag.Post.Keywords.Length; i++)
                 {
-                  <span class="keywords">@ViewBag.PostDetails.Keywords[i]</span>
+                  <span class="keywords">@ViewBag.Post.Keywords[i]</span>
                 }
               </div>
             }
             <div class="col-md-10 buttons">
-              @if (ViewBag.PostDetails.AuthorId == Context.Session.GetInt32("_UserAccountId") || Context.Session.GetInt32("_Moderator") == 1)
+              @if (ViewBag.Post.AuthorId == Context.Session.GetInt32("_UserAccountId") || ViewBag.IsModerator == true)
               {
                 <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil"></i>Editar</button>
                 <button title="Excluir a postagem" class="btn btn-xs delete-post-button"><i class="fa fa-trash-o"></i>Excluir</button>
-                @if (ViewBag.PostDetails.Revised == false && Context.Session.GetInt32("_Moderator") == 1)
+                @if (ViewBag.Post.Revised == false && ViewBag.IsModerator == true)
                 {
                   <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check"></i>Aprovar</button>
                 }
@@ -103,24 +103,24 @@
             </div>
             <div class="col-md-2 card">
               <span>postada</span>
-              <span>@ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[0] às @ViewBag.PostDetails.ChangeDate.GetDateTimeFormats()[22]</span>
+              <span>@ViewBag.Post.ChangeDate.GetDateTimeFormats()[0] às @ViewBag.Post.ChangeDate.GetDateTimeFormats()[22]</span>
               <figure class="fir-image-figure">
                 <a class="fir-imageover">
-                  @{ var base64 = Convert.ToBase64String(ViewBag.PostDetails.AuthorPhoto);
+                  @{ var base64 = Convert.ToBase64String(ViewBag.Post.AuthorPhoto);
                     var imasrc = string.Format("data:image/png;base64,{0}", base64);
                   }
                   <img class="fir-author-image fir-clickcircle" src='@imasrc'>
                 </a>
                 <figcaption>
-                  <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorUsername</div>
-                  <div class="fig-author-figure-title">@ViewBag.PostDetails.AuthorDepartment</div>
-                  <span title="Postagens realizadas"><i class="fa-regular fa-comment"></i>@ViewBag.PostDetails.AuthorPostsMade</span>
-                  <span title="Comentários realizados"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.PostDetails.AuthorCommentsMade</span>
+                  <div class="fig-author-figure-title">@ViewBag.Post.AuthorUsername</div>
+                  <div class="fig-author-figure-title">@ViewBag.Post.AuthorDepartment</div>
+                  <span title="Postagens realizadas"><i class="fa-regular fa-comment"></i>@ViewBag.Post.AuthorPostsMade</span>
+                  <span title="Comentários realizados"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.Post.AuthorCommentsMade</span>
                 </figcaption>
               </figure>
             </div>
             <div class="status-post align-center">
-              @if (ViewBag.PostDetails.Revised == false && (ViewBag.Moderator == 1 || ViewBag.UserId == ViewBag.PostDetails.AuthorId))
+              @if (ViewBag.Post.Revised == false && (ViewBag.IsModerator == true || ViewBag.UserId == ViewBag.Post.AuthorId))
               {
                 <i class="fa-solid fa-triangle-exclamation blinked-exclamation"></i>
                 <span>Aguardando Revisão</span>
@@ -128,16 +128,87 @@
             </div>
           </div>
           <div class="col-md-12" id="comment-list">
-            @await Component.InvokeAsync("CommentList", ViewBag.PostDetails.Id)
+            <div class="row">
+              <div class="col-md-12">
+                <hr />
+                @if (ViewBag.Comments.Count == 0)
+                {
+                  <h4>0 comentários</h4>
+                }
+                else
+                {
+                  <h4><span id="comment-count">@ViewBag.Comments.Count</span> comentário(s)</h4>
+                }
+              </div>
+              <div class="comments col-md-12" data-post-id="@ViewBag.PostId">
+                @for (int i = 0; i < ViewBag.Comments.Count; i++)
+                {
+                  <div class="col-md-12 comment-box" data-user-id="@ViewBag.Comments[i].AuthorId" data-comment-id="@ViewBag.Comments[i].Id">
+                    <div id="editor-content-view" class="col-md-12 editor-content-view">@Html.Raw(@ViewBag.Comments[i].Description)</div>
+                    <div class="col-md-12">
+                      @if (@ViewBag.Comments[i].Files.Count > 0)
+                      {
+                        <dl class="file-list">
+                          Anexo(s):
+                          @for (int j = 0; j < @ViewBag.Comments[i].Files.Count; j++)
+                          {
+                            <dd class="file"><a href="@Url.Action("showcommentfile", "comments", new { idComment = ViewBag.Comments[i].Id, file = j })" target="_blank">@ViewBag.Comments[i].Files[j].Name</a></dd>
+                          }
+                        </dl>
+                      }
+                    </div>
+                    <div class="col-md-10 comment-action-buttons">
+                      @if (ViewBag.Comments[i].AuthorId == Context.Session.GetInt32("_UserAccountId") || ViewBag.IsModerator == true)
+                      {
+                        <button title="Editar a postagem" class="comment-edit-btn btn btn-xs"><i class="fa fa-pencil"></i>Editar</button>
+                        <button title="Excluir a postagem" class="comment-delete-btn btn btn-xs"><i class="fa fa-trash-o"></i>Excluir</button>
+                        @if (ViewBag.Comments[i].Revised == false && ViewBag.IsModerator == true)
+                        {
+                          <button title="Aprovar a postagem" class="comment-aprove-btn btn btn-xs"><i class="fa-solid fa-check"></i>Aprovar</button>
+                        }
+                      }
+                    </div>
+                    <div class="col-md-2 card">
+                      <span>comentada</span>
+                      <span>@ViewBag.Comments[i].ChangeDate.GetDateTimeFormats()[0] às @ViewBag.Comments[i].ChangeDate.GetDateTimeFormats()[22]</span>
+                      <figure class="fir-image-figure">
+                        <a class="fir-imageover">
+                          @{ base64 = Convert.ToBase64String(ViewBag.Comments[i].AuthorPhoto);
+                            imasrc = string.Format("data:image/png;base64,{0}", base64);
+                          }
+                          <img class="fir-author-image fir-clickcircle" src='@imasrc'>
+                        </a>
+                        <figcaption>
+                          <div class="fig-author-figure-title">@ViewBag.Comments[i].AuthorUsername</div>
+                          <div class="fig-author-figure-title">@ViewBag.Comments[i].AuthorDepartment</div>
+                          <span title="Postagens realizadas"><i class="fa-regular fa-comment"></i>@ViewBag.Comments[i].AuthorPostsMade</span>
+                          <span title="Postagens respondidas"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.Comments[i].AuthorCommentsMade</span>
+                        </figcaption>
+                      </figure>
+                    </div>
+                    <div class="status-post align-center">
+                      @if (ViewBag.Comments[i].Revised == false && (ViewBag.IsModerator == true || ViewBag.UserId == ViewBag.Comments[i].AuthorId))
+                      {
+                        <i class="fa-solid fa-triangle-exclamation blinked-exclamation"></i>
+                        <span>Aguardando Revisão</span>
+                      }
+                    </div>
+                    <div class="col-md-12">
+                      <hr />
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
           </div>
         </div>
         <div class="tab-pane active" id="tab_1_3">
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-12 col-md-offset-1 align-center">
-                <h3>@ViewBag.PostDetails.Subject</h3>
+                <h3>@ViewBag.Post.Subject</h3>
                 <div class="well">
-                  @ViewBag.PostDetails.Description
+                  @ViewBag.Post.Description
                 </div>
               </div>
             </div>
@@ -170,5 +241,6 @@
   </div>
 </div>
 
+<script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/question-details.js"></script>
 <script type="text/javascript" src="~/js/custom.js"></script>
