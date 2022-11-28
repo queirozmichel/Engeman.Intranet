@@ -84,7 +84,7 @@ $(document).ready(function () {
         return row.id
       },
       postType: function (column, row) {
-        if ((row.revised == false || row.hasUnrevisedComments == true) && (row.userAccountId == Cookies.get('_UserId') || isModerator == true) ) {
+        if ((row.revised == false || row.hasUnrevisedComments == true) && (row.userAccountId == Cookies.get('_UserId') || isModerator == true)) {
           return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
         }
         if (row.revised == true) {
@@ -195,7 +195,7 @@ $(document).ready(function () {
         if (method == "edit") {
           if (response == "EditAnyPost") {
             if (postType === 'Q') {
-              postEdit(idPost);
+              editPost(idPost);
             }
             else {
               postFileEdit(idPost);
@@ -203,7 +203,7 @@ $(document).ready(function () {
           }
           else if (response == "EditOwnerPost") {
             if (postType === 'Q') {
-              postEdit(idPost);
+              editPost(idPost);
             }
             else {
               postFileEdit(idPost);
@@ -255,7 +255,7 @@ function dropdownHideItens() {
 
 $(".btn-yes, .btn-no").on("click", function () {
   if ($(this).attr("id") == "delete-post") {
-    postDelete(idPostAux, elementAux);
+    deletePost(idPostAux, elementAux);
     hideConfirmationModal();
     toastr.success("A postagem foi apagada", "Sucesso!");
   } else if ($(this).attr("id") == "aprove") {
@@ -268,58 +268,35 @@ $(".btn-yes, .btn-no").on("click", function () {
   }
 })
 
-function postDetails(idPost, postType) {
-  if (postType === 'Q') {
-    $.ajax({
-      type: "GET",
-      data: { "idPost": idPost },
-      dataType: "html",
-      url: "/posts/questiondetails",
-      beforeSend: function () {
-        startSpinner();
-      },
-      error: function () {
-        toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
-      },
-      success: function (response) {
-        $("#render-body").empty();
-        $("#render-body").html(response);
-        window.history.pushState({}, {}, this.url);
-      },
-      complete: function () {
-        closeSpinner();
-      }
-    })
-  } else if (postType === 'F') {
-    $.ajax({
-      type: "GET",
-      data: { "idPost": idPost },
-      dataType: "html",
-      url: "/posts/documentmanualdetails",
-      beforeSend: function () {
-        startSpinner();
-      },
-      error: function () {
-        toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
-      },
-      success: function (response) {
-        $("#render-body").empty();
-        $("#render-body").html(response);
-        window.history.pushState({}, {}, this.url);
-      },
-      complete: function () {
-        closeSpinner();
-      }
-    })
-  }
-}
-
-function postEdit(idPost) {
+function postDetails(idPost) {
   $.ajax({
     type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
-    url: "/posts/questionedit",
+    url: "/posts/postdetails",
+    beforeSend: function () {
+      startSpinner();
+    },
+    error: function () {
+      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState({}, {}, this.url);
+    },
+    complete: function () {
+      closeSpinner();
+    }
+  })
+}
+
+function editPost(idPost) {
+  $.ajax({
+    type: "GET",
+    data: { "idPost": idPost },
+    dataType: "html",
+    url: "/posts/editpost",
     beforeSend: function () {
       startSpinner();
     },
@@ -342,7 +319,7 @@ function postFileEdit(idPost) {
     type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
-    url: "/posts/documentmanualedit",
+    url: "/posts/editpost",
     beforeSend: function () {
       startSpinner();
     },
@@ -360,7 +337,7 @@ function postFileEdit(idPost) {
   })
 }
 
-function postDelete(idElement, element) {
+function deletePost(idElement, element) {
   $.ajax({
     type: "DELETE",
     data: {

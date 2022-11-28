@@ -1,5 +1,5 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();
+  closeSpinner();  
 });
 
 $(document).ready(function () {
@@ -24,33 +24,21 @@ $(document).ready(function () {
 
   if (sessionStorage.getItem("editAfterDetails") != null) {
     $(".back-button").contents().filter(function () {
-      return this.nodeType == Node.TEXT_NODE;
-    })[0].nodeValue = "Voltar para os detalhes";
+        return this.nodeType == Node.TEXT_NODE;
+      })[0].nodeValue = "Voltar para os detalhes";
   }
 })
 
-function countFiles() {
-  var fileElements = $(".files").children("div").children("label");
-  var qty = 0
-  fileElements.each(function () {
-    if ($(this).css("display") == "block") {
-      qty++;
-    }
-  })
-  $(".files").children("div").children("span").text(qty);
-  return qty;
-}
-
-$("#document-manual-edit-form").on("submit", function (event) {
+$("#edit-question-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
   event.preventDefault();
-  if ($("#document-manual-edit-form").valid()) {
+  if ($("#edit-question-form").valid()) {
     var formData = new FormData(this);
     $.ajax({
       type: "POST",
-      url: "/posts/documentmanualupdate",
       contentType: false,
       processData: false,
+      url: "/posts/updatepost",
       data: formData,
       beforeSend: function () {
         startSpinner();
@@ -78,31 +66,14 @@ $("#document-manual-edit-form").on("submit", function (event) {
           });
         }
       },
-      error: function (response) {
-        toastr.error("O arquivo não foi salvo", "Erro!");
+      error: function () {
+        toastr.error("A pergunta não foi atualizada", "Erro!");
       },
       complete: function () {
         closeSpinner();
       }
     });
   }
-})
-
-$(".icon-remove-circle").on("click", function () {
-  $(this).parent().css("display", "none");
-  $(this).parent().find(".file-active").val("N");
-  var qty = countFiles();
-  if (qty == 0) {
-    $("#file").addClass("required");
-    $("#file").parent().prev().append("<span class=\"required\">*</span>");
-    $(this).parent().parent().append("<p>Nenhum arquivo</p>");
-  }
-})
-
-$("#file").on("change", function () {
-  $("#file").parent().parent().removeClass("has-error").addClass("has-success")
-  $("#file").removeClass("required has-error").addClass("has-success");
-  $("#file").parent().find("label").remove();
 })
 
 $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
@@ -120,7 +91,7 @@ $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
 $(".back-button").on("click", function (event) {
   event.preventDefault();
   if (sessionStorage.getItem("editAfterDetails") != null) {
-    postDetails(sessionStorage.getItem("postId"), sessionStorage.getItem("postType"));
+    window.postDetails(sessionStorage.getItem("postId"), sessionStorage.getItem("postType"));
   } else {
     filter = "?filter=" + sessionStorage.getItem("filterGrid");
     $.ajax({
@@ -143,4 +114,33 @@ $(".back-button").on("click", function (event) {
       },
     })
   }
+})
+
+function countFiles() {
+  var fileElements = $(".files").children("div").children("label");
+  var qty = 0
+  fileElements.each(function () {
+    if ($(this).css("display") == "block") {
+      qty++;
+    }
+  })
+  $(".files").children("div").children("span").text(qty);
+  return qty;
+}
+
+$(".icon-remove-circle").on("click", function () {
+  $(this).parent().css("display", "none");
+  $(this).parent().find(".file-active").val("N");
+  var qty = countFiles();
+  if (qty == 0) {
+    $("#file").addClass("required");
+    $("#file").parent().prev().append("<span class=\"required\">*</span>");
+    $(this).parent().parent().append("<p>Nenhum arquivo</p>");
+  }
+})
+
+$("#file").on("change", function () {
+  $("#file").parent().parent().removeClass("has-error").addClass("has-success")
+  $("#file").removeClass("required has-error").addClass("has-success");
+  $("#file").parent().find("label").remove();
 })

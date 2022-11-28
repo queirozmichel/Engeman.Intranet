@@ -257,7 +257,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void UpdateQuestion(EditedPostViewModel editedPost)
+    public void UpdatePost(EditedPostViewModel editedPost)
     {
       using (StaticQuery sq = new StaticQuery())
       {
@@ -274,6 +274,17 @@ namespace Engeman.Intranet.Repositories
         $"WHERE POST_ID = {editedPost.Id} ";
 
         sq.ExecuteCommand(update);
+
+        if (editedPost.Files.Count > 0)
+        {
+          update =
+          $"UPDATE " +
+          $"POST_FILE " +
+          $"SET FILE_TYPE = '{editedPost.Files[0].FileType}', DESCRIPTION = '{editedPost.Description}' " +
+          $"WHERE POST_ID = {editedPost.Id}";
+
+          sq.ExecuteCommand(update);
+        }
 
         if (editedPost.Restricted == false)
         {
@@ -293,39 +304,7 @@ namespace Engeman.Intranet.Repositories
           }
         }
       }
-    }
-
-    public void UpdatePostFile(EditedPostWithFilesViewModel editedPostWithFiles)
-    {
-      using (StaticQuery sq = new StaticQuery())
-      {
-        string update;
-        string delete;
-
-        UpdateQuestion(editedPostWithFiles.Post);
-
-        if (editedPostWithFiles.Files.Count > 0)
-        {
-          update =
-          $"UPDATE " +
-          $"POST_FILE " +
-          $"SET FILE_TYPE = '{editedPostWithFiles.Files[0].FileType}', DESCRIPTION = '{editedPostWithFiles.Post.Description}' " +
-          $"WHERE POST_ID = {editedPostWithFiles.Post.Id}";
-
-          sq.ExecuteCommand(update);
-        }
-
-        if (editedPostWithFiles.Post.Restricted == false)
-        {
-          delete =
-          $"DELETE " +
-          $"FROM POST_DEPARTMENT " +
-          $"WHERE POST_ID = {editedPostWithFiles.Post.Id} ";
-
-          sq.ExecuteCommand(delete);
-        }
-      }
-    }
+    }   
 
     public List<int> GetRestrictedDepartmentsIdByPost(int id)
     {

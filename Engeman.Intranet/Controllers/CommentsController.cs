@@ -34,11 +34,6 @@ namespace Engeman.Intranet.Controllers
       return ViewComponent("WangEditor");
     }
 
-    public IActionResult CommentList(int idPost)
-    {
-      return ViewComponent("CommentList", idPost);
-    }
-
     public IActionResult CommentEditForm(int commentId)
     {
       return ViewComponent("CommentEditForm", commentId);

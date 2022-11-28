@@ -193,3 +193,12 @@ figcaption span {
 .comment-action-buttons {
   margin-top: 50px;
 }
+
+.file-post {
+  margin-top: 10px;
+}
+
+.file-post-list {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}

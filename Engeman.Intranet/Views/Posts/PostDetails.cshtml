@@ -12,7 +12,7 @@
 }
 
 <link rel="stylesheet" href="~/plugins/prism/css/prism.css" />
-<link rel="stylesheet" href="~/css/questionDetails/questiondetails.css" />
+<link rel="stylesheet" href="~/css/post-details.css" />
 
 @await Component.InvokeAsync("ConfirmationModal")
 <div class="page-header">
@@ -80,6 +80,15 @@
             <div class="col-md-12">
               @ViewBag.Post.Description
             </div>
+            @if (ViewBag.Post.Files.Count > 0)
+            {
+              <div class="col-md-12 file-post">
+                @for (int i = 0; i < ViewBag.Post.Files.Count; i++)
+                {
+                  <span class="file-post-list">@(i+1) -  <a href="@Url.Action("showfile", "posts", new { idPost = ViewBag.Post.Id, file = i })" target="_blank">@ViewBag.Post.Files[i].Name</a></span><br />
+                }
+              </div>
+            }
             @if (@ViewBag.Post.Keywords != null)
             {
               <div class="col-md-12 keywords">
@@ -204,14 +213,9 @@
         </div>
         <div class="tab-pane active" id="tab_1_3">
           <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-12 col-md-offset-1 align-center">
-                <h3>@ViewBag.Post.Subject</h3>
-                <div class="well">
-                  @ViewBag.Post.Description
-                </div>
-              </div>
-            </div>
+            <h2>@ViewBag.Post.Subject</h2>
+            @ViewBag.Post.Description
+            <hr />
             <div class="widget box answer-box">
               <div class="widget-content">
                 <form class="form-horizontal row-border" id="comment-form" method="post" enctype="multipart/form-data">
@@ -242,5 +246,5 @@
 </div>
 
 <script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
-<script type="text/javascript" src="~/js/question-details.js"></script>
+<script type="text/javascript" src="~/js/post-details.js"></script>
 <script type="text/javascript" src="~/js/custom.js"></script>

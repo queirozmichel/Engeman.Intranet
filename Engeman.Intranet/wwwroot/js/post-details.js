@@ -82,20 +82,20 @@ $("#comment-tab").on("click", function () {
 })
 
 $("#post-tab").on("click", function () {
-  var idPost = $("#id-post").text();
-  $.ajax({
-    type: "GET",
-    dataType: "html",
-    data: { "idPost": idPost },
-    url: "/comments/commentlist",
-    success: function (response) {
-      $("#comment-list").empty();
-      $("#comment-list").html(response);
-    },
-    error: function (response) {
-      toastr.error("", "Erro!");
-    }
-  })
+  //var idPost = $("#id-post").text();
+  //$.ajax({
+  //  type: "GET",
+  //  dataType: "html",
+  //  data: { "idPost": idPost },
+  //  url: "/posts/questiondetails",
+  //  success: function (response) {
+  //    $("#render-body").empty();
+  //    $("#render-body").html(response);
+  //  },
+  //  error: function (response) {
+  //    toastr.error("", "Erro!");
+  //  }
+  //})
 })
 
 $(".edit-post-button").on("click", function () {
@@ -105,7 +105,7 @@ $(".edit-post-button").on("click", function () {
     type: "GET",
     data: { "idPost": idPost },
     dataType: "html",
-    url: "/posts/questionedit",
+    url: "/posts/editpost",
     error: function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
@@ -249,6 +249,13 @@ $(".back-button").on("click", function (event) {
     },
   })
 })
+
+
+
+
+
+
+
 
 $(".comment-aprove-btn").on("click", function () {
   var id = $(this).parents(".comment-box").attr("data-comment-id");

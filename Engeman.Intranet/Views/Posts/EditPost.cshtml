@@ -1,5 +1,6 @@
-﻿@model Engeman.Intranet.Models.PostFileViewModel;
-@{List<Department> departments = ViewBag.Departments;}
+﻿@*@model Engeman.Intranet.Models.Post;*@
+@model Engeman.Intranet.Models.PostFileViewModel;
+@{List<Department> departments = ViewBag.Departments; }
 @{List<int> restrictedDepartments = ViewBag.RestrictedDepartments;}
 @{string layout = null;}
 
@@ -13,7 +14,7 @@
   Layout = layout;
 }
 
-<link rel="stylesheet" href="~/css/document-manual-edit.css" />
+<link rel="stylesheet" href="~/css/edit-post.css" />
 
 <div class="page-header">
   <div class="page-title">
@@ -49,26 +50,26 @@
   <div class="col-md-12">
     <div class="widget box">
       <div class="widget-header">
-        <h4><i class="icon-reorder"></i>Arquivo</h4>
+        <h4><i class="icon-reorder"></i>Postagem</h4>
       </div>
       <div class="widget-content">
-        <form class="form-horizontal row-border" id="document-manual-edit-form" method="post">
+        <form class="form-horizontal row-border" id="edit-question-form" method="post">
           <div class="form-group">
-            <label class="col-md-2 control-label">Id</label>
+            <label class="col-md-2 control-label">Código da postagem</label>
             <div class="col-md-1">
-              <input class="form-control" name="post.id" type="text" readonly value="@Model.Post.Id" />
+              <input id="id-post" class="form-control" name="Id" type="text" readonly value="@Model.Post.Id" />
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
+            <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
             <div class="col-md-10">
-              @Html.CheckBox("Post.Restricted", new { id = "restricted" })
+              @Html.CheckBox("Restricted", @Model.Post.Restricted, new { id = "restricted" })
             </div>
           </div>
           <div class="form-group departments-list">
             <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
             <div class="col-md-10">
-              <select class="required" id="multiselect-department" multiple="multiple" name="Post.DepartmentsList">
+              <select class="required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
                 @{for (int i = 0; i < departments.Count; i++)
                   {
                     if (restrictedDepartments != null)
@@ -94,54 +95,68 @@
           <div class="form-group">
             <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
             <div class="col-md-10">
-              <input class="form-control required" id="subject" type="text" name="Post.Subject" value="@Model.Post.Subject">
+              <input class="form-control required" id="subject" type="text" name="Subject" value="@Model.Post.Subject">
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-2 control-label">Palavras chave</label>
             <div class="col-md-10">
-              <input class="tags" id="keywords" type="text" name="Post.Keywords" value="@Model.Post.Keywords">
+              <input class="tags" id="keywords" type="text" name="Keywords" value="@Model.Post.Keywords">
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
             <div class="col-md-10">
-              <textarea class="form-control required" name="Post.Description" rows="3" cols="5">@Model.Post.Description</textarea>
+              <textarea class="form-control required" id="description" rows="3" cols="5" name="Description">@Model.Post.Description</textarea>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
-            <div class="col-md-3">
-              <label class="radio">
-                @Html.RadioButtonFor(model => model.Files[0].FileType, "D", new { @class = "file-type required" })
-                Documento
-              </label>
-              <label class="radio">
-                @Html.RadioButtonFor(model => model.Files[0].FileType, "M", new { @class = "file-type" })
-                Manual
-              </label>
-            </div>
-          </div>
-          <div class="form-group files">
-            <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span><span class="files-qty">0</span></label>
-            <div class="col-md-10">
-              @for (int i = 0; i < Model.Files.Count; i++)
-              {
-                <label class="checkbox">
-                  @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
-                  @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
-                  <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts", new { idPost = Model.Post.Id, file = i })" target="_blank">@Model.Files[i].Name</a>
+
+          @if (Model.Files.Count > 0)
+          {
+            <div class="form-group">
+              <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
+              <div class="col-md-3">
+                <label class="radio">
+                  @Html.RadioButtonFor(model => model.Files[0].FileType, "D", new { @class = "file-type required" })
+                  Documento
                 </label>
-              }
-              <span class="files-qty">0</span>
+                <label class="radio">
+                  @Html.RadioButtonFor(model => model.Files[0].FileType, "M", new { @class = "file-type" })
+                  Manual
+                </label>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-md-2 control-label">Novo(s) arquivo(s)</label>
-            <div class="col-md-2">
-              <input id="file" type="file" name="binarydata" accept="application/pdf" multiple>
+            <div class="form-group files">
+              <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span><span class="files-qty">0</span></label>
+              <div class="col-md-10">
+                @for (int i = 0; i < Model.Files.Count; i++)
+                {
+                  <label class="checkbox">
+                    @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
+                    @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
+                    <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts" , new { idPost=Model.Post.Id, file=i })" target="_blank">@Model.Files[i].Name</a>
+                  </label>
+                }
+                <span class="files-qty">0</span>
+              </div>
             </div>
-          </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label">Novo(s) arquivo(s)</label>
+              <div class="col-md-2">
+                <input id="file" type="file" name="binarydata" accept="application/pdf" multiple>
+              </div>
+            </div>
+          }
+
+
+
+
+
+
+
+
+
+
           <div class="form-actions">
             <button class="btn btn pull-left back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar para as postagens</button>
             <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
@@ -152,7 +167,7 @@
   </div>
 </div>
 
-<script type="text/javascript" src="~/js/document-manual-edit.js"></script>
+<script type="text/javascript" src="~/js/edit-post.js"></script>
 <script type="text/javascript" src="~/js/custom.js"></script>
 @if (ViewBag.IsAjaxCall == false)
 {
