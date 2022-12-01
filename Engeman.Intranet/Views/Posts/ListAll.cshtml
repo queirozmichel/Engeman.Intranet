@@ -66,4 +66,7 @@
 </table>
 
 <script src="~/js/listall.js"></script>
-<script type="text/javascript" src="~/js/custom.js"></script>
+@if (ViewBag.IsAjaxCall == true)
+{
+  <script type="text/javascript" src="~/js/custom.js"></script>
+}

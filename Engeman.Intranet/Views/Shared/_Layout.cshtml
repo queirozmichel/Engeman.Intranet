@@ -76,7 +76,9 @@
   <link rel="stylesheet" href="~/lib/bootgrid/jquery.bootgrid.css">
   <script src="~/lib/bootgrid/jquery.bootgrid.js"></script>
   @*jQuery Validation*@
-  <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+  <script type="text/javascript" src="~/lib/jquery-validation/jquery.validate.min.js"></script>
+  <script type="text/javascript" src="~/lib/jquery-validation/additional-methods.min.js"></script>
+  <script type="text/javascript" src="~/lib/jquery-validation/messages_pt_BR.js"></script>
   @*Spinner*@
   <link rel="stylesheet" href="~/css/plugins/easy-loading.min.css" />
   <script type="text/javascript" src="~/plugins/easy-loading/easy-loading.min.js"></script>
@@ -495,27 +497,16 @@
               <i class="icon-edit"></i>Postagens
             </a>
             <ul class="sub-menu">
+              <li>
+                <a id="new-post-btn" href="#">
+                  <i class="icon-angle-right"></i>Nova Postagem
+                </a>
+              </li>
               <li id="list-posts-content">
                 @await Component.InvokeAsync("UnrevisedList")
               </li>
-              <li>
-                <a id="new-question-btn" href="#">
-                  <i class="icon-angle-right"></i>Nova Pergunta
-                </a>
-              </li>
-              <li>
-                <a id="new-document-btn" href="#">
-                  <i class="icon-angle-right"></i>Novo Documento
-                </a>
-              </li>
-              <li>
-                <a id="new-manual-btn" href="#">
-                  <i class="icon-angle-right"></i>Novo Manual
-                </a>
-              </li>
             </ul>
           </li>
-
           <li>
             <a asp-controller="useraccount" asp-action="Index">
               <i class="icon-user"></i>
@@ -603,5 +594,6 @@
   <script type="text/javascript" src="~/js/plugins.js"></script>
   <script type="text/javascript" src="~/js/plugins.form-components.js"></script>
   <script type="text/javascript" src="~/js/layout.js"></script>
+  <script type="text/javascript" src="~/js/custom.js"></script>
 </body>
 </html>

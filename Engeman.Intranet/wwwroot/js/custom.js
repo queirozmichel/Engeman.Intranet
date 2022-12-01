@@ -1,21 +1,39 @@
-//Comum a todas as páginas
-$("#nav li").on("click", function (event) {
-  var li = $(event.target.parentElement);
-  if (li.hasClass("current")) {
-    li.removeClass("current");
-  } else {
-    var allLi = $("#nav").children();
-    allLi.each(function (index, element) {
-      $(this).removeClass("current");
-    })
-    li.addClass("current");
-  }
-})
-
-
-"use strict";
-
 $(document).ready(function () {
+
+  $(document).tooltip();
+
+  //Lista de restrição de setores
+  $("#multiselect-department").multiselect({
+    nonSelectedText: 'Nenhum ',
+    includeSelectAllOption: true,
+    allSelectedText: 'Todos ',
+  });
+
+  //botão para habilitar a restrição
+  $("#restricted").bootstrapSwitch({
+    onText: "sim",
+    offText: "n&atilde;o",
+    size: "normal",
+    state: false,
+  });
+
+  //botão para habilitar a inserção de arquivos na nova postagem
+  $("#attach-files").bootstrapSwitch({
+    onText: "sim",
+    offText: "n&atilde;o",
+    size: "normal",
+    state: false,
+  });
+
+  //Validação do campo após inserção do(s) arquivo(s)
+  $("#file").on("change", function () {
+    $(this).valid();
+  })
+
+  //Validação do campo seleção dos setores
+  $("#multiselect-department").on("change", function () {
+    $(this).valid();
+  })
 
   //===== Sidebar Search (Demo Only) =====//
   $('.sidebar-search').submit(function (e) {
@@ -78,4 +96,29 @@ $(document).ready(function () {
   setTimeout(function () {
     $('#sidebar .notifications.demo-slide-in > li:eq(0)').slideDown(500);
   }, 7000);
+});
+
+$("#nav li").on("click", function (event) {
+  var li = $(event.target.parentElement);
+  if (li.hasClass("current")) {
+    li.removeClass("current");
+  } else {
+    var allLi = $("#nav").children();
+    allLi.each(function (index, element) {
+      $(this).removeClass("current");
+    })
+    li.addClass("current");
+  }
+})
+
+$("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
+  if (state == true) {
+    $(".departments-list").css("display", "block");
+    $(".departments-list").find(".btn-group").removeClass("open");
+  } else {
+    $(".departments-list").find(".btn-group").addClass("open");
+    $("#multiselect-department").multiselect('deselectAll', true);
+    $("#multiselect-department").multiselect('updateButtonText');
+    $(".departments-list").css("display", "none");
+  }
 });
