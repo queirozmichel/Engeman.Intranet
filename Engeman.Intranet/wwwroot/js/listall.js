@@ -163,7 +163,6 @@ $(document).ready(function () {
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
     sessionStorage.setItem("filterGrid", $("#post-grid").attr("data-filter-grid"));
     sessionStorage.removeItem("editAfterDetails");
-    $("#post-grid").tooltip();
     dropdownHideItens();
     postGrid.find("button.btn").each(function (index, element) {
       var actionButtons = $(element);

@@ -1,5 +1,4 @@
-﻿@*@model Engeman.Intranet.Models.Post;*@
-@model Engeman.Intranet.Models.PostFileViewModel;
+﻿@model Engeman.Intranet.Models.PostFileViewModel;
 @{List<Department> departments = ViewBag.Departments; }
 @{List<int> restrictedDepartments = ViewBag.RestrictedDepartments;}
 @{string layout = null;}
@@ -53,7 +52,7 @@
         <h4><i class="icon-reorder"></i>Postagem</h4>
       </div>
       <div class="widget-content">
-        <form class="form-horizontal row-border" id="edit-question-form" method="post">
+        <form class="form-horizontal row-border" id="edit-post-form" method="post">
           <div class="form-group">
             <label class="col-md-2 control-label">Código da postagem</label>
             <div class="col-md-1">
@@ -61,7 +60,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-2 control-label">Restrita ao setor?<span class="required">*</span></label>
+            <label class="col-md-2 control-label">Restrita ao setor?</label>
             <div class="col-md-10">
               @Html.CheckBox("Restricted", @Model.Post.Restricted, new { id = "restricted" })
             </div>
@@ -69,7 +68,7 @@
           <div class="form-group departments-list">
             <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
             <div class="col-md-10">
-              <select class="required" id="multiselect-department" multiple="multiple" name="DepartmentsList">
+              <select id="multiselect-department" multiple="multiple" name="DepartmentsList">
                 @{for (int i = 0; i < departments.Count; i++)
                   {
                     if (restrictedDepartments != null)
@@ -95,7 +94,7 @@
           <div class="form-group">
             <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
             <div class="col-md-10">
-              <input class="form-control required" id="subject" type="text" name="Subject" value="@Model.Post.Subject">
+              <input class="form-control" id="subject" type="text" name="Subject" value="@Model.Post.Subject">
             </div>
           </div>
           <div class="form-group">
@@ -107,7 +106,7 @@
           <div class="form-group">
             <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
             <div class="col-md-10">
-              <textarea class="form-control required" id="description" rows="3" cols="5" name="Description">@Model.Post.Description</textarea>
+              <textarea class="form-control" id="description" rows="3" cols="5" name="Description">@Model.Post.Description</textarea>
             </div>
           </div>
 
@@ -117,7 +116,7 @@
               <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
               <div class="col-md-3">
                 <label class="radio">
-                  @Html.RadioButtonFor(model => model.Files[0].FileType, "D", new { @class = "file-type required" })
+                  @Html.RadioButtonFor(model => model.Files[0].FileType, "D", new { @class = "file-type" })
                   Documento
                 </label>
                 <label class="radio">
@@ -143,22 +142,12 @@
             <div class="form-group">
               <label class="col-md-2 control-label">Novo(s) arquivo(s)</label>
               <div class="col-md-2">
-                <input id="file" type="file" name="binarydata" accept="application/pdf" multiple>
+                <input id="file" type="file" name="Files" accept="application/pdf" multiple>
               </div>
             </div>
           }
-
-
-
-
-
-
-
-
-
-
           <div class="form-actions">
-            <button class="btn btn pull-left back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar para as postagens</button>
+            <button title="Voltar para as postagens" class="btn btn pull-left back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar</button>
             <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
           </div>
         </form>
@@ -168,8 +157,7 @@
 </div>
 
 <script type="text/javascript" src="~/js/edit-post.js"></script>
-<script type="text/javascript" src="~/js/custom.js"></script>
-@if (ViewBag.IsAjaxCall == false)
+@if (ViewBag.IsAjaxCall == true)
 {
-  <script type="text/javascript" src="~/js/listall.js"></script>
+  <script type="text/javascript" src="~/js/custom.js"></script>
 }

@@ -30,18 +30,12 @@ function toastrConfig() {
 }
 
 
-$("#new-question-btn, #new-document-btn, #new-manual-btn").on("click", function (event) {
+$("#new-post-btn").on("click", function (event) {
   event.preventDefault();
-  if (this.id == "new-question-btn") {
-    var url = "/posts/newquestion";
-  } else if (this.id == "new-document-btn") {
-    var url = "/posts/newdocument";
-  } else {
-    var url = "/posts/newmanual";
-  }
   $.ajax({
     type: "GET",
-    url: url,
+    url: url = "/posts/newpost",
+    dataType: "html",
     beforeSend: function () {
       startSpinner();
     },

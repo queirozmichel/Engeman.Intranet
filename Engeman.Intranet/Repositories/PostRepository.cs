@@ -191,7 +191,7 @@ namespace Engeman.Intranet.Repositories
       return post;
     }
 
-    public void AddPostWithFile(NewPostWithFilesViewModel newPostWithFiles)
+    public void AddPost(NewPostViewModel newPost)
     {
       var query = "";
 
@@ -203,31 +203,31 @@ namespace Engeman.Intranet.Repositories
         $"INSERT INTO " +
         $"POST " +
         $"(RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, DEPARTMENT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
-        $"VALUES ('{newPostWithFiles.Post.Restricted}', '{newPostWithFiles.Post.Subject}', '{newPostWithFiles.Post.Description}', " +
-        $"'{newPostWithFiles.Post.CleanDescription}', '{newPostWithFiles.Post.Keywords}', {newPostWithFiles.Post.UserAccountId}, {newPostWithFiles.Post.DepartmentId}, " +
-        $"'{newPostWithFiles.Post.PostType}', '{newPostWithFiles.Post.Revised}')";
+        $"VALUES ('{newPost.Restricted}', '{newPost.Subject}', '{newPost.Description}', " +
+        $"'{newPost.CleanDescription}', '{newPost.Keywords}', {newPost.UserAccountId}, {newPost.DepartmentId}, " +
+        $"'{newPost.PostType}', '{newPost.Revised}')";
 
         var outputPostId = sq.GetDataToInt(query);
 
-        for (int i = 0; i < newPostWithFiles.Files.Count; i++)
+        for (int i = 0; i < newPost.Files.Count; i++)
         {
-          Object[] values = { newPostWithFiles.Files[i].BinaryData };
+          Object[] values = { newPost.Files[i].BinaryData };
           query =
           "INSERT " +
           "INTO POST_FILE(FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-          $"VALUES('{newPostWithFiles.Files[i].FileType}', '{newPostWithFiles.Files[i].Name}', '{newPostWithFiles.Files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
+          $"VALUES('{newPost.Files[i].FileType}', '{newPost.Files[i].Name}', '{newPost.Files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
 
-        if (newPostWithFiles.DepartmentsList != null)
+        if (newPost.DepartmentsList != null)
         {
-          for (int i = 0; i < newPostWithFiles.DepartmentsList.Count; i++)
+          for (int i = 0; i < newPost.DepartmentsList.Count; i++)
           {
             query =
             $"INSERT INTO " +
             $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
-            $"VALUES({outputPostId},{newPostWithFiles.DepartmentsList[i]}) ";
+            $"VALUES({outputPostId},{newPost.DepartmentsList[i]}) ";
 
             sq.ExecuteCommand(query);
           }

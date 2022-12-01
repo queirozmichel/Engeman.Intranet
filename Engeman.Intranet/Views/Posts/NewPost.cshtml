@@ -11,20 +11,13 @@
   Layout = layout;
 }
 
-<link rel="stylesheet" href="~/css/new-document-manual.css" />
+<link rel="stylesheet" href="~/css/new-post.css" />
 
 <div class="body-content">
   <!--=== Page Header ===-->
   <div class="page-header">
     <div class="page-title">
-      @if (ViewBag.DocumentOrManual == 'D')
-      {
-        <h3>Documento</h3>
-      }
-      else
-      {
-        <h3>Manual</h3>
-      }
+      <h3>Postagem</h3>
       <span>Good morning, John!</span>
     </div>
     <!-- Page Stats -->
@@ -56,33 +49,23 @@
     <div class="col-md-12">
       <div class="widget box">
         <div class="widget-header">
-          @if (ViewBag.DocumentOrManual == 'D')
-          {
-            <h4>
-              <i class="icon-reorder"></i>
-              Novo Documento
-            </h4>
-          }
-          else
-          {
-            <h4>
-              <i class="icon-reorder"></i>
-              Novo Manual
-            </h4>
-          }
+          <h4>
+            <i class="icon-reorder"></i>
+            Nova Postagem
+          </h4>
         </div>
         <div class="widget-content">
-          <form class="form-horizontal row-border" id="document-manual-form" method="post" enctype="multipart/form-data">
+          <form class="form-horizontal row-border" id="new-post-form" method="post">
             <div class="form-group">
-              <label class="col-md-2 control-label">Restrito ao setor?<span class="required">*</span></label>
+              <label class="col-md-2 control-label">Restrito ao setor?</label>
               <div class="col-md-10">
-                @Html.CheckBox("newPostWithFiles.post.restricted", new { id = "restricted" })
+                @Html.CheckBox("Restricted", new { id = "restricted" })
               </div>
             </div>
             <div class="form-group departments-list">
               <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
               <div class="col-md-10">
-                <select class="required" id="multiselect-department" multiple="multiple" name="newPostWithFiles.departmentsList">
+                <select id="multiselect-department" multiple="multiple" name="DepartmentsList">
                   @{if (departments != null)
                     {
                       for (int i = 0; i < departments.Count; i++)
@@ -97,38 +80,48 @@
             <div class="form-group">
               <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
               <div class="col-md-10">
-                <input id="subject" class="form-control required" type="text" name="newPostWithFiles.post.subject">
+                <input id="subject" class="form-control" type="text" name="Subject">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-2 control-label">Palavras chave</label>
               <div class="col-md-10">
-                <input class="tags" id="keywords" type="text" name="newPostWithFiles.post.keywords">
+                <input class="tags" id="keywords" type="text" name="Keywords">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
               <div class="col-md-10">
-                <textarea id="description" class="form-control required" rows="3" cols="5" name="newPostWithFiles.post.description"></textarea>
+                <textarea id="description" class="form-control" rows="3" cols="5" name="Description"></textarea>
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-2 control-label">Anexar arquivo(s)<span class="required">*</span></label>
+              <label class="col-md-2 control-label">Anexar arquivo(s)?</label>
+              <div class="col-md-10">
+                @Html.CheckBox("attach-files")
+              </div>
+            </div>
+            <div class="form-group files">
+              <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
+              <div class="col-md-3">
+                <label class="radio">
+                  @Html.RadioButton("FileType", "D", new { @class = "file-type" })
+                  Documento
+                </label>
+                <label class="radio">
+                  @Html.RadioButton("FileType", "M", new { @class = "file-type" })
+                  Manual
+                </label>
+              </div>
+            </div>
+            <div class="form-group files">
+              <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span></label>
               <div class="col-md-2">
-                <input class="required" id="file" type="file" name="binarydata" accept="application/pdf" multiple>
+                <input id="file" type="file" name="Files" accept="application/pdf" multiple>
               </div>
             </div>
             <div class="form-actions">
-              <button class="btn btn pull-left back-button"><i class="fa-solid fa-circle-arrow-left"></i>Ir para as postagens</button>
-              @{if (ViewBag.DocumentOrManual == 'D')
-                {
-                  <button class="btn btn-primary pull-right" id="submit-button" data-file-type="D" type="submit">Salvar</button>
-                }
-                else
-                {
-                  <button class="btn btn-primary pull-right" id="submit-button" data-file-type="M" type="submit">Salvar</button>
-                }
-              }
+              <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
             </div>
           </form>
         </div>
@@ -139,5 +132,8 @@
   <!-- /Page Content -->
 </div>
 
-<script type="text/javascript" src="~/js/new-document-manual.js"></script>
-<script type="text/javascript" src="~/js/custom.js"></script>
+<script type="text/javascript" src="~/js/new-post.js"></script>
+@if (ViewBag.IsAjaxCall == true)
+{
+  <script type="text/javascript" src="~/js/custom.js"></script>
+}

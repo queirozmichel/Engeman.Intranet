@@ -1,38 +1,83 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();  
+  closeSpinner();
 });
 
 $(document).ready(function () {
-  FormComponents.init(); // Init all form-specific plugins
-  $(document).tooltip();
+  FormComponents.init();
   countFiles();
-  $("#multiselect-department").multiselect({
-    nonSelectedText: 'Nenhum ',
-    includeSelectAllOption: true,
-    allSelectedText: 'Todos ',
+
+  $("#edit-post-form").validate({
+    debug: true,
+    rules: {
+      "Subject": {
+        required: true
+      },
+      "Description": {
+        required: true
+      },
+      "DepartmentsList": {
+        required: {
+          depends: function (element) {
+            return $("#restricted").bootstrapSwitch("state");
+          }
+        }
+      },
+      "Files": {
+        required: {
+          depends: function (element) {
+            if (countFiles() > 0) {
+              return false
+            } else {
+              return true
+            }
+          }
+        }
+      },
+      "FileType": {
+        required: {
+          depends: function (element) {
+            return $("#attach-files").bootstrapSwitch("state");
+          }
+        }
+      }
+    },
+    highlight: function (element) {
+      $(element).parents('.form-group').addClass('has-error');
+    },
+    errorPlacement: function (error, element) {
+      if (element.attr("type") == "radio") {
+        element.parent().parent().append(error);
+      } else {
+        error.insertAfter(element);
+      }
+    },
+    ignore: '*:not([name])',
   });
 
-  $("#restricted").bootstrapSwitch({
-    onText: "Sim",
-    offText: "Não",
-    size: "normal",
-  });
+  if ($("#restricted").is(":checked")) {
+    $("#restricted").bootstrapSwitch({
+      onText: "sim",
+      offText: "n&atilde;o",
+      size: "normal",
+      state: true,
+    });
 
-  if ($(".bootstrap-switch-on").length) {
     $(".departments-list").css("display", "block");
   }
 
   if (sessionStorage.getItem("editAfterDetails") != null) {
-    $(".back-button").contents().filter(function () {
-        return this.nodeType == Node.TEXT_NODE;
-      })[0].nodeValue = "Voltar para os detalhes";
+    $(".back-button").attr("title", "Voltar para os detalhes da postagem");
   }
 })
 
-$("#edit-question-form").on("submit", function (event) {
+window.onpopstate = function (event) {
+  console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+};
+
+$("#edit-post-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
   event.preventDefault();
-  if ($("#edit-question-form").valid()) {
+  if ($("#edit-post-form").valid()) {
     var formData = new FormData(this);
     $.ajax({
       type: "POST",
@@ -46,7 +91,7 @@ $("#edit-question-form").on("submit", function (event) {
       success: function (response) {
         if (response == 0) {
           toastr.error("Formulário inválido", "Erro!");
-        } else {          
+        } else {
           $.ajax({
             type: "GET",
             dataType: "html",
@@ -67,7 +112,7 @@ $("#edit-question-form").on("submit", function (event) {
         }
       },
       error: function () {
-        toastr.error("A pergunta não foi atualizada", "Erro!");
+        toastr.error("A postagem não foi atualizada", "Erro!");
       },
       complete: function () {
         closeSpinner();
@@ -76,22 +121,29 @@ $("#edit-question-form").on("submit", function (event) {
   }
 })
 
-$("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
-  if (state == true) {
-    $(".departments-list").css("display", "block");
-    $(".departments-list").find(".btn-group").removeClass("open");
-  } else {
-    $(".departments-list").find(".btn-group").addClass("open");
-    $("#multiselect-department").multiselect('deselectAll', true);
-    $("#multiselect-department").multiselect('updateButtonText');
-    $(".departments-list").css("display", "none");
-  }
-});
-
 $(".back-button").on("click", function (event) {
   event.preventDefault();
+
   if (sessionStorage.getItem("editAfterDetails") != null) {
-    window.postDetails(sessionStorage.getItem("postId"), sessionStorage.getItem("postType"));
+    $.ajax({
+      type: "GET",
+      dataType: "html",
+      url: "/posts/postdetails?idPost=" + sessionStorage.getItem("postId"),
+      beforeSend: function () {
+        startSpinner();
+      },
+      error: function () {
+        toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+      },
+      success: function (response) {
+        $("#render-body").empty();
+        $("#render-body").html(response);
+        window.history.pushState({}, {}, this.url);
+      },
+      complete: function () {
+        closeSpinner();
+      }
+    })
   } else {
     filter = "?filter=" + sessionStorage.getItem("filterGrid");
     $.ajax({
@@ -133,14 +185,7 @@ $(".icon-remove-circle").on("click", function () {
   $(this).parent().find(".file-active").val("N");
   var qty = countFiles();
   if (qty == 0) {
-    $("#file").addClass("required");
     $("#file").parent().prev().append("<span class=\"required\">*</span>");
     $(this).parent().parent().append("<p>Nenhum arquivo</p>");
   }
-})
-
-$("#file").on("change", function () {
-  $("#file").parent().parent().removeClass("has-error").addClass("has-success")
-  $("#file").removeClass("required has-error").addClass("has-success");
-  $("#file").parent().find("label").remove();
 })

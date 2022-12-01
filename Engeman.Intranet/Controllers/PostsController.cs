@@ -46,16 +46,15 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult NewQuestion()
+    public IActionResult NewPost()
     {
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
-
       if (permissions.CreatePost == true)
       {
         ViewBag.IsAjaxCall = isAjaxCall;
         ViewBag.Departments = _departmentRepository.GetAllDepartments();
-        return PartialView();
+        return PartialView("NewPost");
       }
       else
       {
@@ -64,7 +63,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public IActionResult NewQuestion(NewPostViewModel newPost)
+    public IActionResult NewPost(NewPostViewModel newPost, List<IFormFile> files)
     {
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
@@ -74,93 +73,33 @@ namespace Engeman.Intranet.Controllers
         newPost.Revised = true;
       }
 
+      newPost.CleanDescription = newPost.Description;
       newPost.UserAccountId = userAccount.Id;
       newPost.DepartmentId = userAccount.DepartmentId;
       newPost.PostType = 'Q';
-      newPost.CleanDescription = newPost.Description;
 
-      _postRepository.AddQuestion(newPost);
-
-      return Json(1);
-    }
-
-    [HttpGet]
-    public IActionResult NewDocument()
-    {
-      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-      var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
-
-      if (permissions.CreatePost == true)
+      if (files.Count > 0)
       {
-        ViewBag.IsAjaxCall = isAjaxCall;
-        ViewBag.DocumentOrManual = 'D';
-        ViewBag.Departments = _departmentRepository.GetAllDepartments();
-        return PartialView("NewDocumentManual");
-      }
-      else
-      {
-        return Ok(false);
-      }
-    }
-
-    [HttpGet]
-    public IActionResult NewManual()
-    {
-      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-      var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
-
-      if (permissions.CreatePost == true)
-      {
-        ViewBag.IsAjaxCall = isAjaxCall;
-        ViewBag.DocumentOrManual = 'M';
-        ViewBag.Departments = _departmentRepository.GetAllDepartments();
-        return PartialView("NewDocumentManual");
-      }
-      else
-      {
-        return Ok(false);
-      }
-    }
-
-    [HttpPost]
-    public IActionResult NewDocumentManual(NewPostWithFilesViewModel newPostWithFiles, List<IFormFile> binaryData, char fileType)
-    {
-      if (!ModelState.IsValid || binaryData.Count == 0)
-      {
-        return Json(0);
-      }
-
-      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
-
-      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
-      {
-        newPostWithFiles.Post.Revised = true;
-      }
-
-      newPostWithFiles.Post.CleanDescription = newPostWithFiles.Post.Description;
-      newPostWithFiles.Post.UserAccountId = userAccount.Id;
-      newPostWithFiles.Post.DepartmentId = userAccount.DepartmentId;
-
-      for (int i = 0; i < binaryData.Count; i++)
-      {
-        NewPostFileViewModel file = new NewPostFileViewModel();
-        file.FileType = fileType;
-        file.Name = binaryData[i].FileName;
-        file.Description = newPostWithFiles.Post.Description;
-        file.PostId = 0;
-        if (binaryData[i].Length > 0)
+        for (int i = 0; i < files.Count; i++)
         {
-          using (var stream = new MemoryStream())
+          NewPostFileViewModel file = new NewPostFileViewModel();
+          file.FileType = newPost.FileType;
+          newPost.PostType = 'F';
+          file.Name = files[i].FileName;
+          file.Description = newPost.Description;
+          file.PostId = 0;
+          if (files[i].Length > 0)
           {
-            binaryData[i].CopyTo(stream);
-            file.BinaryData = stream.ToArray();
+            using (var stream = new MemoryStream())
+            {
+              files[i].CopyTo(stream);
+              file.BinaryData = stream.ToArray();
+            }
           }
+          newPost.Files.Add(file);
         }
-        newPostWithFiles.Files.Add(file);
       }
-      _postRepository.AddPostWithFile(newPostWithFiles);
-
+      _postRepository.AddPost(newPost);
       return Json(1);
     }
 
@@ -311,12 +250,12 @@ namespace Engeman.Intranet.Controllers
         return PartialView(postFileViewModel);
       }
       return PartialView(postFileViewModel);
-    }    
+    }
 
     [HttpPost]
-    public IActionResult UpdatePost(EditedPostViewModel editedPost, List<IFormFile> binaryData)
+    public IActionResult UpdatePost(EditedPostViewModel editedPost, List<IFormFile> files)
     {
-      List<NewPostFileViewModel> files = new List<NewPostFileViewModel>();
+      List<NewPostFileViewModel> fileList = new List<NewPostFileViewModel>();
       var currentPost = _postRepository.GetPostById(editedPost.Id);
       char fileType = ' ';
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
@@ -342,27 +281,27 @@ namespace Engeman.Intranet.Controllers
 
       editedPost.CleanDescription = editedPost.Description;
 
-      if (binaryData.Count != 0)
+      if (files.Count != 0)
       {
-        files.Clear();
+        fileList.Clear();
 
-        for (int i = 0; i < binaryData.Count; i++)
+        for (int i = 0; i < files.Count; i++)
         {
           NewPostFileViewModel newFile = new NewPostFileViewModel();
-          if (binaryData[i].Length > 0)
+          if (files[i].Length > 0)
           {
             using (var stream = new MemoryStream())
             {
-              binaryData[i].CopyTo(stream);
+              files[i].CopyTo(stream);
               newFile.BinaryData = stream.ToArray();
-              newFile.Name = binaryData[i].FileName;
+              newFile.Name = files[i].FileName;
               newFile.FileType = fileType;
               newFile.Description = editedPost.Description;
-              files.Add(newFile);
+              fileList.Add(newFile);
             }
           }
         }
-        _postRepository.AddPostFile(editedPost.Id, files);
+        _postRepository.AddPostFile(editedPost.Id, fileList);
       }
 
       if (currentPost.Revised == true && userAccount.NoviceUser == false)
@@ -374,7 +313,7 @@ namespace Engeman.Intranet.Controllers
       ViewBag.FilterGrid = Request.Query["filter"];
 
       return PartialView("ListAll");
-    }    
+    }
 
     [HttpDelete]
     public IActionResult RemovePost(int idPost)
@@ -454,67 +393,14 @@ namespace Engeman.Intranet.Controllers
       }
 
       ViewBag.Comments = comments;
-      ViewBag.IsModerator = Convert.ToBoolean(HttpContext.Session.GetInt32("_Moderator"));
+      ViewBag.IsModerator = checkIsModerator();
       ViewBag.UserId = HttpContext.Session.GetInt32("_UserAccountId");
       ViewBag.PostId = idPost;
       ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.Post = postDetails;
 
       return PartialView();
-    }
-
-    //[HttpGet]
-    //public IActionResult DocumentManualDetails(int idPost)
-    //{
-    //  bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-    //  var post = _postRepository.GetPostById(idPost);
-    //  var postAuthor = _userAccountRepository.GetUserAccountById(post.UserAccountId);
-    //  var orderedFiles = _postFileRepository.GetFilesByPostId(idPost).OrderBy(a => a.Name).ToList();
-    //  var department = _departmentRepository.GetDepartmentById(postAuthor.DepartmentId);
-    //  var postsCount = _postRepository.GetPostsByUserId(postAuthor.Id).Count();
-    //  var commentsCount = _postCommentRepository.GetPostCommentsByUserId(postAuthor.Id).Count();
-    //  PostDetailsViewModel postDetails = new PostDetailsViewModel();
-    //  string[] keywords;
-
-    //  postDetails.Id = post.Id;
-    //  postDetails.Subject = post.Subject;
-    //  postDetails.Description = post.Description;
-    //  if (post.Keywords == "")
-    //  {
-    //    keywords = null;
-    //  }
-    //  else
-    //  {
-    //    keywords = post.Keywords.Split(';');
-    //  }
-    //  postDetails.Keywords = keywords;
-    //  postDetails.Revised = post.Revised;
-    //  postDetails.ChangeDate = post.ChangeDate;
-    //  postDetails.Files = orderedFiles;
-    //  postDetails.PostedDaysAgo = (DateTime.Now - postDetails.ChangeDate).Days;
-    //  if (postDetails.PostedDaysAgo == 0)
-    //  {
-    //    TimeSpan aux = postDetails.ChangeDate.TimeOfDay;
-    //    TimeSpan now = DateTime.Now.TimeOfDay;
-    //    if (aux > now)
-    //    {
-    //      postDetails.PostedDaysAgo = -1;
-    //    }
-    //  }
-    //  postDetails.AuthorId = postAuthor.Id;
-    //  postDetails.AuthorUsername = postAuthor.Name;
-    //  postDetails.AuthorDepartment = department.Description;
-    //  postDetails.AuthorPostsMade = postsCount;
-    //  postDetails.AuthorCommentsMade = commentsCount;
-    //  postDetails.AuthorPhoto = postAuthor.Photo;
-
-    //  ViewBag.IsAjaxCall = isAjaxCall;
-    //  ViewBag.postDetails = postDetails;
-    //  ViewBag.UserId = HttpContext.Session.GetInt32("_UserAccountId");
-    //  ViewBag.Moderator = HttpContext.Session.GetInt32("_Moderator");
-
-    //  return PartialView();
-    //}
+    }    
 
     [HttpGet]
     public ActionResult ShowFile(int idPost, int file)
