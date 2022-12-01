@@ -22,16 +22,15 @@ $("#cancel-comment-edit-btn").on("click", function (event) {
   $.ajax({
     type: "GET",
     dataType: "html",
-    data: { "idPost": idPost },
-    url: "/comments/commentlist",
+    url: "/posts/postdetails?idPost=" + idPost,
     success: function (response) {
-      $("#comment-list").empty();
-      $("#comment-list").html(response);
+      $("#render-body").empty();
+      $("#render-body").html(response);
     },
-    error: function (response) {
-      toastr.error("Não foi possível cancelar", "Erro!");
-    }
-  })
+    error: function () {
+      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+    },
+  })  
 })
 
 $("#comment-edit-form").on("submit", function (event) {
@@ -48,8 +47,8 @@ $("#comment-edit-form").on("submit", function (event) {
       url: "/comments/updatecomment",
       success: function (response) {
         toastr.success("O comentário foi atualizado", "Sucesso!");
-        $("#comment-list").empty();
-        $("#comment-list").html(response);
+        $("#render-body").empty();
+        $("#render-body").html(response);
       },
       error: function (response) {
         toastr.error("Não foi possível atualizar o comentário", "Erro!");
@@ -63,16 +62,8 @@ $(".icon-remove-circle").on("click", function () {
   $(this).parent().find(".file-active").val("N");
   var qty = countFiles();
   if (qty == 0) {
-    $("#file").addClass("required");
-    $("#file").parent().prev().append("<span class=\"required\">*</span>");
-    $(this).parent().parent().append("<p>Nenhum arquivo</p>");
+    $(this).parent().parent().append("<p class=\"none-file\">Nenhum arquivo</p>");
   }
-})
-
-$("#file").on("change", function () {
-  $("#file").parent().parent().removeClass("has-error").addClass("has-success")
-  $("#file").removeClass("required has-error").addClass("has-success");
-  $("#file").parent().find("label").remove();
 })
 
 function countFiles() {

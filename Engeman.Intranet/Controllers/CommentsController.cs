@@ -67,7 +67,6 @@ namespace Engeman.Intranet.Controllers
 
       comment.Description = editedComment.Comment.Description;
       comment.CleanDescription = editedComment.Comment.Description;
-      comment.Keywords = editedComment.Comment.Keywords;
 
       if (currentComment.Revised == true && userAccount.NoviceUser == false)
       {
@@ -97,8 +96,7 @@ namespace Engeman.Intranet.Controllers
         }
         _postCommentFileRepository.AddFilesToComment(currentComment.Id, files);
       }
-
-      return RedirectToAction("CommentList", new { idPost = editedComment.Comment.PostId });
+      return RedirectToAction("PostDetails", "Posts", new { idPost = editedComment.Comment.PostId });
     }
 
     [HttpGet]

@@ -108,7 +108,6 @@ CREATE TABLE POST_COMMENT (
      ACTIVE                        BIT DEFAULT 1                       NOT NULL,
 	 DESCRIPTION                   NVARCHAR(MAX)                       NOT NULL,
 	 CLEAN_DESCRIPTION             VARCHAR(MAX)                        NOT NULL,
-	 KEYWORDS                      VARCHAR(MAX)                            NULL,
 	 USERACCOUNT_ID                NUMERIC(18)                         NOT NULL,
 	 DEPARTMENT_ID                 NUMERIC(18)                         NOT NULL,
 	 POST_ID                       NUMERIC(18)                         NOT NULL,
@@ -328,8 +327,8 @@ INSERT INTO POST_FILE (FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID)
 VALUES ('D', 'Melhorias para o Engeman Client/Server.pdf', 'Melhorias sugeridas por clientes no ano de 2022.', CAST('Documento' AS VARBINARY(MAX)), 3)
 SELECT * FROM POST_FILE
 
-INSERT INTO POST_COMMENT (DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID)
-VALUES (N'Melhorias para o Engeman Client/Server 😀', 'Melhorias', 'Engeman', 8, 2, 4)
+INSERT INTO POST_COMMENT (DESCRIPTION, CLEAN_DESCRIPTION, USERACCOUNT_ID, DEPARTMENT_ID, POST_ID)
+VALUES (N'Melhorias para o Engeman Client/Server 😀', 'Melhorias', 8, 2, 4)
 SELECT * FROM POST_COMMENT
 
 INSERT INTO POST_COMMENT_FILE (FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_COMMENT_ID)

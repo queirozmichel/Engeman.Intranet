@@ -58,7 +58,7 @@ namespace Engeman.Intranet.Controllers
       }
       else
       {
-        return Ok(false);
+        return Ok(0);
       }
     }
 

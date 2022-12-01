@@ -18,8 +18,8 @@ namespace Engeman.Intranet.Repositories
         var query =
         $"INSERT INTO " +
         $"POST_COMMENT " +
-        $"(DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, DEPARTMENT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
-        $"VALUES(N'{newComment.Description}', '{newComment.CleanDescription}', '{newComment.Keywords}', " +
+        $"(DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, DEPARTMENT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
+        $"VALUES(N'{newComment.Description}', '{newComment.CleanDescription}', " +
         $"'{newComment.UserAccountId}', '{newComment.DepartmentId}', '{newComment.PostId}', '{newComment.Revised}')";
 
         var outputPostId = sq.GetDataToInt(query);
@@ -63,7 +63,6 @@ namespace Engeman.Intranet.Repositories
             postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
             postComment.Description = result.Rows[i]["Description"].ToString();
             postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
-            postComment.Keywords = result.Rows[i]["Keywords"].ToString();
             postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
             postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
             postComment.PostId = postId;
@@ -103,7 +102,7 @@ namespace Engeman.Intranet.Repositories
       {
         string query =
         $"SELECT " +
-        $"ID, ACTIVE, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, DEPARTMENT_ID, CHANGE_DATE, REVISED " +
+        $"ID, ACTIVE, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, DEPARTMENT_ID, CHANGE_DATE, REVISED " +
         $"FROM POST_COMMENT " +
         $"WHERE POST_ID = '{postId}'";
 
@@ -129,7 +128,6 @@ namespace Engeman.Intranet.Repositories
           postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
           postComment.Description = result.Rows[i]["Description"].ToString();
           postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
-          postComment.Keywords = result.Rows[i]["Keywords"].ToString();
           postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
           postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
           postComment.PostId = postId;
@@ -158,7 +156,6 @@ namespace Engeman.Intranet.Repositories
         comment.Active = Convert.ToBoolean(result["active"]);
         comment.Description = Convert.ToString(result["description"]);
         comment.CleanDescription = Convert.ToString(result["clean_description"]);
-        comment.Keywords = Convert.ToString(result["keywords"]);
         comment.UserAccountId = Convert.ToInt32(result["user_account_id"]);
         comment.DepartmentId = Convert.ToInt32(result["department_id"]);
         comment.PostId = Convert.ToInt32(result["post_id"]);
@@ -174,8 +171,7 @@ namespace Engeman.Intranet.Repositories
       string query =
       $"UPDATE " +
       $"POST_COMMENT " +
-      $"SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description}', CLEAN_DESCRIPTION = '{comment.CleanDescription}', " +
-      $"KEYWORDS = '{comment.Keywords}', REVISED = '{comment.Revised}' " +
+      $"SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description}', CLEAN_DESCRIPTION = '{comment.CleanDescription}', REVISED = '{comment.Revised}' " +
       $"WHERE ID = '{id}'";
 
       using (StaticQuery sq = new StaticQuery())
@@ -229,7 +225,6 @@ namespace Engeman.Intranet.Repositories
           comment.Active = Convert.ToBoolean(result.Rows[i]["active"]);
           comment.Description = Convert.ToString(result.Rows[i]["description"]);
           comment.CleanDescription = Convert.ToString(result.Rows[i]["clean_description"]);
-          comment.Keywords = Convert.ToString(result.Rows[i]["keywords"]);
           comment.UserAccountId = Convert.ToInt32(result.Rows[i]["user_account_id"]);
           comment.DepartmentId = Convert.ToInt32(result.Rows[i]["department_id"]);
           comment.PostId = Convert.ToInt32(result.Rows[i]["post_id"]);
@@ -268,7 +263,6 @@ namespace Engeman.Intranet.Repositories
             postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
             postComment.Description = result.Rows[i]["Description"].ToString();
             postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
-            postComment.Keywords = result.Rows[i]["Keywords"].ToString();
             postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
             postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
             postComment.PostId = postComment.PostId;

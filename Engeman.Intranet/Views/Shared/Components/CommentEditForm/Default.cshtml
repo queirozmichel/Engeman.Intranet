@@ -16,12 +16,6 @@
           <input id="@ViewBag.SelectorId-description" class="form-control wang-editor-description" name="comment.description" type="hidden" value="@Model.Comment.Description">
         </div>
       </div>
-      <div class="form-group">
-        <label class="col-md-2 control-label">Palavras chave</label>
-        <div class="col-md-10">
-          <input class="tags" id="tags-comment-edit-form" type="text" name="comment.keywords" value="@Model.Comment.Keywords">
-        </div>
-      </div>
       @if (@Model.Files.Count > 0)
       {
         <div class="form-group files">

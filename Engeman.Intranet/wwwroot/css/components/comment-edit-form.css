@@ -15,3 +15,11 @@
 .wang-editor-toolbar {
   border-bottom: 1px solid #ccc;
 }
+
+p.none-file {
+  margin: 5px 0 0 0;
+}
+
+#cancel-comment-edit-btn{
+  position: revert;
+}

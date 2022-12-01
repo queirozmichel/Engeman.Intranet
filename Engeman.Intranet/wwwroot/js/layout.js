@@ -40,12 +40,12 @@ $("#new-post-btn").on("click", function (event) {
       startSpinner();
     },
     success: function (response) {
-      if (response != false) {
+      if (response == 0) {
+        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem")
+      } else {
         $("#render-body").empty();
         $("#render-body").html(response);
         window.history.pushState({}, '', url);
-      } else {
-        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem")
       }
     },
     error: function (response) {

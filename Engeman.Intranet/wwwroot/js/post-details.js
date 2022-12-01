@@ -82,20 +82,19 @@ $("#comment-tab").on("click", function () {
 })
 
 $("#post-tab").on("click", function () {
-  //var idPost = $("#id-post").text();
-  //$.ajax({
-  //  type: "GET",
-  //  dataType: "html",
-  //  data: { "idPost": idPost },
-  //  url: "/posts/questiondetails",
-  //  success: function (response) {
-  //    $("#render-body").empty();
-  //    $("#render-body").html(response);
-  //  },
-  //  error: function (response) {
-  //    toastr.error("", "Erro!");
-  //  }
-  //})
+  var idPost = $("#id-post").text();
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    url: "/posts/postdetails?idPost=" + idPost,
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+    },
+    error: function () {
+      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
+    },
+  })
 })
 
 $(".edit-post-button").on("click", function () {
@@ -133,7 +132,7 @@ $(".btn-yes, .btn-no").on("click", function () {
     deletePost(postId).then((response) => {
       $.ajax({
         type: "GET",
-        dataType: "html",        
+        dataType: "html",
         url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
         beforeSend: function () {
           startSpinner();
@@ -143,7 +142,7 @@ $(".btn-yes, .btn-no").on("click", function () {
           $("#render-body").html(response);
           window.history.pushState({}, '', "/posts/listall?filter=" + sessionStorage.getItem("filterGrid"));
           $.ajax({
-            type: "GET", 
+            type: "GET",
             url: "/posts/unrevisedlist",
             dataType: "html",
             success: function (result) {
@@ -151,11 +150,11 @@ $(".btn-yes, .btn-no").on("click", function () {
               $(".sub-menu > li.unrevised-posts").remove();
               $(".sub-menu > li.unrevised-comments").remove();
               $(".aprove-post-button").remove();
-              $("#list-posts-content").html(result);              
+              $("#list-posts-content").html(result);
             },
             error: function (result) {
               toastr.error("Não foi possível atualizar o menu de postagens", "Erro!");
-            },  
+            },
           })
         },
         error: function () {

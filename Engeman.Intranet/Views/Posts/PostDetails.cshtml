@@ -136,7 +136,7 @@
               }
             </div>
           </div>
-          <div class="col-md-12" id="comment-list">
+          <div class="col-md-12">
             <div class="row">
               <div class="col-md-12">
                 <hr />
@@ -169,8 +169,8 @@
                     <div class="col-md-10 comment-action-buttons">
                       @if (ViewBag.Comments[i].AuthorId == Context.Session.GetInt32("_UserAccountId") || ViewBag.IsModerator == true)
                       {
-                        <button title="Editar a postagem" class="comment-edit-btn btn btn-xs"><i class="fa fa-pencil"></i>Editar</button>
-                        <button title="Excluir a postagem" class="comment-delete-btn btn btn-xs"><i class="fa fa-trash-o"></i>Excluir</button>
+                        <button title="Editar o comentário" class="comment-edit-btn btn btn-xs"><i class="fa fa-pencil"></i>Editar</button>
+                        <button title="Excluir o comentário" class="comment-delete-btn btn btn-xs"><i class="fa fa-trash-o"></i>Excluir</button>
                         @if (ViewBag.Comments[i].Revised == false && ViewBag.IsModerator == true)
                         {
                           <button title="Aprovar a postagem" class="comment-aprove-btn btn btn-xs"><i class="fa-solid fa-check"></i>Aprovar</button>
@@ -220,12 +220,6 @@
               <div class="widget-content">
                 <form class="form-horizontal row-border" id="comment-form" method="post" enctype="multipart/form-data">
                   <div class="form-group" id="form-group-wang-editor"></div>
-                  <div class="form-group">
-                    <label class="col-md-2 control-label">Palavras chave</label>
-                    <div class="col-md-10">
-                      <input class="tags" id="keywords" type="text" name="keywords">
-                    </div>
-                  </div>
                   <div class="form-group">
                     <label class="col-md-2 control-label">Anexar arquivo(s)</label>
                     <div class="col-md-2">
