@@ -43,7 +43,7 @@ namespace Engeman.Intranet.Controllers
     public IActionResult UpdateComment(CommentEditViewModel editedComment, List<IFormFile> binaryData)
     {
       List<CommentFile> files = new List<CommentFile>();
-      PostComment comment = new PostComment();
+      Comment comment = new Comment();
       var currentComment = _postCommentRepository.GetPostCommentById(editedComment.Comment.Id);
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
       var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
@@ -58,22 +58,14 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      for (int i = 0; i < editedComment.Files.Count; i++)
-      {
-        CommentFile fileUpdate = new CommentFile();
-        fileUpdate.Description = editedComment.Comment.Description;
-        files.Add(fileUpdate);
-      }
-
       comment.Description = editedComment.Comment.Description;
-      comment.CleanDescription = editedComment.Comment.Description;
 
       if (currentComment.Revised == true && userAccount.NoviceUser == false)
       {
         comment.Revised = true;
       }
 
-      _postCommentRepository.UpdatePostCommentById(currentComment.Id, comment, files);
+      _postCommentRepository.UpdatePostCommentById(currentComment.Id, comment);
 
       if (binaryData.Count != 0)
       {

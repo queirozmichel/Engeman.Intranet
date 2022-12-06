@@ -8,7 +8,7 @@ namespace Engeman.Intranet.Models
     {
       Files = new List<CommentFile>();
     }
-    public PostComment Comment { get; set; }
+    public Comment Comment { get; set; }
     public List<CommentFile> Files { get; set; }
   }
 }

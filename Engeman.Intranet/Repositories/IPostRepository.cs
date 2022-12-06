@@ -11,8 +11,7 @@ namespace Engeman.Intranet.Repositories
     public List<Post> GetPostsByUserId(int userId);
     public Post GetPostById(int id);
     public List<int> GetRestrictedDepartmentsIdByPost(int id);
-    public void AddQuestion(NewPostViewModel newPost);
-    public void UpdatePost(EditedPostViewModel editedPost);
+    public void UpdatePost(PostEditViewModel editedPost);
     public void AddPost(NewPostViewModel newPost);
     public void AddPostFile(int postId, List<NewPostFileViewModel> files);
     public void DeletePost(int postId);

@@ -17,10 +17,9 @@ namespace Engeman.Intranet.Repositories
         //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
         var query =
         $"INSERT INTO " +
-        $"POST_COMMENT " +
-        $"(DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, DEPARTMENT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
-        $"VALUES(N'{newComment.Description}', '{newComment.CleanDescription}', " +
-        $"'{newComment.UserAccountId}', '{newComment.DepartmentId}', '{newComment.PostId}', '{newComment.Revised}')";
+        $"COMMENT " +
+        $"(DESCRIPTION, USER_ACCOUNT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
+        $"VALUES(N'{newComment.Description}', {newComment.UserAccountId}, {newComment.PostId}, '{newComment.Revised}')";
 
         var outputPostId = sq.GetDataToInt(query);
 
@@ -29,42 +28,39 @@ namespace Engeman.Intranet.Repositories
           Object[] values = { newComment.Files[i].BinaryData };
           query =
           $"INSERT INTO " +
-          $"POST_COMMENT_FILE " +
-          $"(NAME, DESCRIPTION, BINARY_DATA, POST_COMMENT_ID) " +
-          $"VALUES('{newComment.Files[i].Name}', '{newComment.Files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), '{outputPostId}') ";
+          $"COMMENTFILE " +
+          $"(NAME, BINARY_DATA, COMMENT_ID) " +
+          $"VALUES('{newComment.Files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), '{outputPostId}') ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
       }
     }
 
-    public List<PostComment> GetPostCommentsByPostId(int postId)
+    public List<Comment> GetPostCommentsByPostId(int postId)
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        List<PostComment> postComments = new List<PostComment>();
+        List<Comment> postComments = new List<Comment>();
 
         var query =
         $"SELECT * " +
-        $"FROM POST_COMMENT " +
+        $"FROM COMMENT " +
         $"WHERE POST_ID = {postId} ";
 
         var result = sq.GetDataSet(query).Tables[0];
         if (result.Rows.Count == 0)
         {
-          return new List<PostComment>();
+          return new List<Comment>();
         }
         else
         {
           for (int i = 0; i < result.Rows.Count; i++)
           {
-            PostComment postComment = new PostComment();
+            Comment postComment = new Comment();
             postComment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
             postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
             postComment.Description = result.Rows[i]["Description"].ToString();
-            postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
-            postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
-            postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
             postComment.PostId = postId;
             postComment.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
             postComment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
@@ -80,7 +76,7 @@ namespace Engeman.Intranet.Repositories
       bool result = true;
       var query =
       $"DELETE " +
-      $"FROM POST_COMMENT " +
+      $"FROM COMMENT " +
       $"WHERE ID = {id}";
 
       using (StaticQuery sq = new StaticQuery())
@@ -94,16 +90,16 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public List<PostComment> GetPostCommentsByRestriction(UserAccount user, int postId)
+    public List<Comment> GetPostCommentsByRestriction(UserAccount user, int postId)
     {
-      List<PostComment> postComments = new List<PostComment>();
+      List<Comment> postComments = new List<Comment>();
 
       using (StaticQuery sq = new StaticQuery())
       {
         string query =
         $"SELECT " +
-        $"ID, ACTIVE, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, DEPARTMENT_ID, CHANGE_DATE, REVISED " +
-        $"FROM POST_COMMENT " +
+        $"ID, ACTIVE, DESCRIPTION, USER_ACCOUNT_ID, CHANGE_DATE, REVISED " +
+        $"FROM COMMENT " +
         $"WHERE POST_ID = '{postId}'";
 
         var result = sq.GetDataSet(query).Tables[0];
@@ -123,13 +119,11 @@ namespace Engeman.Intranet.Repositories
             continue;
           }
 
-          PostComment postComment = new PostComment();
+          Comment postComment = new Comment();
           postComment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
           postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
           postComment.Description = result.Rows[i]["Description"].ToString();
-          postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
           postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
-          postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
           postComment.PostId = postId;
           postComment.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
           postComment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
@@ -139,15 +133,15 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public PostComment GetPostCommentById(int commentId)
+    public Comment GetPostCommentById(int commentId)
     {
-      PostComment comment = new PostComment();
+      Comment comment = new Comment();
 
       using (StaticQuery sq = new StaticQuery())
       {
         string query =
         $"SELECT * " +
-        $"FROM POST_COMMENT " +
+        $"FROM COMMENT " +
         $"WHERE ID = '{commentId}'";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
@@ -155,9 +149,7 @@ namespace Engeman.Intranet.Repositories
         comment.Id = Convert.ToInt32(result["id"]);
         comment.Active = Convert.ToBoolean(result["active"]);
         comment.Description = Convert.ToString(result["description"]);
-        comment.CleanDescription = Convert.ToString(result["clean_description"]);
         comment.UserAccountId = Convert.ToInt32(result["user_account_id"]);
-        comment.DepartmentId = Convert.ToInt32(result["department_id"]);
         comment.PostId = Convert.ToInt32(result["post_id"]);
         comment.ChangeDate = (DateTime)result["change_date"];
         comment.Revised = Convert.ToBoolean(result["revised"]);
@@ -166,12 +158,12 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public bool UpdatePostCommentById(int id, PostComment comment)
+    public bool UpdatePostCommentById(int id, Comment comment)
     {
       string query =
       $"UPDATE " +
-      $"POST_COMMENT " +
-      $"SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description}', CLEAN_DESCRIPTION = '{comment.CleanDescription}', REVISED = '{comment.Revised}' " +
+      $"COMMENT " +
+      $"SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description}', REVISED = '{comment.Revised}' " +
       $"WHERE ID = '{id}'";
 
       using (StaticQuery sq = new StaticQuery())
@@ -180,53 +172,28 @@ namespace Engeman.Intranet.Repositories
 
         return result;
       }
-    }
+    }    
 
-    public bool UpdatePostCommentById(int id, PostComment comment, List<CommentFile> files)
-    {
-      string update;
-
-      using (StaticQuery sq = new StaticQuery())
-      {
-        UpdatePostCommentById(id, comment);
-
-        for (int i = 0; i < files.Count; i++)
-        {
-          update =
-          $"UPDATE " +
-          $"POST_COMMENT_FILE " +
-          $"SET DESCRIPTION = N'{comment.Description}' " +
-          $"WHERE POST_COMMENT_ID = {id}";
-
-          sq.ExecuteCommand(update);
-        }
-      }
-      return true;
-    }
-
-    public List<PostComment> GetUnrevisedComments()
+    public List<Comment> GetUnrevisedComments()
     {
       string query =
       $"SELECT * " +
-      $"FROM POST_COMMENT " +
+      $"FROM COMMENT " +
       $"WHERE REVISED = 0 ";
 
       using (StaticQuery sq = new StaticQuery())
       {
-        List<PostComment> comments = new List<PostComment>();
+        List<Comment> comments = new List<Comment>();
 
         var result = sq.GetDataSet(query).Tables[0];
 
         for (int i = 0; i < result.Rows.Count; i++)
         {
-          PostComment comment = new PostComment();
+          Comment comment = new Comment();
 
           comment.Id = Convert.ToInt32(result.Rows[i]["id"]);
           comment.Active = Convert.ToBoolean(result.Rows[i]["active"]);
           comment.Description = Convert.ToString(result.Rows[i]["description"]);
-          comment.CleanDescription = Convert.ToString(result.Rows[i]["clean_description"]);
-          comment.UserAccountId = Convert.ToInt32(result.Rows[i]["user_account_id"]);
-          comment.DepartmentId = Convert.ToInt32(result.Rows[i]["department_id"]);
           comment.PostId = Convert.ToInt32(result.Rows[i]["post_id"]);
           comment.ChangeDate = (DateTime)result.Rows[i]["change_date"];
           comment.Revised = Convert.ToBoolean(result.Rows[i]["revised"]);
@@ -238,33 +205,31 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public List<PostComment> GetPostCommentsByUserId(int userId)
+    public List<Comment> GetPostCommentsByUserId(int userId)
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        List<PostComment> postComments = new List<PostComment>();
+        List<Comment> postComments = new List<Comment>();
 
         var query =
         $"SELECT * " +
-        $"FROM POST_COMMENT " +
+        $"FROM COMMENT " +
         $"WHERE USER_ACCOUNT_ID = {userId} ";
 
         var result = sq.GetDataSet(query).Tables[0];
         if (result.Rows.Count == 0)
         {
-          return new List<PostComment>();
+          return new List<Comment>();
         }
         else
         {
           for (int i = 0; i < result.Rows.Count; i++)
           {
-            PostComment postComment = new PostComment();
+            Comment postComment = new Comment();
             postComment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
             postComment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
             postComment.Description = result.Rows[i]["Description"].ToString();
-            postComment.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
             postComment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
-            postComment.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
             postComment.PostId = postComment.PostId;
             postComment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
             postComments.Add(postComment);

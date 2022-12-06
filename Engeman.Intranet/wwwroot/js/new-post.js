@@ -1,5 +1,5 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();
+  closeSpinner();  
 });
 
 $(document).ready(function () {
@@ -27,7 +27,7 @@ $(document).ready(function () {
           }
         }
       },
-      "FileType": {
+      "PostType": {
         required: {
           depends: function (element) {
             return $("#attach-files").bootstrapSwitch("state");
@@ -51,7 +51,7 @@ $(document).ready(function () {
   $(".files").css("display", "none");
 })
 
-$("#new-post-form").on("submit", function (event) {
+$("#new-post-form").on("submit", function (event) {  
   var filter = "?filter=allPosts";
   //ignora o submit padrão do formulário
   event.preventDefault();
@@ -98,7 +98,7 @@ $("#new-post-form").on("submit", function (event) {
         toastr.error("A postagem não foi salva", "Erro!");
       }
     });
-  }
+  }  
 })
 
 $("#attach-files").on("switchChange.bootstrapSwitch", function (event, state) {

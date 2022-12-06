@@ -22,7 +22,7 @@ $(document).ready(function () {
           }
         }
       },
-      "Files": {
+      "BinaryData": {
         required: {
           depends: function (element) {
             if (countFiles() > 0) {
@@ -69,10 +69,6 @@ $(document).ready(function () {
     $(".back-button").attr("title", "Voltar para os detalhes da postagem");
   }
 })
-
-window.onpopstate = function (event) {
-  console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
-};
 
 $("#edit-post-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
@@ -182,10 +178,10 @@ function countFiles() {
 
 $(".icon-remove-circle").on("click", function () {
   $(this).parent().css("display", "none");
-  $(this).parent().find(".file-active").val("N");
+  $(this).parent().find(".file-active").val("false");
   var qty = countFiles();
   if (qty == 0) {
     $("#file").parent().prev().append("<span class=\"required\">*</span>");
-    $(this).parent().parent().append("<p>Nenhum arquivo</p>");
+    $(this).parent().parent().append("<p class=\"none-file\">Nenhum arquivo</p>");
   }
 })

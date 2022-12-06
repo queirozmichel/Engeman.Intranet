@@ -88,13 +88,13 @@ $(document).ready(function () {
           return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
         }
         if (row.revised == true) {
-          if (row.postType === "F") {
-            if (row.fileType === "D") {
-              return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
-            } else if (row.fileType === "M") {
-              return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
-            }
-          } else if (row.postType === "Q") {
+          if (row.postType === "D") {
+            return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
+          }
+          else if (row.postType === "M") {
+            return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
+          }
+          else if (row.postType === "N") {
             return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>";
           }
         }
@@ -176,9 +176,9 @@ $(document).ready(function () {
           sessionStorage.setItem("postType", postType);
           postDetails(idPost, postType);
         } else if (action == "edit") {
-          postPermissions(userIdPost, idPost, postType, action);
+          postPermissions(userIdPost, idPost, action);
         } else if (action == "delete") {
-          postPermissions(userIdPost, idPost, postType, action);
+          postPermissions(userIdPost, idPost, action);
           elementAux = element;
           idPostAux = idPost;
         } else if (action == "aprove") {
@@ -188,25 +188,12 @@ $(document).ready(function () {
     });
   })
 
-  function postPermissions(userIdPost, idPost, postType, method) {
+  function postPermissions(userIdPost, idPost, method) {
     $.get("/useraccount/checkpermissions", { userIdPost, method })
       .done(function (response) {
         if (method == "edit") {
-          if (response == "EditAnyPost") {
-            if (postType === 'Q') {
-              editPost(idPost);
-            }
-            else {
-              postFileEdit(idPost);
-            }
-          }
-          else if (response == "EditOwnerPost") {
-            if (postType === 'Q') {
-              editPost(idPost);
-            }
-            else {
-              postFileEdit(idPost);
-            }
+          if (response == "EditAnyPost" || response == "EditOwnerPost") {
+            editPost(idPost);
           }
           else if (response == "CannotEditAnyonePost") {
             showAlertModal("Operação não suportada!", "Você não tem permissão para editar uma postagem de outra pessoa");
@@ -291,29 +278,6 @@ function postDetails(idPost) {
 }
 
 function editPost(idPost) {
-  $.ajax({
-    type: "GET",
-    data: { "idPost": idPost },
-    dataType: "html",
-    url: "/posts/editpost",
-    beforeSend: function () {
-      startSpinner();
-    },
-    error: function () {
-      toastr.error("Não foi possível editar a postagem", "Erro!");
-    },
-    success: function (response) {
-      $("#render-body").empty();
-      $("#render-body").html(response);
-      window.history.pushState({}, {}, this.url);
-    },
-    complete: function () {
-      closeSpinner();
-    }
-  })
-}
-
-function postFileEdit(idPost) {
   $.ajax({
     type: "GET",
     data: { "idPost": idPost },

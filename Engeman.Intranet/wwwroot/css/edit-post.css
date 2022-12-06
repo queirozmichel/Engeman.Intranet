@@ -20,7 +20,6 @@
   display: none;
 }
 
-p {
+p.none-file {
   margin: 5px 0 0 0;
-  color: darkred;
 }

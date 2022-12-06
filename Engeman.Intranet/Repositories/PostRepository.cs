@@ -17,13 +17,13 @@ namespace Engeman.Intranet.Repositories
       {
         var query = "SELECT " +
           "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USER_ACCOUNT_ID, " +
-          "POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, PF.FILE_TYPE " +
+          "POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT " +
           "FROM POST " +
-          "LEFT JOIN POST_FILE AS PF ON PF.POST_ID = POST.ID " +
-          "INNER JOIN USER_ACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID " +
-          "INNER JOIN DEPARTMENT AS D ON POST.DEPARTMENT_ID = D.ID " +
+          "LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
+          "INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID " +
+          "INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
           "WHERE POST.ACTIVE = 1 " +
-          "GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, PF.FILE_TYPE, " +
+          "GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
           "UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION";
 
         var result = sq.GetDataSet(query).Tables[0];
@@ -48,7 +48,7 @@ namespace Engeman.Intranet.Repositories
           {
             query =
             $"SELECT COUNT(*)" +
-            $"FROM POST_DEPARTMENT " +
+            $"FROM POSTRESTRICTION " +
             $"WHERE POST_ID = {result.Rows[i]["Post_Id"]} AND DEPARTMENT_ID = {user.DepartmentId}";
 
             var aux = sq.GetDataToInt(query);
@@ -69,13 +69,12 @@ namespace Engeman.Intranet.Repositories
           postDto.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
           postDto.DepartmentDescription = result.Rows[i]["Department"].ToString();
           postDto.UserAccountName = result.Rows[i]["Name"].ToString();
-          postDto.FileType = result.Rows[i]["File_Type"].ToString();
-
           posts.Add(postDto);
         }
       }
       return posts;
     }
+
     public List<Post> GetPostsByUserId(int userId)
     {
       using (StaticQuery sq = new StaticQuery())
@@ -106,41 +105,11 @@ namespace Engeman.Intranet.Repositories
             post.Keywords = result.Rows[i]["Keywords"].ToString();
             post.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
             post.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
-            post.DepartmentId = Convert.ToInt32(result.Rows[i]["Department_Id"]);
             post.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
             post.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
             posts.Add(post);
           }
           return posts;
-        }
-      }
-    }
-
-    public void AddQuestion(NewPostViewModel newPost)
-    {
-      using (StaticQuery sq = new StaticQuery())
-      {
-        var query =
-        $"INSERT INTO " +
-        $"POST " +
-        $"(RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, DEPARTMENT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
-        $"VALUES ('{newPost.Restricted}', '{newPost.Subject}', '{newPost.Description}', " +
-        $"'{newPost.CleanDescription}', '{newPost.Keywords}', {newPost.UserAccountId}, {newPost.DepartmentId}, " +
-        $"'{newPost.PostType}', '{newPost.Revised}')";
-
-        var outputPostId = sq.GetDataToInt(query);
-
-        if (newPost.DepartmentsList != null)
-        {
-          for (int i = 0; i < newPost.DepartmentsList.Count; i++)
-          {
-            query =
-            $"INSERT INTO " +
-            $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
-            $"VALUES({outputPostId},{newPost.DepartmentsList[i]}) ";
-
-            sq.ExecuteCommand(query);
-          }
         }
       }
     }
@@ -183,7 +152,6 @@ namespace Engeman.Intranet.Repositories
         post.CleanDescription = result["Clean_Description"].ToString();
         post.Keywords = result["Keywords"].ToString();
         post.UserAccountId = Convert.ToInt32(result["User_Account_Id"]);
-        post.DepartmentId = Convert.ToInt32(result["Department_Id"]);
         post.PostType = Convert.ToChar(result["Post_Type"].ToString());
         post.Revised = Convert.ToBoolean(result["Revised"]);
         post.ChangeDate = (DateTime)result["Change_Date"];
@@ -202,9 +170,9 @@ namespace Engeman.Intranet.Repositories
         query =
         $"INSERT INTO " +
         $"POST " +
-        $"(RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, DEPARTMENT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
-        $"VALUES ('{newPost.Restricted}', '{newPost.Subject}', '{newPost.Description}', " +
-        $"'{newPost.CleanDescription}', '{newPost.Keywords}', {newPost.UserAccountId}, {newPost.DepartmentId}, " +
+        $"(RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
+        $"VALUES ('{newPost.Restricted}', '{newPost.Subject}', N'{newPost.Description}', " +
+        $"'{newPost.CleanDescription}', '{newPost.Keywords}', {newPost.UserAccountId}, " +
         $"'{newPost.PostType}', '{newPost.Revised}')";
 
         var outputPostId = sq.GetDataToInt(query);
@@ -214,8 +182,8 @@ namespace Engeman.Intranet.Repositories
           Object[] values = { newPost.Files[i].BinaryData };
           query =
           "INSERT " +
-          "INTO POST_FILE(FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-          $"VALUES('{newPost.Files[i].FileType}', '{newPost.Files[i].Name}', '{newPost.Files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
+          "INTO POSTFILE(NAME, BINARY_DATA, POST_ID) " +
+          $"VALUES('{newPost.Files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), {outputPostId}) ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
@@ -226,7 +194,7 @@ namespace Engeman.Intranet.Repositories
           {
             query =
             $"INSERT INTO " +
-            $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
+            $"POSTRESTRICTION(POST_ID, DEPARTMENT_ID) " +
             $"VALUES({outputPostId},{newPost.DepartmentsList[i]}) ";
 
             sq.ExecuteCommand(query);
@@ -249,42 +217,31 @@ namespace Engeman.Intranet.Repositories
 
           query =
           "INSERT " +
-          "INTO POST_FILE(FILE_TYPE, NAME, DESCRIPTION, BINARY_DATA, POST_ID) " +
-          $"VALUES('{files[i].FileType}', '{files[i].Name}', '{files[i].Description}', Convert(VARBINARY(MAX),@BinaryData), {postId}) ";
+          "INTO POSTFILE(NAME, BINARY_DATA, POST_ID) " +
+          $"VALUES('{files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), {postId}) ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
       }
     }
 
-    public void UpdatePost(EditedPostViewModel editedPost)
+    public void UpdatePost(PostEditViewModel editedPost)
     {
       using (StaticQuery sq = new StaticQuery())
       {
         var update =
         $"UPDATE " +
         $"POST " +
-        $"SET RESTRICTED = '{editedPost.Restricted}', SUBJECT = '{editedPost.Subject}', DESCRIPTION = '{editedPost.Description}', " +
-        $"CLEAN_DESCRIPTION = '{editedPost.Description}', KEYWORDS = '{editedPost.Keywords}', REVISED = '{editedPost.Revised}' " +
+        $"SET RESTRICTED = '{editedPost.Restricted}', SUBJECT = '{editedPost.Subject}', DESCRIPTION = N'{editedPost.Description}', " +
+        $"CLEAN_DESCRIPTION = '{editedPost.Description}', KEYWORDS = '{editedPost.Keywords}', POST_TYPE = '{editedPost.PostType}', REVISED = '{editedPost.Revised}' " +
         $"WHERE ID = {editedPost.Id}";
 
         var delete =
         $"DELETE " +
-        $"FROM POST_DEPARTMENT " +
+        $"FROM POSTRESTRICTION " +
         $"WHERE POST_ID = {editedPost.Id} ";
 
         sq.ExecuteCommand(update);
-
-        if (editedPost.Files.Count > 0)
-        {
-          update =
-          $"UPDATE " +
-          $"POST_FILE " +
-          $"SET FILE_TYPE = '{editedPost.Files[0].FileType}', DESCRIPTION = '{editedPost.Description}' " +
-          $"WHERE POST_ID = {editedPost.Id}";
-
-          sq.ExecuteCommand(update);
-        }
 
         if (editedPost.Restricted == false)
         {
@@ -298,7 +255,7 @@ namespace Engeman.Intranet.Repositories
           {
             var insert =
             $"INSERT INTO " +
-            $"POST_DEPARTMENT(POST_ID, DEPARTMENT_ID) " +
+            $"POSTRESTRICTION(POST_ID, DEPARTMENT_ID) " +
             $"VALUES({editedPost.Id},{editedPost.DepartmentsList[i]}) ";
             sq.ExecuteCommand(insert);
           }
@@ -314,7 +271,7 @@ namespace Engeman.Intranet.Repositories
       {
         var query =
         $"SELECT DEPARTMENT_ID " +
-        $"FROM POST_DEPARTMENT " +
+        $"FROM POSTRESTRICTION " +
         $"WHERE POST_ID = {id}";
 
         var result = sq.GetDataSet(query).Tables[0];
@@ -333,13 +290,13 @@ namespace Engeman.Intranet.Repositories
       string query =
       "SELECT DISTINCT " +
           "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.CLEAN_DESCRIPTION, UA.ID AS USER_ACCOUNT_ID, " +
-          "POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT, PF.FILE_TYPE " +
+          "POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT " +
       "FROM POST " +
-      "INNER JOIN POST_COMMENT AS PC ON PC.POST_ID = POST.ID " +
-      "LEFT JOIN POST_FILE AS PF ON PF.POST_ID = POST.ID " +
-      "INNER JOIN USER_ACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID " +
-      "INNER JOIN DEPARTMENT AS D ON POST.DEPARTMENT_ID = D.ID " +
-      "WHERE PC.REVISED = 0 ";
+      "INNER JOIN COMMENT AS C ON C.POST_ID = POST.ID " +
+      "LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
+      "INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID " +
+      "INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
+      "WHERE C.REVISED = 0 ";
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -358,7 +315,6 @@ namespace Engeman.Intranet.Repositories
           postDto.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
           postDto.DepartmentDescription = result.Rows[i]["Department"].ToString();
           postDto.UserAccountName = result.Rows[i]["Name"].ToString();
-          postDto.FileType = result.Rows[i]["File_Type"].ToString();
           postDto.HasUnrevisedComments = true;
 
           posts.Add(postDto);
@@ -372,8 +328,8 @@ namespace Engeman.Intranet.Repositories
       string query =
       $"UPDATE " +
       $"POST " +
-      $"SET ACTIVE = '{post.Active}', RESTRICTED = '{post.Restricted}', SUBJECT = '{post.Subject}', DESCRIPTION = '{post.Description}', CLEAN_DESCRIPTION = '{post.CleanDescription}', " +
-      $"KEYWORDS = '{post.Keywords}', USER_ACCOUNT_ID = {post.UserAccountId}, DEPARTMENT_ID = {post.DepartmentId}, " +
+      $"SET ACTIVE = '{post.Active}', RESTRICTED = '{post.Restricted}', SUBJECT = '{post.Subject}', DESCRIPTION = N'{post.Description}', CLEAN_DESCRIPTION = '{post.CleanDescription}', " +
+      $"KEYWORDS = '{post.Keywords}', USER_ACCOUNT_ID = {post.UserAccountId}, " +
       $"POST_TYPE = '{post.PostType}', REVISED = '{post.Revised}' " +
       $"WHERE ID = '{id}'";
 

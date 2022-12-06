@@ -13,7 +13,6 @@ namespace Engeman.Intranet.Models
     public string CleanDescription { get; set; }
     public string Keywords { get; set; }
     public int UserAccountId { get; set; }
-    public int DepartmentId { get; set; }
     public char PostType { get; set; }
     public bool Revised { get; set; }
     public DateTime ChangeDate { get; set; }    

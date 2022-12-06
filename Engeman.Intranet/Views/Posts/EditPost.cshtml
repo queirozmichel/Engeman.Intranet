@@ -1,4 +1,4 @@
-﻿@model Engeman.Intranet.Models.PostFileViewModel;
+﻿@model Engeman.Intranet.Models.PostEditViewModel;
 @{List<Department> departments = ViewBag.Departments; }
 @{List<int> restrictedDepartments = ViewBag.RestrictedDepartments;}
 @{string layout = null;}
@@ -52,17 +52,17 @@
         <h4><i class="icon-reorder"></i>Postagem</h4>
       </div>
       <div class="widget-content">
-        <form class="form-horizontal row-border" id="edit-post-form" method="post">
+        <form class="form-horizontal row-border" id="edit-post-form" method="post" enctype="multipart/form-data">
           <div class="form-group">
             <label class="col-md-2 control-label">Código da postagem</label>
             <div class="col-md-1">
-              <input id="id-post" class="form-control" name="Id" type="text" readonly value="@Model.Post.Id" />
+              <input id="id-post" class="form-control" name="Id" type="text" readonly value="@Model.Id" />
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-2 control-label">Restrita ao setor?</label>
             <div class="col-md-10">
-              @Html.CheckBox("Restricted", @Model.Post.Restricted, new { id = "restricted" })
+              @Html.CheckBox("Restricted", @Model.Restricted, new { id = "restricted" })
             </div>
           </div>
           <div class="form-group departments-list">
@@ -94,33 +94,39 @@
           <div class="form-group">
             <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
             <div class="col-md-10">
-              <input class="form-control" id="subject" type="text" name="Subject" value="@Model.Post.Subject">
+              <input class="form-control" id="subject" type="text" name="Subject" value="@Model.Subject">
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-2 control-label">Palavras chave</label>
             <div class="col-md-10">
-              <input class="tags" id="keywords" type="text" name="Keywords" value="@Model.Post.Keywords">
+              <input class="tags" id="keywords" type="text" name="Keywords" value="@Model.Keywords">
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
             <div class="col-md-10">
-              <textarea class="form-control" id="description" rows="3" cols="5" name="Description">@Model.Post.Description</textarea>
+              <div class="form-group">
+                <div class="col-md-12 wang-editor">
+                  <div id="wang-editor-toolbar" class="wang-editor-toolbar"></div>
+                  <div id="wang-editor-editor" class="wang-editor-editor"></div>
+                  <input id="wang-editor-description" class="form-control wang-editor-description" name="Description" type="hidden" value="@Model.Description">
+                </div>
+              </div>
             </div>
           </div>
 
-          @if (Model.Files.Count > 0)
+          @if (Model.PostType != 'N')
           {
             <div class="form-group">
-              <label class="col-md-2 control-label">Tipo de arquivo<span class="required">*</span></label>
+              <label class="col-md-2 control-label">Tipo postagem<span class="required">*</span></label>
               <div class="col-md-3">
                 <label class="radio">
-                  @Html.RadioButtonFor(model => model.Files[0].FileType, "D", new { @class = "file-type" })
+                  @Html.RadioButtonFor(model => model.PostType, "D")
                   Documento
                 </label>
                 <label class="radio">
-                  @Html.RadioButtonFor(model => model.Files[0].FileType, "M", new { @class = "file-type" })
+                  @Html.RadioButtonFor(model => model.PostType, "M")
                   Manual
                 </label>
               </div>
@@ -133,7 +139,7 @@
                   <label class="checkbox">
                     @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
                     @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
-                    <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts" , new { idPost=Model.Post.Id, file=i })" target="_blank">@Model.Files[i].Name</a>
+                    <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts" , new { idPost=Model.Id, file=i })" target="_blank">@Model.Files[i].Name</a>
                   </label>
                 }
                 <span class="files-qty">0</span>
@@ -142,7 +148,7 @@
             <div class="form-group">
               <label class="col-md-2 control-label">Novo(s) arquivo(s)</label>
               <div class="col-md-2">
-                <input id="file" type="file" name="Files" accept="application/pdf" multiple>
+                <input id="file" type="file" name="BinaryData" accept="application/pdf" multiple>
               </div>
             </div>
           }
@@ -157,6 +163,7 @@
 </div>
 
 <script type="text/javascript" src="~/js/edit-post.js"></script>
+<script type="text/javascript" src="~/js/components/wang-editor.js"></script>
 @if (ViewBag.IsAjaxCall == true)
 {
   <script type="text/javascript" src="~/js/custom.js"></script>

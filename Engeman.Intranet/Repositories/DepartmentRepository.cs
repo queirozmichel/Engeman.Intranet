@@ -71,6 +71,6 @@ namespace Engeman.Intranet.Repositories
         var result = sq.GetDataToString(query);
         return result;
       }
-    }
+    }    
   }
 }

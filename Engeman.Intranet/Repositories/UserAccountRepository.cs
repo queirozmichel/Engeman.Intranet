@@ -15,7 +15,7 @@ namespace Engeman.Intranet.Repositories
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = $"SELECT 0 FROM USER_ACCOUNT WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}' AND ACTIVE = 1";
+        var query = $"SELECT 0 FROM USERACCOUNT WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}' AND ACTIVE = 1";
         string result = sq.GetDataToString(query);
 
         if (result == "")
@@ -40,7 +40,7 @@ namespace Engeman.Intranet.Repositories
           $"UA.ID,UA.ACTIVE,NAME,DOMAIN_ACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
           $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CREATE_POST, UA.EDIT_OWNER_POST, UA.DELETE_OWNER_POST, UA.EDIT_ANY_POST, " +
           $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGE_DATE " +
-          $"FROM USER_ACCOUNT UA INNER JOIN DEPARTMENT D " +
+          $"FROM USERACCOUNT UA INNER JOIN DEPARTMENT D " +
           $"ON UA.DEPARTMENT_ID = D.ID " +
           $"WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}'";
 
@@ -75,7 +75,7 @@ namespace Engeman.Intranet.Repositories
         Object[] values = { userAccount.Photo };
 
         var query =
-        $"UPDATE USER_ACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
+        $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
         $"DESCRIPTION = '{userAccount.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
         $"WHERE DOMAIN_ACCOUNT = '{userAccount.DomainAccount}'";
 
@@ -89,7 +89,7 @@ namespace Engeman.Intranet.Repositories
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = "SELECT * FROM USER_ACCOUNT WHERE ACTIVE = 'S'";
+        var query = "SELECT * FROM USERACCOUNT WHERE ACTIVE = 'S'";
         var result = sq.GetDataSet(query).Tables[0];
 
         for (int i = 0; i < result.Rows.Count; i++)
@@ -116,7 +116,7 @@ namespace Engeman.Intranet.Repositories
         var query =
           $"SELECT " +
           $"* " +
-          $"FROM USER_ACCOUNT " +
+          $"FROM USERACCOUNT " +
           $"WHERE ID = {id}";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
@@ -142,7 +142,7 @@ namespace Engeman.Intranet.Repositories
       {
         var query =
         $"SELECT NAME " +
-        $"FROM USER_ACCOUNT " +
+        $"FROM USERACCOUNT " +
         $"WHERE ID = {id} ";
 
         var result = sq.GetDataToString(query);
@@ -157,7 +157,7 @@ namespace Engeman.Intranet.Repositories
         UserPermissionsViewModel userPermissions = new UserPermissionsViewModel();
         var query =
         $"SELECT CREATE_POST, EDIT_OWNER_POST, DELETE_OWNER_POST, EDIT_ANY_POST, DELETE_ANY_POST, MODERATOR, NOVICE_USER " +
-        $"FROM USER_ACCOUNT " +
+        $"FROM USERACCOUNT " +
         $"WHERE DOMAIN_ACCOUNT = '{domainUsername}'";
 
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
@@ -180,7 +180,7 @@ namespace Engeman.Intranet.Repositories
       {
         var query =
         $"SELECT DOMAIN_ACCOUNT " +
-        $"FROM USER_ACCOUNT " +
+        $"FROM USERACCOUNT " +
         $"WHERE ID = {id} ";
 
         var result = sq.GetDataToString(query);

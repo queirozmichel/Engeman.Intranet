@@ -39,23 +39,24 @@ $("#comment-form").on("submit", function (event) {
         if (response == -1) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
-          toastr.success("O comentário foi salvo", "Sucesso!");
+          var idPost = $("#id-post").text();          
           $.ajax({
             type: "GET",
             dataType: "html",
-            url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
+            data: {"idPost": idPost},
+            url: "/posts/postdetails",
             success: function (response) {
               $("#render-body").empty();
               $("#render-body").html(response);
-              if ($("#wang-editor-script").length) $("#wang-editor-script").remove(); // remove o script do componente WangEditor par aque possa ser criado novamente na próxima chamada
             },
             error: function () {
-              toastr.error("Não foi possível voltar", "Erro!");
+              toastr.error("Não foi possível ir para os detalhes da postagem", "Erro!");
             },
             complete: function () {
               closeSpinner();
             },
           });
+          toastr.success("O comentário foi salvo", "Sucesso!");
         }
       },
       error: function (response) {
@@ -72,11 +73,17 @@ $("#comment-tab").on("click", function () {
     type: "GET",
     dataType: "html",
     url: "/comments/wangeditor",
+    beforeSend: function () {
+      startSpinner();
+    },
     success: function (response) {
       $("#form-group-wang-editor").html(response);
     },
     error: function (response) {
       toastr.error("Não foi possível carregar o editor", "Erro!");
+    },
+    complete: function () {
+      closeSpinner();
     }
   })
 })
@@ -86,6 +93,9 @@ $("#post-tab").on("click", function () {
   $.ajax({
     type: "GET",
     dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
     url: "/posts/postdetails?idPost=" + idPost,
     success: function (response) {
       $("#render-body").empty();
@@ -94,6 +104,9 @@ $("#post-tab").on("click", function () {
     error: function () {
       toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
     },
+    complete: function () {
+      closeSpinner();
+    }
   })
 })
 
@@ -105,6 +118,9 @@ $(".edit-post-button").on("click", function () {
     data: { "idPost": idPost },
     dataType: "html",
     url: "/posts/editpost",
+    beforeSend: function () {
+      startSpinner();
+    },
     error: function () {
       toastr.error("Não foi possível editar a postagem", "Erro!");
     },
@@ -112,6 +128,9 @@ $(".edit-post-button").on("click", function () {
       $("#render-body").empty();
       $("#render-body").html(response);
       window.history.pushState({}, {}, this.url);
+    },
+    complete: function () {
+      closeSpinner();
     }
   })
 })
@@ -249,13 +268,6 @@ $(".back-button").on("click", function (event) {
   })
 })
 
-
-
-
-
-
-
-
 $(".comment-aprove-btn").on("click", function () {
   var id = $(this).parents(".comment-box").attr("data-comment-id");
   showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove-comment", id);
@@ -360,7 +372,6 @@ $(".comment-edit-btn").on("click", function () {
     url: "/comments/commenteditform",
     success: function (response) {
       $("#wang-editor-script").remove();
-      $(comment).css("background", "white");
       $(comment).html(response);
     },
     error: function (response) {
