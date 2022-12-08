@@ -5,15 +5,12 @@ using Engeman.Intranet.Models;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Hosting;
-using System;
 
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
   public class UserAccountController : Controller
   {
-
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IDepartmentRepository _departmentRepository;
 
@@ -22,10 +19,12 @@ namespace Engeman.Intranet.Controllers
       _userAccountRepository = userAccountRepository;
       _departmentRepository = departmentRepository;
     }
+
     public IActionResult Index()
     {
-      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(HttpContext.Session.GetString("_DomainUsername").ToString());
-      ViewBag.Department = _departmentRepository.GetDepartmentById(userAccount.DepartmentId);
+      var users = _userAccountRepository.Get();
+      var userAccount = _userAccountRepository.GetByDomainUsername(HttpContext.Session.GetString("_DomainUsername").ToString());
+      ViewBag.Department = _departmentRepository.GetById(userAccount.DepartmentId);
 
       return View(userAccount);
     }
@@ -38,7 +37,7 @@ namespace Engeman.Intranet.Controllers
       }
       if (Photo.Count == 0)
       {
-        userAccount.Photo = _userAccountRepository.GetUserAccountByDomainUsername(userAccount.DomainAccount).Photo;
+        userAccount.Photo = _userAccountRepository.GetByDomainUsername(userAccount.DomainAccount).Photo;
       }
       foreach (var item in Photo)
       {
@@ -51,7 +50,7 @@ namespace Engeman.Intranet.Controllers
           }
         }
       }
-      _userAccountRepository.UpdateUserAccount(userAccount);
+      _userAccountRepository.Update(userAccount);
 
       return RedirectToAction("index", "useraccount");
     }

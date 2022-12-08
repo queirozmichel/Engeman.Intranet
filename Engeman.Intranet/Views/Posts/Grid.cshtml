@@ -10,7 +10,7 @@
   Layout = layout;
 }
 
-<link rel="stylesheet" href="~/css/listall.css" />
+<link rel="stylesheet" href="~/css/grid.css" />
 
 @await Component.InvokeAsync("ConfirmationModal")
 <div class="page-header">
@@ -56,16 +56,16 @@
     <tr>
       <th data-column-id="postType" data-formatter="postType">Tipo</th>
       <th data-column-id="userAccountName" data-formatter="userAccountName">Nome</th>
-      <th data-column-id="departmentDescription" data-formatter="departmentDescription">Setor</th>
+      <th data-column-id="department" data-formatter="department">Setor</th>
       <th data-column-id="subject" data-formatter="subject">Assunto</th>
-      <th data-column-id="cleanDescription" data-formatter="cleanDescription">Descrição</th>
+      <th data-column-id="description" data-formatter="description">Descrição</th>
       <th data-column-id="changeDate" data-order="desc" data-formatter="changeDate">Data</th>
       <th data-column-id="action" data-formatter="action" disabled>Ações</th>
     </tr>
   </thead>
 </table>
 
-<script src="~/js/listall.js"></script>
+<script src="~/js/grid.js"></script>
 @if (ViewBag.IsAjaxCall == true)
 {
   <script type="text/javascript" src="~/js/custom.js"></script>

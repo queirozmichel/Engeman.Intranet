@@ -9,12 +9,9 @@ namespace Engeman.Intranet.Models.ViewModels
       Files = new List<NewCommentFileViewModel>();
     }
     public string Description { get; set; }
-    public string CleanDescription { get; set; }
-    public string Keywords { get; set; }
-    public int UserAccountId { get; set; }
-    public int DepartmentId { get; set; }
-    public int PostId { get; set; }
     public bool Revised { get; set; }
+    public int UserAccountId { get; set; }
+    public int PostId { get; set; }
     public List<NewCommentFileViewModel> Files { get; set; }
   }
 }

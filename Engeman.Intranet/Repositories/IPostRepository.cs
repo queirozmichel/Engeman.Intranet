@@ -4,17 +4,15 @@ using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
-  public interface IPostRepository
+    public interface IPostRepository
   {
-    public List<PostDto> GetPostsByRestriction(UserAccount user);
-    public List<PostDto> GetPostsWithUnrevisedComments();
-    public List<Post> GetPostsByUserId(int userId);
-    public Post GetPostById(int id);
-    public List<int> GetRestrictedDepartmentsIdByPost(int id);
-    public void UpdatePost(PostEditViewModel editedPost);
-    public void AddPost(NewPostViewModel newPost);
-    public void AddPostFile(int postId, List<NewPostFileViewModel> files);
-    public void DeletePost(int postId);
-    public bool UpdatePost(int id, Post post);
+    public List<PostGridViewModel> GetByRestriction(UserAccount user);
+    public List<PostGridViewModel> GetWithUnrevisedComments();
+    public List<Post> GetByUserAccountId(int userAccountId);
+    public Post Get(int id);
+    public void Update(PostEditViewModel editedPost);
+    public void Add(NewPostViewModel newPost);
+    public void Delete(int postId);
+    public bool Update(int id, Post post);
   }
 }

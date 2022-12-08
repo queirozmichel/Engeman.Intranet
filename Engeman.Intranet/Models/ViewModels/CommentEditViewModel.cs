@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Engeman.Intranet.Models
+namespace Engeman.Intranet.Models.ViewModels
 {
   public class CommentEditViewModel
   {

@@ -152,14 +152,14 @@ $(".btn-yes, .btn-no").on("click", function () {
       $.ajax({
         type: "GET",
         dataType: "html",
-        url: "/posts/listall" + "?filter=" + sessionStorage.getItem("filterGrid"),
+        url: "/posts/grid" + "?filter=" + sessionStorage.getItem("filterGrid"),
         beforeSend: function () {
           startSpinner();
         },
         success: function (response) {
           $("#render-body").empty();
           $("#render-body").html(response);
-          window.history.pushState({}, '', "/posts/listall?filter=" + sessionStorage.getItem("filterGrid"));
+          window.history.pushState({}, '', "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
           $.ajax({
             type: "GET",
             url: "/posts/unrevisedlist",
@@ -249,7 +249,7 @@ $(".back-button").on("click", function (event) {
   filter = "?filter=" + sessionStorage.getItem("filterGrid");
   $.ajax({
     type: "GET",
-    url: "/posts/listall" + filter,
+    url: "/posts/grid" + filter,
     dataType: "html",
     beforeSend: function () {
       startSpinner();
@@ -263,7 +263,7 @@ $(".back-button").on("click", function (event) {
     },
     complete: function () {
       closeSpinner();
-      window.history.pushState({}, {}, "/posts/listall" + filter);
+      window.history.pushState({}, {}, "/posts/grid" + filter);
     },
   })
 })

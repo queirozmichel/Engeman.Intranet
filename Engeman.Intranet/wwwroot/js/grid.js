@@ -84,7 +84,7 @@ $(document).ready(function () {
         return row.id
       },
       postType: function (column, row) {
-        if ((row.revised == false || row.hasUnrevisedComments == true) && (row.userAccountId == Cookies.get('_UserId') || isModerator == true)) {
+        if ((row.revised == false || row.unrevisedComments == true) && (row.userAccountId == Cookies.get('_UserId') || isModerator == true)) {
           return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
         }
         if (row.revised == true) {
@@ -102,14 +102,14 @@ $(document).ready(function () {
       userAccountName: function (column, row) {
         return row.userAccountName;
       },
-      departmentDescription: function (column, row) {
-        return row.departmentDescription;
+      department: function (column, row) {
+        return row.department;
       },
       subject: function (column, row) {
         return "<span title=\"" + row.subject + "\">" + row.subject + "</span>";
       },
-      cleanDescription: function (column, row) {
-        return "<span title=\"" + row.cleanDescription + "\">" + row.cleanDescription + "</span>";
+      description: function (column, row) {
+        return "<span>" + row.description + "</span>";
       },
       changeDate: function (column, row) {
         return row.changeDate;

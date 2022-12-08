@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="~/css/components/unrevised-list.css"/>
 
 <li class="all-posts">
-  <a href="@Url.Action("listall","posts", new {filter="allPosts" })">
+  <a href="@Url.Action("grid","posts", new {filter="allPosts" })">
     <i class="icon-angle-right"></i>Listar Postagens
   </a>
 </li>
 @if (Model.Moderator == true && @ViewBag.UnrevisedPosts > 0)
 {
   <li class="unrevised-posts">
-    <a href="@Url.Action("listall","posts", new {filter="unrevisedPosts" })">
+    <a href="@Url.Action("grid","posts", new {filter="unrevisedPosts" })">
       <i class="icon-angle-right"></i>Postagens não revisadas
       <span class="badge pull-right">
         @ViewBag.UnrevisedPosts
@@ -25,7 +25,7 @@
 @if (Model.Moderator == true && @ViewBag.UnrevisedComments > 0)
 {
   <li class="unrevised-comments">
-    <a href="@Url.Action("listall","posts", new {filter="unrevisedComments" })">
+    <a href="@Url.Action("grid","posts", new {filter="unrevisedComments" })">
       <i class="icon-angle-right"></i>Comentários não revisados
       <span class="badge pull-right">
         @ViewBag.UnrevisedComments

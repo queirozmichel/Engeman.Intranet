@@ -7,40 +7,32 @@ namespace Engeman.Intranet.Repositories
 {
   public class DepartmentRepository : IDepartmentRepository
   {
-    public Department GetDepartmentById(int idDepartment)
+    public Department GetById(int idDepartment)
     {
       Department department = new Department();
+      var query = $"SELECT * FROM DEPARTMENT WHERE ID = {idDepartment}";
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
-          $"SELECT " +
-          $"* " +
-          $"FROM DEPARTMENT " +
-          $"WHERE ID = {idDepartment}";
+        var result = sq.GetDataSet(query).Tables[0];
 
-        var result = sq.GetDataSet(query).Tables[0].Rows[0];
-
-        department.Id = Convert.ToInt32(result["Id"]);
-        department.Code = result["Code"].ToString();
-        department.Description = result["Description"].ToString();
-        department.Active = Convert.ToBoolean(result["Active"]);
-        department.ChangeDate = (DateTime)result["Change_Date"];
+        department.Id = Convert.ToInt32(result.Rows[0]["Id"]);
+        department.Code = result.Rows[0]["Code"].ToString();
+        department.Description = result.Rows[0]["Description"].ToString();
+        department.Active = Convert.ToBoolean(result.Rows[0]["Active"]);
+        department.ChangeDate = (DateTime)result.Rows[0]["Change_Date"];
 
         return department;
       }
     }
 
-    public List<Department> GetAllDepartments()
+    public List<Department> Get()
     {
-      var query = "";
+      List<Department> departments = new List<Department>();
+      var query = $"SELECT * FROM DEPARTMENT";
+
       using (StaticQuery sq = new StaticQuery())
       {
-        List<Department> departments = new List<Department>();        
-        query =
-        $"SELECT * " +
-        $"FROM DEPARTMENT ";
-
         var result = sq.GetDataSet(query).Tables[0];
 
         for (int i = 0; i < result.Rows.Count; i++)
@@ -59,16 +51,14 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public string GetDepartmentNameById(int id)
+    public string GetDescriptionById(int id)
     {
+      var query = $"SELECT DESCRIPTION FROM DEPARTMENT WHERE ID = {id}";
+
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
-        $"SELECT DESCRIPTION " +
-        $"FROM DEPARTMENT " +
-        $"WHERE ID = {id}";
-
         var result = sq.GetDataToString(query);
+
         return result;
       }
     }    

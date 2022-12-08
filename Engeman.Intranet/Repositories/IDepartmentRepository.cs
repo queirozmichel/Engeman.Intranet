@@ -5,8 +5,8 @@ namespace Engeman.Intranet.Repositories
 {
   public interface IDepartmentRepository
   {
-    public Department GetDepartmentById(int id);
-    public List<Department> GetAllDepartments();
-    public string GetDepartmentNameById(int id);
+    public List<Department> Get();
+    public Department GetById(int id);
+    public string GetDescriptionById(int id);    
   }
 }

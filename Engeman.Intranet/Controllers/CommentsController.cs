@@ -1,4 +1,5 @@
 ﻿using Engeman.Intranet.Models;
+using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,14 +10,14 @@ using System.Linq;
 
 namespace Engeman.Intranet.Controllers
 {
-  [Authorize(AuthenticationSchemes = "CookieAuthentication")]
+    [Authorize(AuthenticationSchemes = "CookieAuthentication")]
   public class CommentsController : Controller
   {
-    private readonly IPostCommentRepository _postCommentRepository;
-    private readonly IPostCommentFileRepository _postCommentFileRepository;
+    private readonly ICommentRepository _postCommentRepository;
+    private readonly ICommentFileRepository _postCommentFileRepository;
     private readonly IUserAccountRepository _userAccountRepository;
 
-    public CommentsController(IPostCommentRepository postCommentRepository, IPostFileRepository postFileRepository, IPostCommentFileRepository postCommentFileRepository, IPostRepository postRepository, IUserAccountRepository userAccountRepository, IDepartmentRepository departmentRepository)
+    public CommentsController(ICommentRepository postCommentRepository, IPostFileRepository postFileRepository, ICommentFileRepository postCommentFileRepository, IPostRepository postRepository, IUserAccountRepository userAccountRepository, IDepartmentRepository departmentRepository)
     {
       _postCommentRepository = postCommentRepository;
       _postCommentFileRepository = postCommentFileRepository;
@@ -44,15 +45,15 @@ namespace Engeman.Intranet.Controllers
     {
       List<CommentFile> files = new List<CommentFile>();
       Comment comment = new Comment();
-      var currentComment = _postCommentRepository.GetPostCommentById(editedComment.Comment.Id);
+      var currentComment = _postCommentRepository.GetById(editedComment.Comment.Id);
       var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(sessionDomainUsername);
+      var userAccount = _userAccountRepository.GetByDomainUsername(sessionDomainUsername);
 
       for (int i = 0; i < editedComment.Files.Count; i++)
       {
         if (editedComment.Files[i].Active == false)
         {
-          _postCommentFileRepository.DeleteFileById(editedComment.Files[i].Id);
+          _postCommentFileRepository.Delete(editedComment.Files[i].Id);
           editedComment.Files.RemoveAt(i);
           i--;
         }
@@ -65,7 +66,7 @@ namespace Engeman.Intranet.Controllers
         comment.Revised = true;
       }
 
-      _postCommentRepository.UpdatePostCommentById(currentComment.Id, comment);
+      _postCommentRepository.Update(currentComment.Id, comment);
 
       if (binaryData.Count != 0)
       {
@@ -81,12 +82,11 @@ namespace Engeman.Intranet.Controllers
               binaryData[i].CopyTo(stream);
               newFile.BinaryData = stream.ToArray();
               newFile.Name = binaryData[i].FileName;
-              newFile.Description = comment.Description;
               files.Add(newFile);
             }
           }
         }
-        _postCommentFileRepository.AddFilesToComment(currentComment.Id, files);
+        _postCommentFileRepository.Add(currentComment.Id, files);
       }
       return RedirectToAction("PostDetails", "Posts", new { idPost = editedComment.Comment.PostId });
     }
@@ -94,7 +94,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult ShowCommentFile(int idComment, int file)
     {
-      var orderedFiles = _postCommentFileRepository.GetFilesByPostCommentId(idComment).OrderBy(a => a.Name).ToList();
+      var orderedFiles = _postCommentFileRepository.GetByCommentId(idComment).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedFiles[file].Name);
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Engeman.Intranet.Models
+namespace Engeman.Intranet.Models.ViewModels
 {
   public class LoginViewModel
   {

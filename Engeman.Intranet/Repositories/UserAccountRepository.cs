@@ -1,153 +1,132 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
+using Engeman.Intranet.Models.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Engeman.Intranet.Repositories
 {
-  public class UserAccountRepository : IUserAccountRepository
+    public class UserAccountRepository : IUserAccountRepository
   {
-    public bool UserAccountValidate(string domainUsername)
+    public List<UserAccount> Get()
     {
-      using (StaticQuery sq = new StaticQuery())
-      {
-        var query = $"SELECT 0 FROM USERACCOUNT WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}' AND ACTIVE = 1";
-        string result = sq.GetDataToString(query);
-
-        if (result == "")
-        {
-          return false;
-        }
-        else
-        {
-          return true;
-        }
-      }
-    }
-
-    public UserAccount GetUserAccountByDomainUsername(string domainUsername)
-    {
-      UserAccount userAccount = new UserAccount();
+      List<UserAccount> users = new List<UserAccount>();
+      var query = "SELECT * FROM USERACCOUNT ";
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
-          $"SELECT " +
-          $"UA.ID,UA.ACTIVE,NAME,DOMAIN_ACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
-          $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CREATE_POST, UA.EDIT_OWNER_POST, UA.DELETE_OWNER_POST, UA.EDIT_ANY_POST, " +
-          $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGE_DATE " +
-          $"FROM USERACCOUNT UA INNER JOIN DEPARTMENT D " +
-          $"ON UA.DEPARTMENT_ID = D.ID " +
-          $"WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}'";
-
-        var result = sq.GetDataSet(query).Tables[0].Rows[0];
-
-        userAccount.Id = Convert.ToInt32(result["id"]);
-        userAccount.Active = Convert.ToBoolean(result["active"]);
-        userAccount.Name = result["name"].ToString();
-        userAccount.DomainAccount = result["domain_account"].ToString();
-        userAccount.DepartmentId = Convert.ToInt32(result["department_id"]);
-        userAccount.Email = result["email"].ToString();
-        userAccount.Photo = (byte[])result["photo"];
-        userAccount.Description = result["userdescription"].ToString();
-        userAccount.CreatePost = Convert.ToBoolean(result["create_post"]);
-        userAccount.EditOwnerPost = Convert.ToBoolean(result["edit_owner_post"]);
-        userAccount.DeleteOwnerPost = Convert.ToBoolean(result["delete_owner_post"]);
-        userAccount.EditAnyPost = Convert.ToBoolean(result["edit_any_post"]);
-        userAccount.DeleteAnyPost = Convert.ToBoolean(result["delete_any_post"]);
-        userAccount.Moderator = Convert.ToBoolean(result["moderator"]);
-        userAccount.NoviceUser = Convert.ToBoolean(result["novice_user"]);
-        userAccount.ChangeDate = Convert.ToDateTime(result["change_date"].ToString());
-
-        return userAccount;
-      }
-    }
-    public void UpdateUserAccount(UserAccount userAccount)
-    {
-
-      using (StaticQuery sq = new StaticQuery())
-      {
-        string[] paramters = { "Photo;byte" };
-        Object[] values = { userAccount.Photo };
-
-        var query =
-        $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
-        $"DESCRIPTION = '{userAccount.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
-        $"WHERE DOMAIN_ACCOUNT = '{userAccount.DomainAccount}'";
-
-        sq.ExecuteCommand(query, paramters, values);
-      }
-    }
-
-    public List<UserAccountDto> GetAllUserAccounts()
-    {
-      List<UserAccountDto> users = new List<UserAccountDto>();
-
-      using (StaticQuery sq = new StaticQuery())
-      {
-        var query = "SELECT * FROM USERACCOUNT WHERE ACTIVE = 'S'";
         var result = sq.GetDataSet(query).Tables[0];
 
         for (int i = 0; i < result.Rows.Count; i++)
         {
-          UserAccountDto userAccountDto = new UserAccountDto();
-          userAccountDto.Id = Convert.ToInt32(result.Rows[i]["id"]);
-          userAccountDto.Name = result.Rows[i]["name"].ToString();
-          userAccountDto.Email = result.Rows[i]["email"].ToString();
-          userAccountDto.DomainAccount = result.Rows[i]["domain_account"].ToString();
-          userAccountDto.ChangeDate = Convert.ToString(result.Rows[i]["change_date"]);
-
-          users.Add(userAccountDto);
+          UserAccount user = new UserAccount();
+          user.Id = Convert.ToInt32(result.Rows[i]["id"]);
+          user.Active = Convert.ToBoolean(result.Rows[i]["active"]);
+          user.Name = result.Rows[i]["name"].ToString();
+          user.DomainAccount = result.Rows[i]["domain_account"].ToString();
+          user.Email = result.Rows[i]["email"].ToString();
+          user.Photo = (byte[])result.Rows[i]["photo"];
+          user.Description = result.Rows[i]["description"].ToString();
+          user.CreatePost = Convert.ToBoolean(result.Rows[i]["create_post"]);
+          user.EditOwnerPost = Convert.ToBoolean(result.Rows[i]["edit_owner_post"]);
+          user.DeleteOwnerPost = Convert.ToBoolean(result.Rows[i]["delete_owner_post"]);
+          user.EditAnyPost = Convert.ToBoolean(result.Rows[i]["edit_any_post"]);
+          user.DeleteAnyPost = Convert.ToBoolean(result.Rows[i]["delete_any_post"]);
+          user.Moderator = Convert.ToBoolean(result.Rows[i]["moderator"]);
+          user.NoviceUser = Convert.ToBoolean(result.Rows[i]["novice_user"]);
+          user.ChangeDate = Convert.ToDateTime(result.Rows[i]["change_date"].ToString());
+          users.Add(user);
         }
       }
       return users;
     }
 
-    public UserAccount GetUserAccountById(int id)
+    public void Update(UserAccount userAccount)
     {
-      UserAccount userAccount = new UserAccount();
+      string[] paramters = { "Photo;byte" };
+      Object[] values = { userAccount.Photo };
+      var query =
+      $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
+      $"DESCRIPTION = '{userAccount.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
+      $"WHERE DOMAIN_ACCOUNT = '{userAccount.DomainAccount}'";
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
-          $"SELECT " +
-          $"* " +
-          $"FROM USERACCOUNT " +
-          $"WHERE ID = {id}";
+        sq.ExecuteCommand(query, paramters, values);
+      }
+    }
 
-        var result = sq.GetDataSet(query).Tables[0].Rows[0];
+    public UserAccount GetById(int id)
+    {
+      UserAccount userAccount = new UserAccount();
+      var query = $"SELECT * FROM USERACCOUNT WHERE ID = {id}";
 
-        userAccount.Id = Convert.ToInt32(result["id"]);
-        userAccount.Active = Convert.ToBoolean(result["active"]);
-        userAccount.Name = result["name"].ToString();
-        userAccount.DomainAccount = result["domain_account"].ToString();
-        userAccount.DepartmentId = Convert.ToInt32(result["department_id"]);
-        userAccount.Email = result["email"].ToString();
-        userAccount.Photo = (byte[])result["photo"];
-        userAccount.Description = result["description"].ToString();
-        userAccount.Moderator = Convert.ToBoolean(result["Moderator"]);
-        userAccount.ChangeDate = Convert.ToDateTime(result["change_date"].ToString());
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = sq.GetDataSet(query).Tables[0];
+
+        userAccount.Id = Convert.ToInt32(result.Rows[0]["id"]);
+        userAccount.Active = Convert.ToBoolean(result.Rows[0]["active"]);
+        userAccount.Name = result.Rows[0]["name"].ToString();
+        userAccount.DomainAccount = result.Rows[0]["domain_account"].ToString();
+        userAccount.DepartmentId = Convert.ToInt32(result.Rows[0]["department_id"]);
+        userAccount.Email = result.Rows[0]["email"].ToString();
+        userAccount.Photo = (byte[])result.Rows[0]["photo"];
+        userAccount.Description = result.Rows[0]["description"].ToString();
+        userAccount.Moderator = Convert.ToBoolean(result.Rows[0]["Moderator"]);
+        userAccount.ChangeDate = Convert.ToDateTime(result.Rows[0]["change_date"].ToString());
 
         return userAccount;
       }
     }
 
-    public string GetUserAccountNameById(int id)
+    public UserAccount GetByDomainUsername(string domainUsername)
     {
+      UserAccount userAccount = new UserAccount();
+      var query =
+      $"SELECT " +
+      $"UA.ID,UA.ACTIVE,NAME,DOMAIN_ACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
+      $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CREATE_POST, UA.EDIT_OWNER_POST, UA.DELETE_OWNER_POST, UA.EDIT_ANY_POST, " +
+      $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGE_DATE " +
+      $"FROM USERACCOUNT UA INNER JOIN DEPARTMENT D " +
+      $"ON UA.DEPARTMENT_ID = D.ID " +
+      $"WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}'";
+
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
-        $"SELECT NAME " +
-        $"FROM USERACCOUNT " +
-        $"WHERE ID = {id} ";
+        var result = sq.GetDataSet(query).Tables[0];
 
+        userAccount.Id = Convert.ToInt32(result.Rows[0]["id"]);
+        userAccount.Active = Convert.ToBoolean(result.Rows[0]["active"]);
+        userAccount.Name = result.Rows[0]["name"].ToString();
+        userAccount.DomainAccount = result.Rows[0]["domain_account"].ToString();
+        userAccount.DepartmentId = Convert.ToInt32(result.Rows[0]["department_id"]);
+        userAccount.Email = result.Rows[0]["email"].ToString();
+        userAccount.Photo = (byte[])result.Rows[0]["photo"];
+        userAccount.Description = result.Rows[0]["userdescription"].ToString();
+        userAccount.CreatePost = Convert.ToBoolean(result.Rows[0]["create_post"]);
+        userAccount.EditOwnerPost = Convert.ToBoolean(result.Rows[0]["edit_owner_post"]);
+        userAccount.DeleteOwnerPost = Convert.ToBoolean(result.Rows[0]["delete_owner_post"]);
+        userAccount.EditAnyPost = Convert.ToBoolean(result.Rows[0]["edit_any_post"]);
+        userAccount.DeleteAnyPost = Convert.ToBoolean(result.Rows[0]["delete_any_post"]);
+        userAccount.Moderator = Convert.ToBoolean(result.Rows[0]["moderator"]);
+        userAccount.NoviceUser = Convert.ToBoolean(result.Rows[0]["novice_user"]);
+        userAccount.ChangeDate = Convert.ToDateTime(result.Rows[0]["change_date"].ToString());
+
+        return userAccount;
+      }
+    }
+
+    public string GetDomainAccountById(int id)
+    {
+      var query = $"SELECT DOMAIN_ACCOUNT FROM USERACCOUNT WHERE ID = {id}";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
         var result = sq.GetDataToString(query);
+
         return result;
-      };
+      }
     }
 
     public UserPermissionsViewModel GetUserPermissionsByDomainUsername(string domainUsername)
@@ -160,32 +139,18 @@ namespace Engeman.Intranet.Repositories
         $"FROM USERACCOUNT " +
         $"WHERE DOMAIN_ACCOUNT = '{domainUsername}'";
 
-        var result = sq.GetDataSet(query).Tables[0].Rows[0];
+        var result = sq.GetDataSet(query).Tables[0];
 
-        userPermissions.CreatePost = Convert.ToBoolean(result["create_post"]);
-        userPermissions.EditOwnerPost = Convert.ToBoolean(result["edit_owner_post"]);
-        userPermissions.DeleteOwnerPost = Convert.ToBoolean(result["delete_owner_post"]);
-        userPermissions.EditAnyPost = Convert.ToBoolean(result["edit_any_post"]);
-        userPermissions.DeleteAnyPost = Convert.ToBoolean(result["delete_any_post"]);
-        userPermissions.Moderator = Convert.ToBoolean(result["moderator"]);
-        userPermissions.NoviceUser = Convert.ToBoolean(result["novice_user"]);
+        userPermissions.CreatePost = Convert.ToBoolean(result.Rows[0]["create_post"]);
+        userPermissions.EditOwnerPost = Convert.ToBoolean(result.Rows[0]["edit_owner_post"]);
+        userPermissions.DeleteOwnerPost = Convert.ToBoolean(result.Rows[0]["delete_owner_post"]);
+        userPermissions.EditAnyPost = Convert.ToBoolean(result.Rows[0]["edit_any_post"]);
+        userPermissions.DeleteAnyPost = Convert.ToBoolean(result.Rows[0]["delete_any_post"]);
+        userPermissions.Moderator = Convert.ToBoolean(result.Rows[0]["moderator"]);
+        userPermissions.NoviceUser = Convert.ToBoolean(result.Rows[0]["novice_user"]);
 
         return userPermissions;
       }
-    }
-
-    public string GetDomainAccountById(int id)
-    {
-      using (StaticQuery sq = new StaticQuery())
-      {
-        var query =
-        $"SELECT DOMAIN_ACCOUNT " +
-        $"FROM USERACCOUNT " +
-        $"WHERE ID = {id} ";
-
-        var result = sq.GetDataToString(query);
-        return result;
-      };
     }
   }
 }

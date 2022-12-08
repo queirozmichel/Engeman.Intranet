@@ -10,9 +10,9 @@ namespace Engeman.Intranet.ViewComponents
   {
     private readonly IUserAccountRepository _userAccount;
     private readonly IPostRepository _postRepository;
-    private readonly IPostCommentRepository _postCommentRepository;
+    private readonly ICommentRepository _postCommentRepository;
 
-    public UnrevisedListViewComponent(IUserAccountRepository userAccount, IPostRepository postRepository, IPostCommentRepository postCommentRepository)
+    public UnrevisedListViewComponent(IUserAccountRepository userAccount, IPostRepository postRepository, ICommentRepository postCommentRepository)
     {
       _userAccount = userAccount;
       _postRepository = postRepository;
@@ -22,8 +22,8 @@ namespace Engeman.Intranet.ViewComponents
     public IViewComponentResult Invoke()
     {
       var userDomain = HttpContext.Session.GetString("_DomainUsername");
-      var user = _userAccount.GetUserAccountByDomainUsername (userDomain);
-      ViewBag.UnrevisedPosts = _postRepository.GetPostsByRestriction(user).AsQueryable().Where("revised == (@0)", false).Count();
+      var user = _userAccount.GetByDomainUsername (userDomain);
+      ViewBag.UnrevisedPosts = _postRepository.GetByRestriction(user).AsQueryable().Where("revised == (@0)", false).Count();
       ViewBag.UnrevisedComments = _postCommentRepository.GetUnrevisedComments().Count();
 
       return View(user);

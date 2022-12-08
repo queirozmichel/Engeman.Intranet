@@ -7,7 +7,11 @@ $(document).ready(function () {
     nonSelectedText: 'Nenhum ',
     includeSelectAllOption: true,
     allSelectedText: 'Todos ',
+    buttonTitle: function () { },
   });
+  $(".multiselect-container").find('label').each(function () {
+    $(this).removeAttr("title");
+  });  
 
   //botão para habilitar a restrição
   $("#restricted").bootstrapSwitch({

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
-
-namespace Engeman.Intranet.Models.ViewModels
+﻿namespace Engeman.Intranet.Models.ViewModels
 {
   public class NewPostFileViewModel
   {

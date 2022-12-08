@@ -75,7 +75,7 @@ $("#new-post-form").on("submit", function (event) {
           toastr.success("A postagem foi salva", "Sucesso!");
           $.ajax({
             type: "GET",
-            url: "/posts/listall" + filter,
+            url: "/posts/grid" + filter,
             dataType: "html",
             beforeSend: function () {
               startSpinner();
@@ -83,7 +83,7 @@ $("#new-post-form").on("submit", function (event) {
             success: function (response) {
               $("#render-body").empty();
               $("#render-body").html(response);
-              window.history.pushState({}, '', "/posts/listall?filter=allPosts");
+              window.history.pushState({}, '', "/posts/grid?filter=allPosts");
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");

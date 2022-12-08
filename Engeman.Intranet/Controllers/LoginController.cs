@@ -1,4 +1,4 @@
-﻿using Engeman.Intranet.Models;
+﻿using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Engeman.Intranet.Controllers
 {
-  public class LoginController : Controller
+    public class LoginController : Controller
   {
     private readonly IConfiguration _configuration;
     private readonly IUserAccountRepository _userAccountRepository;
@@ -50,14 +50,16 @@ namespace Engeman.Intranet.Controllers
         //  return RedirectToAction("index", "login");
         //}
 
-        if (_userAccountRepository.UserAccountValidate(loginViewModel.DomainAccount) == false)
+        var user = _userAccountRepository.GetByDomainUsername(loginViewModel.DomainAccount);
+
+        if (user == null)
         {
           TempData["Message"] = "Usuário não cadastrado ou bloqueado.";
           return RedirectToAction("index", "login");
         }
         else
         {
-          var userAccount = _userAccountRepository.GetUserAccountByDomainUsername(loginViewModel.DomainAccount);
+          var userAccount = _userAccountRepository.GetByDomainUsername(loginViewModel.DomainAccount);
           var claims = new List<Claim>();
           claims.Add(new Claim(ClaimTypes.Name, loginViewModel.DomainAccount));
           var userIdentity = new ClaimsIdentity(claims, "Access");

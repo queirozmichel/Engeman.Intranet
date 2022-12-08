@@ -1,4 +1,4 @@
-﻿using Engeman.Intranet.Models;
+﻿using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,12 +7,12 @@ using System.Linq;
 
 namespace Engeman.Intranet.ViewComponents
 {
-  public class CommentEditFormViewComponent : ViewComponent
+    public class CommentEditFormViewComponent : ViewComponent
   {
-    private readonly IPostCommentRepository _postCommentRepository;
-    private readonly IPostCommentFileRepository _postCommentFileRepository;
+    private readonly ICommentRepository _postCommentRepository;
+    private readonly ICommentFileRepository _postCommentFileRepository;
 
-    public CommentEditFormViewComponent(IPostCommentRepository postCommentRepository, IPostCommentFileRepository postCommentFileRepository)
+    public CommentEditFormViewComponent(ICommentRepository postCommentRepository, ICommentFileRepository postCommentFileRepository)
     {
       _postCommentRepository = postCommentRepository;
       _postCommentFileRepository = postCommentFileRepository;
@@ -34,8 +34,8 @@ namespace Engeman.Intranet.ViewComponents
       ViewBag.SelectorId = selectorId;
 
       CommentEditViewModel comment = new CommentEditViewModel();
-      comment.Comment = _postCommentRepository.GetPostCommentById(commentId);
-      comment.Files = _postCommentFileRepository.GetFilesByPostCommentId(commentId).OrderBy(a => a.Name).ToList();
+      comment.Comment = _postCommentRepository.GetById(commentId);
+      comment.Files = _postCommentFileRepository.GetByCommentId(commentId).OrderBy(a => a.Name).ToList();
 
       return View("Default", comment);
     }

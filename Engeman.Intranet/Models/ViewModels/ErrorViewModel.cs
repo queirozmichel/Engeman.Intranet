@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Engeman.Intranet.Models
+namespace Engeman.Intranet.Models.ViewModels
 {
   public class ErrorViewModel
   {

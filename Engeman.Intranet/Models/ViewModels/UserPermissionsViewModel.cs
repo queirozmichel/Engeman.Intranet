@@ -1,4 +1,4 @@
-﻿namespace Engeman.Intranet.Models
+﻿namespace Engeman.Intranet.Models.ViewModels
 {
   public class UserPermissionsViewModel
   {

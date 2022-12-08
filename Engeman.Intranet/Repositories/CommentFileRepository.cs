@@ -1,17 +1,16 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
-using Engeman.Intranet.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
-  public class PostFileRepository : IPostFileRepository
+  public class CommentFileRepository : ICommentFileRepository
   {
-    public List<PostFile> GetByPostId(int postId)
+    public List<CommentFile> GetByCommentId(int id)
     {
-      List<PostFile> files = new List<PostFile>();
-      var query = $"SELECT * FROM POSTFILE WHERE POST_ID = {postId}";
+      List<CommentFile> files = new List<CommentFile>();
+      var query = $"SELECT * FROM COMMENTFILE WHERE COMMENT_ID = {id}";
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -19,11 +18,12 @@ namespace Engeman.Intranet.Repositories
 
         for (int i = 0; i < result.Rows.Count; i++)
         {
-          PostFile file = new PostFile();
-          file.Id = Convert.ToInt32(result.Rows[i]["id"]);
+          var file = new CommentFile();
+          file.Id = Convert.ToInt32(result.Rows[i]["Id"]);
           file.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
           file.Name = result.Rows[i]["Name"].ToString();
           file.BinaryData = (byte[])result.Rows[i]["Binary_Data"];
+          file.CommentId = Convert.ToInt32(result.Rows[i]["Comment_Id"]);
           file.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
           files.Add(file);
         }
@@ -31,22 +31,17 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void Add(int postId, List<NewPostFileViewModel> files)
+    public void Add(int id, List<CommentFile> files)
     {
       using (StaticQuery sq = new StaticQuery())
       {
-        var query = "";
+        string query = "";
         string[] paramters = { "BinaryData;byte" };
 
         for (int i = 0; i < files.Count; i++)
         {
           Object[] values = { files[i].BinaryData };
-
-          query =
-          "INSERT " +
-          "INTO POSTFILE(NAME, BINARY_DATA, POST_ID) " +
-          $"VALUES('{files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), {postId}) ";
-
+          query = $"INSERT INTO COMMENTFILE(NAME, BINARY_DATA, COMMENT_ID) VALUES('{files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), {id}) ";
           sq.ExecuteCommand(query, paramters, values);
         }
       }
@@ -54,11 +49,11 @@ namespace Engeman.Intranet.Repositories
 
     public void Delete(int id)
     {
-      var query = $"DELETE FROM POSTFILE WHERE ID = {id}";
+      string query = $"DELETE FROM COMMENTFILE WHERE ID = {id}";
 
       using (StaticQuery sq = new StaticQuery())
       {
-        sq.ExecuteCommand(query);
+        var result = Convert.ToBoolean(sq.GetDataToInt(query));
       }
     }
   }
