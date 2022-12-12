@@ -5,6 +5,7 @@
 $(document).ready(function () {
   FormComponents.init();
   countFiles();
+  sessionStorage.setItem("postId", $("#post-id").val());
 
   $("#edit-post-form").validate({
     debug: true,
@@ -76,7 +77,7 @@ $("#edit-post-form").on("submit", function (event) {
   if ($("#edit-post-form").valid()) {
     var formData = new FormData(this);
     $.ajax({
-      type: "POST",
+      type: "PUT",
       contentType: false,
       processData: false,
       url: "/posts/updatepost",
@@ -85,26 +86,31 @@ $("#edit-post-form").on("submit", function (event) {
         startSpinner();
       },
       success: function (response) {
-        if (response == 0) {
-          toastr.error("Formulário inválido", "Erro!");
+        if (response == 200) {
+          if (sessionStorage.getItem("editAfterDetails") != null) {
+            backToPostDetails();
+          } else {
+            $.ajax({
+              type: "GET",
+              dataType: "html",
+              url: "/posts/grid" + "?filter=" + sessionStorage.getItem("filterGrid"),
+              success: function (response) {
+                $("#render-body").empty();
+                $("#render-body").html(response);
+                window.history.pushState({}, {}, "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
+              },
+              error: function () {
+                toastr.error("Não foi possível voltar", "Erro!");
+              },
+              complete: function () {
+                closeSpinner();
+                toastr.success("A postagem foi atualizada", "Sucesso!");
+              },
+            });
+          }
+
         } else {
-          $.ajax({
-            type: "GET",
-            dataType: "html",
-            url: "/posts/grid" + "?filter=" + sessionStorage.getItem("filterGrid"),
-            success: function (response) {
-              $("#render-body").empty();
-              $("#render-body").html(response);
-              window.history.pushState({}, '', "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
-            },
-            error: function () {
-              toastr.error("Não foi possível voltar", "Erro!");
-            },
-            complete: function () {
-              closeSpinner();
-              toastr.success("A postagem foi atualizada", "Sucesso!");
-            },
-          });
+          toastr.error("Código de resposta não tratado", "Erro!");
         }
       },
       error: function () {
@@ -119,27 +125,8 @@ $("#edit-post-form").on("submit", function (event) {
 
 $(".back-button").on("click", function (event) {
   event.preventDefault();
-
   if (sessionStorage.getItem("editAfterDetails") != null) {
-    $.ajax({
-      type: "GET",
-      dataType: "html",
-      url: "/posts/postdetails?idPost=" + sessionStorage.getItem("postId"),
-      beforeSend: function () {
-        startSpinner();
-      },
-      error: function () {
-        toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
-      },
-      success: function (response) {
-        $("#render-body").empty();
-        $("#render-body").html(response);
-        window.history.pushState({}, {}, this.url);
-      },
-      complete: function () {
-        closeSpinner();
-      }
-    })
+    backToPostDetails();
   } else {
     filter = "?filter=" + sessionStorage.getItem("filterGrid");
     $.ajax({
@@ -154,7 +141,7 @@ $(".back-button").on("click", function (event) {
         $("#render-body").html(response);
       },
       error: function () {
-        toastr.error("Não foi possível conluir a ação", "Erro!");
+        toastr.error("Não foi possível voltar para as postagens", "Erro!");
       },
       complete: function () {
         closeSpinner();
@@ -185,3 +172,25 @@ $(".icon-remove-circle").on("click", function () {
     $(this).parent().parent().append("<p class=\"none-file\">Nenhum arquivo</p>");
   }
 })
+
+function backToPostDetails() {
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    url: "/posts/postdetails?postId=" + sessionStorage.getItem("postId"),
+    beforeSend: function () {
+      startSpinner();
+    },
+    error: function () {
+      toastr.error("Não foi possível voltar para os detalhes da postagem", "Erro!");
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState({}, {}, this.url);
+    },
+    complete: function () {
+      closeSpinner();
+    }
+  })
+}

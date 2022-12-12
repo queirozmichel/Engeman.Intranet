@@ -88,13 +88,13 @@ namespace Engeman.Intranet.Controllers
         }
         _postCommentFileRepository.Add(currentComment.Id, files);
       }
-      return RedirectToAction("PostDetails", "Posts", new { idPost = editedComment.Comment.PostId });
+      return RedirectToAction("PostDetails", "Posts", new { postId = editedComment.Comment.PostId });
     }
 
     [HttpGet]
-    public IActionResult ShowFile(int idComment, int file)
+    public IActionResult ShowFile(int commentId, int file)
     {
-      var orderedFiles = _postCommentFileRepository.GetByCommentId(idComment).OrderBy(a => a.Name).ToList();
+      var orderedFiles = _postCommentFileRepository.GetByCommentId(commentId).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedFiles[file].Name);
 
@@ -142,18 +142,18 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpDelete]
-    public IActionResult DeleteComment(int idComment)
+    public IActionResult DeleteComment(int commentId)
     {
-      var result = _postCommentRepository.Delete(idComment);
+      var result = _postCommentRepository.Delete(commentId);
       return Json(result);
     }
 
     [HttpPut]
-    public IActionResult AproveComment(int idComment)
+    public IActionResult AproveComment(int commentId)
     {
-      var comment = _postCommentRepository.GetById(idComment);
+      var comment = _postCommentRepository.GetById(commentId);
       comment.Revised = true;
-      _postCommentRepository.Update(idComment, comment);
+      _postCommentRepository.Update(commentId, comment);
 
       return ViewComponent("UnrevisedList");
     }

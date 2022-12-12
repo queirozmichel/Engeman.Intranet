@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+  sessionStorage.setItem("postId", $("#post-id").text());
 
   $('#tags-comment-edit-form').tagsInput({
     'height': 'auto',
@@ -18,11 +19,10 @@
 
 $("#cancel-comment-edit-btn").on("click", function (event) {
   event.preventDefault();
-  var idPost = $("#id-post").text();
   $.ajax({
     type: "GET",
     dataType: "html",
-    url: "/posts/postdetails?idPost=" + idPost,
+    url: "/posts/postdetails?postId=" + sessionStorage.getItem("postId"),
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);

@@ -2,3 +2,7 @@
   color: #ffcf00;
   font-size: 15px;
 }
+
+.blinked-exclamation ~ span {
+  color: darkred;
+}

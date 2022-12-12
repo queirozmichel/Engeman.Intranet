@@ -3,32 +3,9 @@
 
   App.init(); // Init layout and core plugins
   Plugins.init(); // Init all plugins
-  //FormComponents.init(); // Init all form-specific plugins
-  toastrConfig();
   setInterval(exclamation, 1000);
 
 })
-
-function toastrConfig() {
-  toastr.options = {
-    "closeButton": false,
-    "debug": false,
-    "newestOnTop": false,
-    "progressBar": true,
-    "positionClass": "toast-bottom-center",
-    "preventDuplicates": false,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "3000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-  };
-}
-
 
 $("#new-post-btn").on("click", function (event) {
   event.preventDefault();
@@ -80,6 +57,7 @@ $("#user-profile-btn").on("click", function (event) {
   })
 })
 
+//aguardando revisão
 function exclamation() {
   var icon;
   icon = $(".blinked-exclamation");
@@ -90,3 +68,5 @@ function exclamation() {
     icon.css("opacity", "1");
   }, 500);
 }
+
+console.log($(".blinked-exclamation").siblings());

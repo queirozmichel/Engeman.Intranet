@@ -56,7 +56,7 @@
           <div class="form-group">
             <label class="col-md-2 control-label">Código da postagem</label>
             <div class="col-md-1">
-              <input id="id-post" class="form-control" name="Id" type="text" readonly value="@Model.Id" />
+              <input id="post-id" class="form-control" name="Id" type="text" readonly value="@Model.Id" />
             </div>
           </div>
           <div class="form-group">
@@ -139,7 +139,7 @@
                   <label class="checkbox">
                     @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
                     @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
-                    <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts" , new { idPost=Model.Id, file=i })" target="_blank">@Model.Files[i].Name</a>
+                    <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts" , new { postId=Model.Id, file=i })" target="_blank">@Model.Files[i].Name</a>
                   </label>
                 }
                 <span class="files-qty">0</span>

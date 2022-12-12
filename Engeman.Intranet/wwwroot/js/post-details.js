@@ -4,6 +4,7 @@
 
 $(document).ready(function () {
   FormComponents.init();
+  sessionStorage.setItem("postId", $("#post-id").text());
 
   $("#tab_1_3").removeClass("active");
 
@@ -39,12 +40,10 @@ $("#comment-form").on("submit", function (event) {
         if (response == -1) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
-          debugger;
-          var postId = $("#id-post").text();          
           $.ajax({
             type: "GET",
             dataType: "html",
-            data: {"postId": postId},
+            data: { "postId": sessionStorage.getItem("postId") },
             url: "/posts/postdetails",
             success: function (response) {
               $("#render-body").empty();
@@ -90,14 +89,13 @@ $("#comment-tab").on("click", function () {
 })
 
 $("#post-tab").on("click", function () {
-  var postId = $("#id-post").text();
   $.ajax({
     type: "GET",
     dataType: "html",
     beforeSend: function () {
       startSpinner();
     },
-    url: "/posts/postdetails?postId=" + postId,
+    url: "/posts/postdetails?postId=" + sessionStorage.getItem("postId"),
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
@@ -113,10 +111,9 @@ $("#post-tab").on("click", function () {
 
 $(".edit-post-button").on("click", function () {
   sessionStorage.setItem("editAfterDetails", "");
-  var idPost = $("#id-post").text();
   $.ajax({
     type: "GET",
-    data: { "idPost": idPost },
+    data: { "postId": sessionStorage.getItem("postId") },
     dataType: "html",
     url: "/posts/editpost",
     beforeSend: function () {
@@ -137,19 +134,16 @@ $(".edit-post-button").on("click", function () {
 })
 
 $(".delete-post-button").on("click", function () {
-  var idPost = $("#id-post").text();
-  showConfirmationModal("Apagar a postagem?", "Esta ação não poderá ser revertida.", "delete-post", idPost);
+  showConfirmationModal("Apagar a postagem?", "Esta ação não poderá ser revertida.", "delete-post", sessionStorage.getItem("postId"));
 })
 
 $(".aprove-post-button").on("click", function () {
-  var idPost = $("#id-post").text();
-  showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove-post", idPost);
+  showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove-post", sessionStorage.getItem("postId"));
 })
 
 $(".btn-yes, .btn-no").on("click", function () {
-  var postId = $("#id-post").text();
   if ($(this).attr("id") == "delete-post") {
-    deletePost(postId).then((response) => {
+    deletePost(sessionStorage.getItem("postId")).then((response) => {
       $.ajax({
         type: "GET",
         dataType: "html",
@@ -189,17 +183,16 @@ $(".btn-yes, .btn-no").on("click", function () {
         console.log(error)
       })
   } else if ($(this).attr("id") == "aprove-post") {
-    aprovePost(postId);
+    aprovePost(sessionStorage.getItem("postId"));
   }
 })
-
 
 function deletePost(postId) {
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "DELETE",
       data: {
-        'idPost': postId
+        'postId': postId
       },
       url: "/posts/removepost",
       dataType: "html",
@@ -218,11 +211,11 @@ function deletePost(postId) {
   })
 }
 
-function aprovePost(idPost) {
+function aprovePost(postId) {
   $.ajax({
     type: "PUT",
     data: {
-      'idPost': idPost
+      'postId': postId
     },
     url: "/posts/aprovepost",
     dataType: "text",
@@ -309,7 +302,7 @@ function getCommentElement(id) {
 function aproveComment(id, comment) {
   $.ajax({
     type: "PUT",
-    data: { "idComment": id },
+    data: { "commentId": id },
     url: "/comments/aprovecomment",
     dataType: "text",
     success: function (response) {
@@ -333,7 +326,7 @@ function deleteComment(id, comment) {
   $.ajax({
     type: "DELETE",
     data: {
-      "idComment": id
+      "commentId": id
     },
     url: "/comments/deletecomment",
     dataType: "text",

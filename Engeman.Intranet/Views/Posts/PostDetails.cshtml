@@ -56,7 +56,7 @@
             <div class="post-info-div">
               <div>
                 <span class="post-info">Identificador</span>
-                <span id="id-post">@ViewBag.Post.Id</span>
+                <span id="post-id">@ViewBag.Post.Id</span>
               </div>
               <div>
                 @if (ViewBag.Post.PostedDaysAgo == 0)
@@ -85,7 +85,7 @@
               <div class="col-md-12 file-post">
                 @for (int i = 0; i < ViewBag.Post.Files.Count; i++)
                 {
-                  <span class="file-post-list">@(i+1) -  <a href="@Url.Action("showfile", "posts", new { idPost = ViewBag.Post.Id, file = i })" target="_blank">@ViewBag.Post.Files[i].Name</a></span><br />
+                  <span class="file-post-list">@(i+1) -  <a href="@Url.Action("showfile", "posts", new { postId = ViewBag.Post.Id, file = i })" target="_blank">@ViewBag.Post.Files[i].Name</a></span><br />
                 }
               </div>
             }
@@ -163,7 +163,7 @@
                           Anexo(s):
                           @for (int j = 0; j < @ViewBag.Comments[i].Files.Count; j++)
                           {
-                            <dd class="file"><a href="@Url.Action("showfile", "comments", new { idComment = ViewBag.Comments[i].Id, file = j })" target="_blank">@ViewBag.Comments[i].Files[j].Name</a></dd>
+                            <dd class="file"><a href="@Url.Action("showfile", "comments", new { commentId = ViewBag.Comments[i].Id, file = j })" target="_blank">@ViewBag.Comments[i].Files[j].Name</a></dd>
                           }
                         </dl>
                       }

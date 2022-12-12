@@ -256,7 +256,7 @@ namespace Engeman.Intranet.Controllers
       return PartialView(postEditViewModel);
     }
 
-    [HttpPost]
+    [HttpPut]
     public IActionResult UpdatePost(PostEditViewModel editedPost, List<IFormFile> binaryData)
     {
       List<NewPostFileViewModel> fileList = new List<NewPostFileViewModel>();
@@ -312,13 +312,13 @@ namespace Engeman.Intranet.Controllers
       _postRepository.Update(editedPost);
       ViewBag.FilterGrid = Request.Query["filter"];
 
-      return PartialView("Grid");
+      return Ok(StatusCodes.Status200OK);
     }
 
     [HttpDelete]
-    public IActionResult RemovePost(int idPost)
+    public IActionResult RemovePost(int postId)
     {
-      _postRepository.Delete(idPost);
+      _postRepository.Delete(postId);
       return PartialView("Grid");
     }
 
@@ -402,9 +402,9 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public ActionResult ShowFile(int idPost, int file)
+    public IActionResult ShowFile(int postId, int file)
     {
-      var orderedFiles = _postFileRepository.GetByPostId(idPost).OrderBy(a => a.Name).ToList();
+      var orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedFiles[file].Name);
 
@@ -412,11 +412,11 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPut]
-    public IActionResult AprovePost(int idPost)
+    public IActionResult AprovePost(int postId)
     {
-      var post = _postRepository.Get(idPost);
+      var post = _postRepository.Get(postId);
       post.Revised = true;
-      _postRepository.Update(idPost, post);
+      _postRepository.Update(postId, post);
 
       return ViewComponent("UnrevisedList");
     }
