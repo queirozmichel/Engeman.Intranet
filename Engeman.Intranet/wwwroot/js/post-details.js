@@ -27,7 +27,7 @@ $("#comment-form").on("submit", function (event) {
     //contentType e processData são obrigatórios
     $.ajax({
       type: "POST",
-      url: "/posts/newcomment",
+      url: "/comments/newcomment",
       dataType: "html",
       contentType: false,
       processData: false,
@@ -39,11 +39,12 @@ $("#comment-form").on("submit", function (event) {
         if (response == -1) {
           toastr.error("Formulário inválido", "Erro!");
         } else {
-          var idPost = $("#id-post").text();          
+          debugger;
+          var postId = $("#id-post").text();          
           $.ajax({
             type: "GET",
             dataType: "html",
-            data: {"idPost": idPost},
+            data: {"postId": postId},
             url: "/posts/postdetails",
             success: function (response) {
               $("#render-body").empty();
@@ -89,14 +90,14 @@ $("#comment-tab").on("click", function () {
 })
 
 $("#post-tab").on("click", function () {
-  var idPost = $("#id-post").text();
+  var postId = $("#id-post").text();
   $.ajax({
     type: "GET",
     dataType: "html",
     beforeSend: function () {
       startSpinner();
     },
-    url: "/posts/postdetails?idPost=" + idPost,
+    url: "/posts/postdetails?postId=" + postId,
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
@@ -309,7 +310,7 @@ function aproveComment(id, comment) {
   $.ajax({
     type: "PUT",
     data: { "idComment": id },
-    url: "aprovecomment",
+    url: "/comments/aprovecomment",
     dataType: "text",
     success: function (response) {
       $(comment).find(".comment-aprove-btn").remove();
@@ -334,7 +335,7 @@ function deleteComment(id, comment) {
     data: {
       "idComment": id
     },
-    url: "deletecomment",
+    url: "/comments/deletecomment",
     dataType: "text",
     success: function (response) {
       if (response == "true") {

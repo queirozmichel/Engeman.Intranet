@@ -153,7 +153,8 @@
                 @for (int i = 0; i < ViewBag.Comments.Count; i++)
                 {
                   <div class="col-md-12 comment-box" data-user-id="@ViewBag.Comments[i].AuthorId" data-comment-id="@ViewBag.Comments[i].Id">
-                    @if (i != 0) {<hr />} 
+                    @if (i != 0)
+                    {<hr />}
                     <div id="editor-content-view" class="col-md-12 editor-content-view">@Html.Raw(@ViewBag.Comments[i].Description)</div>
                     <div class="col-md-12">
                       @if (@ViewBag.Comments[i].Files.Count > 0)
@@ -162,7 +163,7 @@
                           Anexo(s):
                           @for (int j = 0; j < @ViewBag.Comments[i].Files.Count; j++)
                           {
-                            <dd class="file"><a href="@Url.Action("showcommentfile", "comments", new { idComment = ViewBag.Comments[i].Id, file = j })" target="_blank">@ViewBag.Comments[i].Files[j].Name</a></dd>
+                            <dd class="file"><a href="@Url.Action("showfile", "comments", new { idComment = ViewBag.Comments[i].Id, file = j })" target="_blank">@ViewBag.Comments[i].Files[j].Name</a></dd>
                           }
                         </dl>
                       }

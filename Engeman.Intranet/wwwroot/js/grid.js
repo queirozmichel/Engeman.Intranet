@@ -18,7 +18,7 @@ $(document).ready(function () {
       dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
       left: "text-left",
     },
-    url: "/posts/getdatagrid",
+    url: "/posts/datagrid",
     labels: {
       all: "Tudo",
       infos: "Exibindo {{ctx.start}} até {{ctx.end}} de {{ctx.total}} registros",
@@ -116,9 +116,9 @@ $(document).ready(function () {
       },
       action: function (column, row) {
         var buttons;
-        var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> ";;
-        var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
-        var btn3 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-row-id=\"" + row.id + "\"data-user-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> ";;
+        var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
+        var btn3 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
         buttons = btn1 + btn2 + btn3;
         return buttons;
       },
@@ -167,33 +167,33 @@ $(document).ready(function () {
     postGrid.find("button.btn").each(function (index, element) {
       var actionButtons = $(element);
       var action = actionButtons.data("action");
-      var idPost = actionButtons.data("row-id");
-      var userIdPost = actionButtons.data("user-id");
+      var postId = actionButtons.data("post-id");
+      var authorId = actionButtons.data("author-id");
       var postType = actionButtons.data("post-type");
       actionButtons.on("click", function () {
         if (action == "details") {
-          sessionStorage.setItem("postId", idPost);
+          sessionStorage.setItem("postId", postId);
           sessionStorage.setItem("postType", postType);
-          postDetails(idPost, postType);
+          postDetails(postId, postType);
         } else if (action == "edit") {
-          postPermissions(userIdPost, idPost, action);
+          postPermissions(authorId, postId, action);
         } else if (action == "delete") {
-          postPermissions(userIdPost, idPost, action);
+          postPermissions(authorId, postId, action);
           elementAux = element;
-          idPostAux = idPost;
+          idPostAux = postId;
         } else if (action == "aprove") {
-          showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove", idPost);
+          showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove", postId);
         }
       })
     });
   })
 
-  function postPermissions(userIdPost, idPost, method) {
-    $.get("/useraccount/checkpermissions", { userIdPost, method })
+  function postPermissions(authorId, postId, method) {
+    $.get("/useraccount/checkpermissions", { authorId, method })
       .done(function (response) {
         if (method == "edit") {
           if (response == "EditAnyPost" || response == "EditOwnerPost") {
-            editPost(idPost);
+            editPost(postId);
           }
           else if (response == "CannotEditAnyonePost") {
             showAlertModal("Operação não suportada!", "Você não tem permissão para editar uma postagem de outra pessoa");
@@ -207,13 +207,13 @@ $(document).ready(function () {
         }
         else if (method == "delete") {
           if (response == "DeleteAnyPost") {
-            showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", idPost);
+            showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", postId);
           }
           else if (response == "CannotDeleteAnyonePost") {
             showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de outra pessoa");
           }
           else if (response == "DeleteOwnerPost") {
-            showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", idPost);
+            showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", postId);
           }
           else if (response == "CannotDeleteAnyPost") {
             showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de outra pessoa");
@@ -254,10 +254,10 @@ $(".btn-yes, .btn-no").on("click", function () {
   }
 })
 
-function postDetails(idPost) {
+function postDetails(postId) {
   $.ajax({
     type: "GET",
-    data: { "idPost": idPost },
+    data: { "postId": postId },
     dataType: "html",
     url: "/posts/postdetails",
     beforeSend: function () {
@@ -277,10 +277,10 @@ function postDetails(idPost) {
   })
 }
 
-function editPost(idPost) {
+function editPost(postId) {
   $.ajax({
     type: "GET",
-    data: { "idPost": idPost },
+    data: { "postId": postId },
     dataType: "html",
     url: "/posts/editpost",
     beforeSend: function () {

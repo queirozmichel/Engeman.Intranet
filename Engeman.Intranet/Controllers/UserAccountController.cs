@@ -20,16 +20,19 @@ namespace Engeman.Intranet.Controllers
       _departmentRepository = departmentRepository;
     }
 
-    public IActionResult Index()
+    [HttpGet]
+    public IActionResult UserProfile()
     {
-      var users = _userAccountRepository.Get();
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       var userAccount = _userAccountRepository.GetByDomainUsername(HttpContext.Session.GetString("_DomainUsername").ToString());
       ViewBag.Department = _departmentRepository.GetById(userAccount.DepartmentId);
+      ViewBag.IsAjaxCall = isAjaxCall;
 
-      return View(userAccount);
+      return PartialView(userAccount);
     }
 
-    public IActionResult EditUserAccount(UserAccount userAccount, List<IFormFile> Photo)
+    [HttpPost]
+    public IActionResult UpdateUserProfile(UserAccount userAccount, List<IFormFile> Photo)
     {
       if (!ModelState.IsValid)
       {
@@ -52,13 +55,14 @@ namespace Engeman.Intranet.Controllers
       }
       _userAccountRepository.Update(userAccount);
 
-      return RedirectToAction("index", "useraccount");
+      return Ok(StatusCodes.Status200OK);
     }
 
-    public IActionResult CheckPermissions(int userIdPost, string method)
+    [HttpGet]
+    public IActionResult CheckPermissions(int authorId, string method)
     {
       var sessionDomainAccount = HttpContext.Session.GetString("_DomainUsername").ToString();
-      var userDomainAccount = _userAccountRepository.GetDomainAccountById(userIdPost);
+      var userDomainAccount = _userAccountRepository.GetDomainAccountById(authorId);
       var userPermissions = _userAccountRepository.GetUserPermissionsByDomainUsername(sessionDomainAccount);
 
       if (method == "edit")

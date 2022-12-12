@@ -40,8 +40,8 @@ $("#new-post-btn").on("click", function (event) {
       startSpinner();
     },
     success: function (response) {
-      if (response == 0) {
-        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem")
+      if (response == 401) {
+        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem");
       } else {
         $("#render-body").empty();
         $("#render-body").html(response);
@@ -49,7 +49,30 @@ $("#new-post-btn").on("click", function (event) {
       }
     },
     error: function (response) {
-      console.log(response);
+      toastr.error("Não foi possível acessar a tela de nova postagem", "Erro!");
+    },
+    complete: function () {
+      closeSpinner();
+    }
+  })
+})
+
+$("#user-profile-btn").on("click", function (event) {
+  event.preventDefault();
+  $.ajax({
+    type: "GET",
+    url: "/useraccount/userprofile",
+    dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState({}, '', this.url);
+    },
+    error: function () {
+      toastr.error("Não foi possível acessar o perfil de usuário", "Erro!");
     },
     complete: function () {
       closeSpinner();

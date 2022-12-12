@@ -92,13 +92,70 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult ShowCommentFile(int idComment, int file)
+    public IActionResult ShowFile(int idComment, int file)
     {
       var orderedFiles = _postCommentFileRepository.GetByCommentId(idComment).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedFiles[file].Name);
 
       return File(orderedFiles[file].BinaryData, "application/pdf");
+    }
+
+    [HttpPost]
+    public IActionResult NewComment(NewCommentViewModel newComment, List<IFormFile> files)
+    {
+      if (!ModelState.IsValid)
+      {
+        return Ok(-1);
+      }
+
+      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
+      var userAccount = _userAccountRepository.GetByDomainUsername(sessionDomainUsername);
+
+      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
+      {
+        newComment.Revised = true;
+      }
+
+      newComment.UserAccountId = (int)HttpContext.Session.GetInt32("_UserAccountId");
+
+      if (files.Count > 0)
+      {
+        for (int i = 0; i < files.Count; i++)
+        {
+          NewCommentFileViewModel file = new NewCommentFileViewModel();
+          file.Name = files[i].FileName;
+          if (files[i].Length > 0)
+          {
+            using (var stream = new MemoryStream())
+            {
+              files[i].CopyTo(stream);
+              file.BinaryData = stream.ToArray();
+            }
+          }
+          newComment.Files.Add(file);
+        }
+      }
+      _postCommentRepository.Add(newComment);
+
+      return Ok(1);
+    }
+
+    [HttpDelete]
+    public IActionResult DeleteComment(int idComment)
+    {
+      var result = _postCommentRepository.Delete(idComment);
+      return Json(result);
+    }
+
+    [HttpPut]
+    public IActionResult AproveComment(int idComment)
+    {
+      var comment = _postCommentRepository.GetById(idComment);
+      comment.Revised = true;
+      _postCommentRepository.Update(idComment, comment);
+
+      return ViewComponent("UnrevisedList");
     }
   }
 }

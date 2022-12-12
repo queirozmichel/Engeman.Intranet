@@ -1,0 +1,245 @@
+﻿@model Engeman.Intranet.Models.UserAccount;
+
+@{string layout = null;}
+
+@if (ViewBag.IsAjaxCall == false)
+{
+  layout = "~/Views/Shared/_Layout.cshtml";
+  <script>startSpinner();</script>
+}
+
+@{
+  Layout = layout;
+}
+
+<link rel="stylesheet" href="~/css/useraccount.css" />
+
+<div class="body-content">
+  <div class="page-header">
+    <div class="page-title">
+      <h3>Perfil de Usuário</h3>
+      @*<span>Good morning, @Model.Name!</span>*@
+    </div>
+    <!-- Page Stats -->
+    <ul class="page-stats">
+      <li>
+        <div class="summary">
+          <span>New orders</span>
+          <h3>17,561</h3>
+        </div>
+        <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+        <!-- Use instead of sparkline e.g. this:
+        <div class="graph circular-chart" data-percent="73">73%</div>
+        -->
+      </li>
+      <li>
+        <div class="summary">
+          <span>My balance</span>
+          <h3>$21,561.21</h3>
+        </div>
+        <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+      </li>
+    </ul>
+    <!-- /Page Stats -->
+  </div>
+  <!-- /Page Header -->
+  <!--=== Page Content ===-->
+  <!--=== Inline Tabs ===-->
+  <div class="row">
+    <div class="col-md-12">
+      <!-- Tabs-->
+      <div class="tabbable tabbable-custom tabbable-full-width">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab_overview" data-toggle="tab">Visão Geral</a></li>
+          <li><a href="#tab_edit_profile" data-toggle="tab">Editar Perfil</a></li>
+        </ul>
+        <div class="tab-content row">
+          <!--=== Overview ===-->
+          <div class="tab-pane active" id="tab_overview">
+            <div class="col-md-3">
+              <div class="list-group">
+                <li class="list-group-item no-padding">
+                  @{ var base64 = Convert.ToBase64String(Model.Photo);
+                    var imasrc = string.Format("data:image/png;base64,{0}", base64);
+                  }
+                  <img src='@imasrc' />
+                </li>
+                <a href="javascript:void(0);" class="list-group-item">Projects</a>
+                <a href="javascript:void(0);" class="list-group-item">Messages</a>
+                <a href="javascript:void(0);" class="list-group-item"><span class="badge">3</span>Friends</a>
+                <a href="javascript:void(0);" class="list-group-item">Settings</a>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <div class="row profile-info">
+                <div class="col-md-7">
+                  <div class="alert alert-info">You will receive all future updates for free!</div>
+                  <h1>@Model.Name</h1>
+                  <dl class="dl-horizontal">
+                    <dt>Usuário de domínio:</dt>
+                    <dd>@Model.DomainAccount</dd>
+                    <dt>E-mail:</dt>
+                    <dd>@Model.Email</dd>
+                    <dt>Setor:</dt>
+                    <dd>@ViewBag.Department.Description</dd>
+                  </dl>
+                  <p>@Model.Description</p>
+                </div>
+                <div class="col-md-5">
+                  <div class="widget">
+                    <div class="widget-header">
+                      <h4><i class="icon-reorder"></i> Sales</h4>
+                    </div>
+                    <div class="widget-content">
+                      <div id="chart_filled_blue" class="chart"></div>
+                    </div>
+                  </div>
+                </div>
+              </div> <!-- /.row -->
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="widget">
+                    <div class="widget-content">
+                      <table class="table table-hover table-striped">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th class="hidden-xs">Username</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>Joey</td>
+                            <td>Greyson</td>
+                            <td class="hidden-xs">joey123</td>
+                            <td><span class="label label-success">Approved</span></td>
+                          </tr>
+                          <tr>
+                            <td>2</td>
+                            <td>Wolf</td>
+                            <td>Bud</td>
+                            <td class="hidden-xs">wolfy</td>
+                            <td><span class="label label-info">Pending</span></td>
+                          </tr>
+                          <tr>
+                            <td>3</td>
+                            <td>Darin</td>
+                            <td>Alec</td>
+                            <td class="hidden-xs">alec82</td>
+                            <td><span class="label label-warning">Suspended</span></td>
+                          </tr>
+                          <tr>
+                            <td>4</td>
+                            <td>Andrea</td>
+                            <td>Brenden</td>
+                            <td class="hidden-xs">andry</td>
+                            <td><span class="label label-danger">Blocked</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Striped Table -->
+              </div> <!-- /.row -->
+            </div> <!-- /.col-md-9 -->
+          </div>
+          <!-- /Overview -->
+          <!--=== Edit Account ===-->
+          <div class="tab-pane" id="tab_edit_profile">
+
+
+            <form id="edit-profile-form" class="form-horizontal" method="post" enctype="multipart/form-data">
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-md-4 control-label">Nome<span class="required">*</span></label>
+                  <div class="col-md-8">
+                    <input type="text" name="name" class="form-control" value="@Model.Name">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">Usuário de Domínio<span class="required">*</span></label>
+                  <div class="col-md-8">
+                    <input type="text" name="domainAccount" class="form-control" maxlength="19" value="@Model.DomainAccount" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">E-mail<span class="required">*</span></label>
+                  <div class="col-md-8">
+                    <input type="text" name="email" class="form-control" value="@Model.Email" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">Setor<span class="">*</span></label>
+                  <div class="col-md-8">
+                    <input type="text" name="departmentDescription" class="form-control" value="@ViewBag.Department.Description" readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-4 control-label">Foto de perfil</label>
+                  <div class="col-md-8">
+                    <input type="file" id="photo" name="photo" accept="image/jpeg, image/png" value="@Model.Photo" />
+                    <label id="photo-limit">A imagem tem <span></span>MB e excede o tamanho máximo de 5MB</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="textArea">Descrição</label>
+                  <div class="col-md-8">
+                    <textarea class="form-control" id="textArea" rows="10">@Model.Description</textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 form-vertical no-margin">
+                <div class="form-actions">
+                  <input type="submit" value="Salvar e Sair" class="btn btn-primary pull-right">
+                </div>
+              </div>
+            </form>
+
+
+
+            @*<div class="col-md-12">
+              <div class="widget box answer-box">
+                <div class="widget-content">
+                  <form class="form-horizontal row-border" id="edit-profile-form" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Nome<span class="required">*</span></label>
+                      <div class="col-md-2">
+                        <input type="text" name="name" class="form-control" value="@Model.Name">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-md-2 control-label">Anexar arquivo(s)</label>
+                      <div class="col-md-2">
+                        <input id="file" type="file" name="files" accept="application/pdf" multiple>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>*@
+          </div>
+          <!-- /Edit Account -->
+        </div> <!-- /.tab-content -->
+      </div>
+      <!--END TABS-->
+    </div>
+  </div> <!-- /.row -->
+</div>
+
+<script src="~/js/useraccount.js"></script>
+<script type="text/javascript" src="~/js/demo/charts/chart_filled_blue.js"></script>
+@if (ViewBag.IsAjaxCall == true)
+{
+  <script type="text/javascript" src="~/js/custom.js"></script>
+}

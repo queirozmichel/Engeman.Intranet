@@ -129,18 +129,13 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public Post Get(int id)
+    public Post Get(int postId)
     {
       Post post = new Post();
+      var query = $"SELECT * FROM POST WHERE ID = {postId}";
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var query =
-          $"SELECT " +
-          $"* " +
-          $"FROM POST " +
-          $"WHERE ID = {id}";
-
         var result = sq.GetDataSet(query).Tables[0].Rows[0];
 
         post.Id = Convert.ToInt32(result["Id"]);

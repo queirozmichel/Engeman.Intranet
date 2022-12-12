@@ -89,19 +89,19 @@ namespace Engeman.Intranet.Controllers
       return RedirectToAction("index", "login");
     }
 
-    [HttpGet]
-    public JsonResult ConfirmSessionUserByAjax(int userAccountIdPost)
-    {
-      var userSessionId = HttpContext.Session.GetInt32("_UserAccountId");
+    //[HttpGet]
+    //public JsonResult ConfirmSessionUserByAjax(int userAccountIdPost)
+    //{
+    //  var userSessionId = HttpContext.Session.GetInt32("_UserAccountId");
 
-      if (userSessionId == userAccountIdPost)
-      {
-        return Json(true);
-      }
-      else
-      {
-        return Json(false);
-      }
-    }
+    //  if (userSessionId == userAccountIdPost)
+    //  {
+    //    return Json(true);
+    //  }
+    //  else
+    //  {
+    //    return Json(false);
+    //  }
+    //}
   }
 }
