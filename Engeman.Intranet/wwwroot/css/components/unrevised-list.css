@@ -1,3 +1,7 @@
 ﻿.badge {
   background: salmon;
 }
+
+#all-posts-link, #unrevised-posts-link, #unrevised-comments-link{
+  cursor: pointer;
+}

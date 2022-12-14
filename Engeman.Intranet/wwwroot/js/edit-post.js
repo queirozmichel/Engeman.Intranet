@@ -1,5 +1,5 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();
+  stopSpinner();
 });
 
 $(document).ready(function () {
@@ -103,7 +103,7 @@ $("#edit-post-form").on("submit", function (event) {
                 toastr.error("Não foi possível voltar", "Erro!");
               },
               complete: function () {
-                closeSpinner();
+                stopSpinner();
                 toastr.success("A postagem foi atualizada", "Sucesso!");
               },
             });
@@ -117,7 +117,7 @@ $("#edit-post-form").on("submit", function (event) {
         toastr.error("A postagem não foi atualizada", "Erro!");
       },
       complete: function () {
-        closeSpinner();
+        stopSpinner();
       }
     });
   }
@@ -144,7 +144,7 @@ $(".back-button").on("click", function (event) {
         toastr.error("Não foi possível voltar para as postagens", "Erro!");
       },
       complete: function () {
-        closeSpinner();
+        stopSpinner();
         window.history.pushState({}, {}, "/posts/grid" + filter);
       },
     })
@@ -190,7 +190,7 @@ function backToPostDetails() {
       window.history.pushState({}, {}, this.url);
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 }

@@ -1,5 +1,5 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();
+  stopSpinner();
 });
 
 $(document).ready(function () {
@@ -58,7 +58,7 @@ $("#edit-profile-form").submit(function (event) {
         toastr.error("Não foi possível atualizar o perfil", "Erro!");
       },
       complete: function () {
-        closeSpinner();
+        stopSpinner();
       }
     });
   }

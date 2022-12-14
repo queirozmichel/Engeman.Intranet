@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,18 +93,17 @@
   <link rel="stylesheet" type="text/css" href="~/css/custom.css" />
   <link rel="stylesheet" type="text/css" href="~/css/layout.css" />
 </head>
+
 <body>
   @await Component.InvokeAsync("AlertModal")
   <!-- Header -->
   <header class="header navbar navbar-fixed-top" role="banner">
     <!-- Top Navigation Bar -->
     <div class="container">
-
       <!-- Only visible on smartphones, menu toggle -->
       <ul class="nav navbar-nav">
         <li class="nav-toggle"><a href="javascript:void(0);" title=""><i class="icon-reorder"></i></a></li>
       </ul>
-
       <!-- Logo -->
       <a class="navbar-brand" asp-controller="dashboard" asp-action="Index">
         <strong>ENGEMAN </strong>INTRANET
@@ -114,202 +114,8 @@
         <i class="icon-reorder"></i>
       </a>
       <!-- /Sidebar Toggler -->
-      <!-- Top Left Menu -->
-      @*<ul class="nav navbar-nav navbar-left hidden-xs hidden-sm">
-          <li>
-            <a asp-area="" asp-controller="dashboard" asp-action="Index">
-              Dashboard
-            </a>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              Dropdown
-              <i class="icon-caret-down small"></i>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="#"><i class="icon-user"></i> Example #1</a></li>
-              <li><a href="#"><i class="icon-calendar"></i> Example #2</a></li>
-              <li class="divider"></li>
-              <li><a href="#"><i class="icon-tasks"></i> Example #3</a></li>
-            </ul>
-          </li>
-        </ul>*@
-      <!-- /Top Left Menu -->
       <!-- Top Right Menu -->
       <ul class="nav navbar-nav navbar-right">
-        <!-- Notifications -->
-        <!--<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="icon-warning-sign"></i>
-            <span class="badge">5</span>
-          </a>
-          <ul class="dropdown-menu extended notification">
-            <li class="title">
-              <p>You have 5 new notifications</p>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="label label-success"><i class="icon-plus"></i></span>
-                <span class="message">New user registration.</span>
-                <span class="time">1 mins</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="label label-danger"><i class="icon-warning-sign"></i></span>
-                <span class="message">High CPU load on cluster #2.</span>
-                <span class="time">5 mins</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="label label-success"><i class="icon-plus"></i></span>
-                <span class="message">New user registration.</span>
-                <span class="time">10 mins</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="label label-info"><i class="icon-bullhorn"></i></span>
-                <span class="message">New items are in queue.</span>
-                <span class="time">25 mins</span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="label label-warning"><i class="icon-bolt"></i></span>
-                <span class="message">Disk space to 85% full.</span>
-                <span class="time">55 mins</span>
-              </a>
-            </li>
-            <li class="footer">
-              <a href="javascript:void(0);">View all notifications</a>
-            </li>
-          </ul>
-        </li>-->
-        <!-- Tasks -->
-        <!--<li class="dropdown hidden-xs hidden-sm">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="icon-tasks"></i>
-            <span class="badge">7</span>
-          </a>
-          <ul class="dropdown-menu extended notification">
-            <li class="title">
-              <p>You have 7 pending tasks</p>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="task">
-                  <span class="desc">Preparing new release</span>
-                  <span class="percent">30%</span>
-                </span>
-                <div class="progress progress-small">
-                  <div style="width: 30%;" class="progress-bar progress-bar-info"></div>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="task">
-                  <span class="desc">Change management</span>
-                  <span class="percent">80%</span>
-                </span>
-                <div class="progress progress-small progress-striped active">
-                  <div style="width: 80%;" class="progress-bar progress-bar-danger"></div>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="task">
-                  <span class="desc">Mobile development</span>
-                  <span class="percent">60%</span>
-                </span>
-                <div class="progress progress-small">
-                  <div style="width: 60%;" class="progress-bar progress-bar-success"></div>
-                </div>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="task">
-                  <span class="desc">Database migration</span>
-                  <span class="percent">20%</span>
-                </span>
-                <div class="progress progress-small">
-                  <div style="width: 20%;" class="progress-bar progress-bar-warning"></div>
-                </div>
-              </a>
-            </li>
-            <li class="footer">
-              <a href="javascript:void(0);">View all tasks</a>
-            </li>
-          </ul>
-        </li>-->
-        <!-- Messages -->
-        <!--<li class="dropdown hidden-xs hidden-sm">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="icon-envelope"></i>
-            <span class="badge">1</span>
-          </a>
-          <ul class="dropdown-menu extended notification">
-            <li class="title">
-              <p>You have 3 new messages</p>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="photo"><img src="~/images/demo/avatar-1.jpg" alt="" /></span>
-                <span class="subject">
-                  <span class="from">Bob Carter</span>
-                  <span class="time">Just Now</span>
-                </span>
-                <span class="text">
-                  Consetetur sadipscing elitr...
-                </span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="photo"><img src="~/images/demo/avatar-2.jpg" alt="" /></span>
-                <span class="subject">
-                  <span class="from">Jane Doe</span>
-                  <span class="time">45 mins</span>
-                </span>
-                <span class="text">
-                  Sed diam nonumy...
-                </span>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0);">
-                <span class="photo"><img src="~/images/demo/avatar-3.jpg" alt="" /></span>
-                <span class="subject">
-                  <span class="from">Patrick Nilson</span>
-                  <span class="time">6 hours</span>
-                </span>
-                <span class="text">
-                  No sea takimata sanctus...
-                </span>
-              </a>
-            </li>
-            <li class="footer">
-              <a href="javascript:void(0);">View all messages</a>
-            </li>
-          </ul>
-        </li>-->
-        <!-- .row .row-bg Toggler -->
-        <!--<li>
-          <a href="#" class="dropdown-toggle row-bg-toggle">
-            <i class="icon-resize-vertical"></i>
-          </a>
-        </li>-->
-        <!-- Project Switcher Button -->
-        <!--<li class="dropdown">
-          <a href="#" class="project-switcher-btn dropdown-toggle">
-            <i class="icon-folder-open"></i>
-            <span>Projects</span>
-          </a>
-        </li>-->
         <!-- User Login Dropdown -->
         <li class="dropdown user">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -319,7 +125,7 @@
             <i class="icon-caret-down small"></i>
           </a>
           <ul class="dropdown-menu">
-            <li><a asp-area="" asp-controller="useraccount" asp-action="Index"><i class="icon-user"></i> Meu Perfil</a></li>
+            <li><a class="user-profile-btn"><i class="icon-user"></i> Meu Perfil</a></li>
             <li class="divider"></li>
             <li><a onclick="sessionStorage.clear()" asp-area="" asp-controller="login" asp-action="logout"><i class="fa-solid fa-right-from-bracket"></i>Sair</a></li>
           </ul>
@@ -328,166 +134,14 @@
       </ul>
       <!-- /Top Right Menu -->
     </div>
-    <!-- /top navigation bar -->
-    <!--=== Project Switcher ===-->
-    <!--<div id="project-switcher" class="container project-switcher">
-      <div id="scrollbar">
-        <div class="handle"></div>
-      </div>
-
-      <div id="frame">
-        <ul class="project-list">
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-desktop"></i></span>
-              <span class="title">Lorem ipsum dolor</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-compass"></i></span>
-              <span class="title">Dolor sit invidunt</span>
-            </a>
-          </li>
-          <li class="current">
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-male"></i></span>
-              <span class="title">Consetetur sadipscing elitr</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-thumbs-up"></i></span>
-              <span class="title">Sed diam nonumy</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-female"></i></span>
-              <span class="title">At vero eos et</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-beaker"></i></span>
-              <span class="title">Sed diam voluptua</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-desktop"></i></span>
-              <span class="title">Lorem ipsum dolor</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-compass"></i></span>
-              <span class="title">Dolor sit invidunt</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-male"></i></span>
-              <span class="title">Consetetur sadipscing elitr</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-thumbs-up"></i></span>
-              <span class="title">Sed diam nonumy</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-female"></i></span>
-              <span class="title">At vero eos et</span>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <span class="image"><i class="icon-beaker"></i></span>
-              <span class="title">Sed diam voluptua</span>
-            </a>
-          </li>
-        </ul>
-      </div>-->
-    <!-- /#frame -->
-    <!--</div>--> <!-- /#project-switcher -->
   </header> <!-- /.header -->
-
   <div id="container">
     <div id="sidebar" class="sidebar-fixed">
       <div id="sidebar-content">
-
-        <!-- Search Input -->
-        @*<form class="sidebar-search">
-            <div class="input-box">
-              <button type="submit" class="submit">
-                <i class="icon-search"></i>
-              </button>
-              <span>
-                <input type="text" placeholder="Search...">
-              </span>
-            </div>
-          </form>*@
-
-        <!-- Search Results -->
-        <!--<div class="sidebar-search-results">
-
-        <i class="icon-remove close"></i>-->
-        <!-- Documents -->
-        <!--<div class="title">
-          Documents
-        </div>
-        <ul class="notifications">
-          <li>
-            <a href="javascript:void(0);">
-              <div class="col-left">
-                <span class="label label-info"><i class="icon-file-text"></i></span>
-              </div>
-              <div class="col-right with-margin">
-                <span class="message"><strong>John Doe</strong> received $1.527,32</span>
-                <span class="time">finances.xls</span>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="javascript:void(0);">
-              <div class="col-left">
-                <span class="label label-success"><i class="icon-file-text"></i></span>
-              </div>
-              <div class="col-right with-margin">
-                <span class="message">My name is <strong>John Doe</strong> ...</span>
-                <span class="time">briefing.docx</span>
-              </div>
-            </a>
-          </li>
-        </ul>-->
-        <!-- /Documents -->
-        <!-- Persons -->
-        <!--<div class="title">
-            Persons
-          </div>
-          <ul class="notifications">
-            <li>
-              <a href="javascript:void(0);">
-                <div class="col-left">
-                  <span class="label label-danger"><i class="icon-female"></i></span>
-                </div>
-                <div class="col-right with-margin">
-                  <span class="message">Jane <strong>Doe</strong></span>
-                  <span class="time">21 years old</span>
-                </div>
-              </a>
-            </li>
-          </ul>
-        </div>-->
-        <!-- /.sidebar-search-results -->
         <!--=== Navigation ===-->
-
         <ul id="nav">
           <li>
-            <a asp-area="" asp-controller="dashboard" asp-action="Index">
+            <a id="dashboard-btn" href="#">
               <i class="icon-bar-chart"></i>
               Dashboard
             </a>
@@ -508,49 +162,15 @@
             </ul>
           </li>
           <li>
-            <a id="user-profile-btn" href="#">
+            <a class="user-profile-btn" href="#">
               <i class="icon-user"></i>Perfil de Usuário
             </a>
           </li>
         </ul>
-
         <!-- /Navigation -->
         <div class="sidebar-title">
           <span>TEMA</span>
         </div>
-        <!--<ul class="notifications demo-slide-in">-->
-        <!-- .demo-slide-in is just for demonstration purposes. You can remove this. -->
-        <!--<li style="display: none;">-->
-        <!-- style-attr is here only for fading in this notification after a specific time. Remove this. -->
-        <!--<div class="col-left">
-            <span class="label label-danger"><i class="icon-warning-sign"></i></span>
-          </div>
-          <div class="col-right with-margin">
-            <span class="message">Server <strong>#512</strong> crashed.</span>
-            <span class="time">few seconds ago</span>
-          </div>
-        </li>
-        <li style="display: none;">-->
-        <!-- style-attr is here only for fading in this notification after a specific time. Remove this. -->
-        <!--<div class="col-left">
-              <span class="label label-info"><i class="icon-envelope"></i></span>
-            </div>
-            <div class="col-right with-margin">
-              <span class="message"><strong>John</strong> sent you a message</span>
-              <span class="time">few second ago</span>
-            </div>
-          </li>
-          <li>
-            <div class="col-left">
-              <span class="label label-success"><i class="icon-plus"></i></span>
-            </div>
-            <div class="col-right with-margin">
-              <span class="message"><strong>Emma</strong>'s account was created</span>
-              <span class="time">4 hours ago</span>
-            </div>
-          </li>
-        </ul>-->
-
         <div class="sidebar-widget align-center">
           <div class="btn-group" data-toggle="buttons" id="theme-switcher">
             <label class="btn active">
@@ -570,8 +190,6 @@
       <div class="container">
         <!-- Breadcrumbs line -->
         <div class="crumbs">
-
-
           <ul class="crumb-buttons">
             <li class="range">
               <a href="#">
@@ -595,4 +213,5 @@
   <script type="text/javascript" src="~/js/layout.js"></script>
   <script type="text/javascript" src="~/js/custom.js"></script>
 </body>
+
 </html>

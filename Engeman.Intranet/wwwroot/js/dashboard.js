@@ -1,3 +1,5 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();  
+
+  stopSpinner();
+
 });

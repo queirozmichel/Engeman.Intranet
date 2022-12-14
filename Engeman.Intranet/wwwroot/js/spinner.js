@@ -5,6 +5,6 @@
   });
 }
 
-function closeSpinner() {
+function stopSpinner() {
   EasyLoading.hide();
 }

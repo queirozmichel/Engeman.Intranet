@@ -4,7 +4,7 @@ var elementAux;
 var isModerator;
 
 $(window).on("load", function () {
-  closeSpinner();
+  stopSpinner();
 });
 
 $(document).ready(function () {
@@ -269,10 +269,10 @@ function postDetails(postId) {
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
-      window.history.pushState({}, {}, this.url);
+      window.history.pushState(this.url, null, this.url);
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 }
@@ -295,16 +295,16 @@ function editPost(postId) {
       window.history.pushState({}, {}, this.url);
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 }
 
-function deletePost(idElement, element) {
+function deletePost(postId, element) {
   $.ajax({
     type: "DELETE",
     data: {
-      'idPost': idElement
+      'postId': postId
     },
     url: "/posts/removepost",
     dataType: "text",

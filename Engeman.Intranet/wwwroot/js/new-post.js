@@ -1,5 +1,5 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();  
+  stopSpinner();  
 });
 
 $(document).ready(function () {
@@ -89,7 +89,7 @@ $("#new-post-form").on("submit", function (event) {
               toastr.error("Não foi possível voltar", "Erro!");
             },
             complete: function () {
-              closeSpinner();
+              stopSpinner();
             }
           });
         }

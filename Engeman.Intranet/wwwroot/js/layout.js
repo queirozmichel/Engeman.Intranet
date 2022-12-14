@@ -1,6 +1,5 @@
 ﻿$(document).ready(function () {
   "use strict";
-
   App.init(); // Init layout and core plugins
   Plugins.init(); // Init all plugins
   setInterval(exclamation, 1000);
@@ -27,11 +26,34 @@
   })
 })
 
+$("#dashboard-btn").on("click", function (event) {
+  event.preventDefault();
+  $.ajax({
+    type: "GET",
+    url: "/dashboard",
+    dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState(this.url, "Dashboard", this.url);
+    },
+    error: function (response) {
+      toastr.error("Não foi possível acessar a tela de dashboard", "Erro!");
+    },
+    complete: function () {
+      stopSpinner();
+    }
+  })
+})
+
 $("#new-post-btn").on("click", function (event) {
   event.preventDefault();
   $.ajax({
     type: "GET",
-    url: url = "/posts/newpost",
+    url: "/posts/newpost",
     dataType: "html",
     beforeSend: function () {
       startSpinner();
@@ -42,19 +64,19 @@ $("#new-post-btn").on("click", function (event) {
       } else {
         $("#render-body").empty();
         $("#render-body").html(response);
-        window.history.pushState({}, '', url);
+        window.history.pushState(this.url, "Nova postagem", this.url);
       }
     },
     error: function (response) {
       toastr.error("Não foi possível acessar a tela de nova postagem", "Erro!");
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 })
 
-$("#user-profile-btn").on("click", function (event) {
+$(".user-profile-btn").on("click", function (event) {
   event.preventDefault();
   $.ajax({
     type: "GET",
@@ -66,13 +88,13 @@ $("#user-profile-btn").on("click", function (event) {
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
-      window.history.pushState({}, '', this.url);
+      window.history.pushState(this.url, "Perfil de usuário", this.url);
     },
     error: function () {
       toastr.error("Não foi possível acessar o perfil de usuário", "Erro!");
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 })
@@ -88,5 +110,3 @@ function exclamation() {
     icon.css("opacity", "1");
   }, 500);
 }
-
-console.log($(".blinked-exclamation").siblings());

@@ -550,7 +550,7 @@ var Plugins = function() {
 			initCircularCharts(); // Easy Pie Chart
 			initKnob(); // Circle Dial
 			initColorPicker(); // Bootstrap ColorPicker
-			//initTemplate(); // Template
+			initTemplate(); // Template
 		},
 
 		getFlotDefaults: function() {

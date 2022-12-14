@@ -8,7 +8,10 @@ namespace Engeman.Intranet.Controllers
   {
     public IActionResult Index()
     {
-      return View();
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = isAjaxCall;
+
+      return PartialView("Index");
     }
   }
 }

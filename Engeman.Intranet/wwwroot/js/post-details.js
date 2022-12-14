@@ -1,5 +1,5 @@
 ﻿$(window).on("load", function () {
-  closeSpinner();
+  stopSpinner();
 });
 
 $(document).ready(function () {
@@ -53,7 +53,7 @@ $("#comment-form").on("submit", function (event) {
               toastr.error("Não foi possível ir para os detalhes da postagem", "Erro!");
             },
             complete: function () {
-              closeSpinner();
+              stopSpinner();
             },
           });
           toastr.success("O comentário foi salvo", "Sucesso!");
@@ -83,7 +83,7 @@ $("#comment-tab").on("click", function () {
       toastr.error("Não foi possível carregar o editor", "Erro!");
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 })
@@ -104,7 +104,7 @@ $("#post-tab").on("click", function () {
       toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 })
@@ -128,7 +128,7 @@ $(".edit-post-button").on("click", function () {
       window.history.pushState({}, {}, this.url);
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
     }
   })
 })
@@ -175,7 +175,7 @@ $(".btn-yes, .btn-no").on("click", function () {
           toastr.error("Não foi possível voltar", "Erro!");
         },
         complete: function () {
-          closeSpinner();
+          stopSpinner();
         }
       });
     })
@@ -256,7 +256,7 @@ $(".back-button").on("click", function (event) {
       toastr.error("Não foi possível conluir a ação", "Erro!");
     },
     complete: function () {
-      closeSpinner();
+      stopSpinner();
       window.history.pushState({}, {}, "/posts/grid" + filter);
     },
   })
