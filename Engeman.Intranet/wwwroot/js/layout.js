@@ -5,6 +5,26 @@
   Plugins.init(); // Init all plugins
   setInterval(exclamation, 1000);
 
+  $(window).on("popstate", function (event) {
+    $.ajax({
+      type: "GET",
+      url: event.originalEvent.state,
+      dataType: "html",
+      beforeSend: function () {
+        startSpinner();
+      },
+      success: function (response) {
+        $("#render-body").empty();
+        $("#render-body").html(response);
+      },
+      error: function () {
+        toastr.error("Não foi possível voltar à tela anterior", "Erro!");
+      },
+      complete: function () {
+        stopSpinner();
+      },
+    })
+  })
 })
 
 $("#new-post-btn").on("click", function (event) {
