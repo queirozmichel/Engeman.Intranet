@@ -9,6 +9,8 @@ $(window).on("load", function () {
 
 $(document).ready(function () {
 
+  sessionStorage.removeItem("editAfterDetails");
+
   var postGrid = $("#post-grid").on("initialize.rs.jquery.bootgrid", function (e) {
     /* your code after grid initialize goes here */
   }).bootgrid({
@@ -162,7 +164,6 @@ $(document).ready(function () {
   //Após carregar o grid
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
     sessionStorage.setItem("filterGrid", $("#post-grid").attr("data-filter-grid"));
-    sessionStorage.removeItem("editAfterDetails");
     dropdownHideItens();
     postGrid.find("button.btn").each(function (index, element) {
       var actionButtons = $(element);

@@ -1,10 +1,10 @@
 ﻿$(window).on("load", function () {
-  stopSpinner();  
+  stopSpinner();
 });
 
 $(document).ready(function () {
-  FormComponents.init();
 
+  FormComponents.init();
   $("#new-post-form").validate({
     rules: {
       "Subject": {
@@ -35,13 +35,17 @@ $(document).ready(function () {
         }
       }
     },
-    highlight: function (element) {
-      $(element).parents('.form-group').addClass('has-error');
+    highlight: function (element, errorClass) {
+      $(element).parents('.form-group').addClass(errorClass);
     },
     errorPlacement: function (error, element) {
       if (element.attr("type") == "radio") {
         element.parent().parent().append(error);
-      } else {
+      }
+      else if (element.context.id == "wang-editor-description") {
+        error.insertAfter("#wang-editor-div");
+      }
+      else {
         error.insertAfter(element);
       }
     },
@@ -51,7 +55,11 @@ $(document).ready(function () {
   $(".files").css("display", "none");
 })
 
-$("#new-post-form").on("submit", function (event) {  
+
+$("#description-label").css("color", "#555555");
+
+$("#new-post-form").on("submit", function (event) {
+  $("#description-label").css("color", "");
   var filter = "?filter=allPosts";
   //ignora o submit padrão do formulário
   event.preventDefault();
@@ -98,7 +106,7 @@ $("#new-post-form").on("submit", function (event) {
         toastr.error("A postagem não foi salva", "Erro!");
       }
     });
-  }  
+  }
 })
 
 $("#attach-files").on("switchChange.bootstrapSwitch", function (event, state) {

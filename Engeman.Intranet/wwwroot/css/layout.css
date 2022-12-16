@@ -6,3 +6,7 @@
 .blinked-exclamation ~ span {
   color: darkred;
 }
+
+.dashboard-btn {
+  cursor : pointer;
+}

@@ -3,8 +3,11 @@
 });
 
 $(document).ready(function () {
+
   FormComponents.init();
+
   countFiles();
+
   sessionStorage.setItem("postId", $("#post-id").val());
 
   $("#edit-post-form").validate({
@@ -87,28 +90,7 @@ $("#edit-post-form").on("submit", function (event) {
       },
       success: function (response) {
         if (response == 200) {
-          if (sessionStorage.getItem("editAfterDetails") != null) {
-            backToPostDetails();
-          } else {
-            $.ajax({
-              type: "GET",
-              dataType: "html",
-              url: "/posts/grid" + "?filter=" + sessionStorage.getItem("filterGrid"),
-              success: function (response) {
-                $("#render-body").empty();
-                $("#render-body").html(response);
-                window.history.pushState({}, {}, "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
-              },
-              error: function () {
-                toastr.error("Não foi possível voltar", "Erro!");
-              },
-              complete: function () {
-                stopSpinner();
-                toastr.success("A postagem foi atualizada", "Sucesso!");
-              },
-            });
-          }
-
+          window.history.back();
         } else {
           toastr.error("Código de resposta não tratado", "Erro!");
         }
@@ -124,31 +106,7 @@ $("#edit-post-form").on("submit", function (event) {
 })
 
 $(".back-button").on("click", function (event) {
-  event.preventDefault();
-  if (sessionStorage.getItem("editAfterDetails") != null) {
-    backToPostDetails();
-  } else {
-    filter = "?filter=" + sessionStorage.getItem("filterGrid");
-    $.ajax({
-      type: "GET",
-      url: "/posts/grid" + filter,
-      dataType: "html",
-      beforeSend: function () {
-        startSpinner();
-      },
-      success: function (response) {
-        $("#render-body").empty();
-        $("#render-body").html(response);
-      },
-      error: function () {
-        toastr.error("Não foi possível voltar para as postagens", "Erro!");
-      },
-      complete: function () {
-        stopSpinner();
-        window.history.pushState({}, {}, "/posts/grid" + filter);
-      },
-    })
-  }
+  previousPage();
 })
 
 function countFiles() {
@@ -172,25 +130,3 @@ $(".icon-remove-circle").on("click", function () {
     $(this).parent().parent().append("<p class=\"none-file\">Nenhum arquivo</p>");
   }
 })
-
-function backToPostDetails() {
-  $.ajax({
-    type: "GET",
-    dataType: "html",
-    url: "/posts/postdetails?postId=" + sessionStorage.getItem("postId"),
-    beforeSend: function () {
-      startSpinner();
-    },
-    error: function () {
-      toastr.error("Não foi possível voltar para os detalhes da postagem", "Erro!");
-    },
-    success: function (response) {
-      $("#render-body").empty();
-      $("#render-body").html(response);
-      window.history.pushState({}, {}, this.url);
-    },
-    complete: function () {
-      stopSpinner();
-    }
-  })
-}

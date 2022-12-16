@@ -26,7 +26,7 @@
   })
 })
 
-$("#dashboard-btn").on("click", function (event) {
+$(".dashboard-btn").on("click", function (event) {
   event.preventDefault();
   $.ajax({
     type: "GET",

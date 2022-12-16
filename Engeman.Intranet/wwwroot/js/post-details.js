@@ -110,7 +110,7 @@ $("#post-tab").on("click", function () {
 })
 
 $(".edit-post-button").on("click", function () {
-  sessionStorage.setItem("editAfterDetails", "");
+  sessionStorage.setItem("editAfterDetails", true);
   $.ajax({
     type: "GET",
     data: { "postId": sessionStorage.getItem("postId") },
@@ -125,7 +125,7 @@ $(".edit-post-button").on("click", function () {
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
-      window.history.pushState({}, {}, this.url);
+      window.history.pushState(this.url, null, this.url);
     },
     complete: function () {
       stopSpinner();
@@ -239,27 +239,7 @@ function aprovePost(postId) {
 }
 
 $(".back-button").on("click", function (event) {
-  event.preventDefault();
-  filter = "?filter=" + sessionStorage.getItem("filterGrid");
-  $.ajax({
-    type: "GET",
-    url: "/posts/grid" + filter,
-    dataType: "html",
-    beforeSend: function () {
-      startSpinner();
-    },
-    success: function (response) {
-      $("#render-body").empty();
-      $("#render-body").html(response);
-    },
-    error: function () {
-      toastr.error("Não foi possível conluir a ação", "Erro!");
-    },
-    complete: function () {
-      stopSpinner();
-      window.history.pushState({}, {}, "/posts/grid" + filter);
-    },
-  })
+  previousPage();
 })
 
 $(".comment-aprove-btn").on("click", function () {

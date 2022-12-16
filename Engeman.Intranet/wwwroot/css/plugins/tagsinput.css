@@ -21,23 +21,23 @@ div.tagsinput {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-div.tagsinput span.tag {
-  border: 1px solid #a5d24a;
-  display: block;
-  float: left;
-  padding: 0 8px;
-  background: #cde69c;
-  color: #638421;
-  margin: 5px 5px 5px 5px;
-  line-height: 23px;
-  font-size: 11px;
-}
-div.tagsinput span.tag a {
-  font-weight: bold;
-  color: #82ad2b;
-  text-decoration: none;
-  font-size: 11px;
-}
+  div.tagsinput span.tag {
+    border: 1px solid #9ec8d36e;
+    display: block;
+    float: left;
+    padding: 0 8px;
+    background: #e1ecf4;
+    color: #5b83ad;
+    margin: 5px 5px 5px 5px;
+    line-height: 23px;
+    font-size: 11px;
+  }
+  div.tagsinput span.tag a {
+    font-weight: bold;
+    color: #376da5;
+    text-decoration: none;
+    font-size: 11px;
+  }
 div.tagsinput input {
   border: none;
   padding: 7px 5px;

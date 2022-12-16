@@ -15,8 +15,8 @@ $(document).ready(function () {
     height: '35px',
     zeroAxis: false,
     barColor: App.getLayoutColorCode('green')
-  });  
-  
+  });
+
 });
 
 //Lista de restrição de setores
@@ -101,4 +101,10 @@ function toastrConfig() {
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
   };
+}
+
+//voltar para a página anterior
+function previousPage() {
+  event.preventDefault();
+  window.history.back();
 }
