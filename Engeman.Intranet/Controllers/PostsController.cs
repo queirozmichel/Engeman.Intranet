@@ -75,6 +75,10 @@ namespace Engeman.Intranet.Controllers
       }
 
       newPost.CleanDescription = newPost.Description;
+      if (newPost.Keywords != null)
+      {
+        newPost.Keywords = newPost.Keywords.ToLower();
+      }      
       newPost.UserAccountId = userAccount.Id;
       if (newPost.PostType == 0)
       {
@@ -164,7 +168,7 @@ namespace Engeman.Intranet.Controllers
       int id = 0;
       int.TryParse(searchPhrase, out id);
       posts = posts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR department.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-        "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR description.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+        "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR keywords.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
         "changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
       return posts;
     }
@@ -265,6 +269,11 @@ namespace Engeman.Intranet.Controllers
       var userAccount = _userAccountRepository.GetByDomainUsername(sessionDomainUsername);
 
       editedPost.CleanDescription = editedPost.Description;
+      if (editedPost.Keywords != null)
+      {
+        editedPost.Keywords = editedPost.Keywords.ToLower();
+      }
+      editedPost.Keywords = editedPost.Keywords.ToLower();
 
       if (editedPost.Files.Count > 0)
       {

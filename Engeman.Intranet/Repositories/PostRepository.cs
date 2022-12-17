@@ -15,14 +15,14 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var query = "SELECT " +
-          "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.DESCRIPTION, UA.ID AS USER_ACCOUNT_ID, " +
+          "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
           "POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT " +
           "FROM POST " +
           "LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
           "INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID " +
           "INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
           "WHERE POST.ACTIVE = 1 " +
-          "GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.DESCRIPTION, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
+          "GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
           "UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION";
 
         var result = sq.GetDataSet(query).Tables[0];
@@ -64,7 +64,7 @@ namespace Engeman.Intranet.Repositories
           postGrid.Subject = result.Rows[i]["Subject"].ToString();
           postGrid.ChangeDate = result.Rows[i]["Change_Date"].ToString();
           postGrid.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
-          postGrid.Description = result.Rows[i]["Description"].ToString();
+          postGrid.Keywords = result.Rows[i]["Keywords"].ToString();
           postGrid.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
           postGrid.Department = result.Rows[i]["Department"].ToString();
           postGrid.UserAccountName = result.Rows[i]["Name"].ToString();
@@ -242,7 +242,7 @@ namespace Engeman.Intranet.Repositories
 
       string query =
       "SELECT DISTINCT " +
-          "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.DESCRIPTION, UA.ID AS USER_ACCOUNT_ID, " +
+          "POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
           "POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT " +
       "FROM POST " +
       "INNER JOIN COMMENT AS C ON C.POST_ID = POST.ID " +
@@ -264,7 +264,7 @@ namespace Engeman.Intranet.Repositories
           postGrid.Subject = result.Rows[i]["Subject"].ToString();
           postGrid.ChangeDate = result.Rows[i]["Change_Date"].ToString();
           postGrid.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
-          postGrid.Description = result.Rows[i]["Description"].ToString();
+          postGrid.Keywords = result.Rows[i]["Keywords"].ToString();
           postGrid.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
           postGrid.Department = result.Rows[i]["Department"].ToString();
           postGrid.UserAccountName = result.Rows[i]["Name"].ToString();
