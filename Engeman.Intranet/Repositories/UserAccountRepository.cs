@@ -95,6 +95,11 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var result = sq.GetDataSet(query).Tables[0];
+        if (result.Rows.Count == 0)
+        {
+          userAccount = null; 
+          return userAccount;
+        }
 
         userAccount.Id = Convert.ToInt32(result.Rows[0]["id"]);
         userAccount.Active = Convert.ToBoolean(result.Rows[0]["active"]);
