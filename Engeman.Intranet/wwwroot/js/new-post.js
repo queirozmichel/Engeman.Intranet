@@ -60,7 +60,6 @@ $("#description-label").css("color", "#555555");
 
 $("#new-post-form").on("submit", function (event) {
   $("#description-label").css("color", "");
-  var filter = "?filter=allPosts";
   //ignora o submit padrão do formulário
   event.preventDefault();
   //usado para receber além dos dados texto, o arquivo também
@@ -83,7 +82,7 @@ $("#new-post-form").on("submit", function (event) {
           toastr.success("A postagem foi salva", "Sucesso!");
           $.ajax({
             type: "GET",
-            url: "/posts/grid" + filter,
+            url: "/posts/grid?filter=allPosts",
             dataType: "html",
             beforeSend: function () {
               startSpinner();
@@ -91,7 +90,7 @@ $("#new-post-form").on("submit", function (event) {
             success: function (response) {
               $("#render-body").empty();
               $("#render-body").html(response);
-              window.history.pushState({}, '', "/posts/grid?filter=allPosts");
+              window.history.pushState(this.url, null, this.url);
             },
             error: function () {
               toastr.error("Não foi possível voltar", "Erro!");
