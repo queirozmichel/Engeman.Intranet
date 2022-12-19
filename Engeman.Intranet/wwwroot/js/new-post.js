@@ -5,7 +5,9 @@
 $(document).ready(function () {
 
   FormComponents.init();
-  $("#new-post-form").validate({
+
+  jQuery.validator.setDefaults({
+    debug: true,
     rules: {
       "Subject": {
         required: true
@@ -35,8 +37,17 @@ $(document).ready(function () {
         }
       }
     },
-    highlight: function (element, errorClass) {
-      $(element).parents('.form-group').addClass(errorClass);
+    highlight: function (element, errorClass, validClass) {
+      $(element).parents('.form-group').addClass(errorClass).removeClass(validClass);
+      $(element.form).find("label[for=" + element.id + "]").addClass(errorClass);
+      $("#wang-editor-div").css("border", "1px solid #a94442");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).parents('.form-group').removeClass(errorClass).addClass(validClass);
+      $(element.form).find("label[for=" + element.id + "]").removeClass(errorClass);
+      if (element.id == "wang-editor-description") {
+        $("#wang-editor-div").css("border", "1px solid #3c763d");
+      }
     },
     errorPlacement: function (error, element) {
       if (element.attr("type") == "radio") {
@@ -49,17 +60,14 @@ $(document).ready(function () {
         error.insertAfter(element);
       }
     },
-    ignore: []
+    ignore: '*:not([name])',
   });
 
   $(".files").css("display", "none");
 })
 
-
-$("#description-label").css("color", "#555555");
-
 $("#new-post-form").on("submit", function (event) {
-  $("#description-label").css("color", "");
+  $("#new-post-form").validate();
   //ignora o submit padrão do formulário
   event.preventDefault();
   //usado para receber além dos dados texto, o arquivo também

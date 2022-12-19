@@ -63,7 +63,7 @@
               </div>
             </div>
             <div class="form-group departments-list">
-              <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
+              <label class="col-md-2 control-label">Setores<span>*</span></label>
               <div class="col-md-10">
                 <select id="multiselect-department" multiple="multiple" name="DepartmentsList">
                   @{if (departments != null)
@@ -78,7 +78,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
+              <label class="col-md-2 control-label">Assunto<span>*</span></label>
               <div class="col-md-10">
                 <input id="subject" class="form-control" type="text" name="Subject">
               </div>
@@ -90,12 +90,12 @@
               </div>
             </div>
             <div class="form-group">
-              <label id="description-label" class="col-md-2 control-label">Descrição<span class="required">*</span></label>
-              <div  class="col-md-10">
-                <div id="wang-editor-div" style="border: 1px solid #ccc; margin-bottom: 5px;" class="col-md-12 wang-editor">
+              <label id="description-label" class="col-md-2 control-label">Descrição<span>*</span></label>
+              <div class="col-md-10">
+                <div id="wang-editor-div" class="col-md-12 wang-editor">
                   <div id="wang-editor-toolbar" class="wang-editor-toolbar"></div>
                   <div id="wang-editor-editor" class="wang-editor-editor"></div>
-                  <input id="wang-editor-description" class="form-control wang-editor-description" name="Description" type="hidden">
+                  <input id="wang-editor-description" class="form-control wang-editor-description" name="Description">
                 </div>
               </div>
             </div>
@@ -106,7 +106,7 @@
               </div>
             </div>
             <div class="form-group files">
-              <label class="col-md-2 control-label">Tipo de postagem<span class="required">*</span></label>
+              <label class="col-md-2 control-label">Tipo de postagem<span>*</span></label>
               <div class="col-md-3">
                 <label class="radio">
                   @Html.RadioButton("PostType", "D")
@@ -119,7 +119,7 @@
               </div>
             </div>
             <div class="form-group files">
-              <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span></label>
+              <label class="col-md-2 control-label">Arquivo(s)<span>*</span></label>
               <div class="col-md-2">
                 <input id="file" type="file" name="Files" accept="application/pdf" multiple>
               </div>

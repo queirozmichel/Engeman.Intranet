@@ -38,6 +38,12 @@ function richTextBox() {
       onCreated(editor) {
         editor.setHtml($('#' + editorDescription).val());
       },
+      onFocus(editor) {
+      },
+      onBlur(editor) {
+        $(".wang-editor-description").focus();
+        $(".wang-editor-description").blur();
+      }
     }
 
     editorConfig.MENU_CONF['fontSize'] = {
