@@ -1,3 +1,7 @@
 ﻿.wang-editor-toolbar {
   border-bottom: 1px solid #eee;
 }
+
+.wang-editor-description{
+  display: none;
+}

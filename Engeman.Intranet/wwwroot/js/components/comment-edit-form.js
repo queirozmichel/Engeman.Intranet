@@ -7,14 +7,14 @@
     'defaultText': '',
   });
 
-  $("#comment-edit-form").validate({
+  jQuery.validator.setDefaults({
     rules: {
       "comment.description": {
         required: true
       },
     },
-    ignore: []
-  });
+    ignore: '*:not([name])',
+  });  
 })
 
 $("#cancel-comment-edit-btn").on("click", function (event) {
@@ -35,6 +35,7 @@ $("#cancel-comment-edit-btn").on("click", function (event) {
 
 $("#comment-edit-form").on("submit", function (event) {
   event.preventDefault();
+  $("#comment-edit-form").validate();
   if ($("#comment-edit-form").valid()) {
     //usado para receber além dos dados texto, o arquivo também
     var formData = new FormData(this);

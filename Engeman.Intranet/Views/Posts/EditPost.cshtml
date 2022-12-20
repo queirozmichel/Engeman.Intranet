@@ -104,18 +104,15 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-md-2 control-label">Descrição<span class="required">*</span></label>
+            <label id="description-label" class="col-md-2 control-label">Descrição<span>*</span></label>
             <div class="col-md-10">
-              <div class="form-group">
-                <div class="col-md-12 wang-editor">
-                  <div id="wang-editor-toolbar" class="wang-editor-toolbar"></div>
-                  <div id="wang-editor-editor" class="wang-editor-editor"></div>
-                  <input id="wang-editor-description" class="form-control wang-editor-description" name="Description" type="hidden" value="@Model.Description">
-                </div>
+              <div id="wang-editor-div" class="col-md-12 wang-editor">
+                <div id="wang-editor-toolbar" class="wang-editor-toolbar"></div>
+                <div id="wang-editor-editor" class="wang-editor-editor"></div>
+                <input id="wang-editor-description" class="form-control wang-editor-description" name="Description" value="@Model.Description">
               </div>
             </div>
           </div>
-
           @if (Model.PostType != 'N')
           {
             <div class="form-group">

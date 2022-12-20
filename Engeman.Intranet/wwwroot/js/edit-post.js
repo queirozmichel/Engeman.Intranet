@@ -10,7 +10,7 @@ $(document).ready(function () {
 
   sessionStorage.setItem("postId", $("#post-id").val());
 
-  $("#edit-post-form").validate({
+  jQuery.validator.setDefaults({
     debug: true,
     rules: {
       "Subject": {
@@ -45,18 +45,31 @@ $(document).ready(function () {
         }
       }
     },
-    highlight: function (element) {
-      $(element).parents('.form-group').addClass('has-error');
+    highlight: function (element, errorClass, validClass) {
+      $(element).parents('.form-group').addClass(errorClass).removeClass(validClass);
+      $(element.form).find("label[for=" + element.id + "]").addClass(errorClass);
+      $("#wang-editor-div").css("border", "1px solid #a94442");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).parents('.form-group').removeClass(errorClass).addClass(validClass);
+      $(element.form).find("label[for=" + element.id + "]").removeClass(errorClass);
+      if (element.id == "wang-editor-description") {
+        $("#wang-editor-div").css("border", "1px solid #3c763d");
+      }
     },
     errorPlacement: function (error, element) {
       if (element.attr("type") == "radio") {
         element.parent().parent().append(error);
-      } else {
+      }
+      else if (element.context.id == "wang-editor-description") {
+        error.insertAfter("#wang-editor-div");
+      }
+      else {
         error.insertAfter(element);
       }
     },
     ignore: '*:not([name])',
-  });
+  }); 
 
   if ($("#restricted").is(":checked")) {
     $("#restricted").bootstrapSwitch({
@@ -77,6 +90,7 @@ $(document).ready(function () {
 $("#edit-post-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
   event.preventDefault();
+  $("#edit-post-form").validate();
   if ($("#edit-post-form").valid()) {
     var formData = new FormData(this);
     $.ajax({

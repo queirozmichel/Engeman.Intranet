@@ -8,19 +8,20 @@ $(document).ready(function () {
 
   $("#tab_1_3").removeClass("active");
 
-  $("#comment-form").validate({
+  jQuery.validator.setDefaults({
     rules: {
-      description: {
+      "description": {
         required: true
       }
     },
-    ignore: []
+    ignore: '*:not([name])',
   });
 })
 
 $("#comment-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
   event.preventDefault();
+  $("#comment-form").validate();
   if ($("#comment-form").valid()) {
     //usado para receber além dos dados texto, o arquivo também
     var formData = new FormData(this);

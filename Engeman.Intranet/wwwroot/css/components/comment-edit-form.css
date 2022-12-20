@@ -23,3 +23,7 @@ p.none-file {
 #cancel-comment-edit-btn{
   position: revert;
 }
+
+.wang-editor-description{
+  display: none;
+}
