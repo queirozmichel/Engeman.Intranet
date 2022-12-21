@@ -53,7 +53,7 @@ $(document).ready(function () {
       if (element.attr("type") == "radio") {
         element.parent().parent().append(error);
       }
-      else if (element.context.id == "wang-editor-description") {
+      else if (element[0].id == "wang-editor-description") {
         error.insertAfter("#wang-editor-div");
       }
       else {
