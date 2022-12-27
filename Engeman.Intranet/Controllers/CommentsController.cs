@@ -92,8 +92,7 @@ namespace Engeman.Intranet.Controllers
     {
       var orderedFiles = _commentFileRepository.GetByCommentId(commentId).OrderBy(a => a.Name).ToList();
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
-      Response.Headers.Add("Content-Disposition", "inline; filename=" + orderedFiles[file].Name);
-
+      Response.Headers.Add("Content-Disposition", "inline; filename=" + Uri.EscapeDataString(orderedFiles[file].Name));
       return File(orderedFiles[file].BinaryData, "application/pdf");
     }
 
