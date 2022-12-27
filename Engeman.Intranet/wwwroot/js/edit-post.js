@@ -69,23 +69,22 @@ $(document).ready(function () {
       }
     },
     ignore: '*:not([name])',
-  }); 
-
-  if ($("#restricted").is(":checked")) {
-    $("#restricted").bootstrapSwitch({
-      onText: "sim",
-      offText: "n&atilde;o",
-      size: "normal",
-      state: true,
-    });
-
-    $(".departments-list").css("display", "block");
-  }
+  });
 
   if (sessionStorage.getItem("editAfterDetails") != null) {
     $(".back-button").attr("title", "Voltar para os detalhes da postagem");
   }
 })
+
+if ($("#restricted").is(":checked")) {
+  $("#restricted").bootstrapSwitch({
+    onText: "sim",
+    offText: "n&atilde;o",
+    size: "normal",
+    state: true,
+  });
+  $(".departments-list").css("display", "block");
+}
 
 $("#edit-post-form").on("submit", function (event) {
   //ignora o submit padrão do formulário
@@ -104,6 +103,7 @@ $("#edit-post-form").on("submit", function (event) {
       },
       success: function (response) {
         if (response == 200) {
+          toastr.success("As alterações foram salvas", "Sucesso!");
           window.history.back();
         } else {
           toastr.error("Código de resposta não tratado", "Erro!");

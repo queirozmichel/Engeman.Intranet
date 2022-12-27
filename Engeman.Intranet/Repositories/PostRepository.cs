@@ -1,13 +1,19 @@
-﻿using Engeman.Intranet.Library;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
-using System;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
-    public class PostRepository : IPostRepository
+  public class PostRepository : IPostRepository
   {
+    private readonly ILogRepository _logRepository;
+
+    public PostRepository(ILogRepository logRepository)
+    {
+      _logRepository = logRepository;
+    }
+
     public List<PostGridViewModel> GetByRestriction(UserAccount user)
     {
       List<PostGridViewModel> posts = new List<PostGridViewModel>();
@@ -113,8 +119,19 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
+    public string GetSubjectById(int id)
+    {
+      var query = $"SELECT SUBJECT FROM POST WHERE ID = {id} ";
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = sq.GetDataSet(query).Tables[0].Rows[0];
+        return result["subject"].ToString();
+      }
+    }
+
     public void Delete(int postId)
     {
+
       using (StaticQuery sq = new StaticQuery())
       {
         string[] paramters = { };
@@ -127,6 +144,29 @@ namespace Engeman.Intranet.Repositories
 
         sq.ExecuteCommand(query, paramters, values);
       }
+    }
+
+    public void DeleteWithLog(int postId, string currentUsername)
+    {
+      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), postId, ReferenceTable.Post.GetEnumDescription());      
+
+      var post = Get(postId);
+
+      if (post.PostType == 'M')
+      {
+        newLog.Description = "do manual " + "\"" + post.Subject + "\"";
+      }
+      else if (post.PostType == 'D')
+      {
+        newLog.Description = "do manual " + "\"" + post.Subject + "\"";
+      }
+      else
+      {
+        newLog.Description = "da postagem " + "\"" + post.Subject + "\"";
+      }
+
+      Delete(postId);
+      _logRepository.Add(newLog);
     }
 
     public Post Get(int postId)
@@ -153,7 +193,7 @@ namespace Engeman.Intranet.Repositories
       return post;
     }
 
-    public void Add(NewPostViewModel newPost)
+    public int Add(NewPostViewModel newPost)
     {
       var query = "";
 
@@ -194,8 +234,26 @@ namespace Engeman.Intranet.Repositories
             sq.ExecuteCommand(query);
           }
         }
-
+        return outputPostId;
       }
+    }
+
+    public void AddWithLog(NewPostViewModel newPost, string currentUsername)
+    {
+      string logFileType;
+      int outputPostId = Add(newPost);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Inclusion.GetEnumDescription(), outputPostId, ReferenceTable.Post.GetEnumDescription());
+
+      if (newPost.Files.Count > 0)
+      {
+        logFileType = newPost.PostType == 'M' ? "manual" : "documento";
+        newLog.Description = "do " + logFileType + " " + "\"" + newPost.Subject + "\"";
+      }
+      else
+      {
+        newLog.Description = "da postagem " + "\"" + newPost.Subject + "\"";
+      }
+      _logRepository.Add(newLog);
     }
 
     public void Update(PostEditViewModel editedPost)
@@ -234,7 +292,26 @@ namespace Engeman.Intranet.Repositories
           }
         }
       }
-    }       
+    }
+
+    public void UpdateWithLog(PostEditViewModel editedPost, string currentUsername)
+    {
+      string logFileType;
+      NewLogViewModel newLog = new NewLogViewModel(currentUsername, Operation.Alteration.GetEnumDescription(), editedPost.Id, ReferenceTable.Post.GetEnumDescription());
+
+      if (editedPost.Files.Count > 0)
+      {
+        logFileType = editedPost.PostType == 'M' ? "manual" : "documento";
+        newLog.Description = "do " + logFileType + " " + "\"" + editedPost.Subject + "\"";
+      }
+      else
+      {
+        newLog.Description = "da postagem " + "\"" + editedPost.Subject + "\"";
+      }
+
+      Update(editedPost);
+      _logRepository.Add(newLog);
+    }
 
     public List<PostGridViewModel> GetWithUnrevisedComments()
     {
@@ -292,6 +369,24 @@ namespace Engeman.Intranet.Repositories
 
         return result;
       }
+    }
+
+    public void Aprove(int id)
+    {
+      string query = $"UPDATE POST SET REVISED = 'true' WHERE ID = '{id}'";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        sq.ExecuteCommand(query);
+      }
+    }
+
+    public void AproveWithLog(int id, string currentUsername)
+    {
+      Aprove(id);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Approval.GetEnumDescription(), id, ReferenceTable.Post.GetEnumDescription());
+      newLog.Description = "da postagem " + "\"" + GetSubjectById(id) + "\"";
+      _logRepository.Add(newLog);
     }
   }
 }

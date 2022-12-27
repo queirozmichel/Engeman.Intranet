@@ -1,6 +1,5 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {

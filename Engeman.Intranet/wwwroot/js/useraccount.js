@@ -45,7 +45,7 @@ $("#edit-profile-form").submit(function (event) {
             success: function (response) {
               $("#render-body").empty();
               $("#render-body").html(response);
-              window.history.pushState({}, '', this.url);
+              window.history.pushState(this.url, null, this.url);
             },
             error: function () {
               toastr.error("Não foi possível atualizar o perfil", "Erro!");

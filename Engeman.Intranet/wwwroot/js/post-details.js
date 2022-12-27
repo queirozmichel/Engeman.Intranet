@@ -155,7 +155,7 @@ $(".btn-yes, .btn-no").on("click", function () {
         success: function (response) {
           $("#render-body").empty();
           $("#render-body").html(response);
-          window.history.pushState({}, '', "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
+          window.history.pushState("/posts/grid?filter=" + sessionStorage.getItem("filterGrid"), null, "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
           $.ajax({
             type: "GET",
             url: "/posts/unrevisedlist",
@@ -208,7 +208,6 @@ function deletePost(postId) {
         reject(error)
       },
     })
-
   })
 }
 

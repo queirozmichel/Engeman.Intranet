@@ -1,13 +1,8 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Linq;
 using System.Linq.Dynamic.Core;
-using System;
-using System.Collections.Generic;
 using Engeman.Intranet.Models.ViewModels;
 
 namespace Engeman.Intranet.Controllers
@@ -75,14 +70,11 @@ namespace Engeman.Intranet.Controllers
       }
 
       newPost.CleanDescription = newPost.Description;
+      newPost.UserAccountId = userAccount.Id;
+
       if (newPost.Keywords != null)
       {
         newPost.Keywords = newPost.Keywords.ToLower();
-      }      
-      newPost.UserAccountId = userAccount.Id;
-      if (newPost.PostType == 0)
-      {
-        newPost.PostType = 'N';
       }
 
       if (files.Count > 0)
@@ -102,7 +94,13 @@ namespace Engeman.Intranet.Controllers
           newPost.Files.Add(file);
         }
       }
-      _postRepository.Add(newPost);
+      else
+      {
+        newPost.PostType = 'N';
+      }
+
+      _postRepository.AddWithLog(newPost, sessionDomainUsername);
+
       return Json(1);
     }
 
@@ -273,7 +271,6 @@ namespace Engeman.Intranet.Controllers
       {
         editedPost.Keywords = editedPost.Keywords.ToLower();
       }
-      editedPost.Keywords = editedPost.Keywords.ToLower();
 
       if (editedPost.Files.Count > 0)
       {
@@ -318,7 +315,7 @@ namespace Engeman.Intranet.Controllers
         editedPost.Revised = true;
       }
 
-      _postRepository.Update(editedPost);
+      _postRepository.UpdateWithLog(editedPost, sessionDomainUsername);
       ViewBag.FilterGrid = Request.Query["filter"];
 
       return Ok(StatusCodes.Status200OK);
@@ -327,7 +324,10 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult RemovePost(int postId)
     {
-      _postRepository.Delete(postId);
+      var currentUsername = HttpContext.Session.GetString("_DomainUsername");
+
+      _postRepository.DeleteWithLog(postId, currentUsername);
+
       return PartialView("Grid");
     }
 
@@ -423,9 +423,8 @@ namespace Engeman.Intranet.Controllers
     [HttpPut]
     public IActionResult AprovePost(int postId)
     {
-      var post = _postRepository.Get(postId);
-      post.Revised = true;
-      _postRepository.Update(postId, post);
+      var currentUsername = HttpContext.Session.GetString("_DomainUsername");
+      _postRepository.AproveWithLog(postId, currentUsername);
 
       return ViewComponent("UnrevisedList");
     }

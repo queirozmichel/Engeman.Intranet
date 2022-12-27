@@ -1,6 +1,5 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
@@ -11,8 +10,13 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetByUserAccountId(int userAccountId);
     public List<Comment> GetUnrevisedComments();
     public List<Comment> GetByRestriction(UserAccount user, int postId);
-    public void Add(NewCommentViewModel comment);
+    public int Add(NewCommentViewModel comment);
+    public void AddWithLog(NewCommentViewModel comment, string currentUsername);
     public bool Delete(int id);
+    public bool DeleteWithLog(int id, string currentUsername);
     public bool Update(int id, Comment comment);
+    public void UpdateWithLog(int id, Comment comment, string currentUsername);
+    public void Aprove(int id);
+    public void AproveWithLog(int id, string currentUsername);
   }
 }

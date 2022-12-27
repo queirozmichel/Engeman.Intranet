@@ -293,7 +293,7 @@ function editPost(postId) {
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
-      window.history.pushState({}, {}, this.url);
+      window.history.pushState(this.url, null, this.url);
     },
     complete: function () {
       stopSpinner();

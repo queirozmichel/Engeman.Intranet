@@ -1,13 +1,19 @@
-﻿using Engeman.Intranet.Library;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
-using System;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
   public class CommentRepository : ICommentRepository
   {
+    private readonly ILogRepository _logRepository;
+
+    public CommentRepository(ILogRepository logRepository)
+    {
+      _logRepository = logRepository;
+    }
+
     public Comment GetById(int commentId)
     {
       Comment comment = new Comment();
@@ -155,7 +161,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void Add(NewCommentViewModel newComment)
+    public int Add(NewCommentViewModel newComment)
     {
       string[] paramters = { "BinaryData;byte" };
       //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
@@ -164,17 +170,26 @@ namespace Engeman.Intranet.Repositories
 
       using (StaticQuery sq = new StaticQuery())
       {
-        var outputPostId = sq.GetDataToInt(query);
+        var outputCommentId = sq.GetDataToInt(query);
 
         for (int i = 0; i < newComment.Files.Count; i++)
         {
           Object[] values = { newComment.Files[i].BinaryData };
           query = $"INSERT INTO COMMENTFILE(NAME, BINARY_DATA, COMMENT_ID) " +
-          $"VALUES('{newComment.Files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), '{outputPostId}') ";
+          $"VALUES('{newComment.Files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), '{outputCommentId}') ";
 
           sq.ExecuteCommand(query, paramters, values);
         }
+        return outputCommentId;
       }
+    }
+
+    public void AddWithLog(NewCommentViewModel newComment, string currentUsername)
+    {
+      var outputCommentId = Add(newComment);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Inclusion.GetEnumDescription(), outputCommentId, ReferenceTable.Comment.GetEnumDescription());
+      newLog.Description = "de comentário";
+      _logRepository.Add(newLog);
     }
 
     public bool Delete(int id)
@@ -194,6 +209,15 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
+    public bool DeleteWithLog(int id, string currentUsername)
+    {
+      bool result = Delete(id);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), id, ReferenceTable.Comment.GetEnumDescription());
+      newLog.Description = "de comentário";
+      _logRepository.Add(newLog);
+      return result;
+    }
+
     public bool Update(int id, Comment comment)
     {
       string query = $"UPDATE COMMENT SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description}', REVISED = '{comment.Revised}' WHERE ID = '{id}'";
@@ -201,9 +225,34 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var result = Convert.ToBoolean(sq.ExecuteCommand(query));
-
         return result;
       }
+    }
+
+    public void UpdateWithLog(int id, Comment comment, string currentUsername)
+    {
+      Update(id, comment);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Alteration.GetEnumDescription(), id, ReferenceTable.Comment.GetEnumDescription());
+      newLog.Description = "de comentário";
+      _logRepository.Add(newLog);
+    }
+
+    public void Aprove(int id)
+    {
+      string query = $"UPDATE COMMENT SET REVISED = 'true' WHERE ID = '{id}'";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        sq.ExecuteCommand(query);
+      }
+    }
+
+    public void AproveWithLog(int id, string currentUsername)
+    {
+      Aprove(id);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Approval.GetEnumDescription(), id, ReferenceTable.Comment.GetEnumDescription());
+      newLog.Description = "de comentário";
+      _logRepository.Add(newLog);
     }
   }
 }

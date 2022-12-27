@@ -1,18 +1,23 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
-    public interface IPostRepository
+  public interface IPostRepository
   {
     public List<PostGridViewModel> GetByRestriction(UserAccount user);
     public List<PostGridViewModel> GetWithUnrevisedComments();
     public List<Post> GetByUserAccountId(int userAccountId);
+    public string GetSubjectById(int id);
     public Post Get(int id);
     public void Update(PostEditViewModel editedPost);
-    public void Add(NewPostViewModel newPost);
+    public void UpdateWithLog(PostEditViewModel editedPost, string currentUsername);
+    public int Add(NewPostViewModel newPost);
+    public void AddWithLog(NewPostViewModel newPost, string currentUsername);
     public void Delete(int postId);
+    public void DeleteWithLog(int postId, string currentUsername);
     public bool Update(int id, Post post);
+    public void Aprove(int id);
+    public void AproveWithLog(int id, string currentUsername);
   }
 }
