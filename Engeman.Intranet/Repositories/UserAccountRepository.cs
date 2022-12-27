@@ -1,12 +1,10 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
-using System;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
-    public class UserAccountRepository : IUserAccountRepository
+  public class UserAccountRepository : IUserAccountRepository
   {
     public List<UserAccount> Get()
     {
@@ -23,7 +21,7 @@ namespace Engeman.Intranet.Repositories
           user.Id = Convert.ToInt32(result.Rows[i]["id"]);
           user.Active = Convert.ToBoolean(result.Rows[i]["active"]);
           user.Name = result.Rows[i]["name"].ToString();
-          user.DomainAccount = result.Rows[i]["domain_account"].ToString();
+          user.Username = result.Rows[i]["username"].ToString();
           user.Email = result.Rows[i]["email"].ToString();
           user.Photo = (byte[])result.Rows[i]["photo"];
           user.Description = result.Rows[i]["description"].ToString();
@@ -48,7 +46,7 @@ namespace Engeman.Intranet.Repositories
       var query =
       $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}'," +
       $"DESCRIPTION = '{userAccount.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
-      $"WHERE DOMAIN_ACCOUNT = '{userAccount.DomainAccount}'";
+      $"WHERE USERNAME = '{userAccount.Username}'";
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -68,7 +66,7 @@ namespace Engeman.Intranet.Repositories
         userAccount.Id = Convert.ToInt32(result.Rows[0]["id"]);
         userAccount.Active = Convert.ToBoolean(result.Rows[0]["active"]);
         userAccount.Name = result.Rows[0]["name"].ToString();
-        userAccount.DomainAccount = result.Rows[0]["domain_account"].ToString();
+        userAccount.Username = result.Rows[0]["username"].ToString();
         userAccount.DepartmentId = Convert.ToInt32(result.Rows[0]["department_id"]);
         userAccount.Email = result.Rows[0]["email"].ToString();
         userAccount.Photo = (byte[])result.Rows[0]["photo"];
@@ -80,17 +78,17 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public UserAccount GetByDomainUsername(string domainUsername)
+    public UserAccount GetByUsername(string username)
     {
       UserAccount userAccount = new UserAccount();
       var query =
       $"SELECT " +
-      $"UA.ID,UA.ACTIVE,NAME,DOMAIN_ACCOUNT,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
+      $"UA.ID,UA.ACTIVE,NAME,USERNAME,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
       $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CREATE_POST, UA.EDIT_OWNER_POST, UA.DELETE_OWNER_POST, UA.EDIT_ANY_POST, " +
       $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGE_DATE " +
       $"FROM USERACCOUNT UA INNER JOIN DEPARTMENT D " +
       $"ON UA.DEPARTMENT_ID = D.ID " +
-      $"WHERE DOMAIN_ACCOUNT = '{domainUsername.ToUpper()}'";
+      $"WHERE USERNAME = '{username.ToUpper()}'";
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -104,7 +102,7 @@ namespace Engeman.Intranet.Repositories
         userAccount.Id = Convert.ToInt32(result.Rows[0]["id"]);
         userAccount.Active = Convert.ToBoolean(result.Rows[0]["active"]);
         userAccount.Name = result.Rows[0]["name"].ToString();
-        userAccount.DomainAccount = result.Rows[0]["domain_account"].ToString();
+        userAccount.Username = result.Rows[0]["username"].ToString();
         userAccount.DepartmentId = Convert.ToInt32(result.Rows[0]["department_id"]);
         userAccount.Email = result.Rows[0]["email"].ToString();
         userAccount.Photo = (byte[])result.Rows[0]["photo"];
@@ -122,9 +120,9 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public string GetDomainAccountById(int id)
+    public string GetUsernameById(int id)
     {
-      var query = $"SELECT DOMAIN_ACCOUNT FROM USERACCOUNT WHERE ID = {id}";
+      var query = $"SELECT USERNAME FROM USERACCOUNT WHERE ID = {id}";
 
       using (StaticQuery sq = new StaticQuery())
       {
@@ -134,7 +132,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public UserPermissionsViewModel GetUserPermissionsByDomainUsername(string domainUsername)
+    public UserPermissionsViewModel GetUserPermissionsByUsername(string username)
     {
       using (StaticQuery sq = new StaticQuery())
       {
@@ -142,7 +140,7 @@ namespace Engeman.Intranet.Repositories
         var query =
         $"SELECT CREATE_POST, EDIT_OWNER_POST, DELETE_OWNER_POST, EDIT_ANY_POST, DELETE_ANY_POST, MODERATOR, NOVICE_USER " +
         $"FROM USERACCOUNT " +
-        $"WHERE DOMAIN_ACCOUNT = '{domainUsername}'";
+        $"WHERE USERNAME = '{username}'";
 
         var result = sq.GetDataSet(query).Tables[0];
 

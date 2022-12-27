@@ -1,18 +1,13 @@
 ﻿using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Runtime.Versioning;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Engeman.Intranet.Controllers
 {
-    public class LoginController : Controller
+  public class LoginController : Controller
   {
     private readonly IConfiguration _configuration;
     private readonly IUserAccountRepository _userAccountRepository;
@@ -41,7 +36,7 @@ namespace Engeman.Intranet.Controllers
       {
         //try
         //{
-        //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.DomainAccount, loginViewModel.Password);
+        //DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
         //  Object obj = entry.NativeObject;
         //}
         //catch (COMException ex)
@@ -50,7 +45,7 @@ namespace Engeman.Intranet.Controllers
         //  return RedirectToAction("index", "login");
         //}
 
-        var user = _userAccountRepository.GetByDomainUsername(loginViewModel.DomainAccount);
+        var user = _userAccountRepository.GetByUsername(loginViewModel.Username);
 
         if (user == null)
         {
@@ -59,19 +54,21 @@ namespace Engeman.Intranet.Controllers
         }
         else
         {
-          var userAccount = _userAccountRepository.GetByDomainUsername(loginViewModel.DomainAccount);
-          var claims = new List<Claim>();
-          claims.Add(new Claim(ClaimTypes.Name, loginViewModel.DomainAccount));
+          var userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username);
+          var claims = new List<Claim>
+          {
+            new Claim(ClaimTypes.Name, loginViewModel.Username)
+          };
           var userIdentity = new ClaimsIdentity(claims, "Access");
           ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
           await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
 
           HttpContext.Session.SetInt32("_UserAccountId", userAccount.Id);
           Response.Cookies.Append("_UserId", userAccount.Id.ToString());
-          HttpContext.Session.SetInt32 ("_DepartmentId", userAccount.DepartmentId);
+          HttpContext.Session.SetInt32("_DepartmentId", userAccount.DepartmentId);
           HttpContext.Session.SetInt32("_Moderator", Convert.ToInt32(userAccount.Moderator));
-          HttpContext.Session.SetString("_DomainUsername", loginViewModel.DomainAccount.ToString());
-          HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());          
+          HttpContext.Session.SetString("_Username", loginViewModel.Username.ToString());
+          HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());
           return RedirectToAction("index", "dashboard");
         }
       }
@@ -83,25 +80,10 @@ namespace Engeman.Intranet.Controllers
       HttpContext.Session.Remove("_UserAccountId");
       HttpContext.Session.Remove("_DepartmentId");
       HttpContext.Session.Remove("_Moderator");
-      HttpContext.Session.Remove("_DomainUsername");
+      HttpContext.Session.Remove("_Username");
       HttpContext.Session.Remove("_Password");
       Response.Cookies.Delete("_UserId");
       return RedirectToAction("index", "login");
     }
-
-    //[HttpGet]
-    //public JsonResult ConfirmSessionUserByAjax(int userAccountIdPost)
-    //{
-    //  var userSessionId = HttpContext.Session.GetInt32("_UserAccountId");
-
-    //  if (userSessionId == userAccountIdPost)
-    //  {
-    //    return Json(true);
-    //  }
-    //  else
-    //  {
-    //    return Json(false);
-    //  }
-    //}
   }
 }

@@ -42,8 +42,8 @@ namespace Engeman.Intranet.Controllers
       List<CommentFile> files = new List<CommentFile>();
       Comment comment = new Comment();
       var currentComment = _commentRepository.GetById(editedComment.Comment.Id);
-      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetByDomainUsername(sessionDomainUsername);
+      var sessionUsername = HttpContext.Session.GetString("_Username");
+      var userAccount = _userAccountRepository.GetByUsername(sessionUsername);
 
       for (int i = 0; i < editedComment.Files.Count; i++)
       {
@@ -62,7 +62,7 @@ namespace Engeman.Intranet.Controllers
         comment.Revised = true;
       }
 
-      _commentRepository.UpdateWithLog(currentComment.Id, comment, sessionDomainUsername);
+      _commentRepository.UpdateWithLog(currentComment.Id, comment, sessionUsername);
 
       if (binaryData.Count != 0)
       {
@@ -104,8 +104,8 @@ namespace Engeman.Intranet.Controllers
         return Ok(-1);
       }
 
-      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetByDomainUsername(sessionDomainUsername);
+      var sessionUsername = HttpContext.Session.GetString("_Username");
+      var userAccount = _userAccountRepository.GetByUsername(sessionUsername);
 
       if (userAccount.Moderator == true || userAccount.NoviceUser == false)
       {
@@ -131,7 +131,7 @@ namespace Engeman.Intranet.Controllers
           newComment.Files.Add(file);
         }
       }
-      _commentRepository.AddWithLog(newComment, sessionDomainUsername);
+      _commentRepository.AddWithLog(newComment, sessionUsername);
 
       return Ok(1);
     }
@@ -139,7 +139,7 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult DeleteComment(int commentId)
     {
-      var currentUsername = HttpContext.Session.GetString("_DomainUsername");
+      var currentUsername = HttpContext.Session.GetString("_Username");
       var result = _commentRepository.DeleteWithLog(commentId, currentUsername);
       return Json(result);
     }
@@ -147,7 +147,7 @@ namespace Engeman.Intranet.Controllers
     [HttpPut]
     public IActionResult AproveComment(int commentId)
     {
-      var currentUsername = HttpContext.Session.GetString("_DomainUsername");
+      var currentUsername = HttpContext.Session.GetString("_Username");
       _commentRepository.AproveWithLog(commentId, currentUsername);      
 
       return ViewComponent("UnrevisedList");

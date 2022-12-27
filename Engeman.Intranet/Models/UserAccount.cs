@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace Engeman.Intranet.Models
+﻿namespace Engeman.Intranet.Models
 {
   public class UserAccount
   {
     public int Id { get; set; }
     public bool Active { get; set; }
     public string Name { get; set; }
-    public string DomainAccount { get; set; }
+    public string Username { get; set; }
     public string Email { get; set; }
     public byte[] Photo { get; set; }
     public string Description { get; set; }

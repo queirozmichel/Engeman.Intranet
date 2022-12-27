@@ -21,8 +21,8 @@ namespace Engeman.Intranet.ViewComponents
 
     public IViewComponentResult Invoke()
     {
-      var userDomain = HttpContext.Session.GetString("_DomainUsername");
-      var user = _userAccount.GetByDomainUsername (userDomain);
+      var username = HttpContext.Session.GetString("_Username");
+      var user = _userAccount.GetByUsername (username);
       ViewBag.UnrevisedPosts = _postRepository.GetByRestriction(user).AsQueryable().Where("revised == (@0)", false).Count();
       ViewBag.UnrevisedComments = _postCommentRepository.GetUnrevisedComments().Count();
 

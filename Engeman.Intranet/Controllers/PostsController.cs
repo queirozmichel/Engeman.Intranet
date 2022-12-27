@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
 using Engeman.Intranet.Models.ViewModels;
+using System.Text;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -45,7 +46,7 @@ namespace Engeman.Intranet.Controllers
     public IActionResult NewPost()
     {
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-      var permissions = _userAccountRepository.GetUserPermissionsByDomainUsername(HttpContext.Session.GetString("_DomainUsername"));
+      var permissions = _userAccountRepository.GetUserPermissionsByUsername(HttpContext.Session.GetString("_Username"));
       if (permissions.CreatePost == true)
       {
         ViewBag.IsAjaxCall = isAjaxCall;
@@ -61,8 +62,8 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult NewPost(NewPostViewModel newPost, List<IFormFile> files)
     {
-      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetByDomainUsername(sessionDomainUsername);
+      var sessionUsername = HttpContext.Session.GetString("_Username");
+      var userAccount = _userAccountRepository.GetByUsername(sessionUsername);
 
       if (userAccount.Moderator == true || userAccount.NoviceUser == false)
       {
@@ -99,7 +100,7 @@ namespace Engeman.Intranet.Controllers
         newPost.PostType = 'N';
       }
 
-      _postRepository.AddWithLog(newPost, sessionDomainUsername);
+      _postRepository.AddWithLog(newPost, sessionUsername);
 
       return Json(1);
     }
@@ -263,8 +264,8 @@ namespace Engeman.Intranet.Controllers
     {
       List<NewPostFileViewModel> fileList = new List<NewPostFileViewModel>();
       var currentPost = _postRepository.Get(editedPost.Id);
-      var sessionDomainUsername = HttpContext.Session.GetString("_DomainUsername");
-      var userAccount = _userAccountRepository.GetByDomainUsername(sessionDomainUsername);
+      var sessionUsername = HttpContext.Session.GetString("_Username");
+      var userAccount = _userAccountRepository.GetByUsername(sessionUsername);
 
       editedPost.CleanDescription = editedPost.Description;
       if (editedPost.Keywords != null)
@@ -315,7 +316,7 @@ namespace Engeman.Intranet.Controllers
         editedPost.Revised = true;
       }
 
-      _postRepository.UpdateWithLog(editedPost, sessionDomainUsername);
+      _postRepository.UpdateWithLog(editedPost, sessionUsername);
       ViewBag.FilterGrid = Request.Query["filter"];
 
       return Ok(StatusCodes.Status200OK);
@@ -324,7 +325,7 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult RemovePost(int postId)
     {
-      var currentUsername = HttpContext.Session.GetString("_DomainUsername");
+      var currentUsername = HttpContext.Session.GetString("_Username");
 
       _postRepository.DeleteWithLog(postId, currentUsername);
 
@@ -422,7 +423,7 @@ namespace Engeman.Intranet.Controllers
     [HttpPut]
     public IActionResult AprovePost(int postId)
     {
-      var currentUsername = HttpContext.Session.GetString("_DomainUsername");
+      var currentUsername = HttpContext.Session.GetString("_Username");
       _postRepository.AproveWithLog(postId, currentUsername);
 
       return ViewComponent("UnrevisedList");

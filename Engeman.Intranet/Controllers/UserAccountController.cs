@@ -1,9 +1,6 @@
 ﻿using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Engeman.Intranet.Models;
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Engeman.Intranet.Controllers
@@ -24,7 +21,7 @@ namespace Engeman.Intranet.Controllers
     public IActionResult UserProfile()
     {
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-      var userAccount = _userAccountRepository.GetByDomainUsername(HttpContext.Session.GetString("_DomainUsername").ToString());
+      var userAccount = _userAccountRepository.GetByUsername(HttpContext.Session.GetString("_Username").ToString());
       ViewBag.Department = _departmentRepository.GetById(userAccount.DepartmentId);
       ViewBag.IsAjaxCall = isAjaxCall;
 
@@ -40,7 +37,7 @@ namespace Engeman.Intranet.Controllers
       }
       if (Photo.Count == 0)
       {
-        userAccount.Photo = _userAccountRepository.GetByDomainUsername(userAccount.DomainAccount).Photo;
+        userAccount.Photo = _userAccountRepository.GetByUsername(userAccount.Username).Photo;
       }
       foreach (var item in Photo)
       {
@@ -61,9 +58,9 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult CheckPermissions(int authorId, string method)
     {
-      var sessionDomainAccount = HttpContext.Session.GetString("_DomainUsername").ToString();
-      var userDomainAccount = _userAccountRepository.GetDomainAccountById(authorId);
-      var userPermissions = _userAccountRepository.GetUserPermissionsByDomainUsername(sessionDomainAccount);
+      var sessionUsername = HttpContext.Session.GetString("_Username").ToString();
+      var username = _userAccountRepository.GetUsernameById(authorId);
+      var userPermissions = _userAccountRepository.GetUserPermissionsByUsername(sessionUsername);
 
       if (method == "edit")
       {
@@ -73,7 +70,7 @@ namespace Engeman.Intranet.Controllers
         }
         else if (userPermissions.EditOwnerPost == true)
         {
-          if (userDomainAccount == sessionDomainAccount)
+          if (username == sessionUsername)
           {
             return Json("EditOwnerPost");
           }
@@ -82,7 +79,7 @@ namespace Engeman.Intranet.Controllers
             return Json("CannotEditAnyonePost");
           }
         }
-        else if (userPermissions.EditAnyPost == false && userPermissions.EditOwnerPost == false && userDomainAccount != sessionDomainAccount)
+        else if (userPermissions.EditAnyPost == false && userPermissions.EditOwnerPost == false && username != sessionUsername)
         {
           return Json("CannotEditAnyonePost");
         }
@@ -99,7 +96,7 @@ namespace Engeman.Intranet.Controllers
         }
         else if (userPermissions.DeleteOwnerPost == true)
         {
-          if (userDomainAccount == sessionDomainAccount)
+          if (username == sessionUsername)
           {
             return Json("DeleteOwnerPost");
           }
@@ -108,7 +105,7 @@ namespace Engeman.Intranet.Controllers
             return Json("CannotDeleteAnyonePost");
           }
         }
-        else if (userPermissions.DeleteAnyPost == false && userPermissions.DeleteOwnerPost == false && userDomainAccount != sessionDomainAccount)
+        else if (userPermissions.DeleteAnyPost == false && userPermissions.DeleteOwnerPost == false && username != sessionUsername)
         {
           return Json("CannotDeleteAnyonePost");
         }
