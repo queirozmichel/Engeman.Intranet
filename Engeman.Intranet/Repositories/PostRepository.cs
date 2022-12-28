@@ -148,7 +148,7 @@ namespace Engeman.Intranet.Repositories
 
     public void DeleteWithLog(int postId, string currentUsername)
     {
-      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), postId, ReferenceTable.Post.GetEnumDescription());      
+      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), postId, ReferenceTable.Post.GetEnumDescription());
 
       var post = Get(postId);
 

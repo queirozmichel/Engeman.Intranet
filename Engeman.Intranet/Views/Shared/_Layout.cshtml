@@ -105,7 +105,7 @@
         <li class="nav-toggle"><a href="javascript:void(0);" title=""><i class="icon-reorder"></i></a></li>
       </ul>
       <!-- Logo -->
-      <a class="navbar-brand dashboard-btn" >
+      <a class="navbar-brand dashboard-btn">
         <strong>ENGEMAN </strong>INTRANET
       </a>
       <!-- /logo -->
@@ -125,8 +125,13 @@
             <i class="icon-caret-down small"></i>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="user-profile-btn"><i class="icon-user"></i> Meu Perfil</a></li>
+            <li><a class="user-profile-btn"><i class="icon-user"></i>Meu Perfil</a></li>
             <li class="divider"></li>
+            @if (@Context.Session.GetInt32("_Moderator") == 1)
+            {
+              <li><a href="@Url.Action("GenerateLog", "Logs")"><i class="fa-solid fa-file-lines"></i>Gerar Log</a></li>
+              <li class="divider"></li>
+            }
             <li><a onclick="sessionStorage.clear()" asp-area="" asp-controller="login" asp-action="logout"><i class="fa-solid fa-right-from-bracket"></i>Sair</a></li>
           </ul>
         </li>
