@@ -20,7 +20,11 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult Index()
     {
-      return PartialView();
+      if (HttpContext.Session.GetString("_Username") == null)
+      {
+        return PartialView();
+      }
+      return RedirectToAction("index", "dashboard");
     }
 
     [HttpPost]
@@ -77,12 +81,9 @@ namespace Engeman.Intranet.Controllers
     public async Task<IActionResult> Logout()
     {
       await HttpContext.SignOutAsync("CookieAuthentication");
-      HttpContext.Session.Remove("_UserAccountId");
-      HttpContext.Session.Remove("_DepartmentId");
-      HttpContext.Session.Remove("_Moderator");
-      HttpContext.Session.Remove("_Username");
-      HttpContext.Session.Remove("_Password");
+      HttpContext.Session.Clear();
       Response.Cookies.Delete("_UserId");
+      Response.Cookies.Delete("UserSession");
       return RedirectToAction("index", "login");
     }
   }

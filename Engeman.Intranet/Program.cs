@@ -5,27 +5,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Configuration.GetConnectionString("EngemanDb") != null)
 {
-    DatabaseInfo.ConnectionString = builder.Configuration.GetConnectionString("EngemanDb");
+  DatabaseInfo.ConnectionString = builder.Configuration.GetConnectionString("EngemanDb");
 }
 else
 {
-    throw new Exception("Unknown Connection String.");
+  throw new Exception("Unknown Connection String.");
 }
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication("CookieAuthentication").AddCookie("CookieAuthentication", options =>
       {
-          options.Cookie.Name = "UserLoginCookie";
-          options.LoginPath = "/Login/Index";
-          options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.Cookie.Name = "UserCookie";
+        options.LoginPath = "/Login/Index";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
       });
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
       {
-          options.Cookie.Name = "UserSession";
-          options.IdleTimeout = TimeSpan.FromMinutes(20);
-          options.Cookie.HttpOnly = true;
-          options.Cookie.IsEssential = true;
+        options.Cookie.Name = "UserSession";
+        options.IdleTimeout = TimeSpan.FromMinutes(20);
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
       });
 
 builder.Services.AddTransient<IUserAccountRepository, UserAccountRepository>();
@@ -41,12 +41,12 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+  app.UseDeveloperExceptionPage();
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+  app.UseExceptionHandler("/Home/Error");
+  app.UseHsts();
 }
 
 app.UseHttpsRedirection();
