@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Engeman.Intranet.Models;
 using Microsoft.AspNetCore.Authorization;
+using Engeman.Intranet.Models.ViewModels;
+using System.Linq.Dynamic.Core;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -15,6 +17,81 @@ namespace Engeman.Intranet.Controllers
     {
       _userAccountRepository = userAccountRepository;
       _departmentRepository = departmentRepository;
+    }
+
+    [HttpGet]
+    public IActionResult Grid()
+    {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = isAjaxCall;
+      return PartialView("UsersGrid");
+    }
+
+    public JsonResult DataGrid(string filterHeader, int rowCount, string searchPhrase, int current)
+    {
+      IQueryable<UserGridViewModel> users = null;
+      IQueryable paginatedUsers;
+      int total = 0;
+      var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
+      var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
+      var order = requestKeys[key];
+      var field = key.Replace("sort[", "").Replace("]", "");
+      string orderedField = String.Format("{0} {1}", field, order);
+
+      users = FilterUsers(filterHeader);
+      total = users.Count();
+
+      if (!String.IsNullOrWhiteSpace(searchPhrase))
+      {
+        users = FilterUsersBySearchPhrase(users, searchPhrase);
+        total = users.Count();
+      }
+
+      if (rowCount == -1)
+      {
+        rowCount = total;
+      }
+
+      paginatedUsers = OrderedUsers(users, orderedField, current, rowCount);
+
+      return Json(new { rows = paginatedUsers, current, rowCount, total });
+    }
+
+    public IQueryable<UserGridViewModel> FilterUsersBySearchPhrase(IQueryable<UserGridViewModel> users, string searchPhrase)
+    {
+      int id = 0;
+      int.TryParse(searchPhrase, out id);
+      users = users.Where("name.Contains(@0, StringComparison.OrdinalIgnoreCase) OR username.Contains(@0, StringComparison.OrdinalIgnoreCase) OR id == (@1)", searchPhrase, id);
+      return users;
+    }
+
+    public IQueryable<UserGridViewModel> FilterUsers(string filterHeader)
+    {
+      var user = _userAccountRepository.GetById((int)HttpContext.Session.GetInt32("_UserAccountId"));
+      IQueryable<UserGridViewModel> users = _userAccountRepository.GetUsersGrid().AsQueryable();
+
+      if (filterHeader == "actives")
+      {
+        return users = users.Where("active == (@0)", true);
+      }
+      else if (filterHeader == "moderators")
+      {
+        return users = users.Where("moderator == (@0)", true);
+      }
+      else if (filterHeader == "novices")
+      {
+        return users = users.Where("novice == (@0)", true);
+      }
+      else
+      {
+        return users;
+      }
+    }
+
+    public IQueryable OrderedUsers(IQueryable<UserGridViewModel> users, string orderedField, int current, int rowCount)
+    {
+      IQueryable aux;
+      return aux = users.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
     }
 
     [HttpGet]

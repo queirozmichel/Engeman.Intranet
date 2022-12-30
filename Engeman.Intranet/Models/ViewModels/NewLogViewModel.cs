@@ -27,13 +27,13 @@ namespace Engeman.Intranet.Models.ViewModels
   }
   public enum Operation
   {
-    [Description("inclusão")]
+    [Description("Inclusão")]
     Inclusion,
-    [Description("alteração")]
+    [Description("Alteração")]
     Alteration,
-    [Description("exclusão")]
+    [Description("Exclusão")]
     Exclusion,
-    [Description("aprovação")]
+    [Description("Aprovação")]
     Approval
   }
 

@@ -39,7 +39,7 @@ namespace Engeman.Intranet.Controllers
       ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.FilterGrid = Request.Query["filter"];
 
-      return PartialView();
+      return PartialView("PostsGrid");
     }
 
     [HttpGet]
@@ -329,7 +329,7 @@ namespace Engeman.Intranet.Controllers
 
       _postRepository.DeleteWithLog(postId, currentUsername);
 
-      return PartialView("Grid");
+      return PartialView("PostsGrid");
     }
 
     [HttpGet]

@@ -233,7 +233,7 @@ function aprovePost(postId) {
       toastr.error("Não foi possível aprovar a postagem", "Erro!");
     },
     complete: function () {
-      $("#post-grid").bootgrid("reload");
+      $("#posts-grid").bootgrid("reload");
     }
   })
 }

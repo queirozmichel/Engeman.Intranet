@@ -95,7 +95,7 @@ namespace Engeman.Intranet.Repositories
         var result = sq.GetDataSet(query).Tables[0];
         if (result.Rows.Count == 0)
         {
-          userAccount = null; 
+          userAccount = null;
           return userAccount;
         }
 
@@ -153,6 +153,31 @@ namespace Engeman.Intranet.Repositories
         userPermissions.NoviceUser = Convert.ToBoolean(result.Rows[0]["novice_user"]);
 
         return userPermissions;
+      }
+    }
+
+    public List<UserGridViewModel> GetUsersGrid()
+    {
+      var query = "SELECT ID, ACTIVE, NAME, USERNAME, MODERATOR, NOVICE_USER FROM USERACCOUNT";
+      var users = new List<UserGridViewModel>();
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = sq.GetDataSet(query).Tables[0];
+
+        for (int i = 0; i < result.Rows.Count; i++)
+        {
+          var user = new UserGridViewModel();
+
+          user.Id = Convert.ToInt32(result.Rows[i]["id"]);
+          user.Active = Convert.ToBoolean(result.Rows[i]["active"]);
+          user.Name = result.Rows[i]["name"].ToString();
+          user.Username = result.Rows[i]["username"].ToString();
+          user.Novice = Convert.ToBoolean(result.Rows[i]["novice_user"]);
+          user.Moderator = Convert.ToBoolean(result.Rows[i]["moderator"]);
+          users.Add(user);
+        }
+        return users;
       }
     }
   }

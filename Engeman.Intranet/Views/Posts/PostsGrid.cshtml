@@ -10,7 +10,7 @@
   Layout = layout;
 }
 
-<link rel="stylesheet" href="~/css/grid.css" />
+<link rel="stylesheet" href="~/css/posts-grid.css" />
 
 @await Component.InvokeAsync("ConfirmationModal")
 <div class="page-header">
@@ -51,7 +51,7 @@
   </ul>
   <!-- /Page Stats -->
 </div>
-<table id="post-grid" class="table table-condensed table-hover table-striped" data-filter-grid="@ViewBag.FilterGrid">
+<table id="posts-grid" class="table table-condensed table-hover table-striped" data-filter-grid="@ViewBag.FilterGrid">
   <thead>
     <tr>
       <th data-column-id="postType" data-formatter="postType">Tipo</th>
@@ -65,7 +65,7 @@
   </thead>
 </table>
 
-<script src="~/js/grid.js"></script>
+<script src="~/js/posts-grid.js"></script>
 @if (ViewBag.IsAjaxCall == true)
 {
   <script type="text/javascript" src="~/js/custom.js"></script>

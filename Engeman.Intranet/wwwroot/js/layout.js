@@ -38,7 +38,7 @@ $(".dashboard-btn").on("click", function (event) {
     success: function (response) {
       $("#render-body").empty();
       $("#render-body").html(response);
-      window.history.pushState(this.url, "Dashboard", this.url);
+      window.history.pushState(this.url, null, this.url);
     },
     error: function (response) {
       toastr.error("Não foi possível acessar a tela de dashboard", "Erro!");
@@ -96,6 +96,29 @@ $(".user-profile-btn").on("click", function (event) {
     complete: function () {
       stopSpinner();
     }
+  })
+})
+
+$(".users-btn").on("click", function (event) {
+  event.preventDefault();
+  $.ajax({
+    type: "GET",
+    url: "/useraccount/grid",
+    dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState(this.url, null, this.url);
+    },
+    error: function () {
+      toastr.error("Não foi possivel acessar a tela de usuários", "Erro!");
+    },
+    complete: function () {
+      stopSpinner();
+    },
   })
 })
 

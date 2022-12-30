@@ -18,7 +18,7 @@
   cursor: pointer;
 }
 
-#post-grid > tbody > tr > td:nth-child(1){
+#posts-grid > tbody > tr > td:nth-child(1){
   text-align:center;
 }
 
@@ -26,34 +26,34 @@
   display: none;
 }
 
-#post-grid > thead > tr > th:last-child {
+#posts-grid > thead > tr > th:last-child {
   pointer-events:none;
   text-align: center;
 }
 
-#post-grid > thead > tr > th:nth-child(1) {
+#posts-grid > thead > tr > th:nth-child(1) {
   text-align: right;
 }
 
 /*Comprimento das colunas*/
-#post-grid > thead > tr > th:nth-child(1) {
+#posts-grid > thead > tr > th:nth-child(1) {
   width: 5%;
 }
-#post-grid > thead > tr > th:nth-child(2) {
+#posts-grid > thead > tr > th:nth-child(2) {
   width: 10%;
 }
-#post-grid > thead > tr > th:nth-child(3) {
+#posts-grid > thead > tr > th:nth-child(3) {
   width: 10%;
 }
-#post-grid > thead > tr > th:nth-child(4) {
+#posts-grid > thead > tr > th:nth-child(4) {
   width: 20%;
 }
-#post-grid > thead > tr > th:nth-child(5) {
+#posts-grid > thead > tr > th:nth-child(5) {
   width: 25%;
 }
-#post-grid > thead > tr > th:nth-child(6) {
+#posts-grid > thead > tr > th:nth-child(6) {
   width: 11%;
 }
-#post-grid > thead > tr > th:nth-child(7) {
+#posts-grid > thead > tr > th:nth-child(7) {
   width: 9%;
 }

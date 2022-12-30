@@ -11,7 +11,7 @@ $(document).ready(function () {
 
   sessionStorage.removeItem("editAfterDetails");
 
-  var postGrid = $("#post-grid").on("initialize.rs.jquery.bootgrid", function (e) {
+  var postGrid = $("#posts-grid").on("initialize.rs.jquery.bootgrid", function (e) {
     /* your code after grid initialize goes here */
   }).bootgrid({
     ajax: true,
@@ -39,7 +39,7 @@ $(document).ready(function () {
           request.filterHeader = $(this).data('filter');
         }
       })
-      request.filterGrid = $("#post-grid").data("filter-grid");
+      request.filterGrid = $("#posts-grid").data("filter-grid");
       return request;
     },
     responseHandler: function (response) {
@@ -146,7 +146,7 @@ $(document).ready(function () {
       $(this).attr("data-filter", "my");
       $("#filter").attr("data-filter", "my");
     }
-    $("#post-grid").bootgrid("reload");
+    $("#posts-grid").bootgrid("reload");
   });
 
   $("#filter").on("click", function () {
@@ -163,7 +163,7 @@ $(document).ready(function () {
 
   //Após carregar o grid
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
-    sessionStorage.setItem("filterGrid", $("#post-grid").attr("data-filter-grid"));
+    sessionStorage.setItem("filterGrid", $("#posts-grid").attr("data-filter-grid"));
     dropdownHideItens();
     postGrid.find("button.btn").each(function (index, element) {
       var actionButtons = $(element);
@@ -334,7 +334,7 @@ function deletePost(postId, element) {
     },
     complete: function () {
       setTimeout(() => {
-        $("#post-grid").bootgrid("reload");
+        $("#posts-grid").bootgrid("reload");
       }, 700);
     }
   });

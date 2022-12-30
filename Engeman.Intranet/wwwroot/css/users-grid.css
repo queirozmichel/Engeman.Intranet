@@ -1,0 +1,53 @@
+﻿.dropdown-item {
+  cursor: pointer;
+  display: block;
+  margin: 0;
+  padding: 3px 20px;
+  white-space: nowrap;
+}
+
+#filter-button {
+  width: 120px;
+}
+
+.pagination {
+  cursor: pointer;
+}
+
+.actions > div:nth-child(3) {
+  display: none;
+}
+
+#users-grid > thead > tr > th:last-child {
+  pointer-events: none;
+  text-align: center;
+}
+
+/*Comprimento das colunas*/
+#users-grid > thead > tr > th:nth-child(1) {
+  width: 2%;
+}
+
+#users-grid > thead > tr > th:nth-child(2) {
+  width: 10%;
+}
+
+#users-grid > thead > tr > th:nth-child(3) {
+  width: 10%;
+}
+
+#users-grid > thead > tr > th:nth-child(4) {
+  width: 5%;
+}
+
+#users-grid > thead > tr > th:nth-child(5) {
+  width: 5%;
+}
+
+#users-grid > thead > tr > th:nth-child(6) {
+  width: 5%;
+}
+
+#users-grid > thead > tr > th:nth-child(7) {
+  width:3.2%;
+}
