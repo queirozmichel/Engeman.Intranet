@@ -61,7 +61,8 @@ namespace Engeman.Intranet.Controllers
     {
       int id = 0;
       int.TryParse(searchPhrase, out id);
-      users = users.Where("name.Contains(@0, StringComparison.OrdinalIgnoreCase) OR username.Contains(@0, StringComparison.OrdinalIgnoreCase) OR id == (@1)", searchPhrase, id);
+      users = users.Where("name.Contains(@0, StringComparison.OrdinalIgnoreCase) OR username.Contains(@0, StringComparison.OrdinalIgnoreCase) " +
+        "OR id == (@1) OR department.Contains(@0, StringComparison.OrdinalIgnoreCase)", searchPhrase, id);
       return users;
     }
 
@@ -192,6 +193,28 @@ namespace Engeman.Intranet.Controllers
         }
       }
       return Json(false);
+    }
+
+    [HttpGet]
+    public IActionResult NewUser()
+    {
+      ViewBag.Departments = _departmentRepository.Get();
+      return PartialView("NewUserForm");
+    }
+
+    [HttpPost]
+    public IActionResult NewUser(IFormCollection formData)
+    {
+      var newUser = new NewUserViewModel(formData["name"], formData["username"], Convert.ToInt32(formData["departmentId"]), Convert.ToInt32(formData["permission"]));
+      var aux = _userAccountRepository.Add(newUser);
+      if (aux == true)
+      {
+        return PartialView("UsersGrid");
+      }
+      else
+      {
+        return Json(false);
+      }
     }
   }
 }

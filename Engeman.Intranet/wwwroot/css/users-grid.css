@@ -29,25 +29,40 @@
 }
 
 #users-grid > thead > tr > th:nth-child(2) {
-  width: 10%;
+  width: 8%;
 }
 
 #users-grid > thead > tr > th:nth-child(3) {
-  width: 10%;
+  width: 7%;
 }
 
 #users-grid > thead > tr > th:nth-child(4) {
-  width: 5%;
+  width: 8%;
 }
 
 #users-grid > thead > tr > th:nth-child(5) {
-  width: 5%;
+  width: 4%;
 }
 
 #users-grid > thead > tr > th:nth-child(6) {
-  width: 5%;
+  width: 4%;
 }
 
 #users-grid > thead > tr > th:nth-child(7) {
-  width:3.2%;
+  width: 4%;
+}
+
+#users-grid > thead > tr > th:nth-child(8) {
+  width: 3.2%;
+}
+
+/*Botão Novo Usuário*/
+#btn-new-user {
+  background-color: #00cc003d;
+  margin-right: 20px;
+}
+
+/*Modal Novo Usuário*/
+#new-user-modal {
+  overflow: hidden;
 }

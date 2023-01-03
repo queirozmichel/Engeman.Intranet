@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\UserAccount\NewUserForm.cshtml" />
     <Content Remove="Views\UserAccount\UsersGrid.cshtml" />
   </ItemGroup>
 
@@ -20,6 +21,7 @@
 
   <ItemGroup>
     <Watch Remove="Views\Posts\PostsGrid.cshtml" />
+    <Watch Remove="Views\UserAccount\NewUserForm.cshtml" />
     <Watch Remove="Views\UserAccount\UsersGrid.cshtml" />
   </ItemGroup>
 
@@ -41,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\UserAccount\NewUserForm.cshtml" />
     <None Include="Views\UserAccount\UsersGrid.cshtml" />
   </ItemGroup>
 

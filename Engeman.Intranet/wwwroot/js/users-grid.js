@@ -3,97 +3,97 @@
 })
 
 $(document).ready(function () {
-  var usersGrid =
-    $("#users-grid").on("initialize.rs.jquery.bootgrid", function (e) {
-    })
-      .bootgrid({
-        ajax: true,
-        //columnSelection: false,
-        css: {
-          dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
-          left: "text-left",
-        },
-        url: "/useraccount/datagrid",
-        labels: {
-          all: "Tudo",
-          infos: "Exibindo {{ctx.start}} até {{ctx.end}} de {{ctx.total}} registros",
-          loading: "Carregando dados...",
-          noResults: "Não há dados para exibir",
-          refresh: "Atualizar",
-          search: "Pesquisar"
-        },
-        searchSettings: {
-          characters: 1,
-        },
-        requestHandler: function (request) {
-          var filterElements = $(".filter-type");
-          filterElements.each(function () {
-            if ($(this).data("filter") != null) {
-              request.filterHeader = $(this).data('filter');
-            }
-          })
-          return request;
-        },
-        templates: {
-          header:
-            "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\">" +
-            "<div class=\"row\">" +
-            "<div class=\"col-sm-12 actionBar\">" +
-            "<p class=\"{{css.search}}\"></p>" +
-            "<p class=\"{{css.actions}}\"></p>" +
-            "<div id=\"filter\" class=\"{{css.dropDownMenu}}\" data-filter=\"all\">" +
-            "<button id=\"filter-button\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">" +
-            "<span class=\"{{css.dropDownMenuText}}\">Todos</span> " +
-            "<span class=\"caret\"></span>" +
-            "</button>" +
-            "<ul class=\"{{css.dropDownMenuItems}}\" role=\"menu\">" +
-            "<li>" +
-            "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"all\" data-filter=\"all\">Todos</a>" +
-            "<li>" +
-            "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"actives\">Ativos</a>" +
-            "</li>" +
-            "</li>" +
-            "<li>" +
-            "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"moderators\">Moderadores</a>" +
-            "</li>" +
-            "<li>" +
-            "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"novices\">Novatos</a>" +
-            "</li>" +
-            "</ul>" +
-            "</div>" +
-            "</div>" +
-            "</div>" +
-            "</div>"
-        },
-        formatters: {
-          //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
-          id: function (column, row) {
-            return row.id;
-          },
-          name: function (column, row) {
-            return row.name;
-          },
-          username: function (column, row) {
-            return row.username;
-          },
-          moderator: function (column, row) {
-            return row.moderator;
-          },
-          novice: function (column, row) {
-            return row.novice;
-          },
-          active: function (column, row) {
-            return row.active;
-          },
-          action: function (column, row) {
-            var buttons;
-            var btn1 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-user-id=\"" + "\"><i class=\"fa fa-pencil\"></i></button> ";
-            var btn2 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-user-id=\"" + "\"><i class=\"fa fa-trash-o\"></i></button> ";
-            buttons = btn1 + btn2;
-            return buttons;
-          },
+  var usersGrid = $("#users-grid").bootgrid({
+    ajax: true,
+    css: {
+      dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
+      left: "text-left",
+    },
+    url: "/useraccount/datagrid",
+    labels: {
+      all: "Tudo",
+      infos: "Exibindo {{ctx.start}} até {{ctx.end}} de {{ctx.total}} registros",
+      loading: "Carregando dados...",
+      noResults: "Não há dados para exibir",
+      refresh: "Atualizar",
+      search: "Pesquisar"
+    },
+    searchSettings: {
+      characters: 1,
+    },
+    requestHandler: function (request) {
+      var filterElements = $(".filter-type");
+      filterElements.each(function () {
+        if ($(this).data("filter") != null) {
+          request.filterHeader = $(this).data('filter');
         }
       })
+      return request;
+    },
+    templates: {
+      header:
+        "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\">" +
+        "<div class=\"row\">" +
+        "<div class=\"col-sm-12 actionBar\">" +
+        "<button id=\"btn-new-user\" class=\"btn btn-default \" type=\"button\"><i class=\"fa-solid fa-user-plus\"></i> Novo usuário </button>" +
+        "<p class=\"{{css.search}}\"></p>" +
+        "<p class=\"{{css.actions}}\"></p>" +
+        "<div id=\"filter\" class=\"{{css.dropDownMenu}}\" data-filter=\"all\">" +
+        "<button id=\"filter-button\" class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">" +
+        "<span class=\"{{css.dropDownMenuText}}\">Todos</span> " +
+        "<span class=\"caret\"></span>" +
+        "</button>" +
+        "<ul class=\"{{css.dropDownMenuItems}}\" role=\"menu\">" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"all\" data-filter=\"all\">Todos</a>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"actives\">Ativos</a>" +
+        "</li>" +
+        "</li>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"moderators\">Moderadores</a>" +
+        "</li>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"novices\">Novatos</a>" +
+        "</li>" +
+        "</ul>" +
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        "</div>"
+    },
+    formatters: {
+      //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
+      id: function (column, row) {
+        return row.id;
+      },
+      name: function (column, row) {
+        return row.name;
+      },
+      username: function (column, row) {
+        return row.username;
+      },
+      department: function (column, row) {
+        return row.department;
+      },
+      moderator: function (column, row) {
+        return row.moderator;
+      },
+      novice: function (column, row) {
+        return row.novice;
+      },
+      active: function (column, row) {
+        return row.active;
+      },
+      action: function (column, row) {
+        var buttons;
+        var btn1 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-user-id=\"" + "\"><i class=\"fa fa-pencil\"></i></button> ";
+        var btn2 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-user-id=\"" + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        buttons = btn1 + btn2;
+        return buttons;
+      },
+    }
+  })
 
   $(".filter-type").on("click", function () {
     $(".filter-type").removeAttr("data-filter");
@@ -129,4 +129,26 @@ $(document).ready(function () {
   $(".filter-type").on("click", function () {
     $(this).parents("div#filter").find("span.dropdown-text").text($(this).text());
   });
+
+  $("#btn-new-user").on("click", function () {
+    $.ajax({
+      type: "GET",
+      url: "/useraccount/newuser",
+      dataType: "html",
+      beforeSend: function () {
+        startSpinner();
+      },
+      success: function (response) {
+        $("#new-user-modal-body").empty();
+        $("#new-user-modal-body").html(response);
+        $("#new-user-modal").modal("show");
+      },
+      error: function () {
+        toastr.error("Não possível renderizar o fomulário de Novo Usuário", "Erro!");
+      },
+      complete: function () {
+        stopSpinner();
+      }
+    })
+  })
 })

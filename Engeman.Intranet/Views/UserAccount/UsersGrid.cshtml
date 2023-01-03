@@ -12,6 +12,17 @@
 
 <link rel="stylesheet" href="~/css/users-grid.css" />
 
+<div class="modal fade" id="new-user-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Cadastro de novo usuário</h4>
+      </div>
+      <div id="new-user-modal-body"></div>
+    </div>
+  </div>
+</div>
+
 @await Component.InvokeAsync("ConfirmationModal")
 <div class="page-header">
   <div class="page-title">
@@ -46,6 +57,7 @@
       <th data-column-id="id" data-order="asc" data-formatter="id">ID</th>
       <th data-column-id="name" data-formatter="name">Nome</th>
       <th data-column-id="username" data-formatter="username">Nome de Usuário</th>
+      <th data-column-id="department" data-formatter="department">Departamento</th>
       <th data-column-id="active" data-formatter="active">Ativo</th>
       <th data-column-id="novice" data-formatter="novice">Novato</th>
       <th data-column-id="moderator" data-formatter="moderator">Moderador</th>

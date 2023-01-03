@@ -1,0 +1,54 @@
+﻿@{List<Department> departments = ViewBag.Departments;}
+
+<link rel="stylesheet" href="~/css/new-user-form.css" />
+
+<div class="widget box">
+  <div class="widget-content">
+    <form class="form-horizontal" id="new-user-form" method="post">
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Nome</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="name" name="name">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Nome de usuário</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="username" name="username" maxlength="30">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Departamento</label>
+        <div class="col-sm-4">
+          <select class="form-control" id="departmentId" name="departmentId">
+            <option value="" selected disabled hidden>Não selecionado</option>
+            @if (departments != null)
+            {
+              for (int i = 0; i < departments.Count; i++)
+              {
+                <option value="@departments[i].Id">@departments[i].Description</option>
+              }
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Tipo de usuário</label>
+        <div class="col-sm-4">
+          <select title="<b>COMUM:</b> Pode criar, editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode criar, editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador.</br><b>MODERADOR:</b> Pode criar, editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permission" name="permission">
+            <option value="" selected disabled hidden>Não selecionado</option>
+            <option value="0">Comum</option>
+            <option value="1">Novato</option>
+            <option value="2">Moderador</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-default pull-left" id="cancel-form-button">Cancelar</button>
+        <button class="btn btn-primary pull-right" type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript" src="~/js/new-user-form.js"></script>

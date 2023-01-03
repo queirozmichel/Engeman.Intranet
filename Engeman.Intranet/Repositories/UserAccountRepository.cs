@@ -158,7 +158,9 @@ namespace Engeman.Intranet.Repositories
 
     public List<UserGridViewModel> GetUsersGrid()
     {
-      var query = "SELECT ID, ACTIVE, NAME, USERNAME, MODERATOR, NOVICE_USER FROM USERACCOUNT";
+      var query = "SELECT U.ID, U.ACTIVE, U.NAME, U.USERNAME, D.DESCRIPTION AS DEPARTMENT, U.MODERATOR, U.NOVICE_USER " +
+        "FROM USERACCOUNT AS U INNER JOIN DEPARTMENT AS D " +
+        "ON U.DEPARTMENT_ID = D.ID";
       var users = new List<UserGridViewModel>();
 
       using (StaticQuery sq = new StaticQuery())
@@ -173,11 +175,22 @@ namespace Engeman.Intranet.Repositories
           user.Active = Convert.ToBoolean(result.Rows[i]["active"]);
           user.Name = result.Rows[i]["name"].ToString();
           user.Username = result.Rows[i]["username"].ToString();
+          user.Department = result.Rows[i]["department"].ToString();
           user.Novice = Convert.ToBoolean(result.Rows[i]["novice_user"]);
           user.Moderator = Convert.ToBoolean(result.Rows[i]["moderator"]);
           users.Add(user);
         }
         return users;
+      }
+    }
+
+    public bool Add(NewUserViewModel newUser)
+    {
+      var query = $"INSERT INTO USERACCOUNT (NAME, USERNAME, EMAIL, DEPARTMENT_ID, MODERATOR, NOVICE_USER) VALUES ('{newUser.Name}', '{newUser.Username}', '{newUser.Email}', {newUser.DepartmentId}, {newUser.Moderator}, {newUser.NoviceUser})";
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = Convert.ToBoolean(sq.ExecuteCommand(query));
+        return result;
       }
     }
   }
