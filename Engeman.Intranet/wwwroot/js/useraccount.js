@@ -9,7 +9,7 @@ $(document).ready(function () {
     rules: {
       name: {
         required: true,
-        maxlength: 19
+        maxlength: 30
       },
     },
     highlight: function (element) {
