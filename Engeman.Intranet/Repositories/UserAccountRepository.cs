@@ -193,5 +193,15 @@ namespace Engeman.Intranet.Repositories
         return result;
       }
     }
+
+    public int Remove(int userId)
+    {
+      string query = $"DELETE FROM USERACCOUNT WHERE ID = {userId}";
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = sq.ExecuteCommand(query);
+        return result;
+      }
+    }
   }
 }

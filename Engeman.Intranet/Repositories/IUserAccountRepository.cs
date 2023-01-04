@@ -13,5 +13,6 @@ namespace Engeman.Intranet.Repositories
     public string GetUsernameById(int id);
     public UserPermissionsViewModel GetUserPermissionsByUsername(string username);
     public bool Add(NewUserViewModel newUser);
+    public int Remove(int userId);
   }
 }

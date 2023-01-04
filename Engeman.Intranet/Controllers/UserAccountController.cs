@@ -216,5 +216,12 @@ namespace Engeman.Intranet.Controllers
         return Json(false);
       }
     }
+
+    [HttpDelete]
+    public int RemoveUser(int userId)
+    {
+      var result = _userAccountRepository.Remove(userId);
+      return result;
+    }
   }
 }

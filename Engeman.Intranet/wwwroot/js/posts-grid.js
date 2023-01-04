@@ -15,9 +15,7 @@ $(document).ready(function () {
     /* your code after grid initialize goes here */
   }).bootgrid({
     ajax: true,
-    //columnSelection: false,
     css: {
-      dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
       left: "text-left",
     },
     url: "/posts/datagrid",
@@ -164,7 +162,6 @@ $(document).ready(function () {
   //Após carregar o grid
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
     sessionStorage.setItem("filterGrid", $("#posts-grid").attr("data-filter-grid"));
-    dropdownHideItens();
     postGrid.find("button.btn").each(function (index, element) {
       var actionButtons = $(element);
       var action = actionButtons.data("action");
@@ -182,8 +179,6 @@ $(document).ready(function () {
           postPermissions(authorId, postId, action);
           elementAux = element;
           idPostAux = postId;
-        } else if (action == "aprove") {
-          showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove", postId);
         }
       })
     });
@@ -230,15 +225,6 @@ $(document).ready(function () {
     $(this).parents("div#filter").find("span.dropdown-text").text($(this).text());
   });
 });
-
-function dropdownHideItens() {
-  if ($(".dropdown-menu-grid").length) {
-    var attachment = $("input[name = 'postType']");
-    var action = $("input[name = 'action']")
-    attachment.parent().css("display", "none");
-    action.parent().css("display", "none");
-  }
-}
 
 $(".btn-yes, .btn-no").on("click", function () {
   if ($(this).attr("id") == "delete-post") {

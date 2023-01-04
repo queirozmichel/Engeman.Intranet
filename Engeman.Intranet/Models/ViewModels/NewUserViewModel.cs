@@ -30,7 +30,7 @@
         Moderator = 0;
         NoviceUser = 1;
       }
-      else if (permission == 3)
+      else if (permission == 2)
       {
         Moderator = 1;
         NoviceUser = 0;
