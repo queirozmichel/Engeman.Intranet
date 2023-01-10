@@ -3,14 +3,24 @@
 });
 
 $(document).ready(function () {
+
   FormComponents.init();
 
   $("#edit-profile-form").validate({
     rules: {
-      name: {
+      "name": {
         required: true,
         maxlength: 30
       },
+      "photo": {
+        accept: "jpg,jpeg",
+        filesize: 5,
+      }
+    },
+    messages: {
+      "photo": {
+        accept: "Por favor, forneça uma imagem válida.( jpg/jpeg )",
+      }
     },
     highlight: function (element) {
       $(element).parents('.form-group').addClass('has-error');
@@ -21,6 +31,13 @@ $(document).ready(function () {
     ignore: '*:not([name])',
   })
 })
+
+jQuery.validator.addMethod('filesize', function (value, element, param) {
+  return this.optional(element) || (element.files[0].size <= param * 1000000)
+}, function (value, element) {
+  let imageSize = ((element.files[0].size) / (1000 * 1000)).toFixed(1);
+  return `A imagem tem ${imageSize}MB e excede o tamanho máximo de ${value}MB`;
+});
 
 $("#edit-profile-form").submit(function (event) {
   event.preventDefault();
@@ -63,14 +80,3 @@ $("#edit-profile-form").submit(function (event) {
     });
   }
 });
-
-$("#photo").on("change", function () {
-  if (this.files[0].size > 5000000) {
-    let imageSize = ((this.files[0].size) / (1000 * 1000)).toFixed(1);
-    $(this).siblings().find("span").text(imageSize);
-    $("#photo").siblings("label").css("display", "block");
-    this.value = "";
-  } else {
-    $("#photo").siblings("label").css("display", "none");
-  }
-})

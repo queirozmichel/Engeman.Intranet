@@ -1,0 +1,12 @@
+﻿#photo-limit {
+  color: #a94442;
+  display: none;
+}
+
+img {
+  width: 100%;
+}
+
+.fa-circle-arrow-left {
+  margin-right: 4px;
+}

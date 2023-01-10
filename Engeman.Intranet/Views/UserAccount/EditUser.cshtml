@@ -1,0 +1,167 @@
+﻿@{List<Department> departments = ViewBag.Departments;}
+@model Engeman.Intranet.Models.ViewModels.UserEditViewModel;
+@{string layout = null; }
+
+@if (ViewBag.IsAjaxCall == false)
+{
+  layout = "~/Views/Shared/_Layout.cshtml";
+  <script>startSpinner()</script>
+}
+
+@{ Layout = layout;}
+
+<link rel="stylesheet" href="~/css/edit-user.css" />
+
+
+<div class="page-header">
+  <div class="page-title">
+    <h3>Editar Usuário</h3>
+    @*<span>Good morning, @Model.Name!</span>*@
+  </div>
+  <!-- Page Stats -->
+  <ul class="page-stats">
+    <li>
+      <div class="summary">
+        <span>New orders</span>
+        <h3>17,561</h3>
+      </div>
+      <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+      <!-- Use instead of sparkline e.g. this:
+      <div class="graph circular-chart" data-percent="73">73%</div>
+      -->
+    </li>
+    <li>
+      <div class="summary">
+        <span>My balance</span>
+        <h3>$21,561.21</h3>
+      </div>
+      <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
+    </li>
+  </ul>
+  <!-- /Page Stats -->
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="tabbable tabbable-custom tabbable-full-width">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#tab_edit_user" data-toggle="tab">Editar usuário</a></li>
+        <li><a href="#tab_data_log" data-toggle="tab">Log de dados</a></li>
+      </ul>
+      <div class="tab-content row">
+        <div class="tab-pane active" id="tab_edit_user">
+          <form id="edit-user-form" class="form-horizontal" method="post" enctype="multipart/form-data">
+            <div class="col-md-3">
+              <div style="border: 1px solid #ececec; background: #ddd;">
+                @{ var base64 = Convert.ToBase64String(Model.Photo);
+                  var imasrc = string.Format("data:image/png;base64,{0}", base64);
+                }
+                <img src='@imasrc' />
+                <div class="text-center" style="padding: 3px; font-weight: bold;">Permissões</div>
+                <div>
+                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px"><p style="font-size: 11px; display: contents;">Criar postagens</p><input id="crete-post-radio" type="radio" checked="@Model.CreatePost" /></div>
+                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Editar próprias postagens</p><input id="edit-owner-post-radio" type="radio" checked="@Model.EditOwnerPost" /></div>
+                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Excluir próprias postagens</p><input id="delete-owner-post-radio" type="radio" checked="@Model.DeleteOwnerPost" /></div>
+                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Editar qualquer postagem</p><input id="edit-any-post-radio" type="radio" checked="@Model.EditAnyPost" /></div>
+                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Apagar qualquer postagem</p><input id="delete-any-post-radio" type="radio" checked="@Model.DeleteAnyPost" /></div>
+                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Exige aprovação de postagens e comentários</p><input id="need-revision-radio" type="radio" checked="@Model.Novice" /></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="form-group">
+                <label class="col-md-4 control-label">Ativo</label>
+                <div class="col-md-8">
+                  @Html.CheckBox("active", Model.Active, new { @class = "switch", id = "active-switch" })
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label">Código do usuário</label>
+                <div class="col-md-2">
+                  <input style="width: 84px;" class="form-control" name="id" type="text" value="@Model.Id" readonly />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label">Nome<span class="required">*</span></label>
+                <div class="col-md-8">
+                  <input type="text" name="name" class="form-control" value="@Model.Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label">Nome de usuário<span class="required">*</span></label>
+                <div class="col-md-8">
+                  <input type="text" name="username" class="form-control" id="username-input" maxlength="30" value="@Model.Username">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label">E-mail</label>
+                <div class="col-md-8">
+                  <div class="input-group">
+                    <input type="text" name="email" class="form-control" id="email-input" readonly value="@Model.Email">
+                    <span class="input-group-addon">&#64;engeman.com.br</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label">Departamento</label>
+                <div class="col-md-4">
+                  <select class="form-control" id="departmentId" name="departmentId">
+                    <option value="@Model.DepartmentId" selected>@Model.DepartmentDescription</option>
+                    @if (departments != null)
+                    {
+                      for (int i = 0; i < departments.Count; i++)
+                      {
+                        if (departments[i].Id != @Model.DepartmentId)
+                        {
+                          <option value="@departments[i].Id">@departments[i].Description</option>
+                        }
+                      }
+                    }
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label">Tipo de usuário</label>
+                <div class="col-sm-4">
+                  <select title="<b>COMUM:</b> Pode criar, editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode criar, editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador para que seja visível a todos.</br><b>MODERADOR:</b> Pode criar, editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permissions" name="userTypeCode">
+                    <option value="@Model.UserTypeCode" selected>@Model.UserType</option>
+                    <option value="0">Comum</option>
+                    <option value="1">Novato</option>
+                    <option value="2">Moderador</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="textArea">Descrição</label>
+                <div class="col-md-8">
+                  <textarea name="description" class="form-control" id="textArea" rows="5">@Model.Description</textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label">Foto de perfil</label>
+                <div class="col-md-8">
+                  <input type="file" id="photo" name="photo" accept="image/jpeg, image/png, image/png" value="@Model.Photo" />
+                  <label id="photo-limit">A imagem tem <span></span>MB e excede o tamanho máximo de 5MB</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 form-vertical no-margin">
+              <div class="form-actions">
+                <button title="Voltar para os usuários" class="btn btn pull-left back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar</button>
+                <button class="btn btn-primary pull-right" type="submit">Salvar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="tab-pane" id="tab_data_log">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" src="~/js/edit-user.js"></script>
+@if (ViewBag.IsAjaxCall == true)
+{
+  <script type="text/javascript" src="~/js/custom.js"></script>
+}

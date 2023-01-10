@@ -72,6 +72,12 @@ namespace Engeman.Intranet.Repositories
         userAccount.Photo = (byte[])result.Rows[0]["photo"];
         userAccount.Description = result.Rows[0]["description"].ToString();
         userAccount.Moderator = Convert.ToBoolean(result.Rows[0]["Moderator"]);
+        userAccount.NoviceUser = Convert.ToBoolean(result.Rows[0]["novice_user"]);
+        userAccount.CreatePost = Convert.ToBoolean(result.Rows[0]["create_post"]);
+        userAccount.EditOwnerPost = Convert.ToBoolean(result.Rows[0]["edit_owner_post"]);
+        userAccount.DeleteOwnerPost = Convert.ToBoolean(result.Rows[0]["delete_owner_post"]);
+        userAccount.EditAnyPost = Convert.ToBoolean(result.Rows[0]["edit_any_post"]);
+        userAccount.DeleteAnyPost = Convert.ToBoolean(result.Rows[0]["delete_any_post"]);
         userAccount.ChangeDate = Convert.ToDateTime(result.Rows[0]["change_date"].ToString());
 
         return userAccount;
@@ -200,6 +206,23 @@ namespace Engeman.Intranet.Repositories
       using (StaticQuery sq = new StaticQuery())
       {
         var result = sq.ExecuteCommand(query);
+        return result;
+      }
+    }
+
+    public int UpdateByModerator(UserAccount editedUser)
+    {
+      string[] paramters = { "Photo;byte" };
+      Object[] values = { editedUser.Photo };
+      var query = $"UPDATE USERACCOUNT SET ACTIVE = '{editedUser.Active}', NAME = '{editedUser.Name}', USERNAME = '{editedUser.Username}', EMAIL = '{editedUser.Email}', " +
+                  $"DEPARTMENT_ID = {editedUser.DepartmentId}, DESCRIPTION = '{editedUser.Description}', CREATE_POST = '{editedUser.CreatePost}', " +
+                  $"EDIT_OWNER_POST = '{editedUser.EditOwnerPost}', DELETE_OWNER_POST = '{editedUser.DeleteOwnerPost}', EDIT_ANY_POST = '{editedUser.EditAnyPost}', " +
+                  $"DELETE_ANY_POST = '{editedUser.DeleteAnyPost}', MODERATOR = '{editedUser.Moderator}', NOVICE_USER = '{editedUser.NoviceUser}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
+                  $"WHERE ID = {editedUser.Id}";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        var result = sq.ExecuteCommand(query, paramters, values);
         return result;
       }
     }

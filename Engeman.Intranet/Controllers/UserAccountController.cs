@@ -223,5 +223,123 @@ namespace Engeman.Intranet.Controllers
       var result = _userAccountRepository.Remove(userId);
       return result;
     }
+
+    [HttpGet]
+    public IActionResult EditUser(int userId)
+    {
+      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      var userEdit = new UserEditViewModel();
+      var user = _userAccountRepository.GetById(userId);
+
+      userEdit.Id = user.Id;
+      userEdit.Active = user.Active;
+      userEdit.Name = user.Name;
+      userEdit.Username = user.Username;
+      userEdit.Email = user.Email.Substring(0, user.Email.IndexOf("@"));
+      userEdit.Photo= user.Photo;
+      userEdit.Description = user.Description;
+      userEdit.DepartmentId = user.DepartmentId;
+      userEdit.DepartmentDescription = _departmentRepository.GetDescriptionById(user.DepartmentId);
+      if (user.Moderator == false && user.NoviceUser == false)
+      {
+        userEdit.UserType = "Comum";
+        userEdit.UserTypeCode = 0;
+      }
+      else if (user.Moderator == false && user.NoviceUser == true)
+      {
+        userEdit.UserType = "Novato";
+        userEdit.UserTypeCode = 1;
+      }
+      else
+      {
+        userEdit.UserType = "Moderador";
+        userEdit.UserTypeCode = 2;
+      }
+      userEdit.Novice = user.NoviceUser;
+      userEdit.EditOwnerPost = user.EditOwnerPost;
+      userEdit.EditAnyPost = user.EditAnyPost;
+      userEdit.DeleteOwnerPost = user.DeleteOwnerPost;
+      userEdit.DeleteAnyPost = user.DeleteAnyPost;
+      userEdit.CreatePost = user.CreatePost;
+
+      ViewBag.IsAjaxCall = isAjaxCall;
+      ViewBag.Departments = _departmentRepository.Get();
+
+      return PartialView(userEdit);
+    }
+
+    [HttpPost]
+    public IActionResult UpdateByModerator(UserEditViewModel userEdited, List<IFormFile> Photo)
+    {
+      var user = new UserAccount();
+      user.Id= userEdited.Id;
+      user.Active = userEdited.Active;
+      user.Name = userEdited.Name;
+      user.Username = userEdited.Username;
+      user.Email = userEdited.Email + "@engeman.com.br";
+      user.Description = userEdited.Description;
+      user.DepartmentId = userEdited.DepartmentId;
+      if (userEdited.UserTypeCode == 1)
+      {
+        user.Moderator = false;
+        user.NoviceUser = true;
+        user.CreatePost = true;
+        user.EditOwnerPost = true;
+        user.DeleteOwnerPost = true;
+        user.EditAnyPost = false;
+        user.DeleteAnyPost = false;
+
+      }
+      else if (userEdited.UserTypeCode == 2)
+      {
+        user.Moderator = true;
+        user.NoviceUser = false;
+        user.CreatePost = true;
+        user.EditOwnerPost = true;
+        user.DeleteOwnerPost = true;
+        user.EditAnyPost = true;
+        user.DeleteAnyPost = true;
+      }
+      else
+      {
+        user.Moderator = false;
+        user.NoviceUser = false;
+        user.CreatePost = true;
+        user.EditOwnerPost = true;
+        user.DeleteOwnerPost = true;
+        user.EditAnyPost = false;
+        user.DeleteAnyPost = false;
+      }
+
+      if (Photo.Count == 0)
+      {
+        user.Photo = _userAccountRepository.GetByUsername(user.Username).Photo;
+      }
+      else
+      {
+        foreach (var item in Photo)
+        {
+          if (item.Length > 0)
+          {
+            using (var stream = new MemoryStream())
+            {
+              item.CopyTo(stream);
+              user.Photo = stream.ToArray();
+            }
+          }
+        }
+      }
+
+      var result = _userAccountRepository.UpdateByModerator(user);
+
+      if (result == 1)
+      {
+        return Ok(StatusCodes.Status200OK);
+      }
+      else
+      {
+        return BadRequest(StatusCodes.Status400BadRequest);
+      }      
+    }
   }
 }

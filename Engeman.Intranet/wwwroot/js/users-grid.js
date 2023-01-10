@@ -186,6 +186,29 @@ $(".btn-yes, .btn-no").on("click", function () {
   }
 })
 
+function editUser(userId) {
+  $.ajax({
+    type: "GET",
+    data: { "userId": userId },
+    dataType: "html",
+    url: "/useraccount/edituser",
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState(this.url, null, this.url);
+    },
+    error: function () {
+      toastr.error("Não foi possível carregar a tela de edição de usuário", "Erro!");
+    },
+    complete: function () {
+      stopSpinner();
+    }
+  })
+}
+
 function deleteUser(userId, elementAux) {
   $.ajax({
     type: "DELETE",

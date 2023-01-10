@@ -14,5 +14,6 @@ namespace Engeman.Intranet.Repositories
     public UserPermissionsViewModel GetUserPermissionsByUsername(string username);
     public bool Add(NewUserViewModel newUser);
     public int Remove(int userId);
+    public int UpdateByModerator(UserAccount editedUser);
   }
 }
