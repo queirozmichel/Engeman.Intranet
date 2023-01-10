@@ -83,3 +83,7 @@ $("#cancel-form-button").on("click", function (event) {
   event.preventDefault();
   $("#new-user-modal").modal("hide");
 })
+
+$("#username-input").on("input", function () {
+  $("#email-input").val(this.value);
+})

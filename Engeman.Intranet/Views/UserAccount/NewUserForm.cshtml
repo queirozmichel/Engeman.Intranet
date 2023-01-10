@@ -14,7 +14,16 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Nome de usuário</label>
         <div class="col-sm-9">
-          <input type="text" class="form-control" id="username" name="username" maxlength="30">
+          <input type="text" class="form-control" id="username-input" name="username" maxlength="30">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">E-mail</label>
+        <div class="col-sm-9">
+          <div class="input-group">
+            <input type="text" name="email" class="form-control" id="email-input" readonly>
+            <span class="input-group-addon">&#64;engeman.com.br</span>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -35,7 +44,7 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Tipo de usuário</label>
         <div class="col-sm-4">
-          <select title="<b>COMUM:</b> Pode criar, editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode criar, editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador.</br><b>MODERADOR:</b> Pode criar, editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permission" name="permission">
+          <select title="<b>COMUM:</b> Pode criar, editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode criar, editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador para que seja visível a todos.</br><b>MODERADOR:</b> Pode criar, editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permission" name="permission">
             <option value="" selected disabled hidden>Não selecionado</option>
             <option value="0">Comum</option>
             <option value="1">Novato</option>
