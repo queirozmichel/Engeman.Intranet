@@ -22,6 +22,9 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult Grid()
     {
+      var isModerator = Convert.ToBoolean(HttpContext.Session.GetInt32("_Moderator"));
+      if (isModerator == false) return Redirect(Request.Host.ToString());
+      
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       ViewBag.IsAjaxCall = isAjaxCall;
       return PartialView("UsersGrid");
