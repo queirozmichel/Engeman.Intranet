@@ -3,7 +3,6 @@ using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
-using System.Text;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -11,30 +10,31 @@ namespace Engeman.Intranet.Controllers
   public class LogsController : Controller
   {
     private readonly ILogRepository _logRepository;
+    private IUserAccountRepository _userAccountRepository;
 
-    public LogsController(ILogRepository logRepository)
+    public LogsController(ILogRepository logRepository, IUserAccountRepository userAccountRepository)
     {
       _logRepository = logRepository;
+      _userAccountRepository = userAccountRepository;
     }
 
     [HttpGet]
-    public IActionResult Index()
-    {
-      return View();
-    }
-
-    [HttpGet]
-    public IActionResult Grid()
+    public IActionResult Grid(bool filterByUsername, int userId)
     {
       var isModerator = Convert.ToBoolean(HttpContext.Session.GetInt32("_Moderator"));
       if (isModerator == false) return Redirect(Request.Host.ToString());
-
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+      if (filterByUsername == true)
+      {
+        ViewBag.FilterByUsername = filterByUsername;
+        ViewBag.Username = _userAccountRepository.GetUsernameById(userId); ;
+      }
       ViewBag.IsAjaxCall = isAjaxCall;
       return PartialView("LogsGrid");
     }
 
-    public JsonResult DataGrid(string filterHeader, int rowCount, string searchPhrase, int current)
+    public JsonResult DataGrid(string username, string filterHeader, int rowCount, string searchPhrase, int current)
     {
       IQueryable<LogGridViewModel> logs = null;
       IQueryable paginatedLogs;
@@ -45,7 +45,8 @@ namespace Engeman.Intranet.Controllers
       var field = key.Replace("sort[", "").Replace("]", "");
       string orderedField = String.Format("{0} {1}", field, order);
 
-      logs =  _logRepository.GetLogsGrid().AsQueryable(); ;
+      if (username != null) logs = _logRepository.GetLogsGrid().AsQueryable().Where("username == @0", username);
+      else logs = _logRepository.GetLogsGrid().AsQueryable();
       total = logs.Count();
 
       if (!String.IsNullOrWhiteSpace(searchPhrase))
@@ -90,15 +91,5 @@ namespace Engeman.Intranet.Controllers
         return aux = logs.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
       }
     }
-
-    //[HttpGet]
-    //public FileStreamResult GenerateLog()
-    //{
-    //  var log = _logRepository.GetFormatted();
-    //  byte[] byteLogArray = log.SelectMany(s => Encoding.UTF8.GetBytes(s + Environment.NewLine)).ToArray();
-    //  var stream = new MemoryStream(byteLogArray);
-
-    //  return File(stream, "text/plain", "arquivo_de_log.txt");
-    //}
   }
 }

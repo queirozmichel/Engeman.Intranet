@@ -28,12 +28,7 @@ var logsGrid = $("#logs-grid").bootgrid({
     characters: 1,
   },
   requestHandler: function (request) {
-    var filterElements = $(".filter-type");
-    filterElements.each(function () {
-      if ($(this).data("filter") != null) {
-        request.filterHeader = $(this).data('filter');
-      }
-    })
+    request.username = $("#logs-grid").data("username");
     return request;
   },
   templates: {

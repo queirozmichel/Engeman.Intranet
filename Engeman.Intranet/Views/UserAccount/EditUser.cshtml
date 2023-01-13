@@ -45,10 +45,11 @@
   <div class="col-md-12">
     <div class="tabbable tabbable-custom tabbable-full-width">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#tab-edit-user" data-toggle="tab">Editar usuário</a></li>
+        <li class="active"><a href="#tab-1" data-toggle="tab">Editar usuário</a></li>
+        <li><a id="log-tab" href="#tab-2" data-toggle="tab">Log de dados</a></li>
       </ul>
       <div class="tab-content row">
-        <div class="tab-pane active" id="tab-edit-user">
+        <div class="tab-pane active" id="tab-1">
           <form id="edit-user-form" class="form-horizontal" method="post" enctype="multipart/form-data">
             <div class="col-md-3">
               <div id="card-permissions">
@@ -152,6 +153,7 @@
             </div>
           </form>
         </div>
+        <div class="tab-pane active" id="tab-2"></div>
       </div>
     </div>
   </div>

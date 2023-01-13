@@ -129,3 +129,28 @@ $(':radio').click(function (e) {
 $(".back-button").on("click", function (event) {
   previousPage();
 })
+
+$("#log-tab").on("click", function () {
+  let params = new URLSearchParams(document.location.search);
+  let userId = params.get("userId");
+
+  $.ajax({
+    type: "GET",
+    dataType: "html",
+    url: "/logs/grid",
+    data: { "filterByUsername": true, "userId": userId },
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (reponse) {
+      $("#tab-2").empty();
+      $("#tab-2").html(reponse);
+    },
+    error: function () {
+      toastr.error("Não foi possível concluir a requisição", "Erro");
+    },
+    complete: function () {
+      stopSpinner();
+    }
+  })
+})
