@@ -10,3 +10,26 @@ img {
 .fa-circle-arrow-left {
   margin-right: 4px;
 }
+
+#card-permissions {
+  border: 1px solid #ececec;
+  background: #ddd;
+}
+
+#permission-text {
+  padding: 3px;
+  font-weight: bold;
+}
+
+.permissions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3px;
+  padding: 3px
+}
+
+.permissions-p {
+  font-size: 11px;
+  display: contents;
+}

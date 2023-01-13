@@ -2,6 +2,8 @@
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.DirectoryServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security.Claims;
 
@@ -40,7 +42,7 @@ namespace Engeman.Intranet.Controllers
       {
         //try
         //{
-        //DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
+        //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
         //  Object obj = entry.NativeObject;
         //}
         //catch (COMException ex)

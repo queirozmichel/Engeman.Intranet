@@ -43,5 +43,7 @@ namespace Engeman.Intranet.Models.ViewModels
     Comment,
     [Description("POST")]
     Post,
+    [Description("USERACCOUNT")]
+    UserAccount,
   }
 }

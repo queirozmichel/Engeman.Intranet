@@ -26,25 +26,25 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public List<string> GetFormatted()
+    public List<LogGridViewModel> GetLogsGrid()
     {
       var query = "SELECT * FROM LOG";
-      List<string> logs = new List<string>();
-      string log = null;
-      string referenceId = null;
-      string referenceTable = null;
-
+      var logs = new List<LogGridViewModel>();
       using (StaticQuery sq = new StaticQuery())
       {
         var result = sq.GetDataSet(query).Tables[0];
         for (int i = 0; i < result.Rows.Count; i++)
         {
-          referenceId = result.Rows[i]["Reference_Id"].ToString() != "" ? result.Rows[i]["Reference_Id"].ToString() : "NULL";
-          referenceTable = result.Rows[i]["Reference_Table"].ToString() != "" ? result.Rows[i]["Reference_Table"].ToString() : "NULL";
+          var log = new LogGridViewModel();
 
-          log = $"Data: {Convert.ToDateTime(result.Rows[i]["Change_Date"]).ToShortDateString()} {Convert.ToDateTime(result.Rows[i]["Change_Date"]).ToShortTimeString()}" +
-                $" | Usuário: {result.Rows[i]["Username"]} | Descrição: {result.Rows[i]["Operation"]} {result.Rows[i]["Description"]}" +
-                $" | Id de referência: {referenceId} | Tabela de referência: {referenceTable}";
+          log.Id = Convert.ToInt32(result.Rows[i]["id"]);
+          log.Username = result.Rows[i]["username"].ToString();
+          log.Operation = result.Rows[i]["operation"].ToString();
+          log.Description = result.Rows[i]["description"].ToString();
+          if (result.Rows[i]["reference_id"] is DBNull) log.ReferenceId = null;      
+          else log.ReferenceId = Convert.ToInt32(result.Rows[i]["reference_id"]);    
+          log.ReferenceTable = result.Rows[i]["reference_table"].ToString();
+          log.ChangeDate = result.Rows[i]["change_date"].ToString();
           logs.Add(log);
         }
         return logs;

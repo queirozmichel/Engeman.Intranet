@@ -45,26 +45,25 @@
   <div class="col-md-12">
     <div class="tabbable tabbable-custom tabbable-full-width">
       <ul class="nav nav-tabs">
-        <li class="active"><a href="#tab_edit_user" data-toggle="tab">Editar usuário</a></li>
-        <li><a href="#tab_data_log" data-toggle="tab">Log de dados</a></li>
+        <li class="active"><a href="#tab-edit-user" data-toggle="tab">Editar usuário</a></li>
       </ul>
       <div class="tab-content row">
-        <div class="tab-pane active" id="tab_edit_user">
+        <div class="tab-pane active" id="tab-edit-user">
           <form id="edit-user-form" class="form-horizontal" method="post" enctype="multipart/form-data">
             <div class="col-md-3">
-              <div style="border: 1px solid #ececec; background: #ddd;">
+              <div id="card-permissions">
                 @{ var base64 = Convert.ToBase64String(Model.Photo);
                   var imasrc = string.Format("data:image/png;base64,{0}", base64);
                 }
                 <img src='@imasrc' />
-                <div class="text-center" style="padding: 3px; font-weight: bold;">Permissões</div>
+                <div id="permission-text" class="text-center">Permissões</div>
                 <div>
-                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px"><p style="font-size: 11px; display: contents;">Criar postagens</p><input id="crete-post-radio" type="radio" checked="@Model.CreatePost" /></div>
-                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Editar próprias postagens</p><input id="edit-owner-post-radio" type="radio" checked="@Model.EditOwnerPost" /></div>
-                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Excluir próprias postagens</p><input id="delete-owner-post-radio" type="radio" checked="@Model.DeleteOwnerPost" /></div>
-                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Editar qualquer postagem</p><input id="edit-any-post-radio" type="radio" checked="@Model.EditAnyPost" /></div>
-                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Apagar qualquer postagem</p><input id="delete-any-post-radio" type="radio" checked="@Model.DeleteAnyPost" /></div>
-                  <div class="list-group-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; padding: 3px "><p style="font-size: 11px; display: contents;">Exige aprovação de postagens e comentários</p><input id="need-revision-radio" type="radio" checked="@Model.Novice" /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Criar postagens</p><input id="crete-post-radio" type="radio" checked="@Model.CreatePost" /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar próprias postagens</p><input id="edit-owner-post-radio" type="radio" checked="@Model.EditOwnerPost" /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir próprias postagens</p><input id="delete-owner-post-radio" type="radio" checked="@Model.DeleteOwnerPost" /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar qualquer postagem</p><input id="edit-any-post-radio" type="radio" checked="@Model.EditAnyPost" /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Apagar qualquer postagem</p><input id="delete-any-post-radio" type="radio" checked="@Model.DeleteAnyPost" /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Exige aprovação de postagens e comentários</p><input id="need-revision-radio" type="radio" checked="@Model.Novice" /></div>
                 </div>
               </div>
             </div>
@@ -152,8 +151,6 @@
               </div>
             </div>
           </form>
-        </div>
-        <div class="tab-pane" id="tab_data_log">
         </div>
       </div>
     </div>

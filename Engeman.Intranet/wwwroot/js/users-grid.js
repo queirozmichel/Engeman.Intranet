@@ -41,7 +41,7 @@ var usersGrid = $("#users-grid").bootgrid({
       "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\">" +
       "<div class=\"row\">" +
       "<div class=\"col-sm-12 actionBar\">" +
-      "<button id=\"btn-new-user\" class=\"btn btn-default \" type=\"button\"><i class=\"fa-solid fa-user-plus\"></i> Novo usuário </button>" +
+      "<button id=\"btn-new-user\" class=\"btn btn-default pull-left \" type=\"button\"><i class=\"fa-solid fa-user-plus\"></i> Novo usuário </button>" +
       "<p class=\"{{css.search}}\"></p>" +
       "<p class=\"{{css.actions}}\"></p>" +
       "<div id=\"filter\" class=\"{{css.dropDownMenu}}\" data-filter=\"all\">" +

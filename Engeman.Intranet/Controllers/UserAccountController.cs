@@ -208,22 +208,18 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult NewUser(IFormCollection formData)
     {
+      var sessionUsername = HttpContext.Session.GetString("_Username");
       var newUser = new NewUserViewModel(formData["name"], formData["username"], Convert.ToInt32(formData["departmentId"]), Convert.ToInt32(formData["permission"]));
-      var aux = _userAccountRepository.Add(newUser);
-      if (aux == true)
-      {
-        return PartialView("UsersGrid");
-      }
-      else
-      {
-        return Json(false);
-      }
+      _userAccountRepository.AddWithLog(newUser, sessionUsername);
+
+      return PartialView("UsersGrid");
     }
 
     [HttpDelete]
     public int RemoveUser(int userId)
     {
-      var result = _userAccountRepository.Remove(userId);
+      var sessionUsername = HttpContext.Session.GetString("_Username");
+      var result = _userAccountRepository.RemoveWithLog(userId, sessionUsername);
       return result;
     }
 
@@ -239,7 +235,7 @@ namespace Engeman.Intranet.Controllers
       userEdit.Name = user.Name;
       userEdit.Username = user.Username;
       userEdit.Email = user.Email.Substring(0, user.Email.IndexOf("@"));
-      userEdit.Photo= user.Photo;
+      userEdit.Photo = user.Photo;
       userEdit.Description = user.Description;
       userEdit.DepartmentId = user.DepartmentId;
       userEdit.DepartmentDescription = _departmentRepository.GetDescriptionById(user.DepartmentId);
@@ -274,8 +270,9 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult UpdateByModerator(UserEditViewModel userEdited, List<IFormFile> Photo)
     {
+      var sessionUsername = HttpContext.Session.GetString("_Username");
       var user = new UserAccount();
-      user.Id= userEdited.Id;
+      user.Id = userEdited.Id;
       user.Active = userEdited.Active;
       user.Name = userEdited.Name;
       user.Username = userEdited.Username;
@@ -332,17 +329,9 @@ namespace Engeman.Intranet.Controllers
           }
         }
       }
+      _userAccountRepository.UpdateByModeratorWithLog(user.Id, user, sessionUsername);
 
-      var result = _userAccountRepository.UpdateByModerator(user);
-
-      if (result == 1)
-      {
-        return Ok(StatusCodes.Status200OK);
-      }
-      else
-      {
-        return BadRequest(StatusCodes.Status400BadRequest);
-      }      
+      return Ok(StatusCodes.Status200OK);
     }
   }
 }

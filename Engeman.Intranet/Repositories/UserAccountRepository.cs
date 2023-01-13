@@ -1,4 +1,5 @@
-﻿using Engeman.Intranet.Library;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
 
@@ -6,6 +7,13 @@ namespace Engeman.Intranet.Repositories
 {
   public class UserAccountRepository : IUserAccountRepository
   {
+    private readonly ILogRepository _logRepository;
+
+    public UserAccountRepository(ILogRepository logRepository)
+    {
+      _logRepository = logRepository;
+    }
+
     public List<UserAccount> Get()
     {
       List<UserAccount> users = new List<UserAccount>();
@@ -190,14 +198,23 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public bool Add(NewUserViewModel newUser)
+    public int Add(NewUserViewModel newUser)
     {
-      var query = $"INSERT INTO USERACCOUNT (NAME, USERNAME, EMAIL, DEPARTMENT_ID, MODERATOR, NOVICE_USER) VALUES ('{newUser.Name}', '{newUser.Username}', '{newUser.Email}', {newUser.DepartmentId}, {newUser.Moderator}, {newUser.NoviceUser})";
+      var query = $"INSERT INTO USERACCOUNT (NAME, USERNAME, EMAIL, DEPARTMENT_ID, MODERATOR, NOVICE_USER) OUTPUT INSERTED.ID VALUES ('{newUser.Name}', '{newUser.Username}', " +
+                  $"'{newUser.Email}', {newUser.DepartmentId}, {newUser.Moderator}, {newUser.NoviceUser})";
       using (StaticQuery sq = new StaticQuery())
       {
-        var result = Convert.ToBoolean(sq.ExecuteCommand(query));
-        return result;
+        var outputUserId = sq.GetDataToInt(query);
+        return outputUserId;
       }
+    }
+
+    public void AddWithLog(NewUserViewModel newUser, string currentUsername)
+    {
+      var outputUserId = Add(newUser);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Inclusion.GetEnumDescription(), outputUserId, ReferenceTable.UserAccount.GetEnumDescription());
+      newLog.Description = "de usuário";
+      _logRepository.Add(newLog);
     }
 
     public int Remove(int userId)
@@ -210,7 +227,16 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public int UpdateByModerator(UserAccount editedUser)
+    public int RemoveWithLog(int id, string currentUsername)
+    {
+      int result = Remove(id);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), id, ReferenceTable.UserAccount.GetEnumDescription());
+      newLog.Description = "de usuário";
+      _logRepository.Add(newLog);
+      return result;
+    }
+
+    public int UpdateByModerator(int id, UserAccount editedUser)
     {
       string[] paramters = { "Photo;byte" };
       Object[] values = { editedUser.Photo };
@@ -225,6 +251,14 @@ namespace Engeman.Intranet.Repositories
         var result = sq.ExecuteCommand(query, paramters, values);
         return result;
       }
+    }
+
+    public void UpdateByModeratorWithLog(int id, UserAccount userAccount, string currentUsername)
+    {
+      UpdateByModerator(id, userAccount);
+      var newLog = new NewLogViewModel(currentUsername, Operation.Alteration.GetEnumDescription(), id, ReferenceTable.UserAccount.GetEnumDescription());
+      newLog.Description = "de usuário";
+      _logRepository.Add(newLog);
     }
   }
 }
