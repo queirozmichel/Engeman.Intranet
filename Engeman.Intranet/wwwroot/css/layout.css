@@ -3,14 +3,19 @@
   font-size: 15px;
 }
 
-.blinked-exclamation ~ span {
-  color: darkred;
-}
+  .blinked-exclamation ~ span {
+    color: darkred;
+  }
 
 .dashboard-btn {
-  cursor : pointer;
+  cursor: pointer;
 }
 
-.user-profile-btn{
+.user-profile-btn {
   cursor: pointer;
+}
+
+#logs-link {
+  margin-left: 3px;
+  margin-right: 3px;
 }

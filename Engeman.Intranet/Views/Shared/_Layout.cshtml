@@ -127,11 +127,6 @@
           <ul class="dropdown-menu">
             <li><a class="user-profile-btn"><i class="icon-user"></i>Meu Perfil</a></li>
             <li class="divider"></li>
-            @if (@Context.Session.GetInt32("_Moderator") == 1)
-            {
-              <li><a href="@Url.Action("GenerateLog", "Logs")"><i class="fa-solid fa-file-lines"></i>Gerar Log</a></li>
-              <li class="divider"></li>
-            }
             <li><a onclick="sessionStorage.clear()" asp-area="" asp-controller="login" asp-action="logout"><i class="fa-solid fa-right-from-bracket"></i>Sair</a></li>
           </ul>
         </li>
@@ -174,12 +169,12 @@
                 Usuários
               </a>
             </li>
-          }
-          @*<li>
-              <a class="user-profile-btn" href="#">
-                <i class="icon-user"></i>Perfil de Usuário
+            <li>
+              <a class="logs-btn" href="#">
+                <i id="logs-link" class="fa-solid fa-file-lines"></i>Log de dados
               </a>
-            </li>*@
+            </li>
+          }
         </ul>
         <!-- /Navigation -->
         <div class="sidebar-title">

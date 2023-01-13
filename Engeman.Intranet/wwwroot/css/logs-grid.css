@@ -1,0 +1,30 @@
+﻿.pagination {
+  cursor: pointer;
+}
+
+/*Comprimento das colunas*/
+#logs-grid > thead > tr > th:nth-child(1) {
+  width: 3%;
+}
+#logs-grid > thead > tr > th:nth-child(2) {
+  width: 6%;
+}
+#logs-grid > thead > tr > th:nth-child(3) {
+  width: 4%;
+}
+#logs-grid > thead > tr > th:nth-child(4) {
+  width: 25%;
+}
+#logs-grid > thead > tr > th:nth-child(5) {
+  width: 4%;
+}
+#logs-grid > thead > tr > th:nth-child(6) {
+  width: 5%;
+}
+#logs-grid > thead > tr > th:nth-child(7) {
+  width: 6%;
+}
+
+.actions > div:nth-child(3) {
+  display: none;
+}
