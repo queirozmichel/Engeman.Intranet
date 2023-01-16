@@ -19,3 +19,7 @@
   margin-left: 3px;
   margin-right: 3px;
 }
+
+#sidebar ul#nav{
+  margin: 0px;
+}
