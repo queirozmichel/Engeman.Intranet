@@ -31,7 +31,7 @@
     messages: {
       username: {
         pattern: "O formato fornecido é inválido. Ex: joao.alencar",
-        }
+      }
     },
     highlight: function (element, errorClass, validClass) {
       $(element).parents('.form-group').addClass(errorClass).removeClass(validClass);
@@ -57,15 +57,21 @@ $("#new-user-form").on("submit", function (event) {
       type: "POST",
       url: "/useraccount/newuser",
       data: newUser,
-      dataType: "html",
+      dataType: "json",
       beforeSend: function () {
         startSpinner();
       },
       success: function (response) {
-        if (response != false) {
+        if (response.result == 1) {
           toastr.success("Novo usuário salvo.", "Sucesso!");
           $("#new-user-modal").modal("hide");
           $("#users-grid").bootgrid("reload");
+        } else if (response.result == -1) {
+          $("#new-user-modal").modal("hide");
+          showAlertModal("Ocorreu um erro ao tentar processar a solicitação:", response.message);
+        } else {
+          $("#new-user-modal").modal("hide");
+          showAlertModal("Ocorreu um erro indefinido ao tentar processar a solicitação:", "Erro!");
         }
       },
       error: function (response) {

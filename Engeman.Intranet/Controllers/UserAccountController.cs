@@ -24,7 +24,7 @@ namespace Engeman.Intranet.Controllers
     {
       var isModerator = Convert.ToBoolean(HttpContext.Session.GetInt32("_Moderator"));
       if (isModerator == false) return Redirect(Request.Host.ToString());
-      
+
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       ViewBag.IsAjaxCall = isAjaxCall;
       return PartialView("UsersGrid");
@@ -206,21 +206,41 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public IActionResult NewUser(IFormCollection formData)
+    public JsonResult NewUser(IFormCollection formData)
     {
       var sessionUsername = HttpContext.Session.GetString("_Username");
+      string messageAux = null;
+      int resultAux = 1;
       var newUser = new NewUserViewModel(formData["name"], formData["username"], Convert.ToInt32(formData["departmentId"]), Convert.ToInt32(formData["permission"]));
-      _userAccountRepository.AddWithLog(newUser, sessionUsername);
-
-      return PartialView("UsersGrid");
+      try
+      {
+        _userAccountRepository.AddWithLog(newUser, sessionUsername);
+      }
+      catch (System.Data.SqlClient.SqlException ex)
+      {
+        resultAux = -1;
+        messageAux = ex.Message;
+      }
+      return Json(new { result = resultAux, message = messageAux });
     }
 
     [HttpDelete]
-    public int RemoveUser(int userId)
+    public JsonResult RemoveUser(int userId)
     {
       var sessionUsername = HttpContext.Session.GetString("_Username");
-      var result = _userAccountRepository.RemoveWithLog(userId, sessionUsername);
-      return result;
+      string messageAux = null;
+      int resultAux;
+      try
+      {
+        resultAux = _userAccountRepository.RemoveWithLog(userId, sessionUsername);
+      }
+      catch (System.Data.SqlClient.SqlException ex)
+      {
+        resultAux = -1;
+        messageAux = ex.Message;
+      }
+
+      return Json(new { result = resultAux, message = messageAux });
     }
 
     [HttpGet]

@@ -214,23 +214,23 @@ function deleteUser(userId, elementAux) {
     type: "DELETE",
     data: { 'userId': userId },
     url: "/useraccount/removeuser",
-    dataType: "text",
+    dataType: "json",
     success: function (response) {
-      if (response == 1) {
+      if (response.result == 1) {
         $(elementAux).fadeOut(700);
         setTimeout(() => {
           $(elementAux).remove();
+          $("#users-grid").bootgrid("reload");
         }, 700);
+        toastr.success("O usuário foi apagado.", "Sucesso!");
+      } else if (response.result == -1) {
+        showAlertModal("Ocorreu um erro ao tentar processar a solicitação:", response.message);
+      } else {
+        showAlertModal("Ocorreu um erro indefinido ao tentar processar a solicitação:", "Erro!");
       }
     },
     error: function (response) {
       toastr.error("Aconteceu um erro ao enviar a requisição", "Erro!");
     },
-    complete: function () {
-      setTimeout(() => {
-        toastr.success("O usuário foi apagado.", "Sucesso!");
-        $("#users-grid").bootgrid("reload");
-      }, 700);
-    }
   });
 }
