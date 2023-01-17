@@ -1,0 +1,16 @@
+﻿.page-stats li .my-posts, .my-comments {
+  float: right;
+  font-size: 30px;
+}
+
+.page-stats li .my-posts {
+  color: brown;
+}
+
+.page-stats li .my-comments {
+  color: cadetblue;
+}
+
+.page-stats .summary h3 {
+  text-align: center;
+}

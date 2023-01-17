@@ -254,5 +254,28 @@ namespace Engeman.Intranet.Repositories
       newLog.Description = "de comentário";
       _logRepository.Add(newLog);
     }
+
+    public int CountByUsername(string username)
+    {
+      var query = $"SELECT COUNT(*) FROM COMMENT AS C INNER JOIN USERACCOUNT AS U ON C.USER_ACCOUNT_ID = U.ID " +
+                  $"WHERE U.USERNAME = '{username}'";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
+        return result;
+      }
+    }
+
+    public int CountByUserId(int userId)
+    {
+      var query = $"SELECT COUNT(*) FROM COMMENT WHERE USER_ACCOUNT_ID = {userId}";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
+        return result;
+      }
+    }
   }
 }

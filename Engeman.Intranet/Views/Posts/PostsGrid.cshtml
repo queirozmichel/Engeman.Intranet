@@ -13,44 +13,20 @@
 <link rel="stylesheet" href="~/css/posts-grid.css" />
 
 @await Component.InvokeAsync("ConfirmationModal")
-<div class="page-header">
-  <div class="page-title">
-    @if (ViewBag.FilterGrid == "allPosts")
-    {
-      <h3>Todas as Postagens</h3>
-    }
-    else if (ViewBag.FilterGrid == "unrevisedPosts")
-    {
-      <h3>Postagens não Revisadas</h3>
-    }
-    else if (ViewBag.FilterGrid == "unrevisedComments")
-    {
-      <h3>Comentários não Revisados</h3>
-    }
-    @*<span>Good morning, John!</span>*@
-  </div>
-  <!-- Page Stats -->
-  <ul class="page-stats">
-    <li>
-      <div class="summary">
-        <span>New orders</span>
-        <h3>17,561</h3>
-      </div>
-      <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-      <!-- Use instead of sparkline e.g. this:
-      <div class="graph circular-chart" data-percent="73">73%</div>
-      -->
-    </li>
-    <li>
-      <div class="summary">
-        <span>My balance</span>
-        <h3>$21,561.21</h3>
-      </div>
-      <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-    </li>
-  </ul>
-  <!-- /Page Stats -->
-</div>
+
+@if (ViewBag.FilterGrid == "allPosts")
+{
+  @await Component.InvokeAsync("PageHeader", "Todas as postagens")
+}
+else if (ViewBag.FilterGrid == "unrevisedPosts")
+{
+  @await Component.InvokeAsync("PageHeader", "Postagens não revisadas")
+}
+else if (ViewBag.FilterGrid == "unrevisedComments")
+{
+  @await Component.InvokeAsync("PageHeader", "Comentários não revisados")
+}
+
 <table id="posts-grid" class="table table-condensed table-hover table-striped" data-filter-grid="@ViewBag.FilterGrid">
   <thead>
     <tr>
@@ -66,7 +42,3 @@
 </table>
 
 <script src="~/js/posts-grid.js"></script>
-@if (ViewBag.IsAjaxCall == true)
-{
-  <script type="text/javascript" src="~/js/custom.js"></script>
-}

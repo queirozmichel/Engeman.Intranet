@@ -15,8 +15,8 @@ namespace Engeman.Intranet.Controllers
     private readonly IPostRepository _postRepository;
     private readonly IDepartmentRepository _departmentRepository;
     private readonly IPostFileRepository _postFileRepository;
-    private readonly ICommentRepository _postCommentRepository;
-    private readonly ICommentFileRepository _postCommentFileRepository;
+    private readonly ICommentRepository _commentRepository;
+    private readonly ICommentFileRepository _commentFileRepository;
     private readonly IPostRestrictionRepository _postRestrictionRepository;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
@@ -27,8 +27,8 @@ namespace Engeman.Intranet.Controllers
       _postRepository = postRepository;
       _departmentRepository = departmentRepository;
       _postFileRepository = postFileRepository;
-      _postCommentRepository = postCommentRepository;
-      _postCommentFileRepository = postCommentFileRepository;
+      _commentRepository = postCommentRepository;
+      _commentFileRepository = postCommentFileRepository;
       _postRestrictionRepository = postRestrictionRepository;
     }
 
@@ -113,7 +113,7 @@ namespace Engeman.Intranet.Controllers
 
       foreach (var post in posts)
       {
-        comments = _postCommentRepository.GetByPostId(post.Id);
+        comments = _commentRepository.GetByPostId(post.Id);
         for (int i = 0; i < comments.Count; i++)
         {
           if (comments[i].Revised == false)
@@ -343,10 +343,10 @@ namespace Engeman.Intranet.Controllers
       var postAuthor = _userAccountRepository.GetById(post.UserAccountId);
       var orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
       var department = _departmentRepository.GetById(postAuthor.DepartmentId);
-      var postsCount = _postRepository.GetByUserAccountId(postAuthor.Id).Count();
-      var commentsCount = _postCommentRepository.GetByUserAccountId(postAuthor.Id).Count();
+      var postsCount = _postRepository.CountByUserId(postAuthor.Id);
+      var commentsCount = _commentRepository.CountByUserId(postAuthor.Id);
       var userAccount = _userAccountRepository.GetById((int)HttpContext.Session.GetInt32("_UserAccountId"));
-      var orderedComments = _postCommentRepository.GetByRestriction(userAccount, postId);
+      var orderedComments = _commentRepository.GetByRestriction(userAccount, postId);
       string[] keywords;
 
       postDetails.Id = post.Id;
@@ -386,7 +386,7 @@ namespace Engeman.Intranet.Controllers
       {
         var comment = new CommentViewModel();
         var authorComment = _userAccountRepository.GetById(orderedComments[i].UserAccountId);
-        commentFiles = _postCommentFileRepository.GetByCommentId(orderedComments[i].Id).OrderBy(x => x.Name).ToList();
+        commentFiles = _commentFileRepository.GetByCommentId(orderedComments[i].Id).OrderBy(x => x.Name).ToList();
         comment.Id = orderedComments[i].Id;
         comment.Description = orderedComments[i].Description;
         comment.AuthorUsername = authorComment.Name;
@@ -394,7 +394,7 @@ namespace Engeman.Intranet.Controllers
         comment.AuthorId = orderedComments[i].UserAccountId;
         comment.AuthorDepartment = _departmentRepository.GetDescriptionById(authorComment.DepartmentId);
         comment.AuthorPostsMade = _postRepository.GetByUserAccountId(authorComment.Id).Count();
-        comment.AuthorCommentsMade = _postCommentRepository.GetByUserAccountId(authorComment.Id).Count();
+        comment.AuthorCommentsMade = _commentRepository.GetByUserAccountId(authorComment.Id).Count();
         comment.ChangeDate = orderedComments[i].ChangeDate;
         comment.Revised = orderedComments[i].Revised;
         comment.Files = commentFiles;

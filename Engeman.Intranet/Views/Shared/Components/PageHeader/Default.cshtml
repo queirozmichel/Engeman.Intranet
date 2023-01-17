@@ -1,0 +1,28 @@
+﻿@{
+  Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/components/page-header.css" />
+
+<div class="page-header">
+  <div class="page-title">
+    <h3>@ViewBag.Title</h3>
+    <span>@ViewBag.Greetings</span>
+  </div>
+  <ul class="page-stats">
+    <li>
+      <div class="summary">
+        <span>Minhas postagens</span>
+        <h3>@ViewBag.PostsCount</h3>
+      </div>
+      <div class="my-posts"><i class="fa-regular fa-pen-to-square"></i></div>
+    </li>
+    <li>
+      <div class="summary">
+        <span>Meus comentários</span>
+        <h3>@ViewBag.CommentsCount</h3>
+      </div>
+      <div class="my-comments"><i class="fa-regular fa-comment-dots"></i></div>
+    </li>
+  </ul>
+</div>

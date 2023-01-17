@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <None Include="Views\Logs\LogsGrid.cshtml" />
+    <None Include="Views\Shared\Components\PageHeader\Default.cshtml" />
     <None Include="Views\UserAccount\EditUser.cshtml" />
     <None Include="Views\UserAccount\NewUserForm.cshtml" />
     <None Include="Views\UserAccount\UsersGrid.cshtml" />

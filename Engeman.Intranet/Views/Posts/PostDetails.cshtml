@@ -15,33 +15,7 @@
 <link rel="stylesheet" href="~/css/post-details.css" />
 
 @await Component.InvokeAsync("ConfirmationModal")
-<div class="page-header">
-  <div class="page-title">
-    <h3>Detalhes da Postagem</h3>
-    @*<span>Good morning, @Model.Name!</span>*@
-  </div>
-  <!-- Page Stats -->
-  <ul class="page-stats">
-    <li>
-      <div class="summary">
-        <span>New orders</span>
-        <h3>17,561</h3>
-      </div>
-      <div id="sparkline-bar" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-      <!-- Use instead of sparkline e.g. this:
-      <div class="graph circular-chart" data-percent="73">73%</div>
-      -->
-    </li>
-    <li>
-      <div class="summary">
-        <span>My balance</span>
-        <h3>$21,561.21</h3>
-      </div>
-      <div id="sparkline-bar2" class="graph sparkline hidden-xs">20,15,8,50,20,40,20,30,20,15,30,20,25,20</div>
-    </li>
-  </ul>
-  <!-- /Page Stats -->
-</div>
+@await Component.InvokeAsync("PageHeader", "Detalhes da postagem")
 <div class="row">
   <div class="col-md-12">
     <div class="tabbable tabbable-custom tabbable-full-width">
@@ -123,8 +97,8 @@
                 <figcaption>
                   <div class="fig-author-figure-title">@ViewBag.Post.AuthorUsername</div>
                   <div class="fig-author-figure-title">@ViewBag.Post.AuthorDepartment</div>
-                  <span title="Postagens realizadas"><i class="fa-regular fa-comment"></i>@ViewBag.Post.AuthorPostsMade</span>
-                  <span title="Comentários realizados"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.Post.AuthorCommentsMade</span>
+                  <span title="Postagens realizadas"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.Post.AuthorPostsMade</span>
+                  <span title="Comentários realizados"><i class="fa-regular fa-comment-dots"></i>@ViewBag.Post.AuthorCommentsMade</span>
                 </figcaption>
               </figure>
             </div>
@@ -239,7 +213,3 @@
 
 <script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 <script type="text/javascript" src="~/js/post-details.js"></script>
-@if (ViewBag.IsAjaxCall == true)
-{
-  <script type="text/javascript" src="~/js/custom.js"></script>
-}

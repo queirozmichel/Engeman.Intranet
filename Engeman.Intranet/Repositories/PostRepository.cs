@@ -388,5 +388,28 @@ namespace Engeman.Intranet.Repositories
       newLog.Description = "da postagem " + "\"" + GetSubjectById(id) + "\"";
       _logRepository.Add(newLog);
     }
+
+    public int CountByUsername(string username)
+    {
+      var query = $"SELECT COUNT(*) FROM POST AS P INNER JOIN USERACCOUNT AS U ON P.USER_ACCOUNT_ID = U.ID " +
+            $"WHERE U.USERNAME = '{username}'";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
+        return result;
+      }
+    }
+
+    public int CountByUserId(int userId)
+    {
+      var query = $"SELECT COUNT(*) FROM POST WHERE USER_ACCOUNT_ID = {userId}";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
+        return result;
+      }
+    }
   }
 }
