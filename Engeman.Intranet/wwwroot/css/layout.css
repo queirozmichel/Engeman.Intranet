@@ -23,3 +23,7 @@
 #sidebar ul#nav{
   margin: 0px;
 }
+
+.crumb-buttons a {
+  pointer-events: none;
+}
