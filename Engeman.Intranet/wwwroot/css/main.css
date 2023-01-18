@@ -147,9 +147,6 @@ body {
 .page-stats li .graph {
   float: right;
 }
-.page-stats li .sparkline {
-  margin-top: 4px;
-}
 .align-left {
   text-align: left;
 }
@@ -1771,9 +1768,6 @@ span.red {
   -moz-border-radius: 0 !important;
   border-radius: 0 !important;
 }
-.scroller {
-  padding-right: 12px !important;
-}
 /* * * * * * * * * * * *
  * Widget Additions
  * * * * * * * * * * * */
@@ -3013,15 +3007,6 @@ ul.stats li.light strong {
 }
 .progress-stats:last-child {
   margin-bottom: 0;
-}
-/* * * * * * * * * * * *
- * Sparkline
- * * * * * * * * * * * */
-.jqstooltip {
-  border: 1px solid #000 !important;
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
 }
 /* * * * * * * * * * * *
  * Statbox

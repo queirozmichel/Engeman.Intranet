@@ -348,12 +348,6 @@
   .crumbs .crumb-buttons > li > a > span {
     display: none;
   }
-  .daterangepicker.dropdown-menu {
-    min-width: 0px !important;
-  }
-  .daterangepicker.opensleft .calendar.right {
-    float: none;
-  }
   .left-box,
   .right-box {
     width: 100%;

@@ -170,17 +170,6 @@ var App = function() {
 	// Executed only every 30ms
 	var _resizeEvents = function() {
 		calculateHeight();
-
-		// Realign headers from DataTables (otherwise header will have an offset)
-		// Only affects horizontal scrolling DataTables
-		if ($.fn.dataTable) {
-			var tables = $.fn.dataTable.fnTables(true);
-			$(tables).each(function() {
-				if (typeof $(this).data('horizontalWidth') != 'undefined') {
-					$(this).dataTable().fnAdjustColumnSizing();
-				}
-			});
-		}
 	}
 
 	/**
@@ -473,55 +462,6 @@ var App = function() {
 		});
 	}
 
-	var handleCheckableTables = function() {
-		$( '.table-checkable thead th.checkbox-column :checkbox' ).on('change', function() {
-			var checked = $( this ).prop( 'checked' );
-
-			var data_horizontalWidth = $(this).parents('table.table-checkable').data('horizontalWidth');
-			if (typeof data_horizontalWidth != 'undefined') {
-				var $checkable_table_body = $( this ).parents('.dataTables_scroll').find('.dataTables_scrollBody tbody');
-			} else {
-				var $checkable_table_body = $( this ).parents('table').children('tbody');
-			}
-
-			$checkable_table_body.each(function(i, tbody) {
-				$(tbody).find('.checkbox-column').each(function(j, cb) {
-					// Only toggle it if checkbox is not disabled
-					var cb_self = $( ':checkbox:not(:disabled)', $(cb) ).prop( "checked", checked ).trigger('change');
-
-					if (cb_self.hasClass('uniform')) {
-						$.uniform.update(cb_self);
-					}
-				});
-			});
-		});
-		$( '.table-checkable tbody tr td.checkbox-column :checkbox' ).on('change', function() {
-			var checked = $( this ).prop( 'checked' );
-			$( this ).closest('tr').toggleClass( 'checked', checked );
-		});
-
-		// Feature to toggle header checkbox on pagination (if necessary)
-		$('.datatable.table-checkable').bind('draw', function() {
-			var checkboxes_count         = $('tbody tr td.checkbox-column :checkbox', this).length;
-			var checkboxes_checked_count = $('tbody tr td.checkbox-column :checkbox:checked', this).length;
-
-			var $toggle_all_checkbox     = $('thead th.checkbox-column :checkbox', this);
-			var checked                  = false;
-
-			if (checkboxes_count == checkboxes_checked_count && checkboxes_count != 0) {
-				checked = true;
-			} else {
-				checked = false;
-			}
-
-			$toggle_all_checkbox.prop( "checked", checked );
-
-			if ($toggle_all_checkbox.hasClass('uniform')) {
-				$.uniform.update($toggle_all_checkbox);
-			}
-		});
-	}
-
 	var handleTabs = function() {
 		// function to fix left/right tab contents
 		var fixTabHeight = function(tab) {
@@ -547,20 +487,6 @@ var App = function() {
 			var tabid = location.hash.substr(1);
 			$('a[href="#'+tabid+'"]').click();
 		}
-	}
-
-	var handleScrollers = function() {
-		$('.scroller').each(function () {
-			$(this).slimScroll({
-					size: '7px',
-					opacity: '0.2',
-					position: 'right',
-					height: $(this).attr('data-height'),
-					alwaysVisible: ($(this).attr('data-always-visible') == '1' ? true : false),
-					railVisible: ($(this).attr('data-rail-visible') == '1' ? true : false),
-					disableFadeOut: true
-				});
-		});
 	}
 
 	var handleProjectSwitcher = function() {
@@ -683,9 +609,7 @@ var App = function() {
 			handleScrollbars(); // Adds styled scrollbars for sidebar on desktops
 			handleThemeSwitcher(); // Bright/ Dark Switcher
 			handleWidgets(); // Handle collapse and expand from widgets
-			handleCheckableTables(); // Checks all checkboxes in a table if master checkbox was toggled
 			handleTabs(); // Fixes tab height
-			handleScrollers(); // Initializes slimscroll for scrollable widgets
 			handleProjectSwitcher(); // Adds functionality for project switcher at the header
 		},
 

@@ -3,20 +3,6 @@ $(document).ready(function () {
   $(document).tooltip();
   toastrConfig();
 
-  //===== Sparklines =====//
-  $("#sparkline-bar").sparkline('html', {
-    type: 'bar',
-    height: '35px',
-    zeroAxis: false,
-    barColor: App.getLayoutColorCode('red')
-  });
-  $("#sparkline-bar2").sparkline('html', {
-    type: 'bar',
-    height: '35px',
-    zeroAxis: false,
-    barColor: App.getLayoutColorCode('green')
-  });
-
 });
 
 //Lista de restrição de setores

@@ -87,11 +87,6 @@ var FormComponents = function () {
         var self = $(this);
         $(self).select2(self.data());
       });
-
-      // Initialize DataTables Select2 Boxes
-      $('.dataTables_length select').select2({
-        minimumResultsForSearch: "-1"
-      });
     }
   }
 
