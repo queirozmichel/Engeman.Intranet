@@ -89,13 +89,13 @@ $(document).ready(function () {
         }
         if (row.revised == true) {
           if (row.postType === "D") {
-            return "<i title=\"Documento\" class=\"fa-regular fa-file-lines\"></i>"
+            return "<i title=\"Documento\" class=\"fa-regular fa-file\"></i>"
           }
           else if (row.postType === "M") {
-            return "<i title=\"Manual\" class=\"fa-solid fa-list-check\"></i>"
+            return "<i title=\"Manual\" class=\"fa-regular fa-file-lines\"></i>"
           }
           else if (row.postType === "N") {
-            return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>";
+            return "<i title=\"Postagem sem anexo\" class=\"fa-solid fa-align-justify\"></i>";
           }
         }
       },
@@ -116,7 +116,7 @@ $(document).ready(function () {
       },
       action: function (column, row) {
         var buttons;
-        var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-regular fa-file-lines\"></i></button> ";;
+        var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-solid fa-magnifying-glass\"></i></button> ";;
         var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
         var btn3 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
         buttons = btn1 + btn2 + btn3;

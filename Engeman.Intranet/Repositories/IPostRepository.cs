@@ -12,6 +12,7 @@ namespace Engeman.Intranet.Repositories
     public Post Get(int id);
     public int CountByUsername(string username);
     public int CountByUserId(int userId);
+    public int CountByPostType(char postType);
     public void Update(PostEditViewModel editedPost);
     public void UpdateWithLog(PostEditViewModel editedPost, string currentUsername);
     public int Add(NewPostViewModel newPost);

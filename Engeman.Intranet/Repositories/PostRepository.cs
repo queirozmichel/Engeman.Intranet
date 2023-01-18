@@ -411,5 +411,16 @@ namespace Engeman.Intranet.Repositories
         return result;
       }
     }
+
+    public int CountByPostType(char postType)
+    {
+      var query = $"SELECT COUNT(*) FROM POST WHERE POST_TYPE = '{postType}'";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
+        return result;
+      }
+    }
   }
 }

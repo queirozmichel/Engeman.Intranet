@@ -277,5 +277,16 @@ namespace Engeman.Intranet.Repositories
         return result;
       }
     }
+
+    public int Count()
+    {
+      var query = $"SELECT COUNT(*) FROM COMMENT";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
+        return result;
+      }
+    }
   }
 }
