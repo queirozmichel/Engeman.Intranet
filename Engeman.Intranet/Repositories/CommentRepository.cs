@@ -288,5 +288,42 @@ namespace Engeman.Intranet.Repositories
         return result;
       }
     }
+
+    public List<Comment> GetByUsername(string username)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        List<Comment> comments = new List<Comment>();
+
+        var query =
+        $"SELECT * " +
+        $"FROM COMMENT as C " +
+        $"INNER JOIN USERACCOUNT as U " +
+        $"ON C.USER_ACCOUNT_ID =  U.ID " +
+        $"WHERE U.USERNAME = '{username}' ";
+
+        var result = sq.GetDataSet(query).Tables[0];
+
+        if (result.Rows.Count == 0)
+        {
+          return new List<Comment>();
+        }
+        else
+        {
+          for (int i = 0; i < result.Rows.Count; i++)
+          {
+            Comment comment = new Comment();
+            comment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
+            comment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
+            comment.Description = result.Rows[i]["Description"].ToString();
+            comment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
+            comment.PostId = comment.PostId;
+            comment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
+            comments.Add(comment);
+          }
+          return comments;
+        }
+      }
+    }
   }
 }

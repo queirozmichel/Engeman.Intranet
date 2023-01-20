@@ -119,6 +119,47 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
+    public List<Post> GetByUsername(string username)
+    {
+      using (StaticQuery sq = new StaticQuery())
+      {
+        List<Post> posts = new List<Post>();
+
+        var query =
+        $"SELECT * " +
+        $"FROM POST as P " +
+        $"INNER JOIN USERACCOUNT as U " +
+        $"ON P.USER_ACCOUNT_ID =  U.ID " +
+        $"WHERE U.USERNAME = '{username}' ";
+
+        var result = sq.GetDataSet(query).Tables[0];
+        if (result.Rows.Count == 0)
+        {
+          return new List<Post>();
+        }
+        else
+        {
+          for (int i = 0; i < result.Rows.Count; i++)
+          {
+            Post post = new Post();
+            post.Id = Convert.ToInt32(result.Rows[i]["Id"]);
+            post.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
+            post.Restricted = Convert.ToBoolean(result.Rows[i]["Restricted"]);
+            post.Subject = result.Rows[i]["Subject"].ToString();
+            post.Description = result.Rows[i]["Description"].ToString();
+            post.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
+            post.Keywords = result.Rows[i]["Keywords"].ToString();
+            post.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
+            post.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
+            post.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
+            post.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
+            posts.Add(post);
+          }
+          return posts;
+        }
+      }
+    }
+
     public string GetSubjectById(int id)
     {
       var query = $"SELECT SUBJECT FROM POST WHERE ID = {id} ";
@@ -422,5 +463,6 @@ namespace Engeman.Intranet.Repositories
         return result;
       }
     }
+
   }
 }

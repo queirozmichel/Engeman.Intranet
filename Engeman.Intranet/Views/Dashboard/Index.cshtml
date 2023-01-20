@@ -19,7 +19,7 @@
     <div class="col-md-12">
       <div class="widget box">
         <div class="widget-header">
-          <h4><i class="icon-reorder"></i> Total Clicks (<span class="blue">+29%</span>)</h4>
+          <h4> Minhas postagens e comentários</h4>
           <div class="toolbar no-padding">
             <div class="btn-group">
               <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
@@ -27,44 +27,19 @@
           </div>
         </div>
         <div class="widget-content">
-          <div id="chart_filled_blue" class="chart"></div>
-        </div>
-        <div class="divider"></div>
-        <div class="widget-content">
-          <ul class="stats">
-            <!-- .no-dividers -->
-            <li>
-              <strong>4,853</strong>
-              <small>Total Views</small>
-            </li>
-            <li class="light hidden-xs">
-              <strong>271</strong>
-              <small>Last 24 Hours</small>
-            </li>
-            <li>
-              <strong>1,025</strong>
-              <small>Unique Users</small>
-            </li>
-            <li class="light hidden-xs">
-              <strong>105</strong>
-              <small>Last 24 Hours</small>
-            </li>
-          </ul>
+          @await Component.InvokeAsync("PostsCommentsChart")
         </div>
       </div>
     </div> <!-- /.col-md-12 -->
   </div> <!-- /.row -->
-  <!-- /Blue Chart -->  
+  <!-- /Blue Chart -->
   <!-- /Page Content -->
 </div>
 
-<script type="text/javascript" src="~/js/demo/charts/chart_filled_blue.js"></script>
 <script type="text/javascript" src="~/js/dashboard.js"></script>
 
 @if (ViewBag.IsAjaxCall == true)
 {
-  <script type="text/javascript" src="~/js/demo/charts/chart_filled_blue.js"></script>
-
   <script>
     //abrir e fechar os widgets
     $('.widget .toolbar .widget-collapse').click(function () {
@@ -90,6 +65,6 @@
         widget_chart.slideUp(200);
         divider.slideUp(200);
       }
-    }); 
+    });
   </script>
 }

@@ -8,6 +8,7 @@ namespace Engeman.Intranet.Repositories
     public Comment GetById(int id);
     public List<Comment> GetByPostId(int postId);
     public List<Comment> GetByUserAccountId(int userAccountId);
+    public List<Comment> GetByUsername(string username);
     public List<Comment> GetUnrevisedComments();
     public List<Comment> GetByRestriction(UserAccount user, int postId);
     public int Count();

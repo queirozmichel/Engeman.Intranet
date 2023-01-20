@@ -8,6 +8,7 @@ namespace Engeman.Intranet.Repositories
     public List<PostGridViewModel> GetByRestriction(UserAccount user);
     public List<PostGridViewModel> GetWithUnrevisedComments();
     public List<Post> GetByUserAccountId(int userAccountId);
+    public List<Post> GetByUsername(string username);
     public string GetSubjectById(int id);
     public Post Get(int id);
     public int CountByUsername(string username);

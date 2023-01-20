@@ -64,7 +64,7 @@ $(document).ready(function () {
         "</li>" +
         "</li>" +
         "<li>" +
-        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"question\">Perguntas</a>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"no-attachment\">Sem anexo</a>" +
         "</li>" +
         "<li>" +
         "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"document\">Documentos</a>" +
@@ -89,13 +89,13 @@ $(document).ready(function () {
         }
         if (row.revised == true) {
           if (row.postType === "D") {
-            return "<i title=\"Documento\" class=\"fa-regular fa-file\"></i>"
+            return "<i title=\"Documento\" class=\"fa-solid fa-file\"></i>"
           }
           else if (row.postType === "M") {
             return "<i title=\"Manual\" class=\"fa-regular fa-file-lines\"></i>"
           }
           else if (row.postType === "N") {
-            return "<i title=\"Postagem sem anexo\" class=\"fa-solid fa-align-justify\"></i>";
+            return "<i title=\"Postagem sem anexo\" class=\"fa-regular fa-file\"></i>";
           }
         }
       },
@@ -131,9 +131,9 @@ $(document).ready(function () {
     if ($(this).data("value") == "all") {
       $(this).attr("data-filter", "all");
       $("#filter").attr("data-filter", "all");
-    } else if ($(this).data("value") == "question") {
-      $(this).attr("data-filter", "question");
-      $("#filter").attr("data-filter", "question");
+    } else if ($(this).data("value") == "no-attachment") {
+      $(this).attr("data-filter", "no-attachment");
+      $("#filter").attr("data-filter", "no-attachment");
     } else if ($(this).data("value") == "document") {
       $(this).attr("data-filter", "document");
       $("#filter").attr("data-filter", "document");

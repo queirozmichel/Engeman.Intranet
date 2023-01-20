@@ -148,7 +148,7 @@ namespace Engeman.Intranet.Controllers
       {
         return posts = posts.Where("postType == (@0)", "D");
       }
-      else if (filterHeader == "question")
+      else if (filterHeader == "no-attachment")
       {
         return posts = posts.Where(x => x.PostType == 'N');
       }
