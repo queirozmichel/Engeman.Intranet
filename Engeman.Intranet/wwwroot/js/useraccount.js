@@ -80,3 +80,7 @@ $("#edit-profile-form").submit(function (event) {
     });
   }
 });
+
+$(':radio').click(function (e) {
+  e.preventDefault();
+});
