@@ -5,6 +5,7 @@ namespace Engeman.Intranet.Repositories
 {
   public interface ICommentRepository
   {
+    public List<Comment> Get();
     public Comment GetById(int id);
     public List<Comment> GetByPostId(int postId);
     public List<Comment> GetByUserAccountId(int userAccountId);

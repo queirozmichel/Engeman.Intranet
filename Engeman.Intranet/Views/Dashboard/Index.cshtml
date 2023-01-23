@@ -19,7 +19,7 @@
     <div class="col-md-12">
       <div class="widget box">
         <div class="widget-header">
-          <h4> Minhas postagens e comentários</h4>
+          <h4> Postagens e comentários</h4>
           <div class="toolbar no-padding">
             <div class="btn-group">
               <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="widget-content">
-          @await Component.InvokeAsync("PostsCommentsChart")
+          @await Component.InvokeAsync("PostsCommentsChart", "All")
         </div>
       </div>
     </div> <!-- /.col-md-12 -->

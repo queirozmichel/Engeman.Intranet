@@ -14,6 +14,38 @@ namespace Engeman.Intranet.Repositories
       _logRepository = logRepository;
     }
 
+    public List<Comment> Get()
+    {
+      var query = $"SELECT * FROM COMMENT";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        List<Comment> comments = new List<Comment>();
+
+        var result = sq.GetDataSet(query).Tables[0];
+
+        if (result.Rows.Count == 0)
+        {
+          return new List<Comment>();
+        }
+        else
+        {
+          for (int i = 0; i < result.Rows.Count; i++)
+          {
+            Comment comment = new Comment();
+            comment.Id = Convert.ToInt32(result.Rows[i]["Id"]);
+            comment.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
+            comment.Description = result.Rows[i]["Description"].ToString();
+            comment.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
+            comment.PostId = comment.PostId;
+            comment.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
+            comments.Add(comment);
+          }
+          return comments;
+        }
+      }
+    }
+
     public Comment GetById(int commentId)
     {
       Comment comment = new Comment();

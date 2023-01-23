@@ -228,7 +228,7 @@ namespace Engeman.Intranet.Controllers
       List<int> restrictedDepartments;
       PostEditViewModel postEditViewModel = new PostEditViewModel();
       var orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
-      var post = _postRepository.Get(postId);
+      var post = _postRepository.GetById(postId);
       var departments = _departmentRepository.Get();
       ViewBag.IsAjaxCall = isAjaxCall;
       ViewBag.RestrictedDepartments = null;
@@ -263,7 +263,7 @@ namespace Engeman.Intranet.Controllers
     public IActionResult UpdatePost(PostEditViewModel editedPost, List<IFormFile> binaryData)
     {
       List<NewPostFileViewModel> fileList = new List<NewPostFileViewModel>();
-      var currentPost = _postRepository.Get(editedPost.Id);
+      var currentPost = _postRepository.GetById(editedPost.Id);
       var sessionUsername = HttpContext.Session.GetString("_Username");
       var userAccount = _userAccountRepository.GetByUsername(sessionUsername);
 
@@ -339,7 +339,7 @@ namespace Engeman.Intranet.Controllers
       List<CommentFile> commentFiles = new List<CommentFile>();
       var comments = new List<CommentViewModel>();
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-      var post = _postRepository.Get(postId);
+      var post = _postRepository.GetById(postId);
       var postAuthor = _userAccountRepository.GetById(post.UserAccountId);
       var orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
       var department = _departmentRepository.GetById(postAuthor.DepartmentId);

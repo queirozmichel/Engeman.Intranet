@@ -191,7 +191,7 @@ namespace Engeman.Intranet.Repositories
     {
       var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), postId, ReferenceTable.Post.GetEnumDescription());
 
-      var post = Get(postId);
+      var post = GetById(postId);
 
       if (post.PostType == 'M')
       {
@@ -210,7 +210,7 @@ namespace Engeman.Intranet.Repositories
       _logRepository.Add(newLog);
     }
 
-    public Post Get(int postId)
+    public Post GetById(int postId)
     {
       Post post = new Post();
       var query = $"SELECT * FROM POST WHERE ID = {postId}";
@@ -464,5 +464,39 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
+    public List<Post> Get()
+    {
+      var query = "SELECT * FROM POST";
+
+      using (StaticQuery sq = new StaticQuery())
+      {
+        List<Post> posts = new List<Post>();
+        var result = sq.GetDataSet(query).Tables[0];
+        if (result.Rows.Count == 0)
+        {
+          return new List<Post>();
+        }
+        else
+        {
+          for (int i = 0; i < result.Rows.Count; i++)
+          {
+            Post post = new Post();
+            post.Id = Convert.ToInt32(result.Rows[i]["Id"]);
+            post.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
+            post.Restricted = Convert.ToBoolean(result.Rows[i]["Restricted"]);
+            post.Subject = result.Rows[i]["Subject"].ToString();
+            post.Description = result.Rows[i]["Description"].ToString();
+            post.CleanDescription = result.Rows[i]["Clean_Description"].ToString();
+            post.Keywords = result.Rows[i]["Keywords"].ToString();
+            post.UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
+            post.PostType = Convert.ToChar(result.Rows[i]["Post_Type"]);
+            post.Revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
+            post.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
+            posts.Add(post);
+          }
+          return posts;
+        }
+      }
+    }
   }
 }
