@@ -164,11 +164,9 @@ namespace Engeman.Intranet.Controllers
 
     public IQueryable<PostGridViewModel> FilterPostsBySearchPhrase(IQueryable<PostGridViewModel> posts, string searchPhrase)
     {
-      int id = 0;
-      int.TryParse(searchPhrase, out id);
       posts = posts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR department.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
         "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR keywords.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-        "changeDate.Contains(@0) OR id == (@1)", searchPhrase, id);
+        "changeDate.Contains(@0)", searchPhrase);
       return posts;
     }
 
