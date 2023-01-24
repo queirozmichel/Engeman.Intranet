@@ -47,7 +47,7 @@ namespace Engeman.Intranet.Controllers
         //}
         //catch (COMException ex)
         //{
-        //  TempData["Message"] = ex.Message;
+        //  TempData["Message"] = "Erro!" + "/" + ex.Message;
         //  return RedirectToAction("index", "login");
         //}
 
@@ -55,7 +55,7 @@ namespace Engeman.Intranet.Controllers
 
         if (user == null)
         {
-          TempData["Message"] = "Usuário não cadastrado ou bloqueado.";
+          TempData["Message"] = "Erro!/Usuário não cadastrado.";
           return RedirectToAction("index", "login");
         }
         else

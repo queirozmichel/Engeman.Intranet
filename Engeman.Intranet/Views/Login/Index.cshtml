@@ -20,25 +20,19 @@
   <script type="text/javascript" src="~/lib/jquery-validation/jquery.validate.min.js"></script> @*Validação do formulário*@
   <script type="text/javascript" src="~/lib/jquery-validation/messages_pt_BR.js"></script> @*Validação do formulário*@
   <script type="text/javascript" src="~/lib/jquery-validation/additional-methods.min.js"></script> @*Validação do formulário*@
-  <script type="text/javascript" src="~/plugins/nprogress/nprogress.js"></script> @*Barra de progresso*@
-  <script type="text/javascript" src="~/js/login.js"></script>@*JavaScript*@
+  <script type="text/javascript" src="~/plugins/nprogress/nprogress.js"></script> @*Barra de progresso*@  
 </head>
 
-<body style="padding-right: 0px !important; margin-right: 0px !important;" class="login">
+<body class="login">
   <div class="logo">
     <strong>ENGEMAN </strong>INTRANET
   </div>
   <div class="box">
-    <div class="content">   
-     @using (Html.BeginForm("trylogin", "login", FormMethod.Post, new { @class = "form-vertical login-form" }))
+    <div class="content">
+      @using (Html.BeginForm("trylogin", "login", FormMethod.Post, new { @class = "form-vertical login-form" }))
       {
         @Html.AntiForgeryToken()
         <h3 class="form-title">Faça login em sua conta</h3>
-        @*Mensagem de erro*@
-        <div class="alert fade in alert-danger" style="display: none;">
-          <i class="icon-remove close" data-dismiss="alert"></i>
-          Insira o nome de usuário e a senha.
-        </div>
         <div class="form-group">
           <div class="input-icon">
             <i class="icon-user"></i>
@@ -62,109 +56,20 @@
              })
           </div>
         </div>
-        <div class="form-actions">
-          <label class="checkbox pull-left"><input type="checkbox" class="uniform" name="remember"> Lembrar de mim</label>
-          <button type="submit" class="submit btn btn-primary pull-right">
+        <div class="form-actions align-center">
+          <button type="submit" class="submit btn btn-primary">
             Entrar <i class="icon-angle-right"></i>
           </button>
         </div>
       }
-      <!-- Formulário de registro (oculto por padrão) -->
-      <form class="form-vertical register-form" method="post" style="display: none;">
-        <h3 class="form-title">Novo registro</h3>
-        <div class="form-group">
-          <div class="input-icon">
-            <i class="icon-user"></i>
-            <input type="text" name="username" class="form-control" placeholder="Nome de Usuário" autofocus="autofocus" data-rule-required="true" />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-icon">
-            <i class="icon-lock"></i>
-            <input type="password" name="password" class="form-control" placeholder="Senha" id="register_password" data-rule-required="true" />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-icon">
-            <i class="icon-ok"></i>
-            <input type="password" name="password_confirm" class="form-control" placeholder="Confirmar senha" data-rule-required="true" data-rule-equalTo="#register_password" />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-icon">
-            <i class="icon-envelope"></i>
-            <input type="text" name="Email" class="form-control" placeholder="Endereço de email" data-rule-required="true" data-rule-email="true" />
-          </div>
-        </div>
-        <div class="form-group spacing-top">
-          <label class="checkbox">
-            <input type="checkbox" class="uniform" name="remember" data-rule-required="true" data-msg-required="Por favor, concorde com os termos."> Eu concordo com os <a href="javascript:void(0);">Termos de Serviço</a>
-          </label>
-          <label for="remember" class="has-error help-block" generated="true" style="display:none;"></label>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="back btn btn-default pull-left">
-            <i class="icon-angle-left"></i> Voltar
-          </button>
-          <button type="submit" class="submit btn btn-primary pull-right">
-            Cadastrar <i class="icon-angle-right"></i>
-          </button>
-        </div>
-      </form>
     </div>
-    <!-- Formulário de senha esquecida -->
-    <div class="inner-box">
-      <div class="content">
-        <i class="icon-remove close hide-default"></i>
-        <a href="#" class="forgot-password-link">Esqueceu a senha?</a>
-        <form class="form-vertical forgot-password-form hide-default" action="login.html" method="post">
-          <div class="form-group">
-            <div class="input-icon">
-              <i class="icon-envelope"></i>
-              <input type="text" name="email" class="form-control" placeholder="Endereço de email" data-rule-required="true" data-rule-email="true" data-msg-required="Por favor, insira um endereço de email." />
-            </div>
-          </div>
-          <button type="submit" class="submit btn btn-default btn-block">
-            Modificar senha
-          </button>
-        </form>
-        <!-- Mostra se clicar em "Modificar senha" -->
-        <div class="forgot-password-done hide-default">
-          <i class="icon-ok success-icon"></i> <!-- Mostrar um erro ao não conseguir enviar o email: <i class="icon-remove danger-icon"></i> -->
-          <span>Email enviado com sucesso!</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Formulário de cadastro caso clique em "Cadastre-se" -->
-  <div class="single-sign-on">
-    <span>OU</span>
-    <button class="btn btn-facebook btn-block">
-      <i class="icon-facebook"></i> Entre com o Facebook
-    </button>
-    <button class="btn btn-twitter btn-block">
-      <i class="icon-twitter"></i> Entre com o Twitter
-    </button>
-    <button class="btn btn-google-plus btn-block">
-      <i class="icon-google-plus"></i> Entre com o Google
-    </button>
-  </div>
-  <div class="footer">
-    <a href="#" class="sign-up">Não tem uma conta ainda? <strong>Cadastre-se</strong></a>
   </div>
   @if (TempData["Message"] != null)
   {
-    <div style="overflow: hidden;" class="modal fade" id="modal-login" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 style="text-align: center;" class="modal-title" id="exampleModalLabel">@Html.TempData["Message"]</h5>
-          </div>
-        </div>
-      </div>
-    </div>
+    @await Component.InvokeAsync("AlertModal", TempData["Message"]);
   }
+
+  <script type="text/javascript" src="~/js/login.js"></script>
 </body>
 
 </html>
-

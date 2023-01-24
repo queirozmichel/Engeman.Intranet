@@ -1,7 +1,7 @@
 $(document).ready(function () {
   "use strict";
   Login.init(); // Init this login JavaScript
-  $("#modal-login").modal("show");
+	$(".alert-modal").modal("show");
 });
 
 /*

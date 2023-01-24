@@ -1,25 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace Engeman.Intranet.ViewComponents
 {
   public class AlertModalViewComponent : ViewComponent
   {
-    public IViewComponentResult Invoke(string selector)
+    public IViewComponentResult Invoke(string text)
     {
-      if (selector == null)
+      if (text != null)
       {
-        Random res = new Random();
-        String str = "abcdefghijklmnopqrstuvwxyz";
-        int size = 5;
-
-        for (int i = 0; i < size; i++)
-        {
-          int x = res.Next(str.Length);
-          selector = selector + str[x];
-        }
+        ViewBag.Title = text.Substring(0, text.IndexOf("/"));
+        ViewBag.Body = text.Substring(text.IndexOf("/") + 1);
       }
-      return View("Default", selector);
+
+      return View("Default");
     }
   }
 }

@@ -80,9 +80,6 @@ $(document).ready(function () {
     },
     formatters: {
       //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
-      id: function (column, row) {
-        return row.id
-      },
       postType: function (column, row) {
         if ((row.revised == false || row.unrevisedComments == true) && (row.userAccountId == Cookies.get('_UserId') || isModerator == true)) {
           return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";

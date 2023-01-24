@@ -2,17 +2,15 @@
   Layout = null;
 }
 
-@model string
-
 <link rel="stylesheet" href="~/css/components/alert-modal.css" />
 
-<div id="@Model-modal" data-backdrop="true" class="alert-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div data-backdrop="true" class="alert-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="modal-title"><h5></h5></div>
+        <div class="modal-title"><h5>@ViewBag.Title</h5></div>
       </div>
-      <div class="modal-body"></div>
+      <div class="modal-body">@ViewBag.Body</div>
     </div>
   </div>
 </div>

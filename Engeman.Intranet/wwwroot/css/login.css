@@ -9,6 +9,12 @@
 * Version: 1.0
 *
 * ======================================================== */
+body {
+  overflow: hidden !important;
+  padding-right: 0px !important;
+  margin-right: 0px !important;
+}
+
 .clearfix {
   *zoom: 1;
 }
