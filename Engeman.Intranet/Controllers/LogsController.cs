@@ -1,3 +1,4 @@
+﻿using Engeman.Intranet.Extensions;
 ﻿using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -21,10 +22,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult Grid(bool filterByUsername, int userId)
     {
-      var isModerator = Convert.ToBoolean(HttpContext.Session.GetInt32("_Moderator"));
-      if (isModerator == false) return Redirect(Request.Host.ToString());
-      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-
+      if (HttpContext.Session.Get<bool>("_Moderator") == false) return Redirect(Request.Host.ToString());
       if (filterByUsername == true)
       {
         ViewBag.FilterByUsername = filterByUsername;

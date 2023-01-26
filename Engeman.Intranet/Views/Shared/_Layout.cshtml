@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http;
+@using Engeman.Intranet.Extensions;
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -115,7 +116,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <!--<img alt="" src="assets/img/avatar1_small.jpg" />-->
             <i class="fa-solid fa-user-check"></i>
-            <span class="username">@Context.Session.GetString("_Username")</span>
+            <span class="username">@Convert.ToString(Context.Session.Get<string>("_Username"))</span><span id="current-user-id" hidden>@Convert.ToInt32(Context.Session.Get<int>("_CurrentUserId"))</span>
             <i class="icon-caret-down small"></i>
           </a>
           <ul class="dropdown-menu">
@@ -155,7 +156,7 @@
               </li>
             </ul>
           </li>
-          @if (Context.Session.GetInt32("_Moderator") == 1)
+          @if (Context.Session.Get<bool>("_Moderator") == true)
           {
             <li>
               <a class="users-btn" href="#">

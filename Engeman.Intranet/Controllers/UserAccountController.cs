@@ -4,6 +4,7 @@ using Engeman.Intranet.Models;
 using Microsoft.AspNetCore.Authorization;
 using Engeman.Intranet.Models.ViewModels;
 using System.Linq.Dynamic.Core;
+using Engeman.Intranet.Extensions;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -22,8 +23,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult Grid()
     {
-      var isModerator = Convert.ToBoolean(HttpContext.Session.GetInt32("_Moderator"));
-      if (isModerator == false) return Redirect(Request.Host.ToString());
+      var isModerator = HttpContext.Session.Get<bool>("_Moderator");
 
       bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       ViewBag.IsAjaxCall = isAjaxCall;
@@ -106,6 +106,13 @@ namespace Engeman.Intranet.Controllers
       ViewBag.Department = _departmentRepository.GetById(userAccount.DepartmentId);
       ViewBag.IsAjaxCall = isAjaxCall;
 
+      try
+      {
+        userAccount = _userAccountRepository.GetByUsername(HttpContext.Session.Get<string>("_Username"));
+        ViewBag.Department = _departmentRepository.GetById(userAccount.DepartmentId);
+      }
+      catch (Exception) { }
+      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       return PartialView(userAccount);
     }
 
@@ -139,11 +146,10 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult CheckPermissions(int authorId, string method)
     {
-      var sessionUsername = HttpContext.Session.GetString("_Username").ToString();
-      var username = _userAccountRepository.GetUsernameById(authorId);
-      var userPermissions = _userAccountRepository.GetUserPermissionsByUsername(sessionUsername);
-
-      if (method == "edit")
+      var sessionUsername = HttpContext.Session.Get<string>("_Username");
+      string username = null;
+      var permissions = new UserPermissionsViewModel();
+      try
       {
         if (userPermissions.EditAnyPost == true)
         {
@@ -227,7 +233,7 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public JsonResult RemoveUser(int userId)
     {
-      var sessionUsername = HttpContext.Session.GetString("_Username");
+      var sessionUsername = HttpContext.Session.Get<string>("_Username");
       string messageAux = null;
       int resultAux;
       try
@@ -290,7 +296,7 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult UpdateByModerator(UserEditViewModel userEdited, List<IFormFile> Photo)
     {
-      var sessionUsername = HttpContext.Session.GetString("_Username");
+      var sessionUsername = HttpContext.Session.Get<string>("_Username");
       var user = new UserAccount();
       user.Id = userEdited.Id;
       user.Active = userEdited.Active;

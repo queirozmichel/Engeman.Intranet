@@ -1,7 +1,6 @@
-﻿using Engeman.Intranet.Repositories;
-using Microsoft.AspNetCore.Http;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Linq.Dynamic.Core;
 
 namespace Engeman.Intranet.ViewComponents
@@ -21,7 +20,7 @@ namespace Engeman.Intranet.ViewComponents
 
     public IViewComponentResult Invoke()
     {
-      var username = HttpContext.Session.GetString("_Username");
+      var username = HttpContext.Session.Get<string>("_Username");
       var user = _userAccount.GetByUsername (username);
       ViewBag.UnrevisedPosts = _postRepository.GetByRestriction(user).AsQueryable().Where("revised == (@0)", false).Count();
       ViewBag.UnrevisedComments = _postCommentRepository.GetUnrevisedComments().Count();

@@ -1,4 +1,5 @@
-﻿using Engeman.Intranet.Repositories;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Engeman.Intranet.ViewComponents
@@ -16,7 +17,7 @@ namespace Engeman.Intranet.ViewComponents
 
     public IViewComponentResult Invoke(string title)
     {
-      var username = HttpContext.Session.GetString("_Username");
+      var username = HttpContext.Session.Get<string>("_Username");
       var firstName = username.Substring(0, username.IndexOf(".")).ToUpper();
       var hourOfDay = DateTime.Now.Hour;
       string greetings;

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http;
+@using Engeman.Intranet.Extensions;
 @{string layout = null;}
 
 @if (ViewBag.IsAjaxCall == false)
@@ -73,7 +74,7 @@
               </div>
             }
             <div class="col-md-10 buttons">
-              @if (ViewBag.Post.AuthorId == Context.Session.GetInt32("_UserAccountId") || ViewBag.IsModerator == true)
+              @if (ViewBag.Post.AuthorId == Context.Session.Get<int>("_CurrentUserId") || ViewBag.IsModerator == true)
               {
                 <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil"></i>Editar</button>
                 <button title="Excluir a postagem" class="btn btn-xs delete-post-button"><i class="fa fa-trash-o"></i>Excluir</button>
@@ -143,7 +144,7 @@
                       }
                     </div>
                     <div class="col-md-10 comment-action-buttons">
-                      @if (ViewBag.Comments[i].AuthorId == Context.Session.GetInt32("_UserAccountId") || ViewBag.IsModerator == true)
+                      @if (ViewBag.Comments[i].AuthorId == Context.Session.Get<int>("_CurrentUserId") || ViewBag.IsModerator == true)
                       {
                         <button title="Editar o comentário" class="comment-edit-btn btn btn-xs"><i class="fa fa-pencil"></i>Editar</button>
                         <button title="Excluir o comentário" class="comment-delete-btn btn btn-xs"><i class="fa fa-trash-o"></i>Excluir</button>

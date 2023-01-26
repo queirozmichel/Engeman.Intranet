@@ -1,3 +1,4 @@
+﻿using Engeman.Intranet.Extensions;
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
@@ -39,11 +40,11 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult UpdateComment(CommentEditViewModel editedComment, List<IFormFile> binaryData)
     {
-      List<CommentFile> files = new List<CommentFile>();
-      Comment comment = new Comment();
-      var currentComment = _commentRepository.GetById(editedComment.Comment.Id);
-      var sessionUsername = HttpContext.Session.GetString("_Username");
-      var userAccount = _userAccountRepository.GetByUsername(sessionUsername);
+      var files = new List<CommentFile>();
+      var comment = new Comment();
+      var currentComment = new Comment();
+      var userAccount = new UserAccount();
+      var sessionUsername = HttpContext.Session.Get<string>("_Username");
 
       for (int i = 0; i < editedComment.Files.Count; i++)
       {
@@ -99,21 +100,13 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public IActionResult NewComment(NewCommentViewModel newComment, List<IFormFile> files)
     {
-      if (!ModelState.IsValid)
-      {
-        return Ok(-1);
-      }
+      var sessionUsername = HttpContext.Session.Get<string>("_Username");
+      var userAccount = new UserAccount();
 
-      var sessionUsername = HttpContext.Session.GetString("_Username");
-      var userAccount = _userAccountRepository.GetByUsername(sessionUsername);
-
-      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
-      {
-        newComment.Revised = true;
-      }
-
-      newComment.UserAccountId = (int)HttpContext.Session.GetInt32("_UserAccountId");
-
+      try { userAccount = _userAccountRepository.GetByUsername(sessionUsername); }
+      catch (Exception) { }
+      if (userAccount.Moderator == true || userAccount.NoviceUser == false) newComment.Revised = true;
+      newComment.UserAccountId = HttpContext.Session.Get<int>("_CurrentUserId");
       if (files.Count > 0)
       {
         for (int i = 0; i < files.Count; i++)
@@ -139,16 +132,17 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult DeleteComment(int commentId)
     {
-      var currentUsername = HttpContext.Session.GetString("_Username");
-      var result = _commentRepository.DeleteWithLog(commentId, currentUsername);
-      return Json(result);
+      var currentUsername = HttpContext.Session.Get<string>("_Username");
+
+      try { _commentRepository.DeleteWithLog(commentId, currentUsername); }
+      catch (Exception) { }
+      return Ok(StatusCodes.Status200OK);
     }
 
     [HttpPut]
     public IActionResult AproveComment(int commentId)
     {
-      var currentUsername = HttpContext.Session.GetString("_Username");
-      _commentRepository.AproveWithLog(commentId, currentUsername);      
+      var currentUsername = HttpContext.Session.Get<string>("_Username");
 
       return ViewComponent("UnrevisedList");
     }

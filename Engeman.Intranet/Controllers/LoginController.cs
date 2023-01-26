@@ -1,4 +1,6 @@
-﻿using Engeman.Intranet.Models.ViewModels;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Models;
+using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +24,7 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult Index()
     {
-      if (HttpContext.Session.GetString("_Username") == null)
-      {
-        return PartialView();
-      }
+      if (HttpContext.Session.Get<string>("_Username") == null) return PartialView();
       return RedirectToAction("index", "dashboard");
     }
 
@@ -34,49 +33,40 @@ namespace Engeman.Intranet.Controllers
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> TryLogin(LoginViewModel loginViewModel)
     {
-      if (!ModelState.IsValid)
+      var userAccount = new UserAccount();
+
+      //try
+      //{
+      //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
+      //  Object obj = entry.NativeObject;
+      //}
+      //catch (COMException ex)
+      //{
+      //  TempData["Message"] = "Erro!" + "/" + ex.Message;
+      //  return RedirectToAction("index", "login");
+      //}
+
+      try { userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username); }
+      catch (Exception) { }
+      if (userAccount == null)
       {
-        return RedirectToAction("Error");
+        TempData["Message"] = "Erro!/Usuário não cadastrado.";
+        return RedirectToAction("index", "login");
       }
       else
       {
-        //try
-        //{
-        //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
-        //  Object obj = entry.NativeObject;
-        //}
-        //catch (COMException ex)
-        //{
-        //  TempData["Message"] = "Erro!" + "/" + ex.Message;
-        //  return RedirectToAction("index", "login");
-        //}
-
-        var user = _userAccountRepository.GetByUsername(loginViewModel.Username);
-
-        if (user == null)
-        {
-          TempData["Message"] = "Erro!/Usuário não cadastrado.";
-          return RedirectToAction("index", "login");
-        }
-        else
-        {
-          var userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username);
-          var claims = new List<Claim>
+        var claims = new List<Claim>
           {
             new Claim(ClaimTypes.Name, loginViewModel.Username)
           };
-          var userIdentity = new ClaimsIdentity(claims, "Access");
-          ClaimsPrincipal principal = new ClaimsPrincipal(userIdentity);
-          await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
-
-          HttpContext.Session.SetInt32("_UserAccountId", userAccount.Id);
-          Response.Cookies.Append("_UserId", userAccount.Id.ToString());
-          HttpContext.Session.SetInt32("_DepartmentId", userAccount.DepartmentId);
-          HttpContext.Session.SetInt32("_Moderator", Convert.ToInt32(userAccount.Moderator));
-          HttpContext.Session.SetString("_Username", loginViewModel.Username.ToString());
-          HttpContext.Session.SetString("_Password", loginViewModel.Password.ToString());
-          return RedirectToAction("index", "dashboard");
-        }
+        var userIdentity = new ClaimsIdentity(claims, "Access");
+        var principal = new ClaimsPrincipal(userIdentity);
+        await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
+        HttpContext.Session.Set<int>("_CurrentUserId", userAccount.Id);
+        HttpContext.Session.Set<int>("_DepartmentId", userAccount.DepartmentId);
+        HttpContext.Session.Set<bool>("_Moderator", userAccount.Moderator);
+        HttpContext.Session.Set<string>("_Username", loginViewModel.Username.ToString());
+        return RedirectToAction("index", "dashboard");
       }
     }
 
@@ -84,7 +74,6 @@ namespace Engeman.Intranet.Controllers
     {
       await HttpContext.SignOutAsync("CookieAuthentication");
       HttpContext.Session.Clear();
-      Response.Cookies.Delete("_UserId");
       Response.Cookies.Delete("UserSession");
       return RedirectToAction("index", "login");
     }

@@ -1,3 +1,4 @@
+﻿using Engeman.Intranet.Extensions;
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -38,8 +39,12 @@ namespace Engeman.Intranet.Controllers
       }
       else if(orderBy == "CurrentUser")
       {
-        posts = _postRepository.GetByUsername(HttpContext.Session.GetString("_Username"));
-        comments = _commentRepository.GetByUsername(HttpContext.Session.GetString("_Username"));
+        try
+        {
+          posts = _postRepository.GetByUsername(HttpContext.Session.Get<string>("_Username"));
+          comments = _commentRepository.GetByUsername(HttpContext.Session.Get<string>("_Username"));
+        }
+        catch (Exception) { }
       }
 
       var today = DateTime.Now;
