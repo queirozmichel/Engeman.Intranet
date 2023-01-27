@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Engeman.Intranet.Repositories
+﻿namespace Engeman.Intranet.Repositories
 {
   public interface IPostRestrictionRepository
   {

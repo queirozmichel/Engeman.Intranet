@@ -57,15 +57,13 @@ $(".switch").bootstrapSwitch({
   size: "small",
 });
 
-$(".permissions-switch").bootstrapSwitch('readonly', true);
-
 $("#edit-user-form").on("submit", function (event) {
   event.preventDefault();
   if ($("#edit-user-form").valid()) {
     var editedUser = new FormData(this);
     $.ajax({
       type: "POST",
-      url: "/useraccount/updatebymoderator",
+      url: "/useraccount/updateuseraccount",
       data: editedUser,
       contentType: false,
       processData: false,
@@ -82,7 +80,7 @@ $("#edit-user-form").on("submit", function (event) {
         }
       },
       error: function () {
-        toastr.error("A requisição não foi enviada", "Erro!");
+        toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
       },
       complete: function () {
         stopSpinner();
@@ -92,8 +90,8 @@ $("#edit-user-form").on("submit", function (event) {
 })
 
 $("#permissions").on("change", function (e) {
-  $(".permissions-switch").bootstrapSwitch('readonly', false);
   if (this.value == 0) {
+    $("#create-post-switch").bootstrapSwitch('readonly', false);
     $("#create-post-radio").prop("checked", true);
     $("#edit-owner-post-radio").prop("checked", true);
     $("#delete-owner-post-radio").prop("checked", true);
@@ -101,6 +99,7 @@ $("#permissions").on("change", function (e) {
     $("#delete-any-post-radio").prop("checked", false);
     $("#need-revision-radio").prop("checked", false);
   } else if (this.value == 1) {
+    $("#create-post-switch").bootstrapSwitch('readonly', false);
     $("#create-post-radio").prop("checked", true);
     $("#edit-owner-post-radio").prop("checked", true);
     $("#delete-owner-post-radio").prop("checked", true);
@@ -108,6 +107,8 @@ $("#permissions").on("change", function (e) {
     $("#delete-any-post-radio").prop("checked", false);
     $("#need-revision-radio").prop("checked", true);
   } else if (this.value == 2) {
+    $("#create-post-switch").bootstrapSwitch('state', true);
+    $("#create-post-switch").bootstrapSwitch('readonly', true);
     $("#create-post-radio").prop("checked", true);
     $("#edit-owner-post-radio").prop("checked", true);
     $("#delete-owner-post-radio").prop("checked", true);
@@ -115,7 +116,6 @@ $("#permissions").on("change", function (e) {
     $("#delete-any-post-radio").prop("checked", true);
     $("#need-revision-radio").prop("checked", false);
   }
-  $(".permissions-switch").bootstrapSwitch('readonly', true);
 })
 
 $("#username-input").on("input", function () {
@@ -154,3 +154,15 @@ $("#log-tab").on("click", function () {
     }
   })
 })
+
+if ($("#permissions")[0].value == 2) {
+  $("#create-post-switch").bootstrapSwitch('readonly', true);
+}
+
+$("#create-post-switch").on("switchChange.bootstrapSwitch", function (event, state) {
+  if (state == true) {
+    $("#create-post-radio").prop("checked", true);
+  } else if (state == false) {
+    $("#create-post-radio").prop("checked", false);
+  }
+});

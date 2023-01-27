@@ -62,20 +62,20 @@ $("#new-user-form").on("submit", function (event) {
         startSpinner();
       },
       success: function (response) {
-        if (response.result == 1) {
+        if (response.result == 200) {
           toastr.success("Novo usuário salvo.", "Sucesso!");
           $("#new-user-modal").modal("hide");
           $("#users-grid").bootgrid("reload");
-        } else if (response.result == -1) {
+        } else if (response.result == 500) {
           $("#new-user-modal").modal("hide");
-          showAlertModal("Ocorreu um erro ao tentar processar a solicitação:", response.message);
+          showAlertModal("Não foi possível salvar o novo usuário.", response.message);
         } else {
           $("#new-user-modal").modal("hide");
           showAlertModal("Ocorreu um erro indefinido ao tentar processar a solicitação:", "Erro!");
         }
       },
       error: function (response) {
-        toastr.error("Não foi possível salvar o novo usuário.", "Erro " + response.status);
+        toastr.error("Ocorreu um erro ao tentar processar a solicitação.", "Erro ");
         $("#new-user-modal").modal("hide");
       },
       complete: function () {

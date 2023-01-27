@@ -58,21 +58,21 @@ $("#edit-profile-form").submit(function (event) {
           $.ajax({
             type: "GET",
             dataType: "html",
-            url: "/useraccount/userprofile",
+            url: "/useraccount/edituserprofile",
             success: function (response) {
               $("#render-body").empty();
               $("#render-body").html(response);
               window.history.pushState(this.url, null, this.url);
             },
-            error: function () {
-              toastr.error("Não foi possível atualizar o perfil", "Erro!");
+            error: function (response) {
+              toastr.error("Não foi possível atualizar o perfil.", "Erro!");
             }
           });
         };
-        toastr.success("O perfil foi atualizado", "Sucesso!");
+        toastr.success("As alterações foram salvas.", "Sucesso!");
       },
-      error: function () {
-        toastr.error("Não foi possível atualizar o perfil", "Erro!");
+      error: function (response) {
+        toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
       },
       complete: function () {
         stopSpinner();

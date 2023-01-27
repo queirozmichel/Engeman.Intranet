@@ -38,9 +38,7 @@ $("#comment-form").on("submit", function (event) {
         startSpinner();
       },
       success: function (response) {
-        if (response == -1) {
-          toastr.error("Formulário inválido", "Erro!");
-        } else {
+        if (response == 200) {
           $.ajax({
             type: "GET",
             dataType: "html",
@@ -58,6 +56,8 @@ $("#comment-form").on("submit", function (event) {
             },
           });
           toastr.success("O comentário foi salvo", "Sucesso!");
+        } else {
+          toastr.error("Formulário inválido", "Erro!");
         }
       },
       error: function (response) {
@@ -195,7 +195,7 @@ function deletePost(postId) {
       data: {
         'postId': postId
       },
-      url: "/posts/removepost",
+      url: "/posts/deletepost",
       dataType: "html",
       success: function (response) {
         hideConfirmationModal();
@@ -311,17 +311,17 @@ function deleteComment(id, comment) {
     url: "/comments/deletecomment",
     dataType: "text",
     success: function (response) {
-      if (response == "true") {
+      if (response == 200) {
         comment.fadeOut(700);
         setTimeout(() => {
           comment.remove();
         }, 700)
-        toastr.success("O comentário foi apagado com sucesso", "Sucesso!");
+        toastr.success("O comentário foi apagado.", "Sucesso!");
         $("#comment-count").text($("#comment-count").text() - 1);
       }
     },
     error: function (response) {
-      toastr.error("Não foi possível apagar o comentário", "Erro!");
+      toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
     }
   })
   comment.fadeOut(700);

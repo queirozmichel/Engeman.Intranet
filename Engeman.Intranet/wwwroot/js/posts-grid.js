@@ -81,10 +81,10 @@ $(document).ready(function () {
     formatters: {
       //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
       postType: function (column, row) {
-        if ((row.revised == false || row.unrevisedComments == true) && (row.userAccountId == Cookies.get('_UserId') || isModerator == true)) {
+        if ((row.revised == false || row.unrevisedComments == true) && ( isModerator == true)) {
           return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
         }
-        if (row.revised == true) {
+        if (row.revised == true || row.userAccountId == $("#current-user-id").text()) {
           if (row.postType === "D") {
             return "<i title=\"Documento\" class=\"fa-solid fa-file\"></i>"
           }
@@ -290,7 +290,7 @@ function deletePost(postId, element) {
     data: {
       'postId': postId
     },
-    url: "/posts/removepost",
+    url: "/posts/deletepost",
     dataType: "text",
     success: function (result) {
       $(element).parent().parent().fadeOut(700);

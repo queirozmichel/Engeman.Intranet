@@ -110,7 +110,7 @@ $("#edit-post-form").on("submit", function (event) {
         }
       },
       error: function () {
-        toastr.error("A postagem não foi atualizada", "Erro!");
+        toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
       },
       complete: function () {
         stopSpinner();

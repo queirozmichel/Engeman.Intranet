@@ -20,9 +20,9 @@ namespace Engeman.Intranet.ViewComponents
 
     public IViewComponentResult Invoke()
     {
-      var username = HttpContext.Session.Get<string>("_Username");
+      var username = HttpContext.Session.Get<string>("_CurrentUsername");
       var user = _userAccount.GetByUsername (username);
-      ViewBag.UnrevisedPosts = _postRepository.GetByRestriction(user).AsQueryable().Where("revised == (@0)", false).Count();
+      ViewBag.UnrevisedPosts = _postRepository.GetPostsGrid(user).AsQueryable().Where("revised == (@0)", false).Count();
       ViewBag.UnrevisedComments = _postCommentRepository.GetUnrevisedComments().Count();
 
       return View(user);

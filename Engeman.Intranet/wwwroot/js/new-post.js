@@ -84,10 +84,7 @@ $("#new-post-form").on("submit", function (event) {
         startSpinner();
       },
       success: function (response) {
-        if (response == 0) {
-          toastr.error("Formulário inválido", "Erro!");
-        } else {
-          toastr.success("A postagem foi salva", "Sucesso!");
+        if (response == 200) {
           $.ajax({
             type: "GET",
             url: "/posts/grid?filter=allPosts",
@@ -101,16 +98,17 @@ $("#new-post-form").on("submit", function (event) {
               window.history.pushState(this.url, null, this.url);
             },
             error: function () {
-              toastr.error("Não foi possível voltar", "Erro!");
+              toastr.error("Não foi possível ir para a tela de postagens.", "Erro!");
             },
             complete: function () {
               stopSpinner();
+              toastr.success("A postagem foi salva.", "Sucesso!");
             }
           });
         }
       },
       error: function (response) {
-        toastr.error("A postagem não foi salva", "Erro!");
+        toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
       }
     });
   }

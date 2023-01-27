@@ -110,7 +110,7 @@ usersGrid.on("loaded.rs.jquery.bootgrid", function () {
     var userId = actionButtons.data("user-id");
     actionButtons.on("click", function () {
       if (action == "edit") {
-        editUser(userId);
+        EditUserAccount(userId);
       } else if (action == "delete") {
         showConfirmationModal("Apagar o usuário?", "Se houver quaisquer postagens ou comentários associados a este usuário, também serão excluídos", "delete-user", userId);
         elementAux = $(this).parents("tr");
@@ -186,12 +186,12 @@ $(".btn-yes, .btn-no").on("click", function () {
   }
 })
 
-function editUser(userId) {
+function EditUserAccount(userId) {
   $.ajax({
     type: "GET",
     data: { "userId": userId },
     dataType: "html",
-    url: "/useraccount/edituser",
+    url: "/useraccount/edituseraccount",
     beforeSend: function () {
       startSpinner();
     },
@@ -213,24 +213,24 @@ function deleteUser(userId, elementAux) {
   $.ajax({
     type: "DELETE",
     data: { 'userId': userId },
-    url: "/useraccount/removeuser",
+    url: "/useraccount/deleteuser",
     dataType: "json",
     success: function (response) {
-      if (response.result == 1) {
+      if (response.result == 200) {
         $(elementAux).fadeOut(700);
         setTimeout(() => {
           $(elementAux).remove();
           $("#users-grid").bootgrid("reload");
         }, 700);
         toastr.success("O usuário foi apagado.", "Sucesso!");
-      } else if (response.result == -1) {
-        showAlertModal("Ocorreu um erro ao tentar processar a solicitação:", response.message);
+      } else if (response.result == 500) {
+        showAlertModal("Erro!", response.message);
       } else {
-        showAlertModal("Ocorreu um erro indefinido ao tentar processar a solicitação:", "Erro!");
+        showAlertModal("Erro!", "Ocorreu um erro indefinido ao tentar processar a solicitação.");
       }
     },
     error: function (response) {
-      toastr.error("Aconteceu um erro ao enviar a requisição", "Erro!");
+      toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
     },
   });
 }

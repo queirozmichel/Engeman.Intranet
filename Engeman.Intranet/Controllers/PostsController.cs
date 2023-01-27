@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
 using Engeman.Intranet.Models.ViewModels;
-using System.Text;
 using Engeman.Intranet.Extensions;
 
 namespace Engeman.Intranet.Controllers
@@ -36,92 +35,60 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult Grid()
     {
-      if (Request.Query["filter"] != "allPosts" && HttpContext.Session.Get<bool>("_Moderator") == false) return Redirect(Request.Host.ToString());
+      if (Request.Query["filter"] != "allPosts" && HttpContext.Session.Get<bool>("_IsModerator") == false) return Redirect(Request.Host.ToString());
+
       ViewBag.FilterGrid = Request.Query["filter"];
+      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
 
       return PartialView("PostsGrid");
     }
 
-    [HttpGet]
-    public IActionResult NewPost()
-    {
-      var permissions = new UserPermissionsViewModel();
-
-      try { permissions = _userAccountRepository.GetUserPermissionsByUsername(HttpContext.Session.Get<string>("_Username")); }
-      catch (Exception) { }
-      if (permissions.CreatePost == true)
-      {
-        ViewBag.IsAjaxCall = isAjaxCall;
-        ViewBag.Departments = _departmentRepository.Get();
-        return PartialView("NewPost");
-      }
-      else
-      {
-        return Ok(StatusCodes.Status401Unauthorized);
-      }
-    }
-
     [HttpPost]
-    public IActionResult NewPost(NewPostViewModel newPost, List<IFormFile> files)
+    public JsonResult DataGrid(string filterGrid, string filterHeader, int rowCount, string searchPhrase, int current)
     {
-      var sessionUsername = HttpContext.Session.Get<string>("_Username");
-      var userAccount = new UserAccount();
+      IQueryable<PostGridViewModel> posts = null;
+      IQueryable paginatedPosts;
+      var total = 0;
+      var isModerator = CheckIsModerator();
+      var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
+      var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
+      var order = requestKeys[key];
+      var field = key.Replace("sort[", "").Replace("]", "");
+      var orderedField = string.Format("{0} {1}", field, order);
 
-      if (userAccount.Moderator == true || userAccount.NoviceUser == false)
+      posts = FilterPosts(filterGrid, filterHeader);
+
+      total = posts.Count();
+
+      if (!string.IsNullOrWhiteSpace(searchPhrase))
       {
-        newPost.Revised = true;
+        posts = FilterPostsBySearchPhrase(posts, searchPhrase);
+        total = posts.Count();
       }
 
-      newPost.CleanDescription = newPost.Description;
-      newPost.UserAccountId = userAccount.Id;
+      if (rowCount == -1) rowCount = total;
 
-      if (newPost.Keywords != null)
-      {
-        newPost.Keywords = newPost.Keywords.ToLower();
-      }
+      paginatedPosts = OrderedPosts(posts, orderedField, current, rowCount);
 
-      if (files.Count > 0)
-      {
-        for (int i = 0; i < files.Count; i++)
-        {
-          NewPostFileViewModel file = new NewPostFileViewModel();
-          file.Name = files[i].FileName;
-          if (files[i].Length > 0)
-          {
-            using (var stream = new MemoryStream())
-            {
-              files[i].CopyTo(stream);
-              file.BinaryData = stream.ToArray();
-            }
-          }
-          newPost.Files.Add(file);
-        }
-      }
-      else
-      {
-        newPost.PostType = 'N';
-      }
-
-      _postRepository.AddWithLog(newPost, sessionUsername);
-
-      return Json(1);
+      return Json(new { rows = paginatedPosts, current, rowCount, total, isModerator });
     }
 
     public IQueryable<PostGridViewModel> FilterPosts(string filterGrid, string filterHeader)
     {
-      var user = _userAccountRepository.GetById((int)HttpContext.Session.GetInt32("_UserAccountId"));
-      IQueryable<PostGridViewModel> posts = _postRepository.GetByRestriction(user).AsQueryable();
-      List<Comment> comments = new List<Comment>();
+      var user = new UserAccount();
+      IQueryable<PostGridViewModel> posts = null;
+      var comments = new List<Comment>();
 
       try
       {
         user = _userAccountRepository.GetById(HttpContext.Session.Get<int>("_CurrentUserId"));
-        posts = _postRepository.GetByRestriction(user).AsQueryable();
+        posts = _postRepository.GetPostsGrid(user).AsQueryable();
       }
       catch (Exception) { }
+
       foreach (var post in posts)
       {
-        comments = _commentRepository.GetByPostId(post.Id);
+        try { comments = _commentRepository.GetByPostId(post.Id); } catch (Exception) { }
         for (int i = 0; i < comments.Count; i++)
         {
           if (comments[i].Revised == false)
@@ -134,112 +101,111 @@ namespace Engeman.Intranet.Controllers
 
       if (filterGrid == "allPosts")
       {
-        if (user.Moderator == true)
-        {
-          posts = posts.Where("revised == (@0) && UnrevisedComments == (@1) ", true, false);
-        }
+        if (user.Moderator == true) posts = posts.Where("revised == (@0) && UnrevisedComments == (@1) ", true, false);
       }
-      else if (filterGrid == "unrevisedPosts")
-      {
-        posts = posts.Where("revised == (@0)", false);
-      }
+      else if (filterGrid == "unrevisedPosts") posts = posts.Where("revised == (@0)", false);
       else if (filterGrid == "unrevisedComments")
       {
-        posts = _postRepository.GetWithUnrevisedComments().AsQueryable();
+        try { posts = _postRepository.GetWithUnrevisedComments().AsQueryable(); } catch (Exception) { }
       }
+      if (filterHeader == "manual") return posts = posts.Where("postType == (@0)", "M");
+      else if (filterHeader == "document") return posts = posts.Where("postType == (@0)", "D");
+      else if (filterHeader == "no-attachment") return posts = posts.Where(x => x.PostType == 'N');
+      else if (filterHeader == "my") return posts = posts.Where(x => x.UserAccountId == user.Id);
 
-      if (filterHeader == "manual")
-      {
-        return posts = posts.Where("postType == (@0)", "M");
-      }
-      else if (filterHeader == "document")
-      {
-        return posts = posts.Where("postType == (@0)", "D");
-      }
-      else if (filterHeader == "no-attachment")
-      {
-        return posts = posts.Where(x => x.PostType == 'N');
-      }
-      else if (filterHeader == "my")
-      {
-        return posts = posts.Where(x => x.UserAccountId == user.Id);
-      }
-      else
-      {
-        return posts;
-      }
+      else return posts;
     }
 
     public IQueryable<PostGridViewModel> FilterPostsBySearchPhrase(IQueryable<PostGridViewModel> posts, string searchPhrase)
     {
-      posts = posts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR department.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
+      return posts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR department.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
         "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR keywords.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-        "changeDate.Contains(@0)", searchPhrase);
-      return posts;
+        "changeDate.Contains(@0)", searchPhrase); ;
     }
 
     public IQueryable OrderedPosts(IQueryable<PostGridViewModel> posts, string orderedField, int current, int rowCount)
     {
-      IQueryable aux;
-      if (orderedField.Contains("changeDate asc"))
+      if (orderedField.Contains("changeDate asc")) return posts.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+      else if (orderedField.Contains("changeDate desc")) return posts.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+      else return posts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+    }
+
+    [HttpGet]
+    public IActionResult NewPost()
+    {
+      var permissions = new UserPermissionsViewModel();
+
+      try { permissions = _userAccountRepository.GetUserPermissionsByUsername(HttpContext.Session.Get<string>("_CurrentUsername")); } catch (Exception) { }
+
+      if (permissions.CreatePost == true)
       {
-        return aux = posts.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
+        ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        try { ViewBag.Departments = _departmentRepository.Get(); }
+        catch (Exception) { }
+        return PartialView("NewPost");
       }
-      else if (orderedField.Contains("changeDate desc"))
-      {
-        return aux = posts.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-      }
-      else
-      {
-        return aux = posts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
-      }
+
+      else return Ok(StatusCodes.Status401Unauthorized);
     }
 
     [HttpPost]
-    public JsonResult DataGrid(string filterGrid, string filterHeader, int rowCount, string searchPhrase, int current)
+    public IActionResult NewPost(NewPostViewModel newPost, List<IFormFile> files)
     {
-      IQueryable<PostGridViewModel> posts = null;
-      IQueryable paginatedPosts;
-      int total = 0;
-      bool isModerator = checkIsModerator();
-      var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
-      var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
-      var order = requestKeys[key];
-      var field = key.Replace("sort[", "").Replace("]", "");
-      string orderedField = String.Format("{0} {1}", field, order);
+      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+      var userAccount = new UserAccount();
 
-      posts = FilterPosts(filterGrid, filterHeader);
-      total = posts.Count();
+      try { userAccount = _userAccountRepository.GetByUsername(sessionUsername); } catch (Exception) { }
 
-      if (!String.IsNullOrWhiteSpace(searchPhrase))
+      if (userAccount.Moderator == true || userAccount.NoviceUser == false) newPost.Revised = true;
+
+      newPost.CleanDescription = newPost.Description;
+      newPost.UserAccountId = userAccount.Id;
+
+      if (newPost.Keywords != null) newPost.Keywords = newPost.Keywords.ToLower();
+
+      if (files.Count > 0)
       {
-        posts = FilterPostsBySearchPhrase(posts, searchPhrase);
-        total = posts.Count();
+        for (int i = 0; i < files.Count; i++)
+        {
+          var file = new NewPostFileViewModel();
+          file.Name = files[i].FileName;
+          if (files[i].Length > 0)
+          {
+            using (var stream = new MemoryStream())
+            {
+              files[i].CopyTo(stream);
+              file.BinaryData = stream.ToArray();
+            }
+          }
+          newPost.Files.Add(file);
+        }
       }
+      else newPost.PostType = 'N';
 
-      if (rowCount == -1)
-      {
-        rowCount = total;
-      }
+      try { _postRepository.AddWithLog(newPost, sessionUsername); } catch (Exception) { }
 
-      paginatedPosts = OrderedPosts(posts, orderedField, current, rowCount);
-
-      return Json(new { rows = paginatedPosts, current, rowCount, total, isModerator });
+      return Ok(StatusCodes.Status200OK);
     }
 
     [HttpGet]
     public IActionResult EditPost(int postId)
     {
-      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-      List<int> restrictedDepartments;
-      PostEditViewModel postEditViewModel = new PostEditViewModel();
-      var orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
-      var post = _postRepository.GetById(postId);
-      var departments = _departmentRepository.Get();
-      ViewBag.IsAjaxCall = isAjaxCall;
-      ViewBag.RestrictedDepartments = null;
-      ViewBag.Departments = departments;
+      var restrictedDepartments = new List<int>();
+      var postEditViewModel = new PostEditViewModel();
+      var orderedFiles = new List<PostFile>();
+      var departments = new List<Department>();
+      var post = new Post();
 
+      try
+      {
+        orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
+        post = _postRepository.GetById(postId);
+        departments = _departmentRepository.Get();
+      }
+      catch (Exception) { }
+
+      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.Departments = departments;
       postEditViewModel.Id = post.Id;
       postEditViewModel.Restricted = post.Restricted;
       postEditViewModel.Subject = post.Subject;
@@ -255,29 +221,34 @@ namespace Engeman.Intranet.Controllers
           postEditViewModel.Files.Add(orderedFiles[i]);
         }
       }
-
       if (post.Restricted == true)
       {
-        restrictedDepartments = _postRestrictionRepository.GetDepartmentsByIdPost(postId);
+        try { restrictedDepartments = _postRestrictionRepository.GetDepartmentsByIdPost(postId); } catch (Exception) { }
+
         ViewBag.RestrictedDepartments = restrictedDepartments;
-        return PartialView(postEditViewModel);
       }
+
       return PartialView(postEditViewModel);
     }
 
     [HttpPut]
     public IActionResult UpdatePost(PostEditViewModel editedPost, List<IFormFile> binaryData)
     {
-      var sessionUsername = HttpContext.Session.Get<string>("_Username");
+      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       var fileList = new List<NewPostFileViewModel>();
       var currentPost = new Post();
       var userAccount = new UserAccount();
 
-      editedPost.CleanDescription = editedPost.Description;
-      if (editedPost.Keywords != null)
+      try
       {
-        editedPost.Keywords = editedPost.Keywords.ToLower();
+        currentPost = _postRepository.GetById(editedPost.Id);
+        userAccount = _userAccountRepository.GetByUsername(sessionUsername);
       }
+      catch (Exception) { }
+
+      editedPost.CleanDescription = editedPost.Description;
+
+      if (editedPost.Keywords != null) editedPost.Keywords = editedPost.Keywords.ToLower();
 
       if (editedPost.Files.Count > 0)
       {
@@ -285,21 +256,18 @@ namespace Engeman.Intranet.Controllers
         {
           if (editedPost.Files[i].Active == false)
           {
-            _postFileRepository.Delete(editedPost.Files[i].Id);
+            try { _postFileRepository.Delete(editedPost.Files[i].Id); }
+            catch (Exception) { }
             editedPost.Files.RemoveAt(i);
             i--;
           }
         }
       }
-      else
-      {
-        editedPost.PostType = 'N';
-      }
+      else editedPost.PostType = 'N';
 
       if (binaryData.Count != 0)
       {
         fileList.Clear();
-
         for (int i = 0; i < binaryData.Count; i++)
         {
           NewPostFileViewModel newFile = new NewPostFileViewModel();
@@ -314,24 +282,25 @@ namespace Engeman.Intranet.Controllers
             }
           }
         }
-        _postFileRepository.Add(editedPost.Id, fileList);
+
+        try { _postFileRepository.Add(editedPost.Id, fileList); } catch (Exception) { }
       }
 
-      if (currentPost.Revised == true && userAccount.NoviceUser == false)
-      {
-        editedPost.Revised = true;
-      }
+      if (currentPost.Revised == true && userAccount.NoviceUser == false) editedPost.Revised = true;
 
-      _postRepository.UpdateWithLog(editedPost, sessionUsername);
+      try { _postRepository.UpdateWithLog(editedPost.Id, editedPost, sessionUsername); } catch (Exception) { }
+
       ViewBag.FilterGrid = Request.Query["filter"];
 
       return Ok(StatusCodes.Status200OK);
     }
 
     [HttpDelete]
-    public IActionResult RemovePost(int postId)
+    public IActionResult DeletePost(int postId)
     {
-      var currentUsername = HttpContext.Session.Get<string>("_Username");
+      var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+
+      try { _postRepository.DeleteWithLog(postId, currentUsername); } catch (Exception) { }
 
       return PartialView("PostsGrid");
     }
@@ -339,18 +308,17 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult PostDetails(int postId)
     {
-      PostDetailsViewModel postDetails = new PostDetailsViewModel();
-      List<CommentFile> commentFiles = new List<CommentFile>();
+      var postDetails = new PostDetailsViewModel();
+      var commentFiles = new List<CommentFile>();
       var comments = new List<CommentViewModel>();
-      bool isAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
-      var post = _postRepository.GetById(postId);
-      var postAuthor = _userAccountRepository.GetById(post.UserAccountId);
-      var orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
-      var department = _departmentRepository.GetById(postAuthor.DepartmentId);
-      var postsCount = _postRepository.CountByUserId(postAuthor.Id);
-      var commentsCount = _commentRepository.CountByUserId(postAuthor.Id);
-      var userAccount = _userAccountRepository.GetById((int)HttpContext.Session.GetInt32("_UserAccountId"));
-      var orderedComments = _commentRepository.GetByRestriction(userAccount, postId);
+      var post = new Post();
+      var postAuthor = new UserAccount();
+      var orderedFiles = new List<PostFile>();
+      var department = new Department();
+      var postsCount = 0;
+      var commentsCount = 0;
+      var userAccount = new UserAccount();
+      var orderedComments = new List<Comment>();
       string[] keywords;
 
       try
@@ -362,55 +330,57 @@ namespace Engeman.Intranet.Controllers
         postsCount = _postRepository.CountByUserId(postAuthor.Id);
         commentsCount = _commentRepository.CountByUserId(postAuthor.Id);
         userAccount = _userAccountRepository.GetById(HttpContext.Session.Get<int>("_CurrentUserId"));
-        orderedComments = _commentRepository.GetByRestriction(userAccount, postId);
+        orderedComments = _commentRepository.GetByUserRestriction(userAccount, postId);
       }
       catch (Exception) { }
+
       postDetails.Id = post.Id;
       postDetails.Subject = post.Subject;
       postDetails.Description = post.Description;
       postDetails.Files = orderedFiles;
-
-      if (post.Keywords == "")
-      {
-        keywords = null;
-      }
-      else
-      {
-        keywords = post.Keywords.Split(';');
-      }
-      postDetails.Keywords = keywords;
-      postDetails.Revised = post.Revised;
-      postDetails.ChangeDate = post.ChangeDate;
-      postDetails.PostedDaysAgo = (DateTime.Now - postDetails.ChangeDate).Days;
-      if (postDetails.PostedDaysAgo == 0)
-      {
-        TimeSpan aux = postDetails.ChangeDate.TimeOfDay;
-        TimeSpan now = DateTime.Now.TimeOfDay;
-        if (aux > now)
-        {
-          postDetails.PostedDaysAgo = -1;
-        }
-      }
       postDetails.AuthorId = postAuthor.Id;
       postDetails.AuthorUsername = postAuthor.Name;
       postDetails.AuthorDepartment = department.Description;
       postDetails.AuthorPostsMade = postsCount;
       postDetails.AuthorCommentsMade = commentsCount;
       postDetails.AuthorPhoto = postAuthor.Photo;
+      postDetails.Revised = post.Revised;
+      postDetails.ChangeDate = post.ChangeDate;
+
+      if (post.Keywords == "") keywords = null;
+      else keywords = post.Keywords.Split(';');
+
+      postDetails.Keywords = keywords;
+
+      postDetails.PostedDaysAgo = (DateTime.Now - postDetails.ChangeDate).Days;
+
+      if (postDetails.PostedDaysAgo == 0)
+      {
+        TimeSpan aux = postDetails.ChangeDate.TimeOfDay;
+        TimeSpan now = DateTime.Now.TimeOfDay;
+        if (aux > now) postDetails.PostedDaysAgo = -1;
+      }
 
       for (int i = 0; i < orderedComments.Count; i++)
       {
         var comment = new CommentViewModel();
-        var authorComment = _userAccountRepository.GetById(orderedComments[i].UserAccountId);
-        commentFiles = _commentFileRepository.GetByCommentId(orderedComments[i].Id).OrderBy(x => x.Name).ToList();
+        var authorComment = new UserAccount();
+
+        try
+        {
+          authorComment = _userAccountRepository.GetById(orderedComments[i].UserAccountId);
+          commentFiles = _commentFileRepository.GetByCommentId(orderedComments[i].Id).OrderBy(x => x.Name).ToList();
+          comment.AuthorDepartment = _departmentRepository.GetDescriptionById(authorComment.DepartmentId);
+          comment.AuthorPostsMade = _postRepository.GetByUserAccountId(authorComment.Id).Count();
+          comment.AuthorCommentsMade = _commentRepository.GetByUserAccountId(authorComment.Id).Count();
+        }
+        catch (Exception) { }
+
         comment.Id = orderedComments[i].Id;
         comment.Description = orderedComments[i].Description;
         comment.AuthorUsername = authorComment.Name;
         comment.AuthorPhoto = authorComment.Photo;
         comment.AuthorId = orderedComments[i].UserAccountId;
-        comment.AuthorDepartment = _departmentRepository.GetDescriptionById(authorComment.DepartmentId);
-        comment.AuthorPostsMade = _postRepository.GetByUserAccountId(authorComment.Id).Count();
-        comment.AuthorCommentsMade = _commentRepository.GetByUserAccountId(authorComment.Id).Count();
         comment.ChangeDate = orderedComments[i].ChangeDate;
         comment.Revised = orderedComments[i].Revised;
         comment.Files = commentFiles;
@@ -418,10 +388,10 @@ namespace Engeman.Intranet.Controllers
       }
 
       ViewBag.Comments = comments;
-      ViewBag.IsModerator = checkIsModerator();
+      ViewBag.IsModerator = CheckIsModerator();
       ViewBag.UserId = HttpContext.Session.Get<int>("_CurrentUserId");
       ViewBag.PostId = postId;
-      ViewBag.IsAjaxCall = isAjaxCall;
+      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
       ViewBag.Post = postDetails;
 
       return PartialView();
@@ -430,16 +400,22 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult ShowFile(int postId, int file)
     {
-      var orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
+      var orderedFiles = new List<PostFile>();
+
+      try { orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList(); }  catch (Exception) { }
+
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + Uri.EscapeDataString(orderedFiles[file].Name));
+
       return File(orderedFiles[file].BinaryData, "application/pdf");
     }
 
     [HttpPut]
     public IActionResult AprovePost(int postId)
     {
-      var currentUsername = HttpContext.Session.Get<string>("_Username");
+      var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+
+      try { _postRepository.AproveWithLog(postId, currentUsername); } catch (Exception) { }
 
       return ViewComponent("UnrevisedList");
     }
@@ -450,9 +426,9 @@ namespace Engeman.Intranet.Controllers
       return ViewComponent("UnrevisedList");
     }
 
-    public bool checkIsModerator()
+    public bool CheckIsModerator()
     {
-      if (HttpContext.Session.Get<bool>("_Moderator") == true) return true;
+      if (HttpContext.Session.Get<bool>("_IsModerator") == true) return true;
       else return false;
     }
   }

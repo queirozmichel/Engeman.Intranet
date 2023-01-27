@@ -1,5 +1,5 @@
 ﻿using Engeman.Intranet.Extensions;
-﻿using Engeman.Intranet.Models;
+using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -14,16 +14,11 @@ namespace Engeman.Intranet.Controllers
     private readonly ICommentFileRepository _commentFileRepository;
     private readonly IUserAccountRepository _userAccountRepository;
 
-    public CommentsController(ICommentRepository commentRepository, IPostFileRepository postFileRepository, ICommentFileRepository commentFileRepository, IPostRepository postRepository, IUserAccountRepository userAccountRepository, IDepartmentRepository departmentRepository)
+    public CommentsController(ICommentRepository commentRepository, ICommentFileRepository commentFileRepository, IUserAccountRepository userAccountRepository)
     {
       _commentRepository = commentRepository;
       _commentFileRepository = commentFileRepository;
       _userAccountRepository = userAccountRepository;
-    }
-   
-    public IActionResult Index()
-    {
-      return View();
     }
 
     [HttpGet]
@@ -32,6 +27,7 @@ namespace Engeman.Intranet.Controllers
       return ViewComponent("WangEditor");
     }
 
+    [HttpGet]
     public IActionResult CommentEditForm(int commentId)
     {
       return ViewComponent("CommentEditForm", commentId);
@@ -44,13 +40,21 @@ namespace Engeman.Intranet.Controllers
       var comment = new Comment();
       var currentComment = new Comment();
       var userAccount = new UserAccount();
-      var sessionUsername = HttpContext.Session.Get<string>("_Username");
+      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+
+      try
+      {
+        currentComment = _commentRepository.GetById(editedComment.Comment.Id);
+        userAccount = _userAccountRepository.GetByUsername(sessionUsername);
+      }
+      catch (Exception) { }
 
       for (int i = 0; i < editedComment.Files.Count; i++)
       {
         if (editedComment.Files[i].Active == false)
         {
-          _commentFileRepository.Delete(editedComment.Files[i].Id);
+          try { _commentFileRepository.Delete(editedComment.Files[i].Id); } catch (Exception) { }
+
           editedComment.Files.RemoveAt(i);
           i--;
         }
@@ -58,20 +62,16 @@ namespace Engeman.Intranet.Controllers
 
       comment.Description = editedComment.Comment.Description;
 
-      if (currentComment.Revised == true && userAccount.NoviceUser == false)
-      {
-        comment.Revised = true;
-      }
+      if (currentComment.Revised == true && userAccount.NoviceUser == false) comment.Revised = true;
 
-      _commentRepository.UpdateWithLog(currentComment.Id, comment, sessionUsername);
+      try { _commentRepository.UpdateWithLog(currentComment.Id, comment, sessionUsername); } catch (Exception) { }
 
       if (binaryData.Count != 0)
       {
         files.Clear();
-
         for (int i = 0; i < binaryData.Count; i++)
         {
-          CommentFile newFile = new CommentFile();
+          var newFile = new CommentFile();
           if (binaryData[i].Length > 0)
           {
             using (var stream = new MemoryStream())
@@ -83,35 +83,43 @@ namespace Engeman.Intranet.Controllers
             }
           }
         }
-        _commentFileRepository.Add(currentComment.Id, files);
+
+        try { _commentFileRepository.Add(currentComment.Id, files); } catch (Exception) { }
       }
+
       return RedirectToAction("PostDetails", "Posts", new { postId = editedComment.Comment.PostId });
     }
 
     [HttpGet]
     public IActionResult ShowFile(int commentId, int file)
     {
-      var orderedFiles = _commentFileRepository.GetByCommentId(commentId).OrderBy(a => a.Name).ToList();
+      var orderedFiles = new List<CommentFile>();
+
+      try { orderedFiles = _commentFileRepository.GetByCommentId(commentId).OrderBy(a => a.Name).ToList(); } catch (Exception) { }
+
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + Uri.EscapeDataString(orderedFiles[file].Name));
+
       return File(orderedFiles[file].BinaryData, "application/pdf");
     }
 
     [HttpPost]
     public IActionResult NewComment(NewCommentViewModel newComment, List<IFormFile> files)
     {
-      var sessionUsername = HttpContext.Session.Get<string>("_Username");
+      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       var userAccount = new UserAccount();
 
-      try { userAccount = _userAccountRepository.GetByUsername(sessionUsername); }
-      catch (Exception) { }
+      try { userAccount = _userAccountRepository.GetByUsername(sessionUsername); } catch (Exception) { }
+
       if (userAccount.Moderator == true || userAccount.NoviceUser == false) newComment.Revised = true;
+
       newComment.UserAccountId = HttpContext.Session.Get<int>("_CurrentUserId");
+
       if (files.Count > 0)
       {
         for (int i = 0; i < files.Count; i++)
         {
-          NewCommentFileViewModel file = new NewCommentFileViewModel();
+          var file = new NewCommentFileViewModel();
           file.Name = files[i].FileName;
           if (files[i].Length > 0)
           {
@@ -124,25 +132,28 @@ namespace Engeman.Intranet.Controllers
           newComment.Files.Add(file);
         }
       }
-      _commentRepository.AddWithLog(newComment, sessionUsername);
 
-      return Ok(1);
+      try { _commentRepository.AddWithLog(newComment, sessionUsername); } catch (Exception) { }
+
+      return Ok(StatusCodes.Status200OK);
     }
 
     [HttpDelete]
     public IActionResult DeleteComment(int commentId)
     {
-      var currentUsername = HttpContext.Session.Get<string>("_Username");
+      var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
-      try { _commentRepository.DeleteWithLog(commentId, currentUsername); }
-      catch (Exception) { }
+      try { _commentRepository.DeleteWithLog(commentId, currentUsername); } catch (Exception) { }
+
       return Ok(StatusCodes.Status200OK);
     }
 
     [HttpPut]
     public IActionResult AproveComment(int commentId)
     {
-      var currentUsername = HttpContext.Session.Get<string>("_Username");
+      var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+
+      try { _commentRepository.AproveWithLog(commentId, currentUsername); } catch (Exception) { }
 
       return ViewComponent("UnrevisedList");
     }

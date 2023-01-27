@@ -60,7 +60,7 @@ $("#new-post-btn").on("click", function (event) {
     },
     success: function (response) {
       if (response == 401) {
-        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem");
+        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem.");
       } else {
         $("#render-body").empty();
         $("#render-body").html(response);
@@ -80,7 +80,7 @@ $(".user-profile-btn").on("click", function (event) {
   event.preventDefault();
   $.ajax({
     type: "GET",
-    url: "/useraccount/userprofile",
+    url: "/useraccount/edituserprofile",
     dataType: "html",
     beforeSend: function () {
       startSpinner();
@@ -114,7 +114,7 @@ $(".users-btn").on("click", function (event) {
       window.history.pushState(this.url, null, this.url);
     },
     error: function () {
-      toastr.error("Não foi possivel acessar a tela de usuários", "Erro!");
+      toastr.error("Não foi possivel carregar a tela de usuários", "Erro!");
     },
     complete: function () {
       stopSpinner();
@@ -156,3 +156,15 @@ function exclamation() {
     icon.css("opacity", "1");
   }, 500);
 }
+
+//Marcação em azul quando uma opção do menu lateral esquerdo é selecionada
+$("#nav li").on("click", function (event) {
+  var li = $(event.target.parentElement);
+  var allLi = $("#nav").children();
+  allLi.each(function (index, element) {
+    $(this).removeClass("current");
+  })
+  if (! li.hasClass("current")) {
+    li.addClass("current");
+  }
+})

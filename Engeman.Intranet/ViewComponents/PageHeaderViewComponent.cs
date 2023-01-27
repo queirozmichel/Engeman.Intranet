@@ -17,7 +17,7 @@ namespace Engeman.Intranet.ViewComponents
 
     public IViewComponentResult Invoke(string title)
     {
-      var username = HttpContext.Session.Get<string>("_Username");
+      var username = HttpContext.Session.Get<string>("_CurrentUsername");
       var firstName = username.Substring(0, username.IndexOf(".")).ToUpper();
       var hourOfDay = DateTime.Now.Hour;
       string greetings;

@@ -19,3 +19,11 @@ function showConfirmationModal(title, body, selector, id) {
 function hideConfirmationModal() {
   $(".confirmation-modal").modal("hide");
 }
+
+$('.confirmation-modal').on('hidden.bs.modal', function (e) {
+  $("body").css("overflow", "scroll");
+})
+
+$('.confirmation-modal').on('show.bs.modal', function (e) {
+  $("body").css("overflow", "hidden");
+})

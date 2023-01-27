@@ -1,49 +1,46 @@
 ﻿using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
-using System;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Repositories
 {
   public class CommentFileRepository : ICommentFileRepository
   {
-    public List<CommentFile> GetByCommentId(int id)
+    public List<CommentFile> GetByCommentId(int commentId)
     {
-      List<CommentFile> files = new List<CommentFile>();
-      var query = $"SELECT * FROM COMMENTFILE WHERE COMMENT_ID = {id}";
+      var files = new List<CommentFile>();
+      var query = $"SELECT * FROM COMMENTFILE WHERE COMMENT_ID = {commentId}";
 
-      using (StaticQuery sq = new StaticQuery())
+      using StaticQuery sq = new();
+      var result = sq.GetDataSet(query).Tables[0];
+      for (int i = 0; i < result.Rows.Count; i++)
       {
-        var result = sq.GetDataSet(query).Tables[0];
-
-        for (int i = 0; i < result.Rows.Count; i++)
+        var file = new CommentFile
         {
-          var file = new CommentFile();
-          file.Id = Convert.ToInt32(result.Rows[i]["Id"]);
-          file.Active = Convert.ToBoolean(result.Rows[i]["Active"]);
-          file.Name = result.Rows[i]["Name"].ToString();
-          file.BinaryData = (byte[])result.Rows[i]["Binary_Data"];
-          file.CommentId = Convert.ToInt32(result.Rows[i]["Comment_Id"]);
-          file.ChangeDate = (DateTime)result.Rows[i]["Change_Date"];
-          files.Add(file);
-        }
-        return files;
+          Id = Convert.ToInt32(result.Rows[i]["Id"]),
+          Active = Convert.ToBoolean(result.Rows[i]["Active"]),
+          Name = result.Rows[i]["Name"].ToString(),
+          BinaryData = (byte[])result.Rows[i]["Binary_Data"],
+          CommentId = Convert.ToInt32(result.Rows[i]["Comment_Id"]),
+          ChangeDate = (DateTime)result.Rows[i]["Change_Date"]
+        };
+        files.Add(file);
       }
+
+      return files;
     }
 
-    public void Add(int id, List<CommentFile> files)
+    public void Add(int commentId, List<CommentFile> files)
     {
-      using (StaticQuery sq = new StaticQuery())
-      {
-        string query = "";
-        string[] paramters = { "BinaryData;byte" };
+      string query;
+      string[] paramters = { "BinaryData;byte" };
 
-        for (int i = 0; i < files.Count; i++)
-        {
-          Object[] values = { files[i].BinaryData };
-          query = $"INSERT INTO COMMENTFILE(NAME, BINARY_DATA, COMMENT_ID) VALUES('{files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), {id}) ";
-          sq.ExecuteCommand(query, paramters, values);
-        }
+      using StaticQuery sq = new();
+
+      for (int i = 0; i < files.Count; i++)
+      {
+        object[] values = { files[i].BinaryData };
+        query = $"INSERT INTO COMMENTFILE(NAME, BINARY_DATA, COMMENT_ID) VALUES('{files[i].Name}', Convert(VARBINARY(MAX),@BinaryData), {commentId}) ";
+        sq.ExecuteCommand(query, paramters, values);
       }
     }
 
@@ -51,10 +48,8 @@ namespace Engeman.Intranet.Repositories
     {
       string query = $"DELETE FROM COMMENTFILE WHERE ID = {id}";
 
-      using (StaticQuery sq = new StaticQuery())
-      {
-        var result = Convert.ToBoolean(sq.GetDataToInt(query));
-      }
+      using StaticQuery sq = new();
+      sq.ExecuteCommand(query);
     }
   }
 }

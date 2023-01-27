@@ -1,5 +1,4 @@
-﻿@{List<Department> departments = ViewBag.Departments;}
-@model Engeman.Intranet.Models.ViewModels.UserEditViewModel;
+﻿@model Engeman.Intranet.Models.ViewModels.UserEditViewModel;
 @{string layout = null; }
 
 @if (ViewBag.IsAjaxCall == false)
@@ -10,7 +9,7 @@
 
 @{ Layout = layout;}
 
-<link rel="stylesheet" href="~/css/edit-user.css" />
+<link rel="stylesheet" href="~/css/edit-user-account.css" />
 
 
 @await Component.InvokeAsync("PageHeader", "Editar usuário")
@@ -33,7 +32,7 @@
                 <img src='@imasrc' />
                 <div id="permission-text" class="text-center">Permissões</div>
                 <div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Criar postagens</p><input id="crete-post-radio" type="radio" checked="@Model.CreatePost" /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Criar postagens</p><input id="create-post-radio" type="radio" checked="@Model.CreatePost" /></div>
                   <div class="list-group-item permissions"><p class="permissions-p">Editar próprias postagens</p><input id="edit-owner-post-radio" type="radio" checked="@Model.EditOwnerPost" /></div>
                   <div class="list-group-item permissions"><p class="permissions-p">Excluir próprias postagens</p><input id="delete-owner-post-radio" type="radio" checked="@Model.DeleteOwnerPost" /></div>
                   <div class="list-group-item permissions"><p class="permissions-p">Editar qualquer postagem</p><input id="edit-any-post-radio" type="radio" checked="@Model.EditAnyPost" /></div>
@@ -46,7 +45,7 @@
               <div class="form-group">
                 <label class="col-md-4 control-label">Ativo</label>
                 <div class="col-md-8">
-                  @Html.CheckBox("active", Model.Active, new { @class = "switch", id = "active-switch" })
+                  @Html.CheckBox("active", Model.Active, new { @class = "switch" })
                 </div>
               </div>
               <div class="form-group">
@@ -81,13 +80,13 @@
                 <div class="col-md-4">
                   <select class="form-control" id="departmentId" name="departmentId">
                     <option value="@Model.DepartmentId" selected>@Model.DepartmentDescription</option>
-                    @if (departments != null)
+                    @if (ViewBag.Departments != null)
                     {
-                      for (int i = 0; i < departments.Count; i++)
+                      for (int i = 0; i < ViewBag.Departments.Count; i++)
                       {
-                        if (departments[i].Id != @Model.DepartmentId)
+                        if (ViewBag.Departments[i].Id != Model.DepartmentId)
                         {
-                          <option value="@departments[i].Id">@departments[i].Description</option>
+                          <option value="@ViewBag.Departments[i].Id">@ViewBag.Departments[i].Description</option>
                         }
                       }
                     }
@@ -97,12 +96,22 @@
               <div class="form-group">
                 <label class="col-sm-4 control-label">Tipo de usuário</label>
                 <div class="col-sm-4">
-                  <select title="<b>COMUM:</b> Pode criar, editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode criar, editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador para que seja visível a todos.</br><b>MODERADOR:</b> Pode criar, editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permissions" name="userTypeCode">
+                  <select title="<b>COMUM:</b> Pode editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador para que seja visível a todos.</br><b>MODERADOR:</b> Pode editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permissions" name="userTypeCode">
                     <option value="@Model.UserTypeCode" selected>@Model.UserType</option>
-                    <option value="0">Comum</option>
-                    <option value="1">Novato</option>
-                    <option value="2">Moderador</option>
+                    @foreach (var item in ViewBag.Permissions)
+                    {
+                      if (item.Value != Model.UserTypeCode)
+                      {
+                        <option value="@item.Value">@item.Key</option>
+                      }
+                    }
                   </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-4 control-label">Criar postagens</label>
+                <div class="col-md-8">
+                  @Html.CheckBox("createPost", Model.CreatePost, new { @class = "switch", id = "create-post-switch" })
                 </div>
               </div>
               <div class="form-group">
@@ -133,4 +142,4 @@
   </div>
 </div>
 
-<script type="text/javascript" src="~/js/edit-user.js"></script>
+<script type="text/javascript" src="~/js/edit-user-account.js"></script>

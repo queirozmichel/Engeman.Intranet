@@ -4,7 +4,7 @@ namespace Engeman.Intranet.Repositories
 {
   public interface ILogRepository
   {
-    public void Add(NewLogViewModel newLog);
     public List<LogGridViewModel> GetLogsGrid();
+    public void Add(NewLogViewModel log);
   }
 }

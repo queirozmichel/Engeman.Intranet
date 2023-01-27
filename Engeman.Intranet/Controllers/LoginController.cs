@@ -24,7 +24,7 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult Index()
     {
-      if (HttpContext.Session.Get<string>("_Username") == null) return PartialView();
+      if (HttpContext.Session.Get<string>("_CurrentUsername") == null) return PartialView();
       return RedirectToAction("index", "dashboard");
     }
 
@@ -43,29 +43,35 @@ namespace Engeman.Intranet.Controllers
       //catch (COMException ex)
       //{
       //  TempData["Message"] = "Erro!" + "/" + ex.Message;
+
       //  return RedirectToAction("index", "login");
       //}
 
-      try { userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username); }
-      catch (Exception) { }
-      if (userAccount == null)
+      try { userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username); } 
+      catch (IndexOutOfRangeException) 
       {
         TempData["Message"] = "Erro!/Usuário não cadastrado.";
+
+        return RedirectToAction("index", "login");
+      }
+
+      if (userAccount.Active == false)
+      {
+        TempData["Message"] = "Erro!/Usuário inativo.";
+
         return RedirectToAction("index", "login");
       }
       else
       {
-        var claims = new List<Claim>
-          {
-            new Claim(ClaimTypes.Name, loginViewModel.Username)
-          };
+        var claims = new List<Claim> { new Claim(ClaimTypes.Name, loginViewModel.Username) };
         var userIdentity = new ClaimsIdentity(claims, "Access");
         var principal = new ClaimsPrincipal(userIdentity);
         await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
         HttpContext.Session.Set<int>("_CurrentUserId", userAccount.Id);
         HttpContext.Session.Set<int>("_DepartmentId", userAccount.DepartmentId);
-        HttpContext.Session.Set<bool>("_Moderator", userAccount.Moderator);
-        HttpContext.Session.Set<string>("_Username", loginViewModel.Username.ToString());
+        HttpContext.Session.Set<bool>("_IsModerator", userAccount.Moderator);
+        HttpContext.Session.Set<string>("_CurrentUsername", loginViewModel.Username);
+
         return RedirectToAction("index", "dashboard");
       }
     }
@@ -75,6 +81,7 @@ namespace Engeman.Intranet.Controllers
       await HttpContext.SignOutAsync("CookieAuthentication");
       HttpContext.Session.Clear();
       Response.Cookies.Delete("UserSession");
+
       return RedirectToAction("index", "login");
     }
   }

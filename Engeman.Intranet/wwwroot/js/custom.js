@@ -42,20 +42,6 @@ $("#multiselect-department").on("change", function () {
   $(this).valid();
 })
 
-//Marcação em azul quando uma opção do menu lateral esquerdo é selecionada
-$("#nav li").on("click", function (event) {
-  var li = $(event.target.parentElement);
-  if (li.hasClass("current")) {
-    li.removeClass("current");
-  } else {
-    var allLi = $("#nav").children();
-    allLi.each(function (index, element) {
-      $(this).removeClass("current");
-    })
-    li.addClass("current");
-  }
-})
-
 $("#restricted").on("switchChange.bootstrapSwitch", function (event, state) {
   if (state == true) {
     $(".departments-list").css("display", "block");
