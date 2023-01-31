@@ -13,7 +13,7 @@
         <div class="col-md-12 wang-editor" id="@ViewBag.SelectorId">
           <div id="@ViewBag.SelectorId-toolbar" class="wang-editor-toolbar"></div>
           <div id="@ViewBag.SelectorId-editor" class="wang-editor-editor"></div>
-          <input id="@ViewBag.SelectorId-description" class="form-control wang-editor-description" name="comment.description" value="@Model.Comment.Description">
+        <textarea id="@ViewBag.SelectorId-description" class="form-control wang-editor-description" name="comment.description">@Model.Comment.Description</textarea>
         </div>
       </div>
       @if (@Model.Files.Count > 0)
