@@ -91,6 +91,7 @@ $("#edit-user-form").on("submit", function (event) {
 
 $("#permissions").on("change", function (e) {
   if (this.value == 0) {
+    $("#create-post-switch").bootstrapSwitch('state', true);
     $("#create-post-switch").bootstrapSwitch('readonly', false);
     $("#create-post-radio").prop("checked", true);
     $("#edit-owner-post-radio").prop("checked", true);
@@ -99,6 +100,7 @@ $("#permissions").on("change", function (e) {
     $("#delete-any-post-radio").prop("checked", false);
     $("#need-revision-radio").prop("checked", false);
   } else if (this.value == 1) {
+    $("#create-post-switch").bootstrapSwitch('state', true);
     $("#create-post-switch").bootstrapSwitch('readonly', false);
     $("#create-post-radio").prop("checked", true);
     $("#edit-owner-post-radio").prop("checked", true);
