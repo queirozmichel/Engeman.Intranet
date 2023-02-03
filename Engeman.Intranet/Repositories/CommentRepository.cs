@@ -216,7 +216,7 @@ namespace Engeman.Intranet.Repositories
       string[] paramters = { "BinaryData;byte" };
       //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
       var query = $"INSERT INTO COMMENT(DESCRIPTION, USER_ACCOUNT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
-                  $"VALUES(N'{newComment.Description}', {newComment.UserAccountId}, {newComment.PostId}, '{newComment.Revised}')";
+                  $"VALUES(N'{newComment.Description.Replace("'", "''")}', {newComment.UserAccountId}, {newComment.PostId}, '{newComment.Revised}')";
 
       using StaticQuery sq = new();
       var outputCommentId = sq.GetDataToInt(query);
@@ -244,7 +244,7 @@ namespace Engeman.Intranet.Repositories
 
     public void Update(int id, Comment comment)
     {
-      string query = $"UPDATE COMMENT SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description}', REVISED = '{comment.Revised}' WHERE ID = '{id}'";
+      string query = $"UPDATE COMMENT SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description.Replace("'", "''")}', REVISED = '{comment.Revised}' WHERE ID = '{id}'";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query);

@@ -38,9 +38,9 @@ namespace Engeman.Intranet.Repositories
       if (log.ReferenceId != null && log.ReferenceTable != null)
       {
         query = $"INSERT INTO LOG (USERNAME, OPERATION, DESCRIPTION, REFERENCE_ID, REFERENCE_TABLE) VALUES ('{log.Username}', '{log.Operation}', " +
-                $"'{log.Description}', {log.ReferenceId} , '{log.ReferenceTable}')";
+                $"'{log.Description.Replace("'", "''")}', {log.ReferenceId} , '{log.ReferenceTable}')";
       }
-      else query = $"INSERT INTO LOG (USERNAME, OPERATION, DESCRIPTION) VALUES ('{log.Username}', '{log.Operation}', '{log.Description}')";
+      else query = $"INSERT INTO LOG (USERNAME, OPERATION, DESCRIPTION) VALUES ('{log.Username}', '{log.Operation}', '{log.Description.Replace("'", "''")}')";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query);

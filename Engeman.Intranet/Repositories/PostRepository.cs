@@ -240,7 +240,7 @@ namespace Engeman.Intranet.Repositories
     {
       string[] paramters = { "BinaryData;byte" };
       var query = $"INSERT INTO POST (RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
-                  $"VALUES ('{post.Restricted}', '{post.Subject}', N'{post.Description}', '{post.CleanDescription}', '{post.Keywords}', {post.UserAccountId}, " +
+                  $"VALUES ('{post.Restricted}', '{post.Subject.Replace("'", "''")}', N'{post.Description.Replace("'", "''")}', '{post.CleanDescription.Replace("'", "''")}', '{post.Keywords}', {post.UserAccountId}, " +
                   $"'{post.PostType}', '{post.Revised}')";
 
       using StaticQuery sq = new();
@@ -283,8 +283,8 @@ namespace Engeman.Intranet.Repositories
 
     public void Update(PostEditViewModel post)
     {
-      var update = $"UPDATE POST SET RESTRICTED = '{post.Restricted}', SUBJECT = '{post.Subject}', DESCRIPTION = N'{post.Description}', " +
-                   $"CLEAN_DESCRIPTION = '{post.Description}', KEYWORDS = '{post.Keywords}', POST_TYPE = '{post.PostType}', REVISED = '{post.Revised}' " +
+      var update = $"UPDATE POST SET RESTRICTED = '{post.Restricted}', SUBJECT = '{post.Subject.Replace("'", "''")}', DESCRIPTION = N'{post.Description.Replace("'", "''")}', " +
+                   $"CLEAN_DESCRIPTION = '{post.Description.Replace("'", "''")}', KEYWORDS = '{post.Keywords}', POST_TYPE = '{post.PostType}', REVISED = '{post.Revised}' " +
                    $"WHERE ID = {post.Id}";
       var delete = $"DELETE FROM POSTRESTRICTION WHERE POST_ID = {post.Id}";
 

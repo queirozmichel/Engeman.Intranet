@@ -162,7 +162,7 @@ namespace Engeman.Intranet.Repositories
     {
       string[] paramters = { "Photo;byte" };
       object[] values = { userAccount.Photo };
-      var query = $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}', DESCRIPTION = '{userAccount.Description}', " +
+      var query = $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}', DESCRIPTION = '{userAccount.Description.Replace("'", "''")}', " +
                   $"PHOTO = CONVERT(VARBINARY(MAX),@Photo) WHERE USERNAME = '{userAccount.Username}'";
 
       using StaticQuery sq = new StaticQuery();
@@ -174,7 +174,7 @@ namespace Engeman.Intranet.Repositories
       string[] paramters = { "Photo;byte" };
       object[] values = { editedUser.Photo };
       var query = $"UPDATE USERACCOUNT SET ACTIVE = '{editedUser.Active}', NAME = '{editedUser.Name}', USERNAME = '{editedUser.Username}', EMAIL = '{editedUser.Email}', " +
-                  $"DEPARTMENT_ID = {editedUser.DepartmentId}, DESCRIPTION = '{editedUser.Description}', CREATE_POST = '{editedUser.CreatePost}', " +
+                  $"DEPARTMENT_ID = {editedUser.DepartmentId}, DESCRIPTION = '{editedUser.Description.Replace("'", "''")}', CREATE_POST = '{editedUser.CreatePost}', " +
                   $"EDIT_OWNER_POST = '{editedUser.EditOwnerPost}', DELETE_OWNER_POST = '{editedUser.DeleteOwnerPost}', EDIT_ANY_POST = '{editedUser.EditAnyPost}', " +
                   $"DELETE_ANY_POST = '{editedUser.DeleteAnyPost}', MODERATOR = '{editedUser.Moderator}', NOVICE_USER = '{editedUser.NoviceUser}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
                   $"WHERE ID = {editedUser.Id}";
