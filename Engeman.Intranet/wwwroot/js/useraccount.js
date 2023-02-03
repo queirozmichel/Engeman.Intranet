@@ -65,14 +65,16 @@ $("#edit-profile-form").submit(function (event) {
               window.history.pushState(this.url, null, this.url);
             },
             error: function (response) {
-              toastr.error("Não foi possível atualizar o perfil.", "Erro!");
+              toastr.error("Não foi possível atualizar a página.", "Erro!");
             }
           });
         };
         toastr.success("As alterações foram salvas.", "Sucesso!");
       },
       error: function (response) {
-        toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
+        if (response.status == 500) {
+          toastr.error(response.responseText, "Erro " + response.status);
+        }
       },
       complete: function () {
         stopSpinner();

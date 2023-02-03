@@ -4,6 +4,7 @@ using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -64,7 +65,11 @@ namespace Engeman.Intranet.Controllers
 
       if (currentComment.Revised == true && userAccount.NoviceUser == false) comment.Revised = true;
 
-      try { _commentRepository.UpdateWithLog(currentComment.Id, comment, sessionUsername); } catch (Exception) { }
+      try { _commentRepository.UpdateWithLog(currentComment.Id, comment, sessionUsername); }
+      catch (SqlException sqlEx)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+      }
 
       if (binaryData.Count != 0)
       {
@@ -133,7 +138,11 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      try { _commentRepository.AddWithLog(newComment, sessionUsername); } catch (Exception) { }
+      try { _commentRepository.AddWithLog(newComment, sessionUsername); }
+      catch (SqlException sqlEx)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+      }
 
       return Ok(StatusCodes.Status200OK);
     }

@@ -96,19 +96,24 @@ $("#new-post-form").on("submit", function (event) {
               $("#render-body").empty();
               $("#render-body").html(response);
               window.history.pushState(this.url, null, this.url);
+              toastr.success("A postagem foi salva.", "Sucesso!");
             },
             error: function () {
               toastr.error("Não foi possível ir para a tela de postagens.", "Erro!");
             },
             complete: function () {
               stopSpinner();
-              toastr.success("A postagem foi salva.", "Sucesso!");
             }
           });
         }
       },
       error: function (response) {
-        toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
+        if (response.status == 500) {
+          toastr.error(response.responseText, "Erro " + response.status);
+        }
+      },
+      complete: function (response) {
+        stopSpinner();
       }
     });
   }

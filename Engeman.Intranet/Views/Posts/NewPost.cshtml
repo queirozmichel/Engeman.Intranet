@@ -50,7 +50,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-2 control-label">Assunto<span>*</span></label>
+              <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
               <div class="col-md-10">
                 <input id="subject" class="form-control" type="text" name="Subject">
               </div>
@@ -62,7 +62,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label id="description-label" class="col-md-2 control-label">Descrição<span>*</span></label>
+              <label id="description-label" class="col-md-2 control-label">Descrição<span class="required">*</span></label>
               <div class="col-md-10">
                 <div id="wang-editor-div" class="col-md-12 wang-editor">
                   <div id="wang-editor-toolbar" class="wang-editor-toolbar"></div>
@@ -72,13 +72,13 @@
               </div>
             </div>
             <div class="form-group">
-              <label class="col-md-2 control-label">Anexar arquivo(s)?</label>
+              <label class="col-md-2 control-label">Anexar arquivo(s)?<span class="required">*</span></label>
               <div class="col-md-10">
                 @Html.CheckBox("attach-files")
               </div>
             </div>
             <div class="form-group files">
-              <label class="col-md-2 control-label">Tipo de postagem<span>*</span></label>
+              <label class="col-md-2 control-label">Tipo de postagem<span class="required">*</span></label>
               <div class="col-md-3">
                 <label class="radio">
                   @Html.RadioButton("PostType", "D")
@@ -91,7 +91,7 @@
               </div>
             </div>
             <div class="form-group files">
-              <label class="col-md-2 control-label">Arquivo(s)<span>*</span></label>
+              <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span></label>
               <div class="col-md-2">
                 <input id="file" type="file" name="Files" accept="application/pdf" multiple>
               </div>

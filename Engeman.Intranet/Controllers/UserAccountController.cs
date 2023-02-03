@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Engeman.Intranet.Models.ViewModels;
 using System.Linq.Dynamic.Core;
 using Engeman.Intranet.Extensions;
+using System.Data.SqlClient;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -146,9 +147,9 @@ namespace Engeman.Intranet.Controllers
       }
 
       try { _userAccountRepository.Update(userAccount); }
-      catch (Exception)
+      catch (SqlException sqlEx)
       {
-        return Ok(StatusCodes.Status400BadRequest);
+        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
       }
 
       return Ok(StatusCodes.Status200OK);
@@ -269,7 +270,10 @@ namespace Engeman.Intranet.Controllers
       }
 
       try { _userAccountRepository.UpdateByModeratorWithLog(user.Id, user, sessionUsername); }
-      catch (Exception) { }
+      catch (SqlException sqlEx)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+      }
 
       return Ok(StatusCodes.Status200OK);
     }
@@ -282,10 +286,10 @@ namespace Engeman.Intranet.Controllers
       int resultAux = StatusCodes.Status200OK;
 
       try { _userAccountRepository.DeleteWithLog(userId, sessionUsername); }
-      catch (System.Data.SqlClient.SqlException ex)
+      catch (SqlException sqlEx)
       {
         resultAux = StatusCodes.Status500InternalServerError;
-        messageAux = ex.Message;
+        messageAux = sqlEx.Message;
       }
 
       return Json(new { result = resultAux, message = messageAux });

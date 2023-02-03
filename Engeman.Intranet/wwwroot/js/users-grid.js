@@ -224,7 +224,7 @@ function deleteUser(userId, elementAux) {
         }, 700);
         toastr.success("O usuário foi apagado.", "Sucesso!");
       } else if (response.result == 500) {
-        showAlertModal("Erro!", response.message);
+        showAlertModal("Não foi possível apagar o usuário!", response.message);
       } else {
         showAlertModal("Erro!", "Ocorreu um erro indefinido ao tentar processar a solicitação.");
       }

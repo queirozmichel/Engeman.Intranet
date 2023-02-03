@@ -59,16 +59,15 @@ $("#new-post-btn").on("click", function (event) {
       startSpinner();
     },
     success: function (response) {
-      if (response == 401) {
-        showAlertModal("Operação não suportada!", "Você não tem permissão para criar uma nova postagem.");
-      } else {
-        $("#render-body").empty();
-        $("#render-body").html(response);
-        window.history.pushState(this.url, "Nova postagem", this.url);
-      }
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState(this.url, "Nova postagem", this.url);
+
     },
     error: function (response) {
-      toastr.error("Não foi possível acessar a tela de nova postagem", "Erro!");
+      if (response.status == 401) {
+        showAlertModal("Erro " + response.status, "Você não tem permissão para criar uma nova postagem.");
+      }
     },
     complete: function () {
       stopSpinner();
@@ -164,7 +163,7 @@ $("#nav li").on("click", function (event) {
   allLi.each(function (index, element) {
     $(this).removeClass("current");
   })
-  if (! li.hasClass("current")) {
+  if (!li.hasClass("current")) {
     li.addClass("current");
   }
 })

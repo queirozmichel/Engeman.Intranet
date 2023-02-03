@@ -68,7 +68,7 @@ $("#new-user-form").on("submit", function (event) {
           $("#users-grid").bootgrid("reload");
         } else if (response.result == 500) {
           $("#new-user-modal").modal("hide");
-          showAlertModal("Não foi possível salvar o novo usuário.", response.message);
+          showAlertModal("Não foi possível salvar o usuário!", response.message);
         } else {
           $("#new-user-modal").modal("hide");
           showAlertModal("Ocorreu um erro indefinido ao tentar processar a solicitação:", "Erro!");

@@ -52,7 +52,9 @@ $("#comment-edit-form").on("submit", function (event) {
         $("#render-body").html(response);
       },
       error: function (response) {
-        toastr.error("Não foi possível atualizar o comentário", "Erro!");
+        if (response.status == 500) {
+          toastr.error(response.responseText, "Erro " + response.status);
+        }
       }
     })
   }

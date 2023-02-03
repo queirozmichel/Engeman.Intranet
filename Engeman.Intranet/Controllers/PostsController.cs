@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
 using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Extensions;
+using System.Data.SqlClient;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -145,7 +146,8 @@ namespace Engeman.Intranet.Controllers
         return PartialView("NewPost");
       }
 
-      else return Ok(StatusCodes.Status401Unauthorized);
+      //else return Ok(StatusCodes.Status401Unauthorized);
+      else return StatusCode(StatusCodes.Status401Unauthorized);
     }
 
     [HttpPost]
@@ -182,7 +184,11 @@ namespace Engeman.Intranet.Controllers
       }
       else newPost.PostType = 'N';
 
-      try { _postRepository.AddWithLog(newPost, sessionUsername); } catch (Exception) { }
+      try { _postRepository.AddWithLog(newPost, sessionUsername); }
+      catch (SqlException sqlEx)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+      }
 
       return Ok(StatusCodes.Status200OK);
     }
@@ -288,7 +294,11 @@ namespace Engeman.Intranet.Controllers
 
       if (currentPost.Revised == true && userAccount.NoviceUser == false) editedPost.Revised = true;
 
-      try { _postRepository.UpdateWithLog(editedPost.Id, editedPost, sessionUsername); } catch (Exception) { }
+      try { _postRepository.UpdateWithLog(editedPost.Id, editedPost, sessionUsername); }
+      catch (SqlException sqlEx)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+      }
 
       ViewBag.FilterGrid = Request.Query["filter"];
 
@@ -402,7 +412,7 @@ namespace Engeman.Intranet.Controllers
     {
       var orderedFiles = new List<PostFile>();
 
-      try { orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList(); }  catch (Exception) { }
+      try { orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList(); } catch (Exception) { }
 
       //Adiciona "inline" no cabeçalho da página ao invés de "attachment" para forçar abrir ao invés de baixar
       Response.Headers.Add("Content-Disposition", "inline; filename=" + Uri.EscapeDataString(orderedFiles[file].Name));

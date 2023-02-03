@@ -75,12 +75,12 @@ $("#edit-user-form").on("submit", function (event) {
         if (response == 200) {
           toastr.success("As alterações foram salvas", "Sucesso!");
           window.history.back();
-        } else {
-          toastr.error("Código de resposta não tratado", "Erro!");
         }
       },
       error: function () {
-        toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
+        if (response.status == 500) {
+          toastr.error(response.responseText, "Erro " + response.status);
+        }
       },
       complete: function () {
         stopSpinner();

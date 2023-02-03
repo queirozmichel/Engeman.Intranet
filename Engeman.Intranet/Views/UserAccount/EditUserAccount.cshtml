@@ -43,13 +43,13 @@
             </div>
             <div class="col-md-8">
               <div class="form-group">
-                <label class="col-md-4 control-label">Ativo</label>
+                <label class="col-md-4 control-label">Ativo<span class="required">*</span></label>
                 <div class="col-md-8">
                   @Html.CheckBox("active", Model.Active, new { @class = "switch" })
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-4 control-label">Código do usuário</label>
+                <label class="col-md-4 control-label">Código do usuário<span class="required">*</span></label>
                 <div class="col-md-2">
                   <input style="width: 84px;" class="form-control" name="id" type="text" value="@Model.Id" readonly />
                 </div>
@@ -67,7 +67,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-4 control-label">E-mail</label>
+                <label class="col-md-4 control-label">E-mail<span class="required">*</span></label>
                 <div class="col-md-8">
                   <div class="input-group">
                     <input type="text" name="email" class="form-control" id="email-input" readonly value="@Model.Email">
@@ -76,7 +76,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-4 control-label">Departamento</label>
+                <label class="col-md-4 control-label">Departamento<span class="required">*</span></label>
                 <div class="col-md-4">
                   <select class="form-control" id="departmentId" name="departmentId">
                     <option value="@Model.DepartmentId" selected>@Model.DepartmentDescription</option>
@@ -94,7 +94,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-4 control-label">Tipo de usuário</label>
+                <label class="col-sm-4 control-label">Tipo de usuário<span class="required">*</span></label>
                 <div class="col-sm-4">
                   <select title="<b>COMUM:</b> Pode editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador para que seja visível a todos.</br><b>MODERADOR:</b> Pode editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permissions" name="userTypeCode">
                     <option value="@Model.UserTypeCode" selected>@Model.UserType</option>
@@ -109,7 +109,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-md-4 control-label">Criar postagens</label>
+                <label class="col-md-4 control-label">Criar postagens<span class="required">*</span></label>
                 <div class="col-md-8">
                   @Html.CheckBox("createPost", Model.CreatePost, new { @class = "switch", id = "create-post-switch" })
                 </div>

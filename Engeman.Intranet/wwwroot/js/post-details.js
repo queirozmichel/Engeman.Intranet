@@ -51,18 +51,18 @@ $("#comment-form").on("submit", function (event) {
             error: function () {
               toastr.error("Não foi possível ir para os detalhes da postagem", "Erro!");
             },
-            complete: function () {
-              stopSpinner();
-            },
           });
           toastr.success("O comentário foi salvo", "Sucesso!");
-        } else {
-          toastr.error("Formulário inválido", "Erro!");
         }
       },
       error: function (response) {
-        toastr.error("O comentário não foi salvo", "Erro!");
-      }
+        if (response.status == 500) {
+          toastr.error(response.responseText, "Erro " + response.status);
+        }
+      },
+      complete: function () {
+        stopSpinner();
+      },
     })
   }
 })
