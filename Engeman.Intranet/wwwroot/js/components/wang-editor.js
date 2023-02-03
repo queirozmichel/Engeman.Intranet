@@ -58,6 +58,7 @@ function richTextBox() {
       codeLangs: [
         { text: 'CSS', value: 'css' },
         { text: 'HTML', value: 'html' },
+        { text: 'Javascript', value: 'javascript' },
         { text: 'C#', value: 'csharp' },
         { text: 'SQL', value: 'sql' },
         { text: 'JSON', value: 'json' },
