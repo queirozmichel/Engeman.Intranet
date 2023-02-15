@@ -6,6 +6,7 @@ using System.Linq.Dynamic.Core;
 using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -19,10 +20,11 @@ namespace Engeman.Intranet.Controllers
     private readonly ICommentRepository _commentRepository;
     private readonly ICommentFileRepository _commentFileRepository;
     private readonly IPostRestrictionRepository _postRestrictionRepository;
+    private readonly IForbiddenWordRepository _forbiddenWordRepository;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
       IDepartmentRepository departmentRepository, IPostFileRepository postFileRepository, ICommentRepository postCommentRepository,
-      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository)
+      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IForbiddenWordRepository forbiddenWordRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
@@ -31,6 +33,7 @@ namespace Engeman.Intranet.Controllers
       _commentRepository = postCommentRepository;
       _commentFileRepository = postCommentFileRepository;
       _postRestrictionRepository = postRestrictionRepository;
+      _forbiddenWordRepository = forbiddenWordRepository;
     }
 
     [HttpGet]
@@ -440,6 +443,48 @@ namespace Engeman.Intranet.Controllers
     {
       if (HttpContext.Session.Get<bool>("_IsModerator") == true) return true;
       else return false;
+    }
+
+    [HttpPost]
+    public JsonResult CheckForbiddenWords(IFormCollection formData)
+    {
+      var forbiddenWords = _forbiddenWordRepository.GetWords();
+      var keys = formData.Keys.Where(x => !x.Equals("__RequestVerificationToken")).ToList();
+      string text;
+      var inputs = new List<string>();
+
+      foreach (var key in keys)
+      {
+        text = formData[key];
+
+        foreach (var word in forbiddenWords)
+        {
+          if (Regex.IsMatch(text, @"\b" + Regex.Escape(word) + @"\b", RegexOptions.IgnoreCase))
+          {
+            inputs.Add(key);
+            break;
+          }
+        }
+      }
+
+      if (formData.Files.Count != 0)
+      {
+        for (int i = 0; i < formData.Files.Count; i++)
+        {
+          text = formData.Files[i].FileName;
+
+          foreach (var word in forbiddenWords)
+          {
+            if (Regex.IsMatch(text, @"\b" + Regex.Escape(word) + @"\b", RegexOptions.IgnoreCase))
+            {
+              inputs.Add("Arquivo " + (i + 1) + ": " + formData.Files[i].FileName);
+              break;
+            }
+          }
+        }
+      }
+
+      return Json(new { inputsCount = inputs.Count, inputs });
     }
   }
 }

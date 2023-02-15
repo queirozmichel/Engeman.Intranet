@@ -36,6 +36,7 @@ builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient<ICommentFileRepository, CommentFileRepository>();
 builder.Services.AddTransient<IPostRestrictionRepository, PostRestrictionRepository>();
 builder.Services.AddTransient<ILogRepository, LogRepository>();
+builder.Services.AddTransient<IForbiddenWordRepository, ForbiddenWordRepository>();
 
 var app = builder.Build();
 

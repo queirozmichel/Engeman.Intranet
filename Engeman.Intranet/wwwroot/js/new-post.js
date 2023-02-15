@@ -67,55 +67,130 @@ $(document).ready(function () {
 })
 
 $("#new-post-form").on("submit", function (event) {
-  $("#new-post-form").validate();
-  //ignora o submit padrão do formulário
   event.preventDefault();
-  //usado para receber além dos dados texto, o arquivo também
+  $("#new-post-form").validate();
   if ($("#new-post-form").valid()) {
     var formData = new FormData(this);
     //contentType e processData são obrigatórios para upload de arquivos
     $.ajax({
       type: "POST",
-      url: "/posts/newpost/",
+      url: "/posts/checkforbiddenwords",
       contentType: false,
       processData: false,
       data: formData,
+      dataType: "json",
       beforeSend: function () {
         startSpinner();
       },
       success: function (response) {
-        if (response == 200) {
+        if (response.inputsCount != 0) {
+          showAlertModal("Atenção!", "Não foi possível salvar, pois o formulário contém palavra(s) de uso não permitido.");
+        } else {
           $.ajax({
-            type: "GET",
-            url: "/posts/grid?filter=allPosts",
-            dataType: "html",
-            beforeSend: function () {
-              startSpinner();
-            },
+            type: "POST",
+            url: "/posts/newpost/",
+            contentType: false,
+            processData: false,
+            data: formData,
             success: function (response) {
-              $("#render-body").empty();
-              $("#render-body").html(response);
-              window.history.pushState(this.url, null, this.url);
-              toastr.success("A postagem foi salva.", "Sucesso!");
+              if (response == 200) {
+                $.ajax({
+                  type: "GET",
+                  url: "/posts/grid?filter=allPosts",
+                  dataType: "html",
+                  success: function (response) {
+                    $("#render-body").empty();
+                    $("#render-body").html(response);
+                    window.history.pushState(this.url, null, this.url);
+                    toastr.success("A postagem foi salva.", "Sucesso!");
+                  },
+                  error: function () {
+                    toastr.error("Não foi possível ir para a tela de postagens.", "Erro!");
+                  },
+                });
+              }
             },
-            error: function () {
-              toastr.error("Não foi possível ir para a tela de postagens.", "Erro!");
-            },
-            complete: function () {
-              stopSpinner();
+            error: function (response) {
+              if (response.status == 500) {
+                toastr.error(response.responseText, "Erro " + response.status);
+              }
             }
           });
         }
       },
-      error: function (response) {
-        if (response.status == 500) {
-          toastr.error(response.responseText, "Erro " + response.status);
-        }
-      },
+      error: function (response) { },
       complete: function (response) {
         stopSpinner();
       }
-    });
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //var formData = new FormData(this);
+    //contentType e processData são obrigatórios para upload de arquivos
+    //$.ajax({
+    //  type: "POST",
+    //  url: "/posts/newpost/",
+    //  contentType: false,
+    //  processData: false,
+    //  data: formData,
+    //  beforeSend: function () {
+    //    startSpinner();
+    //  },
+    //  success: function (response) {
+    //    if (response == 200) {
+    //      $.ajax({
+    //        type: "GET",
+    //        url: "/posts/grid?filter=allPosts",
+    //        dataType: "html",
+    //        beforeSend: function () {
+    //          startSpinner();
+    //        },
+    //        success: function (response) {
+    //          $("#render-body").empty();
+    //          $("#render-body").html(response);
+    //          window.history.pushState(this.url, null, this.url);
+    //          toastr.success("A postagem foi salva.", "Sucesso!");
+    //        },
+    //        error: function () {
+    //          toastr.error("Não foi possível ir para a tela de postagens.", "Erro!");
+    //        },
+    //        complete: function () {
+    //          stopSpinner();
+    //        }
+    //      });
+    //    }
+    //  },
+    //  error: function (response) {
+    //    if (response.status == 500) {
+    //      toastr.error(response.responseText, "Erro " + response.status);
+    //    }
+    //  },
+    //  complete: function (response) {
+    //    stopSpinner();
+    //  }
+    //});
   }
 })
 
@@ -124,5 +199,6 @@ $("#attach-files").on("switchChange.bootstrapSwitch", function (event, state) {
     $(".files").css("display", "block");
   } else {
     $(".files").css("display", "none");
+    $("#file").val('');
   }
 });
