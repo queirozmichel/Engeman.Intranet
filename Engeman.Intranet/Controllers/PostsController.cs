@@ -7,6 +7,8 @@ using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
+using Microsoft.Extensions.Hosting;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -21,10 +23,11 @@ namespace Engeman.Intranet.Controllers
     private readonly ICommentFileRepository _commentFileRepository;
     private readonly IPostRestrictionRepository _postRestrictionRepository;
     private readonly IForbiddenWordRepository _forbiddenWordRepository;
+    private readonly IConfiguration _configuration;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
       IDepartmentRepository departmentRepository, IPostFileRepository postFileRepository, ICommentRepository postCommentRepository,
-      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IForbiddenWordRepository forbiddenWordRepository)
+      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IForbiddenWordRepository forbiddenWordRepository, IConfiguration configuration)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
@@ -34,6 +37,7 @@ namespace Engeman.Intranet.Controllers
       _commentFileRepository = postCommentFileRepository;
       _postRestrictionRepository = postRestrictionRepository;
       _forbiddenWordRepository = forbiddenWordRepository;
+      _configuration = configuration;
     }
 
     [HttpGet]
@@ -163,7 +167,7 @@ namespace Engeman.Intranet.Controllers
 
       if (userAccount.Moderator == true || userAccount.NoviceUser == false) newPost.Revised = true;
 
-      newPost.CleanDescription = newPost.Description;
+      newPost.CleanDescription = HTMLToTextConvert(newPost.Description);
       newPost.UserAccountId = userAccount.Id;
 
       if (newPost.Keywords != null) newPost.Keywords = newPost.Keywords.ToLower();
@@ -255,7 +259,7 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      editedPost.CleanDescription = editedPost.Description;
+      editedPost.CleanDescription = HTMLToTextConvert(editedPost.Description);
 
       if (editedPost.Keywords != null) editedPost.Keywords = editedPost.Keywords.ToLower();
 
@@ -485,6 +489,49 @@ namespace Engeman.Intranet.Controllers
       }
 
       return Json(new { inputsCount = inputs.Count, inputs });
+    }
+
+    public string HTMLToTextConvert(string htmlText)
+    {
+      var htmlDocument = new HtmlDocument();
+      htmlDocument.LoadHtml(htmlText);
+      var pureText = "";
+      var nodes = htmlDocument.DocumentNode.SelectNodes("*");
+      var last = nodes.Last();
+
+      foreach (var node in nodes)
+      {
+        if (node.Name == "table")
+        {
+          var tbody = node.ChildNodes[0];
+          var aux = 0;
+
+          while (aux < tbody.ChildNodes.Count)
+          {
+            var elements = tbody.ChildNodes[aux];
+            foreach (var element in elements.ChildNodes)
+            {
+              pureText += element.InnerText + " ";
+            }
+            aux++;
+          }
+          continue;
+        }
+
+        pureText += node.InnerText;
+
+        if (!node.InnerText.EndsWith(" ") && !node.Equals(last))
+        {
+          pureText += " ";
+        }
+      }
+      pureText = Regex.Replace(pureText, _configuration["AllEmojisPattern"], "");
+
+      if (pureText.EndsWith(" "))
+      {
+        pureText = pureText.Substring(0, pureText.Length - 1);
+      }
+      return pureText;
     }
   }
 }
