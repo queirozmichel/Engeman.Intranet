@@ -41,8 +41,10 @@ function richTextBox() {
       onFocus(editor) {
       },
       onBlur(editor) {
-        $(".wang-editor-description").focus();
-        $(".wang-editor-description").blur();
+        let aux = editor.id;
+        var res = parseInt(aux.charAt(aux.length - 1));
+        res = res + 1;
+        $('#w-e-textarea-' + res).focus();
       }
     }
 
