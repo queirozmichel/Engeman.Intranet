@@ -49,18 +49,33 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public List<PostGridViewModel> GetPostsGrid(UserAccount user)
+    public List<PostGridViewModel> GetPostsGrid(UserAccount user, string searchPhrase)
     {
       var posts = new List<PostGridViewModel>();
       bool revised;
       bool restricted;
       int authorPostId;
       bool moderator;
-      var query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
-                  $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
-                  $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE POST.ACTIVE = 1 " +
-                  $"GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
-                  $"UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION";
+      string query;
+
+      if (string.IsNullOrWhiteSpace(searchPhrase))
+      {
+        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
+                $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
+                $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE POST.ACTIVE = 1 " +
+                $"GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
+                $"UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION";
+      }
+      else
+      {
+        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
+                $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT, KEY_TBL.RANK " +
+                $"FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
+                $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
+                $"INNER JOIN {Constants.SearchCondition.Replace("#SearchPhrase#", searchPhrase)} ON POST.ID = KEY_TBL.[KEY] " +
+                $"WHERE POST.ACTIVE = 1 AND KEY_TBL.RANK >= {Constants.Rank} " +
+                $"ORDER BY KEY_TBL.RANK DESC";
+      }
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -94,7 +109,6 @@ namespace Engeman.Intranet.Repositories
         };
         posts.Add(postGrid);
       }
-
       return posts;
     }
 

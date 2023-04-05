@@ -1,5 +1,6 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Repositories;
+using Engeman.Intranet.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
@@ -8,7 +9,6 @@ using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
-using Microsoft.Extensions.Hosting;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -60,19 +60,19 @@ namespace Engeman.Intranet.Controllers
       var isModerator = CheckIsModerator();
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
-      var order = requestKeys[key];
-      var field = key.Replace("sort[", "").Replace("]", "");
-      var orderedField = string.Format("{0} {1}", field, order);
+      string order;
+      string field;
+      string orderedField = string.Empty;
 
-      posts = FilterPosts(filterGrid, filterHeader);
-
-      total = posts.Count();
-
-      if (!string.IsNullOrWhiteSpace(searchPhrase))
+      if (!string.IsNullOrEmpty(key))
       {
-        posts = FilterPostsBySearchPhrase(posts, searchPhrase);
-        total = posts.Count();
+        order = requestKeys[key];
+        field = key.Replace("sort[", "").Replace("]", "");
+        orderedField = string.Format("{0} {1}", field, order);
       }
+
+      posts = FilterPosts(filterGrid, filterHeader, searchPhrase);
+      total = posts.Count();
 
       if (rowCount == -1) rowCount = total;
 
@@ -81,16 +81,22 @@ namespace Engeman.Intranet.Controllers
       return Json(new { rows = paginatedPosts, current, rowCount, total, isModerator });
     }
 
-    public IQueryable<PostGridViewModel> FilterPosts(string filterGrid, string filterHeader)
+    public IQueryable<PostGridViewModel> FilterPosts(string filterGrid, string filterHeader, string searchPhrase)
     {
       var user = new UserAccount();
       IQueryable<PostGridViewModel> posts = null;
       var comments = new List<Comment>();
 
+      if (bool.Parse(_configuration.GetSection("SearchCondition:CONTAINSTABLE").Value) == true && (!string.IsNullOrEmpty(searchPhrase)))
+      {
+        searchPhrase = Regex.Replace(searchPhrase, @"^[\s]+|[\s]+$", "");
+        searchPhrase = Regex.Replace(searchPhrase, @"\s+", " NEAR ");
+      }
+
       try
       {
         user = _userAccountRepository.GetById(HttpContext.Session.Get<int>("_CurrentUserId"));
-        posts = _postRepository.GetPostsGrid(user).AsQueryable();
+        posts = _postRepository.GetPostsGrid(user, searchPhrase).AsQueryable();
       }
       catch (Exception) { }
 
@@ -124,18 +130,12 @@ namespace Engeman.Intranet.Controllers
       else return posts;
     }
 
-    public IQueryable<PostGridViewModel> FilterPostsBySearchPhrase(IQueryable<PostGridViewModel> posts, string searchPhrase)
-    {
-      return posts.Where("userAccountName.Contains(@0, StringComparison.OrdinalIgnoreCase) OR department.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-        "subject.Contains(@0, StringComparison.OrdinalIgnoreCase) OR keywords.Contains(@0, StringComparison.OrdinalIgnoreCase) OR " +
-        "changeDate.Contains(@0)", searchPhrase); ;
-    }
-
     public IQueryable OrderedPosts(IQueryable<PostGridViewModel> posts, string orderedField, int current, int rowCount)
     {
       if (orderedField.Contains("changeDate asc")) return posts.OrderBy(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
       else if (orderedField.Contains("changeDate desc")) return posts.OrderByDescending(x => Convert.ToDateTime(x.ChangeDate)).Skip((current - 1) * rowCount).Take(rowCount);
-      else return posts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+      else if (!string.IsNullOrEmpty(orderedField)) return posts.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+      else return posts.Skip((current - 1) * rowCount).Take(rowCount);
     }
 
     [HttpGet]
@@ -525,13 +525,23 @@ namespace Engeman.Intranet.Controllers
           pureText += " ";
         }
       }
-      pureText = Regex.Replace(pureText, _configuration["AllEmojisPattern"], "");
+      pureText = Regex.Replace(pureText, Constants.EmojisPattern, "");
 
       if (pureText.EndsWith(" "))
       {
         pureText = pureText.Substring(0, pureText.Length - 1);
       }
       return pureText;
+    }
+
+    public string SeparateWordsByComma(string phrase)
+    {
+      if (!string.IsNullOrEmpty(phrase))
+      {
+        phrase = Regex.Replace(phrase, @"^[\s]+|[\s]+$", "");
+        phrase = Regex.Replace(phrase, @"\s+", " NEAR ");
+      }
+      return phrase;
     }
   }
 }

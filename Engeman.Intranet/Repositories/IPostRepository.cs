@@ -6,7 +6,7 @@ namespace Engeman.Intranet.Repositories
   public interface IPostRepository
   {
     public List<Post> Get();
-    public List<PostGridViewModel> GetPostsGrid(UserAccount user);
+    public List<PostGridViewModel> GetPostsGrid(UserAccount user, string searchPhrase = null);
     public List<PostGridViewModel> GetWithUnrevisedComments();
     public List<Post> GetByUserAccountId(int userAccountId);
     public List<Post> GetByUsername(string username);
