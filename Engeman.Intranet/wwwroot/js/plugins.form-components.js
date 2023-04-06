@@ -68,6 +68,7 @@ var FormComponents = function () {
         width: '100%',
         height: 'auto',
         defaultText: '',
+        delimiter: ' ',
       });
     }
   }

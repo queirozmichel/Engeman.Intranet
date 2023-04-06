@@ -87,7 +87,7 @@ namespace Engeman.Intranet.Controllers
       IQueryable<PostGridViewModel> posts = null;
       var comments = new List<Comment>();
 
-      if (bool.Parse(_configuration.GetSection("SearchCondition:CONTAINSTABLE").Value) == true && (!string.IsNullOrEmpty(searchPhrase)))
+      if (bool.Parse(_configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == true && (!string.IsNullOrEmpty(searchPhrase)))
       {
         searchPhrase = Regex.Replace(searchPhrase, @"^[\s]+|[\s]+$", "");
         searchPhrase = Regex.Replace(searchPhrase, @"\s+", " NEAR ");
@@ -532,16 +532,6 @@ namespace Engeman.Intranet.Controllers
         pureText = pureText.Substring(0, pureText.Length - 1);
       }
       return pureText;
-    }
-
-    public string SeparateWordsByComma(string phrase)
-    {
-      if (!string.IsNullOrEmpty(phrase))
-      {
-        phrase = Regex.Replace(phrase, @"^[\s]+|[\s]+$", "");
-        phrase = Regex.Replace(phrase, @"\s+", " NEAR ");
-      }
-      return phrase;
     }
   }
 }

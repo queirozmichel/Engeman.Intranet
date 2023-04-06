@@ -42,11 +42,11 @@ builder.Services.AddTransient<ILogRepository, LogRepository>();
 builder.Services.AddTransient<IForbiddenWordRepository, ForbiddenWordRepository>();
 
 //Determina qual será a condição de pesquisa a ser utilizada
-if (bool.Parse(builder.Configuration.GetSection("SEARCHCONDITION:FREETEXTTABLE").Value) == true && bool.Parse(builder.Configuration.GetSection("SEARCHCONDITION:CONTAINSTABLE").Value) == false)
+if (bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:FREETEXTTABLE").Value) == true && bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == false)
 {
   Constants.SearchCondition = Constants.FreeTextTable;
 }
-else if (bool.Parse(builder.Configuration.GetSection("SEARCHCONDITION:FREETEXTTABLE").Value) == false && bool.Parse(builder.Configuration.GetSection("SEARCHCONDITION:CONTAINSTABLE").Value) == true)
+else if (bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:FREETEXTTABLE").Value) == false && bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == true)
 {
   Constants.SearchCondition = Constants.ContainsTable;
 }
@@ -54,7 +54,7 @@ else
 {
   throw new Exception("FREETEXTTABLE e CONTAINSTABLE não podem estar ambos TRUE ou FALSE");
 }
-Constants.Rank = builder.Configuration.GetValue<string>("SEARCHCONDITION:RANK");
+Constants.Rank = builder.Configuration.GetValue<string>("SEARCH_CONDITION:RANK");
 
 var app = builder.Build();
 

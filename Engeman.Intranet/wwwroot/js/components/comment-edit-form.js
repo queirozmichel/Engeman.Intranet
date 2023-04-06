@@ -1,12 +1,6 @@
 ﻿$(document).ready(function () {
   sessionStorage.setItem("postId", $("#post-id").text());
 
-  $('#tags-comment-edit-form').tagsInput({
-    'height': 'auto',
-    'width': '100%',
-    'defaultText': '',
-  });
-
   jQuery.validator.setDefaults({
     rules: {
       "comment.description": {
