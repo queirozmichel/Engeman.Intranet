@@ -21,10 +21,9 @@ GO
 
 USE ENGEMANINTRANET
 GO
+
 EXEC SP_GRANTDBACCESS [ENGEMANINTRANET],[ENGEMANINTRANET]
-GO
 EXEC SP_ADDROLEMEMBER [DB_OWNER],[ENGEMANINTRANET]
-GO
 
 /* ============================================================================================
 
@@ -41,8 +40,6 @@ GO
  
 EXEC SP_DEFAULTLANGUAGE 'ENGEMANINTRANET', 'BRAZILIAN'
 
-GO
-
 /* ===================================== Criação das Sequences ===================================================== */
 
 CREATE SEQUENCE GENDEPARTMENT START WITH 1 AS NUMERIC(18);
@@ -54,7 +51,6 @@ CREATE SEQUENCE GENCOMMENTFILE START WITH 1 AS NUMERIC(18);
 CREATE SEQUENCE GENPOSTRESTRICTION START WITH 1 AS NUMERIC(18);
 CREATE SEQUENCE GENLOG START WITH 1 AS NUMERIC(18);
 CREATE SEQUENCE GENFORBIDDENWORD START WITH 1 AS NUMERIC(18);
-
 
 /* ====================================== Criação das Tabelas ====================================================== */
 
@@ -70,7 +66,6 @@ CREATE TABLE DEPARTMENT (
 
 	CONSTRAINT PK_DEPARTMENT PRIMARY KEY CLUSTERED (ID)
 	)ON [PRIMARY]
-GO
 
 CREATE TABLE USERACCOUNT ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENUSERACCOUNT),
@@ -99,7 +94,6 @@ CREATE TABLE USERACCOUNT (
 	CONSTRAINT UK_USERNAME UNIQUE(USERNAME),
 	CONSTRAINT FK_USERACCOUNT_DEPARTMENT FOREIGN KEY (DEPARTMENT_ID) REFERENCES DEPARTMENT(ID)
 	)ON [PRIMARY]
-GO
 
 CREATE TABLE POST ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOST),
@@ -122,7 +116,6 @@ CREATE TABLE POST (
 	CONSTRAINT PK_POST PRIMARY KEY CLUSTERED(ID),
 	CONSTRAINT FK_POST_USERACCOUNT FOREIGN KEY (USER_ACCOUNT_ID) REFERENCES USERACCOUNT(ID)
 	)ON [PRIMARY]
-GO
 
 CREATE TABLE COMMENT ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENCOMMENT),
@@ -141,7 +134,6 @@ CREATE TABLE COMMENT (
 	CONSTRAINT FK_COMMENT_POST FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE,
 	CONSTRAINT FK_COMMENT_USERACCOUNT FOREIGN KEY (USER_ACCOUNT_ID) REFERENCES USERACCOUNT(ID)
 	)ON [PRIMARY]
-GO
 
 CREATE TABLE POSTFILE ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOSTFILE),
@@ -157,7 +149,6 @@ CREATE TABLE POSTFILE (
 	
 	CONSTRAINT PK_POSTFILE PRIMARY KEY CLUSTERED(ID),
   CONSTRAINT FK_POSTFILE_POST FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE)ON [PRIMARY]
-GO
 
 CREATE TABLE COMMENTFILE ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENCOMMENTFILE),
@@ -174,7 +165,6 @@ CREATE TABLE COMMENTFILE (
 	CONSTRAINT PK_COMMENTFILE PRIMARY KEY CLUSTERED(ID),
 	CONSTRAINT FK_COMMENTFILE_COMMENT FOREIGN KEY (COMMENT_ID) REFERENCES COMMENT(ID) ON DELETE CASCADE
 	)ON [PRIMARY]
-GO
 
 CREATE TABLE POSTRESTRICTION ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOSTRESTRICTION),
@@ -189,7 +179,6 @@ CREATE TABLE POSTRESTRICTION (
 	CONSTRAINT FK_POSTRESTRICTION_POST FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE,
 	CONSTRAINT FK_POSTRESTRICTION_DEPARTMENT FOREIGN KEY (DEPARTMENT_ID) REFERENCES DEPARTMENT(ID) ON DELETE CASCADE
 	)ON [PRIMARY]
-GO
 
 CREATE TABLE LOG ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENLOG),
@@ -208,7 +197,6 @@ CREATE TABLE LOG (
 	CHECK(REFERENCE_ID > 0),
 	CHECK(REFERENCE_TABLE <> '')
 	)ON [PRIMARY]
-GO
 
 CREATE TABLE FORBIDDENWORD ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENFORBIDDENWORD),
@@ -379,6 +367,22 @@ IF(UPDATE (CREATE_POST) OR UPDATE (EDIT_OWNER_POST) OR UPDATE (DELETE_OWNER_POST
 			WHERE ID = @USER_ID
 		END
 	END
+GO
+
+/* =================================== Configuração da pesquisa de texto completo =============================================== */
+
+CREATE FULLTEXT CATALOG ENGEMAN_INTRANET_CATALOG AS DEFAULT
+
+CREATE UNIQUE INDEX UI_POST ON POST(ID) 
+
+CREATE FULLTEXT INDEX ON POST
+(
+	SUBJECT Language 1046,
+	CLEAN_DESCRIPTION Language 1046,
+	KEYWORDS Language 1046
+)
+KEY INDEX UI_POST ON ENGEMAN_INTRANET_CATALOG 
+WITH CHANGE_TRACKING AUTO, STOPLIST = SYSTEM
 
 /* =================================== Inserção de Dados para Testes =============================================== */
 
@@ -386,9 +390,8 @@ INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('001', 'TI Web')
 INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('002', 'TI Client/Server')
 INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('003', 'TI Mobile')
 INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('004', 'TI Personalização')
-SELECT * FROM DEPARTMENT
 
-INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Michel Queiroz', 'michel.queiroz', 1, 'michel.queiroz@engeman.com.br')
+INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL,EDIT_ANY_POST,DELETE_ANY_POST, MODERATOR) VALUES ('Michel Queiroz', 'michel.queiroz', 1, 'michel.queiroz@engeman.com.br', 1, 1, 1)
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Samuel Moreira', 'samuel.moreira', 1, 'samuel.moreira@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Durval Ferreira', 'durval.ferreira', 1, 'durval.ferreira@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Monique Santiago', 'monique.santiago', 1, 'monique.santiago@engeman.com.br')
@@ -400,29 +403,18 @@ INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Alan Vas
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Bruno Gonçalves', 'bruno.goncalves', 4, 'bruno.goncalves@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Pedro Silva', 'pedro.silva', 4, 'pedro.silva@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Luan Santos', 'luan.santos', 4, 'luan.santos@engeman.com.br')
-SELECT * FROM USERACCOUNT
 
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE)
-VALUES ('Como instalar o Engeman Web?', N'<p>Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?</p>', '<p>Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?</p>', 'Instalação;Engeman Web', 1, 'N')
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE)
-VALUES ('Procedimentos para Migração Cloud', N'<p>Este manual contém instruções sobre como realizar corretamente a migração para o &nbsp;ambiente em nuvem da Engeman&reg;.</p>', '<p>Este manual contém instruções sobre como realizar corretamente a migração para o &nbsp;ambiente em nuvem da Engeman&reg;.</p>', 'migração;cloud', 1, 'M')
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE)
-VALUES ('Dashboards Engeman', N'<p>Este documento apresenta uma nova forma de análise de dados em tempo real de informações da manutenção através de gráficos gerenciais, e ainda possibilita que os usuários criem seus próprios gráficos e dashboards de forma simples e personalizável.</p>', '<p>Este documento apresenta uma nova forma de análise de dados em tempo real de informações da manutenção através de gráficos gerenciais, e ainda possibilita que os usuários criem seus próprios gráficos e dashboards de forma simples e personalizável.</p>', 'dashboards;engeman', 9, 'D')
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE)
-VALUES ('Como instalar o Engeman Client/Server?', N'<p>Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?</p>', '<p>Estou com dúvida sobre a instalação do Engeman Client/Server. Existe algum tutorial detalhado que eu possa seguir?</p>', 'Instalação;Engeman Client/Server', 9, 'N')
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE)
-VALUES ('Conversão de banco de dados', N'<p>Este documento contém o fluxo a ser seguido para conversão de banco de dados.</p>', '<p>Este documento contém o fluxo a ser seguido para conversão de banco de dados.</p>', 'conversão;banco de dados', 8, 'D')
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE)
-VALUES ('Como instalar o Engeman Mobile?', N'<p>Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?</p>', '<p>Estou com dúvidas sobre a instalação do Engeman Mobile. Qual é a versão mínima do Android requisitada?</p>', 'Instalação;Engeman Mobile', 10, 'N')
-SELECT * FROM POST
-
-INSERT INTO COMMENT (DESCRIPTION, POST_ID, USER_ACCOUNT_ID)
-VALUES (N'Melhorias para o Engeman Client/Server 😀', 1 , 1)
-SELECT * FROM COMMENT
-
-INSERT INTO POST_DEPARTMENT (POST_ID, DEPARTMENT_ID)
-VALUES (381,1)
-GO
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Como instalar o Engeman Web?', N'<p>Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?</p>', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'instalação Engeman Web', 1, 'N', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Procedimentos para Migração Cloud', N'<p>Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o &nbsp;ambiente em nuvem da Engeman&reg;.</p>', 'Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o ambiente em nuvem da Engeman.', 'migração cloud', 1, 'N', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Dashboards Engeman', N'<p>Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?</p>', 'Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?', 'dashboard engeman', 9, 'N', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Passo a passo para instalar o Engeman Client/Server.', N'<p>Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?</p>', 'Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?', 'instalação Engeman Client/Server', 9, 'N', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Conversão de banco de dados', N'<p>Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?</p>', 'Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?', 'conversão banco de dados', 8, 'N', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Como instalar o Engeman Mobile?', N'<p>Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação?</p>', 'Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação', 'instalação Engeman Mobile', 10, 'N', 1)
 
 --Senha do banco: Engeman.1
-
