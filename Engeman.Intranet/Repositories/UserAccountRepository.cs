@@ -1,4 +1,4 @@
-﻿using Engeman.Intranet.Extensions;
+﻿using Engeman.Intranet.Helpers;
 using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
@@ -7,13 +7,6 @@ namespace Engeman.Intranet.Repositories
 {
   public class UserAccountRepository : IUserAccountRepository
   {
-    private readonly ILogRepository _logRepository;
-
-    public UserAccountRepository(ILogRepository logRepository)
-    {
-      _logRepository = logRepository;
-    }
-
     public UserAccount GetById(int id)
     {
       var query = $"SELECT * FROM USERACCOUNT WHERE ID = {id}";
@@ -135,7 +128,7 @@ namespace Engeman.Intranet.Repositories
       return users;
     }
 
-    public int Add(NewUserViewModel user)
+    public void Add(NewUserViewModel user, string currentUsername)
     {
       var query = $"INSERT INTO USERACCOUNT (NAME, USERNAME, EMAIL, DEPARTMENT_ID, MODERATOR, NOVICE_USER) OUTPUT INSERTED.ID VALUES ('{user.Name}', '{user.Username}', " +
                   $"'{user.Email}', {user.DepartmentId}, {user.Moderator}, {user.NoviceUser})";
@@ -143,76 +136,53 @@ namespace Engeman.Intranet.Repositories
       using StaticQuery sq = new();
       var outputUserId = sq.GetDataToInt(query);
 
-      return outputUserId;
-    }
-
-    public void AddWithLog(NewUserViewModel user, string currentUsername)
-    {
-      var outputUserId = Add(user);
-
-      var newLog = new NewLogViewModel(currentUsername, Operation.Inclusion.GetEnumDescription(), outputUserId, ReferenceTable.UserAccount.GetEnumDescription())
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        Description = "de usuário"
-      };
-
-      _logRepository.Add(newLog);
+        GlobalFunctions.NewLog('I', "USU", outputUserId, "USERACCOUNT", currentUsername);
+      }
     }
 
     public void Update(UserAccount userAccount)
     {
       string[] paramters = { "Photo;byte" };
       object[] values = { userAccount.Photo };
-      var query = $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}', DESCRIPTION = '{userAccount.Description.Replace("'", "''")}', " +
+      var query = $"UPDATE USERACCOUNT SET NAME = '{userAccount.Name}', EMAIL = '{userAccount.Email}', DESCRIPTION = '{userAccount.Description}', " +
                   $"PHOTO = CONVERT(VARBINARY(MAX),@Photo) WHERE USERNAME = '{userAccount.Username}'";
 
       using StaticQuery sq = new StaticQuery();
-      sq.ExecuteCommand(query, paramters, values);
+      sq.ExecuteCommand(query, paramters, values); 
     }
 
-    public void UpdateByModerator(int id, UserAccount editedUser)
+    public void UpdateByModerator(int id, UserAccount editedUser, string currentUsername)
     {
       string[] paramters = { "Photo;byte" };
       object[] values = { editedUser.Photo };
       var query = $"UPDATE USERACCOUNT SET ACTIVE = '{editedUser.Active}', NAME = '{editedUser.Name}', USERNAME = '{editedUser.Username}', EMAIL = '{editedUser.Email}', " +
-                  $"DEPARTMENT_ID = {editedUser.DepartmentId}, DESCRIPTION = '{editedUser.Description.Replace("'", "''")}', CREATE_POST = '{editedUser.CreatePost}', " +
+                  $"DEPARTMENT_ID = {editedUser.DepartmentId}, DESCRIPTION = '{editedUser.Description}', CREATE_POST = '{editedUser.CreatePost}', " +
                   $"EDIT_OWNER_POST = '{editedUser.EditOwnerPost}', DELETE_OWNER_POST = '{editedUser.DeleteOwnerPost}', EDIT_ANY_POST = '{editedUser.EditAnyPost}', " +
                   $"DELETE_ANY_POST = '{editedUser.DeleteAnyPost}', MODERATOR = '{editedUser.Moderator}', NOVICE_USER = '{editedUser.NoviceUser}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " +
-                  $"WHERE ID = {editedUser.Id}";
+                  $"WHERE ID = {id}";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query, paramters, values);
-    }
 
-    public void UpdateByModeratorWithLog(int id, UserAccount userAccount, string currentUsername)
-    {
-      UpdateByModerator(id, userAccount);
-
-      var newLog = new NewLogViewModel(currentUsername, Operation.Alteration.GetEnumDescription(), id, ReferenceTable.UserAccount.GetEnumDescription())
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        Description = "de usuário"
-      };
-
-      _logRepository.Add(newLog);
+        GlobalFunctions.NewLog('U', "USU", id, "USERACCOUNT", currentUsername);
+      }
     }
 
-    public void Delete(int userId)
+    public void Delete(int id, string currentUsername)
     {
-      string query = $"DELETE FROM USERACCOUNT WHERE ID = {userId}";
+      string query = $"DELETE FROM USERACCOUNT WHERE ID = {id}";
 
       using StaticQuery sq = new();
       var result = sq.ExecuteCommand(query);
-    }
 
-    public void DeleteWithLog(int id, string currentUsername)
-    {
-      Delete(id);
-
-      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), id, ReferenceTable.UserAccount.GetEnumDescription())
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        Description = "de usuário"
-      };
-
-      _logRepository.Add(newLog);
+        GlobalFunctions.NewLog('D', "USU", id, "USERACCOUNT", currentUsername);
+      }
     }
   }
 }

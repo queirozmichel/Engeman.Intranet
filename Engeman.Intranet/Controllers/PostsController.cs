@@ -152,8 +152,6 @@ namespace Engeman.Intranet.Controllers
         catch (Exception) { }
         return PartialView("NewPost");
       }
-
-      //else return Ok(StatusCodes.Status401Unauthorized);
       else return StatusCode(StatusCodes.Status401Unauthorized);
     }
 
@@ -191,7 +189,7 @@ namespace Engeman.Intranet.Controllers
       }
       else newPost.PostType = 'N';
 
-      try { _postRepository.AddWithLog(newPost, sessionUsername); }
+      try { _postRepository.Add(newPost, sessionUsername); }
       catch (SqlException sqlEx)
       {
         return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
@@ -301,7 +299,7 @@ namespace Engeman.Intranet.Controllers
 
       if (currentPost.Revised == true && userAccount.NoviceUser == false) editedPost.Revised = true;
 
-      try { _postRepository.UpdateWithLog(editedPost.Id, editedPost, sessionUsername); }
+      try { _postRepository.Update(editedPost.Id, editedPost, sessionUsername); }
       catch (SqlException sqlEx)
       {
         return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
@@ -317,7 +315,7 @@ namespace Engeman.Intranet.Controllers
     {
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
-      try { _postRepository.DeleteWithLog(postId, currentUsername); } catch (Exception) { }
+      try { _postRepository.Delete(postId, currentUsername); } catch (Exception) { }
 
       return PartialView("PostsGrid");
     }
@@ -432,7 +430,7 @@ namespace Engeman.Intranet.Controllers
     {
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
-      try { _postRepository.AproveWithLog(postId, currentUsername); } catch (Exception) { }
+      try { _postRepository.Aprove(postId, currentUsername); } catch (Exception) { }
 
       return ViewComponent("UnrevisedList");
     }

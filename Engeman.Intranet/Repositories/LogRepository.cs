@@ -18,32 +18,17 @@ namespace Engeman.Intranet.Repositories
         var log = new LogGridViewModel
         {
           Id = Convert.ToInt32(result.Rows[i]["id"]),
-          Username = result.Rows[i]["username"].ToString(),
           Operation = result.Rows[i]["operation"].ToString(),
-          Description = result.Rows[i]["description"].ToString(),
+          RegistryType = result.Rows[i]["registry_type"].ToString(),
+          Username = result.Rows[i]["username"].ToString(),
           ChangeDate = result.Rows[i]["change_date"].ToString()
       };
-        if (result.Rows[i]["reference_id"] is DBNull) log.ReferenceId = null;
-        else log.ReferenceId = Convert.ToInt32(result.Rows[i]["reference_id"]);
-        log.ReferenceTable = result.Rows[i]["reference_table"].ToString();
+        if (result.Rows[i]["registry_id"] is DBNull) log.RegistryId = null;
+        else log.RegistryId = Convert.ToInt32(result.Rows[i]["registry_id"]);
+        log.RegistryTable = result.Rows[i]["registry_table"].ToString();
         logs.Add(log);
       }
       return logs;
-    }
-
-    public void Add(NewLogViewModel log)
-    {
-      string query;
-
-      if (log.ReferenceId != null && log.ReferenceTable != null)
-      {
-        query = $"INSERT INTO LOG (USERNAME, OPERATION, DESCRIPTION, REFERENCE_ID, REFERENCE_TABLE) VALUES ('{log.Username}', '{log.Operation}', " +
-                $"'{log.Description.Replace("'", "''")}', {log.ReferenceId} , '{log.ReferenceTable}')";
-      }
-      else query = $"INSERT INTO LOG (USERNAME, OPERATION, DESCRIPTION) VALUES ('{log.Username}', '{log.Operation}', '{log.Description.Replace("'", "''")}')";
-
-      using StaticQuery sq = new();
-      sq.ExecuteCommand(query);
     }
   }
 }

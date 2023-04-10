@@ -65,7 +65,7 @@ namespace Engeman.Intranet.Controllers
 
       if (currentComment.Revised == true && userAccount.NoviceUser == false) comment.Revised = true;
 
-      try { _commentRepository.UpdateWithLog(currentComment.Id, comment, sessionUsername); }
+      try { _commentRepository.Update(currentComment.Id, comment, sessionUsername); }
       catch (SqlException sqlEx)
       {
         return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
@@ -138,7 +138,7 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      try { _commentRepository.AddWithLog(newComment, sessionUsername); }
+      try { _commentRepository.Add(newComment, sessionUsername); }
       catch (SqlException sqlEx)
       {
         return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
@@ -152,7 +152,7 @@ namespace Engeman.Intranet.Controllers
     {
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
-      try { _commentRepository.DeleteWithLog(commentId, currentUsername); } catch (Exception) { }
+      try { _commentRepository.Delete(commentId, currentUsername); } catch (Exception) { }
 
       return Ok(StatusCodes.Status200OK);
     }
@@ -162,7 +162,7 @@ namespace Engeman.Intranet.Controllers
     {
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
-      try { _commentRepository.AproveWithLog(commentId, currentUsername); } catch (Exception) { }
+      try { _commentRepository.Aprove(commentId, currentUsername); } catch (Exception) { }
 
       return ViewComponent("UnrevisedList");
     }

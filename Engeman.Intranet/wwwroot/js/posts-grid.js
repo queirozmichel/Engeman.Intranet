@@ -25,7 +25,7 @@ $(document).ready(function () {
       loading: "Carregando dados...",
       noResults: "Não há dados para exibir",
       refresh: "Atualizar",
-      search: "Pesquisar"
+      search: "Pesquisar por palavra completa"
     },
     searchSettings: {
       characters: 1,

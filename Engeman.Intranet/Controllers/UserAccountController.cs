@@ -102,8 +102,8 @@ namespace Engeman.Intranet.Controllers
       int resultAux = StatusCodes.Status200OK;
       var newUser = new NewUserViewModel(formData["name"], formData["username"], Convert.ToInt32(formData["departmentId"]), Convert.ToInt32(formData["permission"]));
 
-      try { _userAccountRepository.AddWithLog(newUser, sessionUsername); }
-      catch (System.Data.SqlClient.SqlException ex)
+      try { _userAccountRepository.Add(newUser, sessionUsername); }
+      catch (SqlException ex)
       {
         resultAux = StatusCodes.Status500InternalServerError;
         messageAux = ex.Message;
@@ -269,7 +269,7 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      try { _userAccountRepository.UpdateByModeratorWithLog(user.Id, user, sessionUsername); }
+      try { _userAccountRepository.UpdateByModerator(user.Id, user, sessionUsername); }
       catch (SqlException sqlEx)
       {
         return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
@@ -285,7 +285,7 @@ namespace Engeman.Intranet.Controllers
       string messageAux = null;
       int resultAux = StatusCodes.Status200OK;
 
-      try { _userAccountRepository.DeleteWithLog(userId, sessionUsername); }
+      try { _userAccountRepository.Delete(userId, sessionUsername); }
       catch (SqlException sqlEx)
       {
         resultAux = StatusCodes.Status500InternalServerError;

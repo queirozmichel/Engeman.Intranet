@@ -12,16 +12,12 @@ namespace Engeman.Intranet.Repositories
     public List<Post> GetByUsername(string username);
     public string GetSubjectById(int id);
     public Post GetById(int id);
-    public int Add(NewPostViewModel post);
-    public void AddWithLog(NewPostViewModel post, string currentUsername);
-    public void Update(PostEditViewModel post);
-    public void UpdateWithLog(int id, PostEditViewModel post, string currentUsername);
-    public void Delete(int id);
-    public void DeleteWithLog(int id, string currentUsername);
+    public void Add(NewPostViewModel post, string currentUsername = null);
+    public void Update(int id, PostEditViewModel post, string currentUsername = null);
+    public void Delete(int id, string currentUsername = null);
     public int CountByUsername(string username);
     public int CountByUserId(int userId);
     public int CountByPostType(char postType);
-    public void Aprove(int id);
-    public void AproveWithLog(int id, string currentUsername);
+    public void Aprove(int id, string currentUsername = null);
   }
 }

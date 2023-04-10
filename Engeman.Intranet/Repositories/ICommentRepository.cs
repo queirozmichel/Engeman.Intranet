@@ -12,16 +12,12 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetByUsername(string username);
     public List<Comment> GetUnrevisedComments();
     public List<Comment> GetByUserRestriction(UserAccount user, int postId);
-    public int Add(NewCommentViewModel comment);
-    public void AddWithLog(NewCommentViewModel comment, string currentUsername);
-    public void Update(int id, Comment comment);
-    public void UpdateWithLog(int id, Comment comment, string currentUsername);
-    public void Delete(int id);
-    public void DeleteWithLog(int id, string currentUsername);
+    public void Add(NewCommentViewModel comment, string currentUsername = null);
+    public void Update(int id, Comment comment, string currentUsername = null);
+    public void Delete(int id, string currentUsername = null);
     public int Count();
     public int CountByUsername(string username);
     public int CountByUserId(int userId);
-    public void Aprove(int id);
-    public void AproveWithLog(int id, string currentUsername);
+    public void Aprove(int id, string currentUsername = null);
   }
 }

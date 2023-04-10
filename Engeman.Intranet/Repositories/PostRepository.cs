@@ -1,4 +1,4 @@
-﻿using Engeman.Intranet.Extensions;
+﻿using Engeman.Intranet.Helpers;
 using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
@@ -7,13 +7,6 @@ namespace Engeman.Intranet.Repositories
 {
   public class PostRepository : IPostRepository
   {
-    private readonly ILogRepository _logRepository;
-
-    public PostRepository(ILogRepository logRepository)
-    {
-      _logRepository = logRepository;
-    }
-
     public List<Post> Get()
     {
       var posts = new List<Post>();
@@ -250,7 +243,7 @@ namespace Engeman.Intranet.Repositories
       return posts;
     }
 
-    public int Add(NewPostViewModel post)
+    public void Add(NewPostViewModel post, string currentUsername)
     {
       string[] paramters = { "BinaryData;byte" };
       var query = $"INSERT INTO POST (RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
@@ -276,26 +269,13 @@ namespace Engeman.Intranet.Repositories
         }
       }
 
-      return outputPostId;
-    }
-
-    public void AddWithLog(NewPostViewModel post, string currentUsername)
-    {
-      string logFileType;
-      int outputPostId = Add(post);
-      var newLog = new NewLogViewModel(currentUsername, Operation.Inclusion.GetEnumDescription(), outputPostId, ReferenceTable.Post.GetEnumDescription());
-
-      if (post.Files.Count > 0)
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        logFileType = post.PostType == 'M' ? "manual" : "documento";
-        newLog.Description = "do " + logFileType + " " + "\"" + post.Subject + "\"";
+        GlobalFunctions.NewLog('I', "POS", outputPostId, "POST", currentUsername);
       }
-      else newLog.Description = "da postagem " + "\"" + post.Subject + "\"";
-
-      _logRepository.Add(newLog);
     }
 
-    public void Update(PostEditViewModel post)
+    public void Update(int id, PostEditViewModel post, string currentUsername)
     {
       var update = $"UPDATE POST SET RESTRICTED = '{post.Restricted}', SUBJECT = '{post.Subject.Replace("'", "''")}', DESCRIPTION = N'{post.Description.Replace("'", "''")}', " +
                    $"CLEAN_DESCRIPTION = '{post.CleanDescription.Replace("'", "''")}', KEYWORDS = '{post.Keywords}', POST_TYPE = '{post.PostType}', REVISED = '{post.Revised}' " +
@@ -315,26 +295,14 @@ namespace Engeman.Intranet.Repositories
           sq.ExecuteCommand(insert);
         }
       }
-    }
 
-    public void UpdateWithLog(int id, PostEditViewModel post, string currentUsername)
-    {
-      string logFileType;
-      var newLog = new NewLogViewModel(currentUsername, Operation.Alteration.GetEnumDescription(), post.Id, ReferenceTable.Post.GetEnumDescription());
-
-      if (post.Files.Count > 0)
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        logFileType = post.PostType == 'M' ? "manual" : "documento";
-        newLog.Description = "do " + logFileType + " " + "\"" + post.Subject + "\"";
+        GlobalFunctions.NewLog('U', "POS", id, "POST", currentUsername);
       }
-      else newLog.Description = "da postagem " + "\"" + post.Subject + "\"";
-
-      Update(post);
-
-      _logRepository.Add(newLog);
     }
 
-    public void Delete(int id)
+    public void Delete(int id, string currentUsername)
     {
       string[] paramters = { };
       object[] values = { id };
@@ -342,37 +310,24 @@ namespace Engeman.Intranet.Repositories
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query, paramters, values);
-    }
 
-    public void DeleteWithLog(int id, string currentUsername)
-    {
-      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), id, ReferenceTable.Post.GetEnumDescription());
-      var post = GetById(id);
+      if (!string.IsNullOrEmpty(currentUsername))
+      {
+        GlobalFunctions.NewLog('D', "POS", id, "POST", currentUsername);
+      }
+    }   
 
-      if (post.PostType == 'M') newLog.Description = "do manual " + "\"" + post.Subject + "\"";
-      else if (post.PostType == 'D') newLog.Description = "do manual " + "\"" + post.Subject + "\"";
-      else newLog.Description = "da postagem " + "\"" + post.Subject + "\"";
-
-      Delete(id);
-
-      _logRepository.Add(newLog);
-    }
-
-    public void Aprove(int id)
+    public void Aprove(int id, string currentUsername)
     {
       string query = $"UPDATE POST SET REVISED = 'true' WHERE ID = '{id}'";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query);
-    }
 
-    public void AproveWithLog(int id, string currentUsername)
-    {
-      Aprove(id);
-      var newLog = new NewLogViewModel(currentUsername, Operation.Approval.GetEnumDescription(), id, ReferenceTable.Post.GetEnumDescription());
-      newLog.Description = "da postagem " + "\"" + GetSubjectById(id) + "\"";
-
-      _logRepository.Add(newLog);
+      if (!string.IsNullOrEmpty(currentUsername))
+      {
+        GlobalFunctions.NewLog('A', "POS", id, "POST", currentUsername);
+      }
     }
 
     public int CountByUsername(string username)

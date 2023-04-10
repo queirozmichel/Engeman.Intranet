@@ -1,4 +1,4 @@
-﻿using Engeman.Intranet.Extensions;
+﻿using Engeman.Intranet.Helpers;
 using Engeman.Intranet.Library;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
@@ -7,13 +7,6 @@ namespace Engeman.Intranet.Repositories
 {
   public class CommentRepository : ICommentRepository
   {
-    private readonly ILogRepository _logRepository;
-
-    public CommentRepository(ILogRepository logRepository)
-    {
-      _logRepository = logRepository;
-    }
-
     public List<Comment> Get()
     {
       var comments = new List<Comment>();
@@ -211,7 +204,7 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public int Add(NewCommentViewModel newComment)
+    public void Add(NewCommentViewModel newComment, string currentUsername)
     {
       string[] paramters = { "BinaryData;byte" };
       //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
@@ -228,75 +221,49 @@ namespace Engeman.Intranet.Repositories
         sq.ExecuteCommand(query, paramters, values);
       }
 
-      return outputCommentId;
-    }
-
-    public void AddWithLog(NewCommentViewModel newComment, string currentUsername)
-    {
-      var outputCommentId = Add(newComment);
-      var newLog = new NewLogViewModel(currentUsername, Operation.Inclusion.GetEnumDescription(), outputCommentId, ReferenceTable.Comment.GetEnumDescription())
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        Description = "de comentário"
-      };
+        GlobalFunctions.NewLog('I', "COM", outputCommentId, "COMMENT", currentUsername);
+      }
+    }   
 
-      _logRepository.Add(newLog);
-    }
-
-    public void Update(int id, Comment comment)
+    public void Update(int id, Comment comment, string currentUsername)
     {
       string query = $"UPDATE COMMENT SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description.Replace("'", "''")}', REVISED = '{comment.Revised}' WHERE ID = '{id}'";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query);
-    }
 
-    public void UpdateWithLog(int id, Comment comment, string currentUsername)
-    {
-      Update(id, comment);
-      var newLog = new NewLogViewModel(currentUsername, Operation.Alteration.GetEnumDescription(), id, ReferenceTable.Comment.GetEnumDescription())
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        Description = "de comentário"
-      };
+        GlobalFunctions.NewLog('U', "COM", id, "COMMENT", currentUsername);
+      }
+    }    
 
-      _logRepository.Add(newLog);
-    }
-
-    public void Delete(int id)
+    public void Delete(int id, string currentUsername)
     {
       var query = $"DELETE FROM COMMENT WHERE ID = {id}";
 
       using StaticQuery sq = new();
       var aux = sq.ExecuteCommand(query);
-    }
 
-    public void DeleteWithLog(int id, string currentUsername)
-    {
-      Delete(id);
-      var newLog = new NewLogViewModel(currentUsername, Operation.Exclusion.GetEnumDescription(), id, ReferenceTable.Comment.GetEnumDescription())
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        Description = "de comentário"
-      };
+        GlobalFunctions.NewLog('D', "COM", id, "COMMENT", currentUsername);
+      }
+    }    
 
-      _logRepository.Add(newLog);
-    }
-
-    public void Aprove(int id)
+    public void Aprove(int id, string currentUsername)
     {
       string query = $"UPDATE COMMENT SET REVISED = 'true' WHERE ID = '{id}'";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query);
-    }
 
-    public void AproveWithLog(int id, string currentUsername)
-    {
-      Aprove(id);
-      var newLog = new NewLogViewModel(currentUsername, Operation.Approval.GetEnumDescription(), id, ReferenceTable.Comment.GetEnumDescription())
+      if (!string.IsNullOrEmpty(currentUsername))
       {
-        Description = "de comentário"
-      };
-
-      _logRepository.Add(newLog);
+        GlobalFunctions.NewLog('A', "COM", id, "COMMENT", currentUsername);
+      }
     }
 
     public int CountByUsername(string username)

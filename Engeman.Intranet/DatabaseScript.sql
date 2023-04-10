@@ -182,20 +182,20 @@ CREATE TABLE POSTRESTRICTION (
 
 CREATE TABLE LOG ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENLOG),
-	USERNAME                      VARCHAR(100)                        NOT NULL,
 	OPERATION										  VARCHAR(30)                         NOT NULL,
-	DESCRIPTION                   VARCHAR(200)                        NOT NULL,
-	REFERENCE_ID                  NUMERIC(18) DEFAULT NULL            NULL,
-	REFERENCE_TABLE               VARCHAR(100) DEFAULT NULL           NULL,
+	REGISTRY_TYPE                 VARCHAR(200)                        NOT NULL,
+	REGISTRY_ID                   NUMERIC(18) DEFAULT NULL            NULL,
+	REGISTRY_TABLE                VARCHAR(100) DEFAULT NULL           NULL,
+	USERNAME                      VARCHAR(100)                        NOT NULL,
 	CHANGE_DATE                   DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
 
 	CONSTRAINT PK_LOG PRIMARY KEY CLUSTERED(ID),
 
-	CHECK (USERNAME <> ''),
   CHECK (OPERATION <> ''),
-	CHECK (DESCRIPTION <> ''),
-	CHECK(REFERENCE_ID > 0),
-	CHECK(REFERENCE_TABLE <> '')
+	CHECK (REGISTRY_TYPE <> ''),
+	CHECK (REGISTRY_ID > 0),
+	CHECK (REGISTRY_TABLE <> ''),
+	CHECK (USERNAME <> '')
 	)ON [PRIMARY]
 
 CREATE TABLE FORBIDDENWORD ( 
@@ -208,6 +208,36 @@ CREATE TABLE FORBIDDENWORD (
 	CHECK (DESCRIPTION <> ''),
 	)ON [PRIMARY]
 GO
+
+
+/* ====================================== Criação de Stored Procedures ====================================================== */
+
+CREATE PROCEDURE NewLog
+		@operation VARCHAR(11),
+		@registry_type VARCHAR(50),
+    @registry_id int,
+		@registry_table VARCHAR(50),
+		@username VARCHAR(50)
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+			SET @operation = CASE
+				WHEN @operation = 'I' THEN 'Inserção'
+				WHEN @operation = 'D' THEN 'Exclusão'
+				WHEN @operation = 'U' THEN 'Atualização'
+				WHEN @operation = 'A' THEN 'Aprovação'
+				ELSE NULL  
+			END
+			SET @registry_type = CASE
+				WHEN @registry_type = 'POS' THEN 'Postagem'
+				WHEN @registry_type = 'COM' THEN 'Comentário'
+				WHEN @registry_type = 'USU' THEN 'Usuário'
+				ELSE NULL  
+			END
+				INSERT INTO LOG (OPERATION, REGISTRY_TYPE, REGISTRY_ID, REGISTRY_TABLE, USERNAME)
+                VALUES(@operation,@registry_type,@registry_id,@registry_table,@username) 
+    END
+		GO
 
 /* ====================================== Criação de Triggers ====================================================== */
 
