@@ -22,12 +22,12 @@ namespace Engeman.Intranet.Controllers
     private readonly ICommentRepository _commentRepository;
     private readonly ICommentFileRepository _commentFileRepository;
     private readonly IPostRestrictionRepository _postRestrictionRepository;
-    private readonly IForbiddenWordRepository _forbiddenWordRepository;
+    private readonly IBlacklistTermRepository _blacklistTermRepository;
     private readonly IConfiguration _configuration;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
       IDepartmentRepository departmentRepository, IPostFileRepository postFileRepository, ICommentRepository postCommentRepository,
-      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IForbiddenWordRepository forbiddenWordRepository, IConfiguration configuration)
+      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IBlacklistTermRepository blacklistTermRepository, IConfiguration configuration)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
@@ -36,7 +36,7 @@ namespace Engeman.Intranet.Controllers
       _commentRepository = postCommentRepository;
       _commentFileRepository = postCommentFileRepository;
       _postRestrictionRepository = postRestrictionRepository;
-      _forbiddenWordRepository = forbiddenWordRepository;
+      _blacklistTermRepository = blacklistTermRepository;
       _configuration = configuration;
     }
 
@@ -448,9 +448,9 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public JsonResult CheckForbiddenWords(IFormCollection formData)
+    public JsonResult CheckBlacklist(IFormCollection formData)
     {
-      var forbiddenWords = _forbiddenWordRepository.GetWords();
+      var blacklist = _blacklistTermRepository.GetTerms();
       var keys = formData.Keys.Where(x => !x.Equals("__RequestVerificationToken")).ToList();
       string text;
       var inputs = new List<string>();
@@ -459,9 +459,9 @@ namespace Engeman.Intranet.Controllers
       {
         text = formData[key];
 
-        foreach (var word in forbiddenWords)
+        foreach (var term in blacklist)
         {
-          if (Regex.IsMatch(text, @"\b" + Regex.Escape(word) + @"\b", RegexOptions.IgnoreCase))
+          if (Regex.IsMatch(text, @"\b" + Regex.Escape(term) + @"\b", RegexOptions.IgnoreCase))
           {
             inputs.Add(key);
             break;
@@ -475,9 +475,9 @@ namespace Engeman.Intranet.Controllers
         {
           text = formData.Files[i].FileName;
 
-          foreach (var word in forbiddenWords)
+          foreach (var term in blacklist)
           {
-            if (Regex.IsMatch(text, @"\b" + Regex.Escape(word) + @"\b", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(text, @"\b" + Regex.Escape(term) + @"\b", RegexOptions.IgnoreCase))
             {
               inputs.Add("Arquivo " + (i + 1) + ": " + formData.Files[i].FileName);
               break;

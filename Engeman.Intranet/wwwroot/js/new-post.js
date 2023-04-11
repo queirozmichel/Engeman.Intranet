@@ -74,7 +74,7 @@ $("#new-post-form").on("submit", function (event) {
     //contentType e processData são obrigatórios para upload de arquivos
     $.ajax({
       type: "POST",
-      url: "/posts/checkforbiddenwords",
+      url: "/posts/checkblacklist",
       contentType: false,
       processData: false,
       data: formData,
