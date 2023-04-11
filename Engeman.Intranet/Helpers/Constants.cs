@@ -1,4 +1,4 @@
-﻿namespace Engeman.Intranet.Library
+﻿namespace Engeman.Intranet.Helpers
 {
   public static class Constants
   {

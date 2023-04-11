@@ -1,6 +1,6 @@
 ﻿using Engeman.Intranet.Models;
 using Engeman.Intranet.Repositories;
-using Engeman.Intranet.Library;
+using Engeman.Intranet.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
