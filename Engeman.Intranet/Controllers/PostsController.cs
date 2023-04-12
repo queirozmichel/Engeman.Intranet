@@ -523,12 +523,12 @@ namespace Engeman.Intranet.Controllers
           pureText += " ";
         }
       }
-      pureText = Regex.Replace(pureText, Constants.EmojisPattern, "");
+      pureText = Regex.Replace(pureText, Constants.EmojisPattern, " ");    //Remove todos os Emojis
+      pureText = Regex.Replace(pureText, @"(&nbsp;)|(&lt;)|(&gt;)", " ");  // Remove as tags '&nbsp;' '&lt;' e '&gt;'
+      pureText = Regex.Replace(pureText, @"[^0-9a-zA-Zà-úÀ-Ú\s]+", " ");   //Remove todos os caracteres especiais
+      pureText = Regex.Replace(pureText, @"\s{2,}", " ");                  //Remove espaços maiores ou iguais a 2
+      pureText = Regex.Replace(pureText, @"(^\s+)|(\s+$)", string.Empty);  //Remove os espaços inicial e final 
 
-      if (pureText.EndsWith(" "))
-      {
-        pureText = pureText.Substring(0, pureText.Length - 1);
-      }
       return pureText;
     }
   }
