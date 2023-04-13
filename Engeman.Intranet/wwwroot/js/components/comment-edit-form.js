@@ -8,7 +8,7 @@
       },
     },
     ignore: '*:not([name])',
-  });  
+  });
 })
 
 $("#cancel-comment-edit-btn").on("click", function (event) {
@@ -24,7 +24,7 @@ $("#cancel-comment-edit-btn").on("click", function (event) {
     error: function () {
       toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
     },
-  })  
+  })
 })
 
 $("#comment-edit-form").on("submit", function (event) {
@@ -35,20 +35,41 @@ $("#comment-edit-form").on("submit", function (event) {
     var formData = new FormData(this);
     $.ajax({
       type: "POST",
-      dataType: "html",
+      url: "/blacklistterms/blacklisttest",
       contentType: false,
       processData: false,
       data: formData,
-      url: "/comments/updatecomment",
-      success: function (response) {
-        toastr.success("O comentário foi atualizado", "Sucesso!");
-        $("#render-body").empty();
-        $("#render-body").html(response);
+      dataType: "json",
+      beforeSend: function () {
+        startSpinner();
       },
-      error: function (response) {
-        if (response.status == 500) {
-          toastr.error(response.responseText, "Erro " + response.status);
+      success: function (response) {
+        if (response.occurrences != 0) {
+          showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para continuar.`);
+        } else {
+          $.ajax({
+            type: "POST",
+            dataType: "html",
+            contentType: false,
+            processData: false,
+            data: formData,
+            url: "/comments/updatecomment",
+            success: function (response) {
+              toastr.success("O comentário foi atualizado", "Sucesso!");
+              $("#render-body").empty();
+              $("#render-body").html(response);
+            },
+            error: function (response) {
+              if (response.status == 500) {
+                toastr.error(response.responseText, "Erro " + response.status);
+              }
+            }
+          })
         }
+      },
+      error: function (response) { },
+      complete: function (response) {
+        stopSpinner();
       }
     })
   }

@@ -8,7 +8,6 @@ using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
-using HtmlAgilityPack;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -22,12 +21,11 @@ namespace Engeman.Intranet.Controllers
     private readonly ICommentRepository _commentRepository;
     private readonly ICommentFileRepository _commentFileRepository;
     private readonly IPostRestrictionRepository _postRestrictionRepository;
-    private readonly IBlacklistTermRepository _blacklistTermRepository;
     private readonly IConfiguration _configuration;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
       IDepartmentRepository departmentRepository, IPostFileRepository postFileRepository, ICommentRepository postCommentRepository,
-      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IBlacklistTermRepository blacklistTermRepository, IConfiguration configuration)
+      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IConfiguration configuration)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
@@ -36,7 +34,6 @@ namespace Engeman.Intranet.Controllers
       _commentRepository = postCommentRepository;
       _commentFileRepository = postCommentFileRepository;
       _postRestrictionRepository = postRestrictionRepository;
-      _blacklistTermRepository = blacklistTermRepository;
       _configuration = configuration;
     }
 
@@ -165,7 +162,8 @@ namespace Engeman.Intranet.Controllers
 
       if (userAccount.Moderator == true || userAccount.NoviceUser == false) newPost.Revised = true;
 
-      newPost.CleanDescription = HTMLToTextConvert(newPost.Description);
+      newPost.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(newPost.Description));
+
       newPost.UserAccountId = userAccount.Id;
 
       if (newPost.Keywords != null) newPost.Keywords = newPost.Keywords.ToLower();
@@ -257,7 +255,7 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      editedPost.CleanDescription = HTMLToTextConvert(editedPost.Description);
+      editedPost.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(editedPost.Description));
 
       if (editedPost.Keywords != null) editedPost.Keywords = editedPost.Keywords.ToLower();
 
@@ -445,91 +443,6 @@ namespace Engeman.Intranet.Controllers
     {
       if (HttpContext.Session.Get<bool>("_IsModerator") == true) return true;
       else return false;
-    }
-
-    [HttpPost]
-    public JsonResult CheckBlacklist(IFormCollection formData)
-    {
-      var blacklist = _blacklistTermRepository.GetTerms();
-      var keys = formData.Keys.Where(x => !x.Equals("__RequestVerificationToken")).ToList();
-      string text;
-      var inputs = new List<string>();
-
-      foreach (var key in keys)
-      {
-        text = formData[key];
-
-        foreach (var term in blacklist)
-        {
-          if (Regex.IsMatch(text, @"\b" + Regex.Escape(term) + @"\b", RegexOptions.IgnoreCase))
-          {
-            inputs.Add(key);
-            break;
-          }
-        }
-      }
-
-      if (formData.Files.Count != 0)
-      {
-        for (int i = 0; i < formData.Files.Count; i++)
-        {
-          text = formData.Files[i].FileName;
-
-          foreach (var term in blacklist)
-          {
-            if (Regex.IsMatch(text, @"\b" + Regex.Escape(term) + @"\b", RegexOptions.IgnoreCase))
-            {
-              inputs.Add("Arquivo " + (i + 1) + ": " + formData.Files[i].FileName);
-              break;
-            }
-          }
-        }
-      }
-
-      return Json(new { inputsCount = inputs.Count, inputs });
-    }
-
-    public string HTMLToTextConvert(string htmlText)
-    {
-      var htmlDocument = new HtmlDocument();
-      htmlDocument.LoadHtml(htmlText);
-      var pureText = "";
-      var nodes = htmlDocument.DocumentNode.SelectNodes("*");
-      var last = nodes.Last();
-
-      foreach (var node in nodes)
-      {
-        if (node.Name == "table")
-        {
-          var tbody = node.ChildNodes[0];
-          var aux = 0;
-
-          while (aux < tbody.ChildNodes.Count)
-          {
-            var elements = tbody.ChildNodes[aux];
-            foreach (var element in elements.ChildNodes)
-            {
-              pureText += element.InnerText + " ";
-            }
-            aux++;
-          }
-          continue;
-        }
-
-        pureText += node.InnerText;
-
-        if (!node.InnerText.EndsWith(" ") && !node.Equals(last))
-        {
-          pureText += " ";
-        }
-      }
-      pureText = Regex.Replace(pureText, Constants.EmojisPattern, " ");    //Remove todos os Emojis
-      pureText = Regex.Replace(pureText, @"(&nbsp;)|(&lt;)|(&gt;)", " ");  // Remove as tags '&nbsp;' '&lt;' e '&gt;'
-      pureText = Regex.Replace(pureText, @"[^0-9a-zA-Zà-úÀ-Ú\s]+", " ");   //Remove todos os caracteres especiais
-      pureText = Regex.Replace(pureText, @"\s{2,}", " ");                  //Remove espaços maiores ou iguais a 2
-      pureText = Regex.Replace(pureText, @"(^\s+)|(\s+$)", string.Empty);  //Remove os espaços inicial e final 
-
-      return pureText;
-    }
+    }    
   }
 }

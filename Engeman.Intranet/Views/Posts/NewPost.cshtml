@@ -37,7 +37,7 @@
             <div class="form-group departments-list">
               <label class="col-md-2 control-label">Setores<span class="required">*</span></label>
               <div class="col-md-10">
-                <select id="multiselect-department" multiple="multiple" name="DepartmentsList">
+                <select id="multiselect-department" multiple="multiple" name="departmentsList">
                   @{if (departments != null)
                     {
                       for (int i = 0; i < departments.Count; i++)
@@ -52,13 +52,13 @@
             <div class="form-group">
               <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
               <div class="col-md-10">
-                <input id="subject" class="form-control" type="text" name="Subject">
+                <input id="subject" class="form-control" type="text" name="subject">
               </div>
             </div>
             <div class="form-group">
               <label class="col-md-2 control-label">Palavras-chave</label>
               <div class="col-md-10">
-                <input class="tags" id="keywords" type="text" name="Keywords">
+                <input class="tags" id="keywords" type="text" name="keywords">
               </div>
             </div>
             <div class="form-group">
@@ -67,7 +67,7 @@
                 <div id="wang-editor-div" class="col-md-12 wang-editor">
                   <div id="wang-editor-toolbar" class="wang-editor-toolbar"></div>
                   <div id="wang-editor-editor" class="wang-editor-editor"></div>
-                  <textarea id="wang-editor-description" class="form-control wang-editor-description" name="Description"></textarea>
+                  <textarea id="wang-editor-description" class="form-control wang-editor-description" name="description"></textarea>
                 </div>
               </div>
             </div>
@@ -93,7 +93,7 @@
             <div class="form-group files">
               <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span></label>
               <div class="col-md-2">
-                <input id="file" type="file" name="Files" accept="application/pdf" multiple>
+                <input id="file" type="file" name="files" accept="application/pdf" multiple>
               </div>
             </div>
             <div class="form-actions">

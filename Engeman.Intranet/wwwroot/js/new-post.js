@@ -9,27 +9,27 @@ $(document).ready(function () {
   jQuery.validator.setDefaults({
     debug: true,
     rules: {
-      "Subject": {
+      "subject": {
         required: true
       },
-      "Description": {
+      "description": {
         required: true
       },
-      "DepartmentsList": {
+      "departmentsList": {
         required: {
           depends: function (element) {
             return $("#restricted").bootstrapSwitch("state");
           }
         }
       },
-      "Files": {
+      "files": {
         required: {
           depends: function (element) {
             return $("#attach-files").bootstrapSwitch("state");
           }
         }
       },
-      "PostType": {
+      "postType": {
         required: {
           depends: function (element) {
             return $("#attach-files").bootstrapSwitch("state");
@@ -74,7 +74,7 @@ $("#new-post-form").on("submit", function (event) {
     //contentType e processData são obrigatórios para upload de arquivos
     $.ajax({
       type: "POST",
-      url: "/posts/checkblacklist",
+      url: "/blacklistterms/blacklisttest",
       contentType: false,
       processData: false,
       data: formData,
@@ -83,8 +83,8 @@ $("#new-post-form").on("submit", function (event) {
         startSpinner();
       },
       success: function (response) {
-        if (response.inputsCount != 0) {
-          showAlertModal("Atenção!", "Não foi possível salvar, pois o formulário contém palavra(s) de uso não permitido.");
+        if (response.occurrences != 0) {
+          showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para poder continuar.`);
         } else {
           $.ajax({
             type: "POST",
@@ -123,74 +123,6 @@ $("#new-post-form").on("submit", function (event) {
         stopSpinner();
       }
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //var formData = new FormData(this);
-    //contentType e processData são obrigatórios para upload de arquivos
-    //$.ajax({
-    //  type: "POST",
-    //  url: "/posts/newpost/",
-    //  contentType: false,
-    //  processData: false,
-    //  data: formData,
-    //  beforeSend: function () {
-    //    startSpinner();
-    //  },
-    //  success: function (response) {
-    //    if (response == 200) {
-    //      $.ajax({
-    //        type: "GET",
-    //        url: "/posts/grid?filter=allPosts",
-    //        dataType: "html",
-    //        beforeSend: function () {
-    //          startSpinner();
-    //        },
-    //        success: function (response) {
-    //          $("#render-body").empty();
-    //          $("#render-body").html(response);
-    //          window.history.pushState(this.url, null, this.url);
-    //          toastr.success("A postagem foi salva.", "Sucesso!");
-    //        },
-    //        error: function () {
-    //          toastr.error("Não foi possível ir para a tela de postagens.", "Erro!");
-    //        },
-    //        complete: function () {
-    //          stopSpinner();
-    //        }
-    //      });
-    //    }
-    //  },
-    //  error: function (response) {
-    //    if (response.status == 500) {
-    //      toastr.error(response.responseText, "Erro " + response.status);
-    //    }
-    //  },
-    //  complete: function (response) {
-    //    stopSpinner();
-    //  }
-    //});
   }
 })
 

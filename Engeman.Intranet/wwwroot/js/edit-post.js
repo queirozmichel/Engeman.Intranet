@@ -13,20 +13,20 @@ $(document).ready(function () {
   jQuery.validator.setDefaults({
     debug: true,
     rules: {
-      "Subject": {
+      "subject": {
         required: true
       },
-      "Description": {
+      "description": {
         required: true
       },
-      "DepartmentsList": {
+      "departmentsList": {
         required: {
           depends: function (element) {
             return $("#restricted").bootstrapSwitch("state");
           }
         }
       },
-      "BinaryData": {
+      "binaryData": {
         required: {
           depends: function (element) {
             if (countFiles() > 0) {
@@ -37,7 +37,7 @@ $(document).ready(function () {
           }
         }
       },
-      "FileType": {
+      "fileType": {
         required: {
           depends: function (element) {
             return $("#attach-files").bootstrapSwitch("state");
@@ -93,29 +93,50 @@ $("#edit-post-form").on("submit", function (event) {
   if ($("#edit-post-form").valid()) {
     var formData = new FormData(this);
     $.ajax({
-      type: "PUT",
+      type: "POST",
+      url: "/blacklistterms/blacklisttest",
       contentType: false,
       processData: false,
-      url: "/posts/updatepost",
       data: formData,
+      dataType: "json",
       beforeSend: function () {
         startSpinner();
       },
       success: function (response) {
-        if (response == 200) {
-          toastr.success("As alterações foram salvas", "Sucesso!");
-          window.history.back();
+        if (response.occurrences != 0) {
+          showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para poder continuar.`);
+        } else {
+          $.ajax({
+            type: "PUT",
+            contentType: false,
+            processData: false,
+            url: "/posts/updatepost",
+            data: formData,
+            beforeSend: function () {
+              startSpinner();
+            },
+            success: function (response) {
+              if (response == 200) {
+                toastr.success("As alterações foram salvas", "Sucesso!");
+                window.history.back();
+              }
+            },
+            error: function (response) {
+              if (response.status == 500) {
+                toastr.error(response.responseText, "Erro " + response.status);
+              }
+            },
+            complete: function () {
+              stopSpinner();
+            }
+          });
         }
       },
-      error: function (response) {
-        if (response.status == 500) {
-          toastr.error(response.responseText, "Erro " + response.status);
-        }
-      },
-      complete: function () {
+      error: function (response) { },
+      complete: function (response) {
         stopSpinner();
       }
-    });
+    })
   }
 })
 

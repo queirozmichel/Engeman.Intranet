@@ -156,11 +156,7 @@ span.keywords {
   margin-top: 50px;
 }
 
-.edit-post-button, .delete-post-button, .aprove-post-button {
-  /*background: #e1ecf4;*/
-}
-
-.fa-pencil, .fa-trash-o, .fa-check, .fa-circle-arrow-left {
+.fa-pencil, .fa-trash-o, .fa-check, .fa-circle-arrow-left, .fa-comment {
   margin-right: 3px;
 }
 

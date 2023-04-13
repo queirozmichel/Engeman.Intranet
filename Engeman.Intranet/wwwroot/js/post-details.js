@@ -6,87 +6,7 @@ $(document).ready(function () {
   FormComponents.init();
   sessionStorage.setItem("postId", $("#post-id").text());
 
-  $("#tab_1_3").removeClass("active");
-
-  jQuery.validator.setDefaults({
-    rules: {
-      "description": {
-        required: true
-      }
-    },
-    ignore: '*:not([name])',
-  });
-})
-
-$("#comment-form").on("submit", function (event) {
-  //ignora o submit padrão do formulário
-  event.preventDefault();
-  $("#comment-form").validate();
-  if ($("#comment-form").valid()) {
-    //usado para receber além dos dados texto, o arquivo também
-    var formData = new FormData(this);
-    formData.append("postId", sessionStorage.getItem("postId"));
-    //contentType e processData são obrigatórios
-    $.ajax({
-      type: "POST",
-      url: "/comments/newcomment",
-      dataType: "html",
-      contentType: false,
-      processData: false,
-      data: formData,
-      beforeSend: function () {
-        startSpinner();
-      },
-      success: function (response) {
-        if (response == 200) {
-          $.ajax({
-            type: "GET",
-            dataType: "html",
-            data: { "postId": sessionStorage.getItem("postId") },
-            url: "/posts/postdetails",
-            success: function (response) {
-              $("#render-body").empty();
-              $("#render-body").html(response);
-            },
-            error: function () {
-              toastr.error("Não foi possível ir para os detalhes da postagem", "Erro!");
-            },
-          });
-          toastr.success("O comentário foi salvo", "Sucesso!");
-        }
-      },
-      error: function (response) {
-        if (response.status == 500) {
-          toastr.error(response.responseText, "Erro " + response.status);
-        }
-      },
-      complete: function () {
-        stopSpinner();
-      },
-    })
-  }
-})
-
-$("#comment-tab").on("click", function () {
-  $(".wang-editor").remove();
-  $("#wang-editor-script").remove();
-  $.ajax({
-    type: "GET",
-    dataType: "html",
-    url: "/comments/wangeditor",
-    beforeSend: function () {
-      startSpinner();
-    },
-    success: function (response) {
-      $("#form-group-wang-editor").html(response);
-    },
-    error: function (response) {
-      toastr.error("Não foi possível carregar o editor", "Erro!");
-    },
-    complete: function () {
-      stopSpinner();
-    }
-  })
+  $("#tab_1_3").removeClass("active");  
 })
 
 $("#post-tab").on("click", function () {
@@ -183,8 +103,24 @@ $(".btn-yes, .btn-no").on("click", function () {
       .catch((error) => {
         console.log(error)
       })
-  } else if ($(this).attr("id") == "aprove-post") {
+  }
+  else if ($(this).attr("id") == "aprove-post") {
     aprovePost(sessionStorage.getItem("postId"));
+  }
+  else if ($(this).attr("id") == "aprove-comment") {
+    var id = $(this).attr("data-id");
+    var comment = getCommentElement(id);
+    aproveComment(id, comment);
+    hideConfirmationModal();
+  }
+  else if ($(this).attr("id") == "delete-comment") {
+    var id = $(this).attr("data-id");
+    var comment = getCommentElement(id);
+    deleteComment(id, comment);
+    hideConfirmationModal();
+  }
+  else if ($(this).hasClass("btn-no")) {
+    hideConfirmationModal();
   }
 })
 
@@ -242,114 +178,4 @@ $(".back-button").on("click", function (event) {
   previousPage();
 })
 
-$(".comment-aprove-btn").on("click", function () {
-  var id = $(this).parents(".comment-box").attr("data-comment-id");
-  showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove-comment", id);
-})
-
-$(".comment-delete-btn").on("click", function () {
-  var id = $(this).parents(".comment-box").attr("data-comment-id");
-  showConfirmationModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos.", "delete-comment", id);
-})
-
-$(".btn-yes, .btn-no").on("click", function (event) {
-  if ($(this).attr("id") == "aprove-comment") {
-    var id = $(this).attr("data-id");
-    var comment = getCommentElement(id);
-    aproveComment(id, comment);
-    hideConfirmationModal();
-  } else if ($(this).attr("id") == "delete-comment") {
-    var id = $(this).attr("data-id");
-    var comment = getCommentElement(id);
-    deleteComment(id, comment);
-    hideConfirmationModal();
-  } else if ($(this).hasClass("btn-no")) {
-    hideConfirmationModal();
-  }
-})
-
-function getCommentElement(id) {
-  var aux;
-  var comments = $(".comments").find("div.comment-box");
-  comments.each(function (index, element) {
-    if ($(element).attr("data-comment-id") == id) {
-      aux = element;
-    }
-  })
-  return $(aux);
-}
-
-function aproveComment(id, comment) {
-  $.ajax({
-    type: "PUT",
-    data: { "commentId": id },
-    url: "/comments/aprovecomment",
-    dataType: "text",
-    success: function (response) {
-      $(comment).find(".comment-aprove-btn").remove();
-      $(comment).find(".status-post").remove();
-      $(".sub-menu > li.all-posts").remove();
-      $(".sub-menu > li.unrevised-posts").remove();
-      $(".sub-menu > li.unrevised-comments").remove();
-      $("#list-posts-content").html(response);
-      toastr.success("Comentário aprovado", "Sucesso!");
-    },
-    error: function (response) {
-      if (response == "false") {
-        toastr.error("Não foi possível aprovar o comentário", "Erro!");
-      }
-    }
-  })
-}
-
-function deleteComment(id, comment) {
-  $.ajax({
-    type: "DELETE",
-    data: {
-      "commentId": id
-    },
-    url: "/comments/deletecomment",
-    dataType: "text",
-    success: function (response) {
-      if (response == 200) {
-        comment.fadeOut(700);
-        setTimeout(() => {
-          comment.remove();
-        }, 700)
-        toastr.success("O comentário foi apagado.", "Sucesso!");
-        $("#comment-count").text($("#comment-count").text() - 1);
-      }
-    },
-    error: function (response) {
-      toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
-    }
-  })
-  comment.fadeOut(700);
-  setTimeout(() => {
-    comment.remove();
-  }, 700)
-}
-
 $("pre").addClass("line-numbers");
-
-$(".comment-edit-btn").on("click", function () {
-  $(".wang-editor").remove();
-  $(".comment-edit-btn").css("display", "none");
-  $(".comment-delete-btn").css("display", "none");
-  $(".comment-aprove-btn").css("display", "none");
-  var comment = $(this).parents(".comment-box");
-  var id = $(this).parents(".comment-box").data("comment-id");
-  $.ajax({
-    type: "GET",
-    dataType: "html",
-    data: { "commentId": id },
-    url: "/comments/commenteditform",
-    success: function (response) {
-      $("#wang-editor-script").remove();
-      $(comment).html(response);
-    },
-    error: function (response) {
-      console.log("error");
-    }
-  })
-})

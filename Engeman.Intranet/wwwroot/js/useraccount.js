@@ -45,41 +45,62 @@ $("#edit-profile-form").submit(function (event) {
     var formData = new FormData(this);
     $.ajax({
       type: "POST",
+      url: "/blacklistterms/blacklisttest",
       contentType: false,
       processData: false,
-      url: "/useraccount/updateuserprofile",
-      dataType: "html",
       data: formData,
+      dataType: "json",
       beforeSend: function () {
         startSpinner();
       },
       success: function (response) {
-        if (response == 200) {
+        if (response.occurrences != 0) {
+          showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para poder continuar.`);
+        } else {
           $.ajax({
-            type: "GET",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            url: "/useraccount/updateuserprofile",
             dataType: "html",
-            url: "/useraccount/edituserprofile",
+            data: formData,
+            beforeSend: function () {
+              startSpinner();
+            },
             success: function (response) {
-              $("#render-body").empty();
-              $("#render-body").html(response);
-              window.history.pushState(this.url, null, this.url);
+              if (response == 200) {
+                $.ajax({
+                  type: "GET",
+                  dataType: "html",
+                  url: "/useraccount/edituserprofile",
+                  success: function (response) {
+                    $("#render-body").empty();
+                    $("#render-body").html(response);
+                    window.history.pushState(this.url, null, this.url);
+                  },
+                  error: function (response) {
+                    toastr.error("Não foi possível atualizar a página.", "Erro!");
+                  }
+                });
+              };
+              toastr.success("As alterações foram salvas.", "Sucesso!");
             },
             error: function (response) {
-              toastr.error("Não foi possível atualizar a página.", "Erro!");
+              if (response.status == 500) {
+                toastr.error(response.responseText, "Erro " + response.status);
+              }
+            },
+            complete: function () {
+              stopSpinner();
             }
           });
-        };
-        toastr.success("As alterações foram salvas.", "Sucesso!");
-      },
-      error: function (response) {
-        if (response.status == 500) {
-          toastr.error(response.responseText, "Erro " + response.status);
         }
       },
-      complete: function () {
+      error: function (response) { },
+      complete: function (response) {
         stopSpinner();
       }
-    });
+    })
   }
 });
 
