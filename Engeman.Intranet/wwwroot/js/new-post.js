@@ -60,6 +60,11 @@ $(document).ready(function () {
         error.insertAfter(element);
       }
     },
+    messages: {
+      "files": {
+        accept: "Por favor, forneça arquivo(s) com a extensão .pdf",
+      }
+    },
     ignore: '*:not([name])',
   });
 

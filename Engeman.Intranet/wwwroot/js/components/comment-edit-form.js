@@ -7,6 +7,11 @@
         required: true
       },
     },
+    messages: {
+      "binarydata": {
+        accept: "Por favor, forneça arquivo(s) com a extensão .pdf",
+      }
+    },
     ignore: '*:not([name])',
   });
 })
