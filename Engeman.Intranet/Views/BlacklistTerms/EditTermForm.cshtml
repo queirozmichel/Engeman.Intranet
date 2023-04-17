@@ -1,0 +1,28 @@
+﻿@model Engeman.Intranet.Models.ViewModels.BlacklistTermViewModel;
+
+<link rel="stylesheet" href="~/css/edit-term-form.css" />
+
+<div class="widget box">
+  <div class="widget-content">
+    <form class="form-horizontal" id="edit-term-form" method="post">
+      <div hidden class="form-group form-group-term">
+        <label class="col-sm-3 control-label">ID<span class="required">*</span></label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="id" name="id" value="@Model.Id">
+        </div>
+      </div>
+      <div class="form-group form-group-term">
+        <label class="col-sm-3 control-label">Termo<span class="required">*</span></label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="description" name="description" value="@Model.Description">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-default pull-left" id="cancel-edit-term">Cancelar</button>
+        <button class="btn btn-primary pull-right" type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="text/javascript" src="~/js/edit-term-form.js"></script>

@@ -7,17 +7,17 @@
     color: darkred;
   }
 
-.dashboard-btn {
-  cursor: pointer;
-}
-
-.user-profile-btn {
+.dashboard-btn, .user-profile-btn {
   cursor: pointer;
 }
 
 #logs-link {
-  margin-left: 4px;
-  margin-right: 4px
+  margin-left: 0.4rem;
+  margin-right: 0.3rem;
+}
+
+#blacklist-terms-link {
+  margin-left: 0.3rem;
 }
 
 #sidebar ul#nav{

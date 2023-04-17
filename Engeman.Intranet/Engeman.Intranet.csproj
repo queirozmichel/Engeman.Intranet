@@ -33,6 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\BlacklistTerms\EditTermForm.cshtml" />
+    <None Include="Views\BlacklistTerms\NewTermForm.cshtml" />
     <None Include="Views\Logs\LogsGrid.cshtml" />
     <None Include="Views\Shared\Components\Charts\PostsCommentsChart\Default.cshtml" />
     <None Include="Views\Shared\Components\PageHeader\Default.cshtml" />

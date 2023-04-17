@@ -1,6 +1,11 @@
-﻿using Engeman.Intranet.Helpers;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Helpers;
+using Engeman.Intranet.Models;
+using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SqlClient;
+using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 
 namespace Engeman.Intranet.Controllers
@@ -14,9 +19,146 @@ namespace Engeman.Intranet.Controllers
       _blacklistTermRepository = blacklistTermRepository;
     }
 
-    public IActionResult Index()
+    [HttpGet]
+    public IActionResult Grid()
     {
-      return View();
+      var isModerator = HttpContext.Session.Get<bool>("_IsModerator");
+
+      if (isModerator == false) return Redirect(Request.Host.ToString());
+
+      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+      return PartialView("BlacklistTermsGrid");
+    }
+
+    public JsonResult DataGrid(int rowCount, string searchPhrase, int current)
+    {
+      IQueryable<BlacklistTermViewModel> terms;
+      IQueryable paginatedBlacklistTerms;
+      int total = 0;
+      var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
+      var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
+      var order = requestKeys[key];
+      var field = key.Replace("sort[", "").Replace("]", "");
+      var orderedField = string.Format("{0} {1}", field, order);
+
+      terms = _blacklistTermRepository.GetBlacklistTermsGrid().AsQueryable();
+
+      total = terms.Count();
+
+      if (!string.IsNullOrWhiteSpace(searchPhrase))
+      {
+        terms = FilterTermsBySearchPhrase(terms, searchPhrase);
+        total = terms.Count();
+      }
+
+      if (rowCount == -1) rowCount = total;
+
+      paginatedBlacklistTerms = OrderedTerms(terms, orderedField, current, rowCount);
+
+      return Json(new { rows = paginatedBlacklistTerms, current, rowCount, total });
+    }
+
+    public IQueryable<BlacklistTermViewModel> FilterTermsBySearchPhrase(IQueryable<BlacklistTermViewModel> terms, string searchPhrase)
+    {
+      return terms.Where("description.Contains(@0, StringComparison.OrdinalIgnoreCase)", searchPhrase);
+    }
+
+    public IQueryable OrderedTerms(IQueryable<BlacklistTermViewModel> terms, string orderedField, int current, int rowCount)
+    {
+      return terms.OrderBy(orderedField).Skip((current - 1) * rowCount).Take(rowCount);
+    }
+
+    [HttpGet]
+    public IActionResult NewTerm()
+    {
+      return PartialView("NewTermForm");
+    }
+
+    [HttpPost]
+    public JsonResult NewTerm(IFormCollection formData)
+    {
+      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+      string messageAux = null;
+      int resultAux = StatusCodes.Status200OK;
+      var newTerm = new BlacklistTermViewModel
+      {
+        Description = formData["description"]
+      };
+
+      try { _blacklistTermRepository.Add(newTerm, sessionUsername); }
+      catch (SqlException ex)
+      {
+        resultAux = StatusCodes.Status500InternalServerError;
+        if (ex.Number == 2627)
+        {
+          messageAux = "O termo já existe na base de dados.";
+        }
+        else
+        {
+          messageAux = ex.Message;
+        }
+      }
+
+      return Json(new { result = resultAux, message = messageAux });
+    }
+
+    [HttpGet]
+    public IActionResult EditTerm(int termId)
+    {
+      var termAux = _blacklistTermRepository.GetById(termId);
+      var term = new BlacklistTermViewModel
+      {
+        Id = termAux.Id,
+        Description = termAux.Description,
+        ChangeDate = termAux.ChangeDate.ToString()
+      };
+      return PartialView("EditTermForm", term);
+    }
+
+    [HttpPut]
+    public JsonResult UpdateTerm(IFormCollection formData)
+    {
+      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+      string messageAux = null;
+      int resultAux = StatusCodes.Status200OK;
+      var editedTerm = new BlacklistTerm
+      {
+        Id = Convert.ToInt32(formData["id"]),
+        Description = formData["description"],
+      };
+
+      try { _blacklistTermRepository.Update(editedTerm.Id, editedTerm, sessionUsername); }
+      catch (SqlException ex)
+      {
+        resultAux = StatusCodes.Status500InternalServerError;
+        if (ex.Number == 2627)
+        {
+          messageAux = "O termo já existe na base de dados.";
+        }
+        else
+        {
+          messageAux = ex.Message;
+        }
+      }
+      return Json(new { result = resultAux, message = messageAux });
+    }
+
+    [HttpDelete]
+    public JsonResult DeleteTerm(int termId)
+    {
+      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+      string messageAux = null;
+      int resultAux = StatusCodes.Status200OK;
+
+      try { _blacklistTermRepository.Delete(termId, sessionUsername); }
+      catch (SqlException sqlEx)
+      {
+        resultAux = StatusCodes.Status500InternalServerError;
+        messageAux = sqlEx.Message;
+      }
+
+      return Json(new { result = resultAux, message = messageAux });
     }
 
     /// <summary>
@@ -26,14 +168,14 @@ namespace Engeman.Intranet.Controllers
     [HttpPost]
     public JsonResult BlacklistTest(IFormCollection formData)
     {
-      var blacklist = _blacklistTermRepository.GetTerms();
-      var keys = formData.Keys.Where(x => x.Equals("subject") || x.Equals("keywords") || x.Equals("description") || x.Equals("comment.description") || x.Equals("name")).ToList();
+      var blacklist = _blacklistTermRepository.Get();
+      var keys = formData.Keys.Where(x => x.Equals("subject") || x.Equals("keywords") || x.Equals("description") || x.Equals("comment.description") || x.Equals("name") || x.Equals("username")).ToList();
       string text = string.Empty;
       string regexPattern = "(?i)";
 
       foreach (var key in keys)
       {
-        if (key == "Description")
+        if ((key == "description" || key == "comment.description"))
         {
           text += GlobalFunctions.HTMLToTextConvert(formData[key]) + " ";
           continue;
@@ -43,19 +185,25 @@ namespace Engeman.Intranet.Controllers
 
       text = GlobalFunctions.CleanText(text);
 
-      for (int i = 0; i < blacklist.Count; i++)
+      if (blacklist.Count == 0)
       {
-        if (i + 1 == blacklist.Count)
-        {
-          regexPattern += "(\\b" + blacklist[i] + "\\b)";
-        }
-        else
-        {
-          regexPattern += "(\\b" + blacklist[i] + "\\b)|";
-        }
+        return Json(new { occurrences = 0 });
       }
-
-      return Json(new { occurrences = Regex.Matches(text, regexPattern).Count });
+      else
+      {
+        for (int i = 0; i < blacklist.Count; i++)
+        {
+          if (i + 1 == blacklist.Count)
+          {
+            regexPattern += "(\\b" + blacklist[i].Description + "\\b)";
+          }
+          else
+          {
+            regexPattern += "(\\b" + blacklist[i].Description + "\\b)|";
+          }
+        }
+        return Json(new { occurrences = Regex.Matches(text, regexPattern).Count });
+      }
     }
   }
 }

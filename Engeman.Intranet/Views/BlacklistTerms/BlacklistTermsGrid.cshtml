@@ -1,0 +1,50 @@
+﻿@{string layout = null; }
+
+@if (ViewBag.IsAjaxCall == false)
+{
+  layout = "~/Views/Shared/_Layout.cshtml";
+  <script>startSpinner();</script>
+}
+
+@{
+  Layout = layout;
+}
+
+<link rel="stylesheet" href="~/css/blacklist-terms-grid.css" />
+
+<div class="modal fade" id="new-term-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Cadastro de novo termo</h4>
+      </div>
+      <div id="new-term-modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-term-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edição de termo</h4>
+      </div>
+      <div id="edit-term-modal-body"></div>
+    </div>
+  </div>
+</div>
+
+@await Component.InvokeAsync("ConfirmationModal")
+@await Component.InvokeAsync("PageHeader", "Termos proibidos")
+
+<table id="blacklist-terms-grid" class="table table-condensed table-hover table-striped">
+  <thead>
+    <tr>
+      <th data-column-id="description" data-formatter="name">Descrição</th>
+      <th data-column-id="changeDate" data-order="desc" data-formatter="changeDate">Data</th>
+      <th data-column-id="action" data-formatter="action" disabled>Ações</th>
+    </tr>
+  </thead>
+</table>
+
+<script src="~/js/blacklist-terms-grid.js"></script>

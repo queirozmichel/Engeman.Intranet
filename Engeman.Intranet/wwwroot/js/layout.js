@@ -144,6 +144,29 @@ $(".logs-btn").on("click", function (event) {
   })
 })
 
+$(".blacklist-terms-btn").on("click", function (event) {
+  event.preventDefault();
+  $.ajax({
+    type: "GET",
+    url: "/blacklistterms/grid",
+    dataType: "html",
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState(this.url, null, this.url);
+    },
+    error: function () {
+      toastr.error("Não foi possivel acessar a tela de termos proibidos.", "Erro!");
+    },
+    complete: function () {
+      stopSpinner();
+    },
+  })
+})
+
 //aguardando revisão
 function exclamation() {
   var icon;

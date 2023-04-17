@@ -11,7 +11,7 @@ namespace Engeman.Intranet.Helpers
    /// Caso precise adicionar mais valores para 'operation' e 'registry_type' buscar pela procedure 'NewLog'
    /// </summary>
    /// <param name="operation">I = Inserção D = Exclusão U = Atualização A = Aprovação.</param>
-   /// <param name="registry_type">POS = Postagem COM = Comentário USU = Usuário.</param>
+   /// <param name="registry_type">POS = Postagem COM = Comentário USU = Usuário TER = Termo.</param>
    /// <param name="registry_id">ID do registro que foi inserido, modificado ou excluído.</param>
    /// <param name="registry_table">Nome da tabela do registro que modificado, inserido ou excluído.</param>
    /// <param name="username">Nome de usuário corrente que fez a modificação, inserção ou exclusão.</param>
@@ -49,39 +49,48 @@ namespace Engeman.Intranet.Helpers
       var htmlDocument = new HtmlDocument();
       htmlDocument.LoadHtml(htmlText);
       var pureText = "";
+      HtmlNode last;
       var nodes = htmlDocument.DocumentNode.SelectNodes("*");
-      var last = nodes.Last();
 
-      foreach (var node in nodes)
+      if (nodes == null)
       {
-        if (node.Name == "table")
-        {
-          var tbody = node.ChildNodes[0];
-          var aux = 0;
-
-          while (aux < tbody.ChildNodes.Count)
-          {
-            var elements = tbody.ChildNodes[aux];
-            foreach (var element in elements.ChildNodes)
-            {
-              pureText += element.InnerText + " ";
-            }
-            aux++;
-          }
-          continue;
-        }
-
-        pureText += node.InnerText;
-
-        if (!node.InnerText.EndsWith(" ") && !node.Equals(last))
-        {
-          pureText += " ";
-        }
+        return htmlText;
       }
-      pureText = Regex.Replace(pureText, Constants.EmojisPattern, " ");    //Remove todos os Emojis
-      pureText = Regex.Replace(pureText, @"(&nbsp;)|(&lt;)|(&gt;)", " ");  // Remove as tags '&nbsp;' '&lt;' e '&gt;'
+      else
+      {
+        last = nodes.Last();
 
-      return pureText;
+        foreach (var node in nodes)
+        {
+          if (node.Name == "table")
+          {
+            var tbody = node.ChildNodes[0];
+            var aux = 0;
+
+            while (aux < tbody.ChildNodes.Count)
+            {
+              var elements = tbody.ChildNodes[aux];
+              foreach (var element in elements.ChildNodes)
+              {
+                pureText += element.InnerText + " ";
+              }
+              aux++;
+            }
+            continue;
+          }
+
+          pureText += node.InnerText;
+
+          if (!node.InnerText.EndsWith(" ") && !node.Equals(last))
+          {
+            pureText += " ";
+          }
+        }
+        pureText = Regex.Replace(pureText, Constants.EmojisPattern, " ");    //Remove todos os Emojis
+        pureText = Regex.Replace(pureText, @"(&nbsp;)|(&lt;)|(&gt;)", " ");  // Remove as tags '&nbsp;' '&lt;' e '&gt;'
+
+        return pureText;
+      }      
     }
   }
 }
