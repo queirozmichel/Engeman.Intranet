@@ -60,32 +60,64 @@ $(".switch").bootstrapSwitch({
 $("#edit-user-form").on("submit", function (event) {
   event.preventDefault();
   if ($("#edit-user-form").valid()) {
-    var editedUser = new FormData(this);
+    var formData = new FormData(this);
     $.ajax({
       type: "POST",
-      url: "/useraccount/updateuseraccount",
-      data: editedUser,
+      url: "/blacklistterms/blacklisttest",
       contentType: false,
       processData: false,
-      dataType: "html",
+      data: formData,
+      dataType: "json",
       beforeSend: function () {
         startSpinner();
       },
       success: function (response) {
-        if (response == 200) {
-          toastr.success("As alterações foram salvas", "Sucesso!");
-          window.history.back();
+        if (response.occurrences != 0) {
+          showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para poder continuar.`);
+        } else {
+          $.ajax({
+            type: "POST",
+            url: "/useraccount/updateuseraccount",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "html",
+            beforeSend: function () {
+              startSpinner();
+            },
+            success: function (response) {
+              if (response == 200) {
+                toastr.success("As alterações foram salvas", "Sucesso!");
+                window.history.back();
+              }
+            },
+            error: function () {
+              if (response.status == 500) {
+                toastr.error(response.responseText, "Erro " + response.status);
+              }
+            },
+            complete: function () {
+              stopSpinner();
+            }
+          })
         }
       },
-      error: function () {
-        if (response.status == 500) {
-          toastr.error(response.responseText, "Erro " + response.status);
-        }
-      },
-      complete: function () {
+      error: function (response) { },
+      complete: function (response) {
         stopSpinner();
       }
     })
+
+
+
+
+
+
+
+
+
+
+    
   }
 })
 
