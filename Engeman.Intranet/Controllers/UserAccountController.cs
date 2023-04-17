@@ -106,7 +106,14 @@ namespace Engeman.Intranet.Controllers
       catch (SqlException ex)
       {
         resultAux = StatusCodes.Status500InternalServerError;
-        messageAux = ex.Message;
+        if (ex.Number == 2627)
+        {
+          messageAux = "Já existe um cadastro com o mesmo 'Nome de Usuário.";
+        }
+        else
+        {
+          messageAux = ex.Message;
+        }       
       }
 
       return Json(new { result = resultAux, message = messageAux });
