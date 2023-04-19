@@ -172,38 +172,43 @@ namespace Engeman.Intranet.Controllers
       var keys = formData.Keys.Where(x => x.Equals("subject") || x.Equals("keywords") || x.Equals("description") || x.Equals("comment.description") || x.Equals("name") || x.Equals("username")).ToList();
       string text = string.Empty;
       string regexPattern = "(?i)";
+      int count = 0;
+
+      for (int i = 0; i < blacklist.Count; i++)
+      {
+        if (i + 1 == blacklist.Count)
+        {
+          regexPattern += "(\\b" + blacklist[i].Description + "\\b)";
+        }
+        else
+        {
+          regexPattern += "(\\b" + blacklist[i].Description + "\\b)|";
+        }
+      }
 
       foreach (var key in keys)
       {
         if ((key == "description" || key == "comment.description"))
         {
-          text += GlobalFunctions.HTMLToTextConvert(formData[key]) + " ";
-          continue;
+          text = GlobalFunctions.HTMLToTextConvert(formData[key]);
         }
-        text += formData[key] + " ";
-      }
-
-      text = GlobalFunctions.CleanText(text);
-
-      if (blacklist.Count == 0)
-      {
-        return Json(new { occurrences = 0 });
-      }
-      else
-      {
-        for (int i = 0; i < blacklist.Count; i++)
+        else
         {
-          if (i + 1 == blacklist.Count)
-          {
-            regexPattern += "(\\b" + blacklist[i].Description + "\\b)";
-          }
-          else
-          {
-            regexPattern += "(\\b" + blacklist[i].Description + "\\b)|";
-          }
+          text = formData[key];
         }
-        return Json(new { occurrences = Regex.Matches(text, regexPattern).Count });
+
+        text = GlobalFunctions.CleanText(text);
+
+        if (blacklist.Count == 0)
+        {
+          return Json(new { occurrences = count });
+        }
+        else
+        {
+          count += Regex.Matches(text, regexPattern).Count;
+        }
       }
+      return Json(new { occurrences = count });
     }
   }
 }
