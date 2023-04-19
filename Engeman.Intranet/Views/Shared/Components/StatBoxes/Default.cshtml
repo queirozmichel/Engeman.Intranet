@@ -2,52 +2,62 @@
   Layout = null;
 }
 
-<link rel="stylesheet" href="~/css/components/stat-boxes.css"/>
+<link rel="stylesheet" href="~/css/components/stat-boxes.css" />
 
-<div class="row row-bg">
-  <div class="col-sm-6 col-md-3">
+<div class="row row-bg cards">
+  <div class="col-sm-6 col-md-2">
     <div class="statbox widget box box-shadow">
       <div class="widget-content">
-        <div class="visual red">
-          <i class="fa-regular fa-file"></i>
-
+        <div class="visual yellow">
+          <i class="fa-solid fa-circle-exclamation"></i>
         </div>
-        <div class="title">Total de postagens sem anexo</div>
-        <div class="value">@ViewBag.PostWithoutFiles</div>
+        <div class="title">Informativas</div>
+        <div class="value">@ViewBag.Informatives</div>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-3">
+  <div class="col-sm-6 col-md-2">
+    <div class="statbox widget box box-shadow">
+      <div class="widget-content">
+        <div class="visual red">
+          <i class="fa-regular fa-circle-question"></i>
+        </div>
+        <div class="title">Perguntas</div>
+        <div class="value">@ViewBag.Questions</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-2">
     <div class="statbox widget box box-shadow">
       <div class="widget-content">
         <div class="visual green">
           <i class="fa-solid fa-file"></i>
         </div>
-        <div class="title">Total de documentos</div>
+        <div class="title">Documentos</div>
         <div class="value">@ViewBag.Documents</div>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-3 hidden-xs">
+  <div class="col-sm-6 col-md-2">
     <div class="statbox widget box box-shadow">
       <div class="widget-content">
-        <div class="visual yellow">
+        <div class="visual purple">
           <i title="Documento" class="fa-regular fa-file-lines"></i>
         </div>
-        <div class="title">Total de manuais</div>
+        <div class="title">Manuais</div>
         <div class="value">@ViewBag.Manuals</div>
       </div>
     </div>
-  </div> 
-  <div class="col-sm-6 col-md-3 hidden-xs">
+  </div>
+  <div class="col-sm-6 col-md-2">
     <div class="statbox widget box box-shadow">
       <div class="widget-content">
         <div class="visual cyan">
           <i class="fa-regular fa-comment-dots"></i>
         </div>
-        <div class="title">Total de comentários</div>
+        <div class="title">Comentários</div>
         <div class="value">@ViewBag.Comments</div>
       </div>
-    </div> 
-  </div> 
+    </div>
+  </div>
 </div>

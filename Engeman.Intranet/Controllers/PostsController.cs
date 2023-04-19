@@ -121,7 +121,8 @@ namespace Engeman.Intranet.Controllers
       }
       if (filterHeader == "manual") return posts = posts.Where("postType == (@0)", "M");
       else if (filterHeader == "document") return posts = posts.Where("postType == (@0)", "D");
-      else if (filterHeader == "no-attachment") return posts = posts.Where(x => x.PostType == 'N');
+      else if (filterHeader == "informative") return posts = posts.Where("postType == (@0)", "I");
+      else if (filterHeader == "question") return posts = posts.Where("postType == (@0)", "Q");
       else if (filterHeader == "my") return posts = posts.Where(x => x.UserAccountId == user.Id);
 
       else return posts;
@@ -153,7 +154,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public IActionResult NewPost(NewPostViewModel newPost, List<IFormFile> files)
+    public IActionResult NewPost(NewPostViewModel newPost, List<IFormFile> addFiles)
     {
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       var userAccount = new UserAccount();
@@ -168,24 +169,23 @@ namespace Engeman.Intranet.Controllers
 
       if (newPost.Keywords != null) newPost.Keywords = newPost.Keywords.ToLower();
 
-      if (files.Count > 0)
+      if (addFiles.Count > 0)
       {
-        for (int i = 0; i < files.Count; i++)
+        for (int i = 0; i < addFiles.Count; i++)
         {
           var file = new NewPostFileViewModel();
-          file.Name = files[i].FileName;
-          if (files[i].Length > 0)
+          file.Name = addFiles[i].FileName;
+          if (addFiles[i].Length > 0)
           {
             using (var stream = new MemoryStream())
             {
-              files[i].CopyTo(stream);
+              addFiles[i].CopyTo(stream);
               file.BinaryData = stream.ToArray();
             }
           }
           newPost.Files.Add(file);
         }
       }
-      else newPost.PostType = 'N';
 
       try { _postRepository.Add(newPost, sessionUsername); }
       catch (SqlException sqlEx)
@@ -203,6 +203,7 @@ namespace Engeman.Intranet.Controllers
       var postEditViewModel = new PostEditViewModel();
       var orderedFiles = new List<PostFile>();
       var departments = new List<Department>();
+      var postTypes = new Dictionary<string, char>();
       var post = new Post();
 
       try
@@ -237,11 +238,13 @@ namespace Engeman.Intranet.Controllers
         ViewBag.RestrictedDepartments = restrictedDepartments;
       }
 
+      ViewBag.PostTypes = postEditViewModel.PostTypeDictionary;
+
       return PartialView(postEditViewModel);
     }
 
     [HttpPut]
-    public IActionResult UpdatePost(PostEditViewModel editedPost, List<IFormFile> binaryData)
+    public IActionResult UpdatePost(PostEditViewModel editedPost, List<IFormFile> addFiles)
     {
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       var fileList = new List<NewPostFileViewModel>();
@@ -272,21 +275,19 @@ namespace Engeman.Intranet.Controllers
           }
         }
       }
-      else editedPost.PostType = 'N';
-
-      if (binaryData.Count != 0)
+      if (addFiles.Count != 0)
       {
         fileList.Clear();
-        for (int i = 0; i < binaryData.Count; i++)
+        for (int i = 0; i < addFiles.Count; i++)
         {
           NewPostFileViewModel newFile = new NewPostFileViewModel();
-          if (binaryData[i].Length > 0)
+          if (addFiles[i].Length > 0)
           {
             using (var stream = new MemoryStream())
             {
-              binaryData[i].CopyTo(stream);
+              addFiles[i].CopyTo(stream);
               newFile.BinaryData = stream.ToArray();
-              newFile.Name = binaryData[i].FileName;
+              newFile.Name = addFiles[i].FileName;
               fileList.Add(newFile);
             }
           }
@@ -361,7 +362,7 @@ namespace Engeman.Intranet.Controllers
       postDetails.ChangeDate = post.ChangeDate;
 
       if (post.Keywords == "") keywords = null;
-      else keywords = post.Keywords.Split(';');
+      else keywords = post.Keywords.Split(' ');
 
       postDetails.Keywords = keywords;
 
@@ -443,6 +444,6 @@ namespace Engeman.Intranet.Controllers
     {
       if (HttpContext.Session.Get<bool>("_IsModerator") == true) return true;
       else return false;
-    }    
+    }
   }
 }

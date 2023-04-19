@@ -24,16 +24,8 @@ $("#restricted").bootstrapSwitch({
   state: false,
 });
 
-//botão para habilitar a inserção de arquivos na nova postagem
-$("#attach-files").bootstrapSwitch({
-  onText: "sim",
-  offText: "n&atilde;o",
-  size: "normal",
-  state: false,
-});
-
 //Validação do campo após inserção do(s) arquivo(s)
-$("#file").on("change", function () {
+$("#add-files").on("change", function () {
   $(this).valid();
 })
 

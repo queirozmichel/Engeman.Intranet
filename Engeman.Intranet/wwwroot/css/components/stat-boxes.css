@@ -1,3 +1,9 @@
 ﻿.statbox i {
   font-size: 30px;
 }
+
+.cards {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

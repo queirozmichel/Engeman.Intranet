@@ -103,14 +103,14 @@ CREATE TABLE POST (
 	DESCRIPTION                   NVARCHAR(MAX)                       NOT NULL,
 	CLEAN_DESCRIPTION             VARCHAR(MAX)                        NOT NULL,
 	KEYWORDS                      VARCHAR(MAX)                            NULL,
-  POST_TYPE	                    CHAR(1)                             NOT NULL, /*M = Manual, D = Document, N = No File  */
+  POST_TYPE	                    CHAR(1)                             NOT NULL, /* I = Informativa, Q = Pergunta  M = Manual, D = Documento,  */
 	REVISED                       BIT DEFAULT 0                       NOT NULL,
 	USER_ACCOUNT_ID               NUMERIC(18)                         NOT NULL,
 	CHANGE_DATE                   DATETIME DEFAULT CURRENT_TIMESTAMP      NULL,
 
   CHECK (SUBJECT <> ''),
   CHECK (DESCRIPTION <> ''),
-	CHECK (POST_TYPE in ('M', 'D', 'N')),
+	CHECK (POST_TYPE in ('I', 'Q', 'M', 'D')),
 	CHECK (USER_ACCOUNT_ID > 0),
 
 	CONSTRAINT PK_POST PRIMARY KEY CLUSTERED(ID),
@@ -437,16 +437,16 @@ INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Pedro Si
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Luan Santos', 'luan.santos', 4, 'luan.santos@engeman.com.br')
 
 INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Como instalar o Engeman Web?', N'<p>Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?</p>', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'instalação Engeman Web', 1, 'N', 1)
+VALUES ('Como instalar o Engeman Web?', N'<p>Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?</p>', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'instalação Engeman Web', 1, 'Q', 1)
 INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Procedimentos para Migração Cloud', N'<p>Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o &nbsp;ambiente em nuvem da Engeman&reg;.</p>', 'Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o ambiente em nuvem da Engeman.', 'migração cloud', 1, 'N', 1)
+VALUES ('Procedimentos para Migração Cloud', N'<p>Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o &nbsp;ambiente em nuvem da Engeman&reg;.</p>', 'Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o ambiente em nuvem da Engeman.', 'migração cloud', 1, 'I', 1)
 INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Dashboards Engeman', N'<p>Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?</p>', 'Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?', 'dashboard engeman', 9, 'N', 1)
+VALUES ('Dashboards Engeman', N'<p>Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?</p>', 'Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?', 'dashboard engeman', 9, 'Q', 1)
 INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Passo a passo para instalar o Engeman Client/Server.', N'<p>Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?</p>', 'Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?', 'instalação Engeman Client/Server', 9, 'N', 1)
+VALUES ('Passo a passo para instalar o Engeman Client/Server.', N'<p>Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?</p>', 'Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?', 'instalação Engeman Client/Server', 9, 'Q', 1)
 INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Conversão de banco de dados', N'<p>Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?</p>', 'Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?', 'conversão banco de dados', 8, 'N', 1)
+VALUES ('Conversão de banco de dados', N'<p>Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?</p>', 'Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?', 'conversão banco de dados', 8, 'Q', 1)
 INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Como instalar o Engeman Mobile?', N'<p>Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação?</p>', 'Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação', 'instalação Engeman Mobile', 10, 'N', 1)
+VALUES ('Como instalar o Engeman Mobile?', N'<p>Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação?</p>', 'Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação', 'instalação Engeman Mobile', 10, 'Q', 1)
 
 --Senha do banco: Engeman.1

@@ -26,21 +26,17 @@ $(document).ready(function () {
           }
         }
       },
-      "binaryData": {
-        required: {
-          depends: function (element) {
-            if (countFiles() > 0) {
-              return false
-            } else {
-              return true
-            }
-          }
-        }
+      "postType": {
+        required: true
       },
-      "fileType": {
+      "addFiles": {
         required: {
           depends: function (element) {
-            return $("#attach-files").bootstrapSwitch("state");
+            if (($("#postType").val() == 'D' || $("#postType").val() == 'M') && countFiles() == 0) {
+              return true
+            } else {
+              return false
+            }
           }
         }
       }
@@ -69,7 +65,7 @@ $(document).ready(function () {
       }
     },
     messages: {
-      "binaryData": {
+      "addFiles": {
         accept: "Por favor, forneça arquivo(s) com a extensão .pdf",
       }
     },
@@ -165,8 +161,19 @@ $(".icon-remove-circle").on("click", function () {
   $(this).parent().css("display", "none");
   $(this).parent().find(".file-active").val("false");
   var qty = countFiles();
+  if (($("#postType").val() == 'D' || $("#postType").val() == 'M') && qty == 0) {
+    $(".add-files").find("label").append("<span class=\"required\">*</span>");
+  }
   if (qty == 0) {
-    $("#file").parent().prev().append("<span class=\"required\">*</span>");
-    $(this).parent().parent().append("<p class=\"none-file\">Nenhum arquivo</p>");
+    $(".files").hide();
+  }
+})
+
+$("#postType").change(function () {
+  if ((($(this).val() == 'D' || $(this).val() == 'M') && countFiles() == 0) && $(".add-files").find("span").length == 0) {
+    $(".add-files").find("label").append("<span class=\"required\">*</span>");
+  }
+  if (($(this).val() == 'I' || $(this).val() == 'Q')){
+    $(".add-files").find("span").remove();
   }
 })

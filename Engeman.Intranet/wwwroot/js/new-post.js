@@ -22,19 +22,20 @@ $(document).ready(function () {
           }
         }
       },
-      "files": {
+      "addFiles": {
         required: {
           depends: function (element) {
-            return $("#attach-files").bootstrapSwitch("state");
+            let aux = $("#postType").val();
+            if (aux == 'D' || aux == 'M') {
+              return true;
+            } else {
+              false
+            }
           }
         }
       },
       "postType": {
-        required: {
-          depends: function (element) {
-            return $("#attach-files").bootstrapSwitch("state");
-          }
-        }
+        required: true
       }
     },
     highlight: function (element, errorClass, validClass) {
@@ -61,14 +62,12 @@ $(document).ready(function () {
       }
     },
     messages: {
-      "files": {
+      "addFiles": {
         accept: "Por favor, forneça arquivo(s) com a extensão .pdf",
       }
     },
     ignore: '*:not([name])',
   });
-
-  $(".files").css("display", "none");
 })
 
 $("#new-post-form").on("submit", function (event) {
@@ -131,11 +130,11 @@ $("#new-post-form").on("submit", function (event) {
   }
 })
 
-$("#attach-files").on("switchChange.bootstrapSwitch", function (event, state) {
-  if (state == true) {
-    $(".files").css("display", "block");
-  } else {
-    $(".files").css("display", "none");
-    $("#file").val('');
+$("#postType").change(function () {
+  if ((($(this).val() == 'D' || $(this).val() == 'M')) && $(".add-files").find("span").length == 0) {
+    $(".add-files").find("label").append("<span class=\"required\">*</span>");
   }
-});
+  if (($(this).val() == 'I' || $(this).val() == 'Q')) {
+    $(".add-files").find("span").remove();
+  }
+})

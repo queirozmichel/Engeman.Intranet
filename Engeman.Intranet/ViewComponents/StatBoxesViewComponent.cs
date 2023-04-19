@@ -18,7 +18,8 @@ namespace Engeman.Intranet.ViewComponents
     {
       ViewBag.Manuals = _postRepository.CountByPostType('M');
       ViewBag.Documents = _postRepository.CountByPostType('D');
-      ViewBag.PostWithoutFiles = _postRepository.CountByPostType('N');
+      ViewBag.Questions = _postRepository.CountByPostType('Q');
+      ViewBag.Informatives = _postRepository.CountByPostType('I');
       ViewBag.Comments = _commentRepository.Count();
 
       return View();

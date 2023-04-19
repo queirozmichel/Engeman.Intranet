@@ -15,6 +15,9 @@ $(document).ready(function () {
       "photo": {
         accept: "jpg,jpeg",
         filesize: 5,
+      },
+      "description": {
+        required: false,
       }
     },
     messages: {

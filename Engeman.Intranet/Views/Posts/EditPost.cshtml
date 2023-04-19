@@ -65,6 +65,21 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="col-md-2 control-label">Tipo de postagem<span class="required" for="postType">*</span></label>
+            <div class="col-md-2">
+              <select id="postType" class="form-control" name="postType">
+                <option value="@Model.PostType" selected>@Model.PostTypeDescription</option>
+                @foreach (var item in ViewBag.PostTypes)
+                {
+                  if (item.Value != Model.PostType)
+                  {
+                    <option value="@item.Value">@item.Key</option>
+                  }
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="col-md-2 control-label">Assunto<span class="required">*</span></label>
             <div class="col-md-10">
               <input class="form-control" id="subject" type="text" name="subject" value="@Model.Subject">
@@ -86,42 +101,31 @@
               </div>
             </div>
           </div>
-          @if (Model.PostType != 'N')
-          {
-            <div class="form-group">
-              <label class="col-md-2 control-label">Tipo postagem<span class="required">*</span></label>
-              <div class="col-md-3">
-                <label class="radio">
-                  @Html.RadioButtonFor(model => model.PostType, "D")
-                  Documento
-                </label>
-                <label class="radio">
-                  @Html.RadioButtonFor(model => model.PostType, "M")
-                  Manual
-                </label>
+          @{
+            if (Model.Files.Count != 0)
+            {
+              <div class="form-group files">
+                <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span><span class="files-qty">0</span></label>
+                <div class="col-md-10">
+                  @for (int i = 0; i < Model.Files.Count; i++)
+                  {
+                    <label class="checkbox">
+                      @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
+                      @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
+                      <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts" , new { postId=Model.Id, file=i })" target="_blank">@Model.Files[i].Name</a>
+                    </label>
+                  }
+                  <span class="files-qty">0</span>
+                </div>
               </div>
-            </div>
-            <div class="form-group files">
-              <label class="col-md-2 control-label">Arquivo(s)<span class="required">*</span><span class="files-qty">0</span></label>
-              <div class="col-md-10">
-                @for (int i = 0; i < Model.Files.Count; i++)
-                {
-                  <label class="checkbox">
-                    @Html.HiddenFor(model => model.Files[i].Id, new { @class = "file-id" })
-                    @Html.HiddenFor(model => model.Files[i].Active, new { @class = "file-active" })
-                    <i title="Remover" class="icon-remove-circle"></i>@(i+1) -  <a href="@Url.Action("showfile", "posts" , new { postId=Model.Id, file=i })" target="_blank">@Model.Files[i].Name</a>
-                  </label>
-                }
-                <span class="files-qty">0</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-2 control-label">Novo(s) arquivo(s)</label>
-              <div class="col-md-10">
-                <input id="file" type="file" name="binaryData" accept="application/pdf" multiple>
-              </div>
-            </div>
+            }
           }
+          <div class="form-group add-files">
+            <label class="col-md-2 control-label">Adicionar arquivo(s)</label>
+            <div class="col-md-10">
+              <input id="add-files" type="file" name="addFiles" accept="application/pdf" multiple>
+            </div>
+          </div>
           <div class="form-actions">
             <button title="Voltar para as postagens" class="btn btn pull-left back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar</button>
             <button title="Salvar as alterações e voltar" class="btn btn-primary pull-right" id="submit-button" type="submit">Salvar</button>
