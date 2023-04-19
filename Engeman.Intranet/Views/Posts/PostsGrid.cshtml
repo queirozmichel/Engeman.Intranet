@@ -30,13 +30,13 @@ else if (ViewBag.FilterGrid == "unrevisedComments")
 <table id="posts-grid" class="table table-condensed table-hover table-striped" data-filter-grid="@ViewBag.FilterGrid">
   <thead>
     <tr>
-      <th data-column-id="postType" data-formatter="postType">Tipo</th>
-      <th data-column-id="userAccountName" data-formatter="userAccountName">Nome</th>
-      <th data-column-id="department" data-formatter="department">Setor</th>
-      <th data-column-id="subject" data-formatter="subject">Assunto</th>
-      <th data-column-id="keywords" data-formatter="keywords">Palavras-chave</th>
-      <th data-column-id="changeDate" data-formatter="changeDate">Data</th>
-      <th data-column-id="action" data-formatter="action" disabled>Ações</th>
+      <th data-width="5%" data-column-id="id" data-formatter="id" data-align="center" data-header-align="center" data-header-css-class="id-header">ID</th>
+      <th data-width="5%" data-column-id="postType" data-formatter="postType" data-align="center" data-header-align="center" data-header-css-class="type-header">Tipo</th>
+      <th data-width="15%" data-column-id="userAccountName" data-formatter="userAccountName" data-align="center" data-header-align="center" data-header-css-class="name-header">Nome</th>
+      <th data-width="10%" data-column-id="department" data-formatter="department" data-align="center" data-header-align="center" data-header-css-class="department-header">Setor</th>
+      <th data-width="40%" data-column-id="subject" data-formatter="subject" data-align="center" data-header-align="center" data-header-css-class="subject-header">Assunto</th>
+      <th data-width="15%" data-column-id="changeDate" data-formatter="changeDate" data-align="center" data-header-align="center" data-header-css-class="data-header">Data</th>
+      <th data-width="10%" data-column-id="action" data-formatter="action" data-align="center" data-header-align="center" data-header-css-class="actions-header" disabled>Ações</th>
     </tr>
   </thead>
 </table>

@@ -15,9 +15,6 @@ $(document).ready(function () {
     /* your code after grid initialize goes here */
   }).bootgrid({
     ajax: true,
-    css: {
-      left: "text-left",
-    },
     url: "/posts/datagrid",
     labels: {
       all: "Tudo",
@@ -64,7 +61,10 @@ $(document).ready(function () {
         "</li>" +
         "</li>" +
         "<li>" +
-        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"no-attachment\">Sem anexo</a>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"informative\">Informativas</a>" +
+        "</li>" +
+        "<li>" +
+        "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"question\">Perguntas</a>" +
         "</li>" +
         "<li>" +
         "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"document\">Documentos</a>" +
@@ -81,7 +81,7 @@ $(document).ready(function () {
     formatters: {
       //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
       postType: function (column, row) {
-        if ((row.revised == false || row.unrevisedComments == true) && ( isModerator == true)) {
+        if ((row.revised == false || row.unrevisedComments == true) && (isModerator == true)) {
           return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
         }
         if (row.revised == true || row.userAccountId == $("#current-user-id").text()) {
@@ -91,8 +91,11 @@ $(document).ready(function () {
           else if (row.postType === "M") {
             return "<i title=\"Manual\" class=\"fa-regular fa-file-lines\"></i>"
           }
-          else if (row.postType === "N") {
-            return "<i title=\"Postagem sem anexo\" class=\"fa-regular fa-file\"></i>";
+          else if (row.postType === "Q") {
+            return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>";
+          }
+          else if (row.postType === "I") {
+            return "<i title=\"Informativa\" class=\"fa-solid fa-circle-exclamation\"></i>";
           }
         }
       },
@@ -128,16 +131,24 @@ $(document).ready(function () {
     if ($(this).data("value") == "all") {
       $(this).attr("data-filter", "all");
       $("#filter").attr("data-filter", "all");
-    } else if ($(this).data("value") == "no-attachment") {
-      $(this).attr("data-filter", "no-attachment");
-      $("#filter").attr("data-filter", "no-attachment");
-    } else if ($(this).data("value") == "document") {
+    }
+    else if ($(this).data("value") == "informative") {
+      $(this).attr("data-filter", "informative");
+      $("#filter").attr("data-filter", "informative");
+    }
+    else if ($(this).data("value") == "question") {
+      $(this).attr("data-filter", "question");
+      $("#filter").attr("data-filter", "question");
+    }
+    else if ($(this).data("value") == "document") {
       $(this).attr("data-filter", "document");
       $("#filter").attr("data-filter", "document");
-    } else if ($(this).data("value") == "manual") {
+    }
+    else if ($(this).data("value") == "manual") {
       $(this).attr("data-filter", "manual");
       $("#filter").attr("data-filter", "manual");
-    } else if ($(this).data("value") == "my") {
+    }
+    else if ($(this).data("value") == "my") {
       $(this).attr("data-filter", "my");
       $("#filter").attr("data-filter", "my");
     }

@@ -1,59 +1,33 @@
-﻿.dropdown-item {
+﻿/*Menu de filtragem de postagens*/
+#filter-button {
+  width: 16rem;
+}
+.dropdown-item {
   cursor: pointer;
-  display: block;
-  margin: 0;
-  padding: 3px 20px;
-  white-space: nowrap;
 }
 
-#filter-button{
-  width: 160px;
-}
-/*Grid-----------------------------------------------*/
-.not-revised{
+/*Ícone de não revisada*/
+.not-revised {
   color: red;
   text-align: left;
 }
+
+/*Margem dos textos internos dos cabeçalhos*/
+#posts-grid > thead tr > th > a > span:nth-child(1) {
+  margin: 0px;
+}
+
+/*Ícone de ordenação*/
+.type-header > a > span:nth-child(2) {
+  left: 4.5rem;
+}
+
+/*Ações(cabeçalho)*/
+.actions-header {
+  pointer-events: none;
+}
+
+/*Paginação*/
 .pagination {
   cursor: pointer;
-}
-
-#posts-grid > tbody > tr > td:nth-child(1){
-  text-align:center;
-}
-
-.actions > div:nth-child(3) {
-  display: none;
-}
-
-#posts-grid > thead > tr > th:last-child {
-  pointer-events:none;
-  text-align: center;
-}
-
-#posts-grid > thead > tr > th:nth-child(1) {
-  text-align: right;
-}
-
-/*Comprimento das colunas*/
-#posts-grid > thead > tr > th:nth-child(1) {
-  width: 5%;
-}
-#posts-grid > thead > tr > th:nth-child(2) {
-  width: 15%;
-}
-#posts-grid > thead > tr > th:nth-child(3) {
-  width: 10%;
-}
-#posts-grid > thead > tr > th:nth-child(4) {
-  width: 20%;
-}
-#posts-grid > thead > tr > th:nth-child(5) {
-  width: 20%;
-}
-#posts-grid > thead > tr > th:nth-child(6) {
-  width: 11%;
-}
-#posts-grid > thead > tr > th:nth-child(7) {
-  width: 9%;
 }
