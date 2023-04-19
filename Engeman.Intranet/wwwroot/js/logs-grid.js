@@ -4,17 +4,8 @@ $(window).on("load", function () {
   stopSpinner();
 })
 
-$(document).ready(function () {
-
-
-})
-
 var logsGrid = $("#logs-grid").bootgrid({
   ajax: true,
-  css: {
-    dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
-    left: "text-left",
-  },
   url: "/logs/datagrid",
   labels: {
     all: "Tudo",

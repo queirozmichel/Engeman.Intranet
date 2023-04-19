@@ -1,4 +1,9 @@
-﻿/*Menu de filtragem de postagens*/
+﻿/*Remove o padding no eixo x do cabeçalho*/
+#posts-grid > thead tr > th {
+  padding-inline: 0;
+}
+
+/*Menu de filtragem de postagens*/
 #filter-button {
   width: 16rem;
 }
@@ -15,11 +20,6 @@
 /*Margem dos textos internos dos cabeçalhos*/
 #posts-grid > thead tr > th > a > span:nth-child(1) {
   margin: 0px;
-}
-
-/*Ícone de ordenação*/
-.type-header > a > span:nth-child(2) {
-  left: 4.5rem;
 }
 
 /*Ações(cabeçalho)*/

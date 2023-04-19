@@ -11,10 +11,6 @@ $(document).ready(function () {
 
 var usersGrid = $("#users-grid").bootgrid({
   ajax: true,
-  css: {
-    dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
-    left: "text-left",
-  },
   url: "/useraccount/datagrid",
   labels: {
     all: "Tudo",

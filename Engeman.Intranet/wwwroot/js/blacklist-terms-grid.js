@@ -4,10 +4,6 @@
 
 var blacklistTermsGrid = $("#blacklist-terms-grid").bootgrid({
   ajax: true,
-  css: {
-    dropDownMenuItems: "dropdown-menu pull-right dropdown-menu-grid",
-    left: "text-center",
-  },
   url: "/blacklistterms/datagrid",
   labels: {
     all: "Tudo",

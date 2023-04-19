@@ -1,13 +1,26 @@
-﻿.actions > div:nth-child(3) {
-  display: none;
+﻿/*Remove o padding no eixo x do cabeçalho*/
+#blacklist-terms-grid-grid > thead tr > th {
+  padding-inline: 0;
 }
 
+/*Barra principal*/
 .actionBar {
   padding: 0px;
 }
 
-#blacklist-terms-grid > thead > tr > th:last-child {
+/*Margem dos textos internos dos cabeçalhos*/
+#blacklist-terms-grid > thead tr > th > a > span:nth-child(1) {
+  margin: 0px;
+}
+
+/*Ações(cabeçalho)*/
+.actions-header {
   pointer-events: none;
+}
+
+/*Paginação*/
+.pagination {
+  cursor: pointer;
 }
 
 /*Botão Novo Termo*/
@@ -16,6 +29,7 @@
   margin-right: 20px;
 }
 
+/*Modais de novo e edição de termo*/
 #new-term-modal, #edit-term-modal {
   overflow: auto;
 }
