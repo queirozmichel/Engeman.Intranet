@@ -15,3 +15,7 @@
   background-color: #00cc003d;
   margin-right: 20px;
 }
+
+#new-term-modal, #edit-term-modal {
+  overflow: auto;
+}
