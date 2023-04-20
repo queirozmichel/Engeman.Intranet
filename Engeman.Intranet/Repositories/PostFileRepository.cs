@@ -19,7 +19,6 @@ namespace Engeman.Intranet.Repositories
         var file = new PostFile
         {
           Id = Convert.ToInt32(result.Rows[i]["id"]),
-          Active = Convert.ToBoolean(result.Rows[i]["Active"]),
           Name = result.Rows[i]["Name"].ToString(),
           BinaryData = (byte[])result.Rows[i]["Binary_Data"],
           ChangeDate = (DateTime)result.Rows[i]["Change_Date"]
@@ -44,12 +43,15 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void Delete(int id)
+    public void Delete(int[] ids)
     {
-      var query = $"DELETE FROM POSTFILE WHERE ID = {id}";
-
       using StaticQuery sq = new();
-      sq.ExecuteCommand(query);
+
+      for (int i = 0; i < ids.Length; i++)
+      {
+        var query = $"DELETE FROM POSTFILE WHERE ID = {ids[i]}";
+        sq.ExecuteCommand(query);
+      }
     }
   }
 }

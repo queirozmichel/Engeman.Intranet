@@ -1,4 +1,6 @@
-﻿$(document).ready(function () {
+﻿var filesToBeRemove = new String();
+
+$(document).ready(function () {
   sessionStorage.setItem("postId", $("#post-id").text());
 
   jQuery.validator.setDefaults({
@@ -52,6 +54,7 @@ $("#comment-edit-form").on("submit", function (event) {
         if (response.occurrences != 0) {
           showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para continuar.`);
         } else {
+          Cookies.set('FilesToBeRemove', filesToBeRemove);
           $.ajax({
             type: "POST",
             dataType: "html",
@@ -68,6 +71,9 @@ $("#comment-edit-form").on("submit", function (event) {
               if (response.status == 500) {
                 toastr.error(response.responseText, "Erro " + response.status);
               }
+            },
+            complete: function (response) {
+              Cookies.remove('FilesToBeRemove');
             }
           })
         }
@@ -81,8 +87,8 @@ $("#comment-edit-form").on("submit", function (event) {
 })
 
 $(".icon-remove-circle").on("click", function () {
+  filesToBeRemove = filesToBeRemove + $(this).data("file-id") + " ";
   $(this).parent().css("display", "none");
-  $(this).parent().find(".file-active").val("N");
   var qty = countFiles();
   if (qty == 0) {
     $(this).parent().parent().append("<p class=\"none-file\">Nenhum arquivo</p>");

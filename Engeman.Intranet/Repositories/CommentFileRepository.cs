@@ -17,7 +17,6 @@ namespace Engeman.Intranet.Repositories
         var file = new CommentFile
         {
           Id = Convert.ToInt32(result.Rows[i]["Id"]),
-          Active = Convert.ToBoolean(result.Rows[i]["Active"]),
           Name = result.Rows[i]["Name"].ToString(),
           BinaryData = (byte[])result.Rows[i]["Binary_Data"],
           CommentId = Convert.ToInt32(result.Rows[i]["Comment_Id"]),
@@ -44,12 +43,15 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void Delete(int id)
+    public void Delete(int[] ids)
     {
-      string query = $"DELETE FROM COMMENTFILE WHERE ID = {id}";
-
       using StaticQuery sq = new();
-      sq.ExecuteCommand(query);
+
+      for (int i = 0; i < ids.Length; i++)
+      {
+        var query = $"DELETE FROM COMMENTFILE WHERE ID = {ids[i]}";
+        sq.ExecuteCommand(query);
+      }
     }
   }
 }

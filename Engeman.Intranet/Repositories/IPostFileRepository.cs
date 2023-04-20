@@ -7,6 +7,6 @@ namespace Engeman.Intranet.Repositories
   {
     public List<PostFile> GetByPostId(int postId);
     public void Add(int postId, List<NewPostFileViewModel> files);
-    public void Delete(int id);
+    public void Delete(int[] ids);
   }
 }

@@ -188,9 +188,9 @@ namespace Engeman.Intranet.Controllers
       }
 
       try { _postRepository.Add(newPost, sessionUsername); }
-      catch (SqlException sqlEx)
+      catch (SqlException ex)
       {
-        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
       }
 
       return Ok(StatusCodes.Status200OK);
@@ -250,6 +250,12 @@ namespace Engeman.Intranet.Controllers
       var fileList = new List<NewPostFileViewModel>();
       var currentPost = new Post();
       var userAccount = new UserAccount();
+      int[] filesToBeRemove = null;
+
+      if (Request.Cookies["FilesToBeRemove"] != string.Empty)
+      {
+        filesToBeRemove = (Regex.Replace(Request.Cookies["FilesToBeRemove"], @"(^\s*)|(\s*$)", "")).Split(' ').Select(int.Parse).ToArray();
+      }
 
       try
       {
@@ -262,19 +268,6 @@ namespace Engeman.Intranet.Controllers
 
       if (editedPost.Keywords != null) editedPost.Keywords = editedPost.Keywords.ToLower();
 
-      if (editedPost.Files.Count > 0)
-      {
-        for (int i = 0; i < editedPost.Files.Count; i++)
-        {
-          if (editedPost.Files[i].Active == false)
-          {
-            try { _postFileRepository.Delete(editedPost.Files[i].Id); }
-            catch (Exception) { }
-            editedPost.Files.RemoveAt(i);
-            i--;
-          }
-        }
-      }
       if (addFiles.Count != 0)
       {
         fileList.Clear();
@@ -292,16 +285,19 @@ namespace Engeman.Intranet.Controllers
             }
           }
         }
-
-        try { _postFileRepository.Add(editedPost.Id, fileList); } catch (Exception) { }
       }
 
       if (currentPost.Revised == true && userAccount.NoviceUser == false) editedPost.Revised = true;
 
-      try { _postRepository.Update(editedPost.Id, editedPost, sessionUsername); }
-      catch (SqlException sqlEx)
+      try
       {
-        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+        _postRepository.Update(editedPost.Id, editedPost, sessionUsername);
+        if (filesToBeRemove != null) _postFileRepository.Delete(filesToBeRemove);
+        _postFileRepository.Add(editedPost.Id, fileList);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
       }
 
       ViewBag.FilterGrid = Request.Query["filter"];

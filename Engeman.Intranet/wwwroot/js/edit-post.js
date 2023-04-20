@@ -1,4 +1,6 @@
-﻿$(window).on("load", function () {
+﻿var filesToBeRemove = new String();
+
+$(window).on("load", function () {
   stopSpinner();
 });
 
@@ -75,6 +77,7 @@ $(document).ready(function () {
   if (sessionStorage.getItem("editAfterDetails") != null) {
     $(".back-button").attr("title", "Voltar para os detalhes da postagem");
   }
+
 })
 
 if ($("#restricted").is(":checked")) {
@@ -107,6 +110,7 @@ $("#edit-post-form").on("submit", function (event) {
         if (response.occurrences != 0) {
           showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para poder continuar.`);
         } else {
+          Cookies.set('FilesToBeRemove', filesToBeRemove);
           $.ajax({
             type: "PUT",
             contentType: false,
@@ -128,6 +132,7 @@ $("#edit-post-form").on("submit", function (event) {
               }
             },
             complete: function () {
+              Cookies.remove('FilesToBeRemove');
               stopSpinner();
             }
           });
@@ -158,8 +163,8 @@ function countFiles() {
 }
 
 $(".icon-remove-circle").on("click", function () {
+  filesToBeRemove = filesToBeRemove + $(this).data("file-id") + " "; 
   $(this).parent().css("display", "none");
-  $(this).parent().find(".file-active").val("false");
   var qty = countFiles();
   if (($("#postType").val() == 'D' || $("#postType").val() == 'M') && qty == 0) {
     $(".add-files").find("label").append("<span class=\"required\">*</span>");
@@ -173,7 +178,7 @@ $("#postType").change(function () {
   if ((($(this).val() == 'D' || $(this).val() == 'M') && countFiles() == 0) && $(".add-files").find("span").length == 0) {
     $(".add-files").find("label").append("<span class=\"required\">*</span>");
   }
-  if (($(this).val() == 'I' || $(this).val() == 'Q')){
+  if (($(this).val() == 'I' || $(this).val() == 'Q')) {
     $(".add-files").find("span").remove();
   }
 })

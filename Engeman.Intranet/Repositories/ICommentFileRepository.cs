@@ -6,6 +6,6 @@ namespace Engeman.Intranet.Repositories
   {
     public List<CommentFile> GetByCommentId(int commentId);
     public void Add(int commentId, List<CommentFile> files);
-    public void Delete(int id);
+    public void Delete(int[] ids);
   }
 }

@@ -137,7 +137,6 @@ CREATE TABLE COMMENT (
 
 CREATE TABLE POSTFILE ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOSTFILE),
-  ACTIVE                        BIT DEFAULT 1                       NOT NULL,
 	NAME                          VARCHAR(100)                        NOT NULL,
 	BINARY_DATA				            VARBINARY(MAX)                      NOT NULL,
 	POST_ID                       NUMERIC(18)                         NOT NULL,
@@ -152,7 +151,6 @@ CREATE TABLE POSTFILE (
 
 CREATE TABLE COMMENTFILE ( 
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENCOMMENTFILE),
-  ACTIVE                        BIT DEFAULT 1                       NOT NULL,
 	NAME                          VARCHAR(100)                        NOT NULL,
 	BINARY_DATA				            VARBINARY(MAX)                      NOT NULL,
 	COMMENT_ID                    NUMERIC(18)                         NOT NULL,

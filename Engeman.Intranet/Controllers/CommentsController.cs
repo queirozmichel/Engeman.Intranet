@@ -4,7 +4,7 @@ using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -42,6 +42,12 @@ namespace Engeman.Intranet.Controllers
       var currentComment = new Comment();
       var userAccount = new UserAccount();
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
+      int[] filesToBeRemove = null;
+
+      if (Request.Cookies["FilesToBeRemove"] != string.Empty)
+      {
+        filesToBeRemove = (Regex.Replace(Request.Cookies["FilesToBeRemove"], @"(^\s*)|(\s*$)", "")).Split(' ').Select(int.Parse).ToArray();
+      }
 
       try
       {
@@ -50,26 +56,9 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      for (int i = 0; i < editedComment.Files.Count; i++)
-      {
-        if (editedComment.Files[i].Active == false)
-        {
-          try { _commentFileRepository.Delete(editedComment.Files[i].Id); } catch (Exception) { }
-
-          editedComment.Files.RemoveAt(i);
-          i--;
-        }
-      }
-
       comment.Description = editedComment.Comment.Description;
 
       if (currentComment.Revised == true && userAccount.NoviceUser == false) comment.Revised = true;
-
-      try { _commentRepository.Update(currentComment.Id, comment, sessionUsername); }
-      catch (SqlException sqlEx)
-      {
-        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
-      }
 
       if (binaryData.Count != 0)
       {
@@ -88,8 +77,17 @@ namespace Engeman.Intranet.Controllers
             }
           }
         }
+      }
 
-        try { _commentFileRepository.Add(currentComment.Id, files); } catch (Exception) { }
+      try
+      {
+        _commentRepository.Update(currentComment.Id, comment, sessionUsername);
+        if (filesToBeRemove != null) _commentFileRepository.Delete(filesToBeRemove);
+        _commentFileRepository.Add(currentComment.Id, files);
+      }
+      catch (Exception ex)
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
       }
 
       return RedirectToAction("PostDetails", "Posts", new { postId = editedComment.Comment.PostId });
@@ -139,9 +137,9 @@ namespace Engeman.Intranet.Controllers
       }
 
       try { _commentRepository.Add(newComment, sessionUsername); }
-      catch (SqlException sqlEx)
+      catch (Exception ex)
       {
-        return StatusCode(StatusCodes.Status500InternalServerError, sqlEx.Message);
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
       }
 
       return Ok(StatusCodes.Status200OK);
