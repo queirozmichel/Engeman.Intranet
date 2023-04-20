@@ -3,7 +3,10 @@
   jQuery.validator.setDefaults({
     rules: {
       "description": {
-        required: true
+        required: true,
+        normalizer: function (value) {
+          return RemoveHTMLTags(value);
+        }
       }
     },
     messages: {

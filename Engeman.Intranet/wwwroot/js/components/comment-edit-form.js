@@ -6,7 +6,10 @@ $(document).ready(function () {
   jQuery.validator.setDefaults({
     rules: {
       "comment.description": {
-        required: true
+        required: true,
+        normalizer: function (value) {
+          return RemoveHTMLTags(value);
+        }
       },
     },
     messages: {

@@ -19,7 +19,10 @@ $(document).ready(function () {
         required: true
       },
       "description": {
-        required: true
+        required: true,
+        normalizer: function (value) {
+          return RemoveHTMLTags(value);
+        }
       },
       "departmentsList": {
         required: {
