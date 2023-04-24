@@ -10,6 +10,7 @@ namespace Engeman.Intranet.Repositories
     public UserAccount GetByUsername(string username);
     public string GetUsernameById(int id);
     public UserPermissionsViewModel GetUserPermissionsByUsername(string username);
+    public int GetDepartmentIdById(int id);
     public void Add(NewUserViewModel user, string currentUsername = null);
     public void Update(UserAccount userAccount);
     public void UpdateByModerator(int id, UserAccount user, string currentUsername = null);

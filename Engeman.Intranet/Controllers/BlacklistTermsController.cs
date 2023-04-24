@@ -106,6 +106,8 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditTerm(int termId)
     {
+      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+
       var termAux = _blacklistTermRepository.GetById(termId);
       var term = new BlacklistTermViewModel
       {

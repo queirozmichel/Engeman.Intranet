@@ -296,5 +296,14 @@ namespace Engeman.Intranet.Repositories
 
       return result;
     }
+
+    public int GetPostIdById(int id)
+    {
+      string query = $"SELECT POST_ID FROM COMMENT WHERE ID = {id}";
+
+      using StaticQuery sq = new();
+      var result = sq.GetDataToInt(query);
+      return result;
+    }
   }
 }

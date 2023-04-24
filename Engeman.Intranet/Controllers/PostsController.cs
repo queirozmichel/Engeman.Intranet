@@ -199,6 +199,8 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditPost(int postId)
     {
+      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+
       var restrictedDepartments = new List<int>();
       var postEditViewModel = new PostEditViewModel();
       var orderedFiles = new List<PostFile>();
@@ -308,6 +310,8 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult DeletePost(int postId)
     {
+      if (!HttpContext.Request.IsAjax("DELETE")) return Redirect(Request.Host.ToString());
+
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
       try { _postRepository.Delete(postId, currentUsername); } catch (Exception) { }
@@ -318,6 +322,8 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult PostDetails(int postId)
     {
+      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+
       var postDetails = new PostDetailsViewModel();
       var commentFiles = new List<CommentFile>();
       var comments = new List<CommentViewModel>();
@@ -410,6 +416,20 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult ShowFile(int postId, int file)
     {
+      if (HttpContext.Session.Get<bool>("_IsModerator") == false)
+      {
+        var post = _postRepository.GetById(postId);
+        if (post.Restricted == true)
+        {
+          var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
+          var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
+          if (postRestrictionCount == 0)
+          {
+            return Redirect(Request.Host.ToString());
+          }
+        }
+      }
+
       var orderedFiles = new List<PostFile>();
 
       try { orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList(); } catch (Exception) { }
@@ -423,6 +443,8 @@ namespace Engeman.Intranet.Controllers
     [HttpPut]
     public IActionResult AprovePost(int postId)
     {
+      if (!HttpContext.Request.IsAjax("PUT")) return Redirect(Request.Host.ToString());
+
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
       try { _postRepository.Aprove(postId, currentUsername); } catch (Exception) { }

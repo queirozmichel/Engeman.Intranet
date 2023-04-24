@@ -12,6 +12,7 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetByUsername(string username);
     public List<Comment> GetUnrevisedComments();
     public List<Comment> GetByUserRestriction(UserAccount user, int postId);
+    public int GetPostIdById(int id);
     public void Add(NewCommentViewModel comment, string currentUsername = null);
     public void Update(int id, Comment comment, string currentUsername = null);
     public void Delete(int id, string currentUsername = null);

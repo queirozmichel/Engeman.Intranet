@@ -165,6 +165,8 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditUserAccount(int userId)
     {
+      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+
       var userEdit = new UserEditViewModel();
       var user = new UserAccount();
       var UserTypes = new Dictionary<string, int>();

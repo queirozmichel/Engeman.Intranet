@@ -184,5 +184,15 @@ namespace Engeman.Intranet.Repositories
         GlobalFunctions.NewLog('D', "USU", id, "USERACCOUNT", currentUsername);
       }
     }
+
+    public int GetDepartmentIdById(int id)
+    {
+      var query = $"SELECT DEPARTMENT_ID FROM USERACCOUNT WHERE ID = {id}";
+
+      using StaticQuery sq = new();
+      var result = sq.GetDataToInt(query);
+
+      return result;
+    }
   }
 }

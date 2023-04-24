@@ -14,12 +14,16 @@ namespace Engeman.Intranet.Controllers
     private readonly ICommentRepository _commentRepository;
     private readonly ICommentFileRepository _commentFileRepository;
     private readonly IUserAccountRepository _userAccountRepository;
+    private readonly IPostRepository _postRepository;
+    private readonly IPostRestrictionRepository _postRestrictionRepository;
 
-    public CommentsController(ICommentRepository commentRepository, ICommentFileRepository commentFileRepository, IUserAccountRepository userAccountRepository)
+    public CommentsController(ICommentRepository commentRepository, ICommentFileRepository commentFileRepository, IUserAccountRepository userAccountRepository, IPostRepository postRepository, IPostRestrictionRepository postRestrictionRepository)
     {
       _commentRepository = commentRepository;
       _commentFileRepository = commentFileRepository;
       _userAccountRepository = userAccountRepository;
+      _postRepository = postRepository;
+      _postRestrictionRepository = postRestrictionRepository;
     }
 
     [HttpGet]
@@ -31,6 +35,8 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult CommentEditForm(int commentId)
     {
+      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+
       return ViewComponent("CommentEditForm", commentId);
     }
 
@@ -96,6 +102,21 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult ShowFile(int commentId, int file)
     {
+      if (HttpContext.Session.Get<bool>("_IsModerator") == false)
+      {
+        var postId = _commentRepository.GetPostIdById(commentId);
+        var post = _postRepository.GetById(postId);
+        if (post.Restricted == true)
+        {
+          var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
+          var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
+          if (postRestrictionCount == 0)
+          {
+            return Redirect(Request.Host.ToString());
+          }
+        }
+      }
+
       var orderedFiles = new List<CommentFile>();
 
       try { orderedFiles = _commentFileRepository.GetByCommentId(commentId).OrderBy(a => a.Name).ToList(); } catch (Exception) { }
@@ -148,6 +169,8 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult DeleteComment(int commentId)
     {
+      if (!HttpContext.Request.IsAjax("DELETE")) return Redirect(Request.Host.ToString());
+
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
       try { _commentRepository.Delete(commentId, currentUsername); } catch (Exception) { }
@@ -158,6 +181,8 @@ namespace Engeman.Intranet.Controllers
     [HttpPut]
     public IActionResult AproveComment(int commentId)
     {
+      if (!HttpContext.Request.IsAjax("PUT")) return Redirect(Request.Host.ToString());
+
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
       try { _commentRepository.Aprove(commentId, currentUsername); } catch (Exception) { }
