@@ -19,9 +19,10 @@ namespace Engeman.Intranet.Controllers
       _commentRepository = commentRepository;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
 
       return PartialView("Index");
     }

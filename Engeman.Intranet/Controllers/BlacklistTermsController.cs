@@ -26,7 +26,7 @@ namespace Engeman.Intranet.Controllers
 
       if (isModerator == false) return Redirect(Request.Host.ToString());
 
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
 
       return PartialView("BlacklistTermsGrid");
     }

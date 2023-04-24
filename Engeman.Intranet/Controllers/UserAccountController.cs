@@ -28,7 +28,7 @@ namespace Engeman.Intranet.Controllers
 
       if (isModerator == false) return Redirect(Request.Host.ToString());
 
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
 
       return PartialView("UsersGrid");
     }
@@ -131,7 +131,7 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
 
       return PartialView(userAccount);
     }
@@ -212,7 +212,7 @@ namespace Engeman.Intranet.Controllers
       try { ViewBag.Departments = _departmentRepository.Get(); } catch (Exception) { }
 
       ViewBag.Permissions = UserTypes;
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
 
       return PartialView(userEdit);
     }

@@ -43,7 +43,7 @@ namespace Engeman.Intranet.Controllers
       if (Request.Query["filter"] != "allPosts" && HttpContext.Session.Get<bool>("_IsModerator") == false) return Redirect(Request.Host.ToString());
 
       ViewBag.FilterGrid = Request.Query["filter"];
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
 
       return PartialView("PostsGrid");
     }
@@ -145,7 +145,7 @@ namespace Engeman.Intranet.Controllers
 
       if (permissions.CreatePost == true)
       {
-        ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
         try { ViewBag.Departments = _departmentRepository.Get(); }
         catch (Exception) { }
         return PartialView("NewPost");
@@ -214,7 +214,7 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
       ViewBag.Departments = departments;
       postEditViewModel.Id = post.Id;
       postEditViewModel.Restricted = post.Restricted;
@@ -401,7 +401,7 @@ namespace Engeman.Intranet.Controllers
       ViewBag.IsModerator = CheckIsModerator();
       ViewBag.UserId = HttpContext.Session.Get<int>("_CurrentUserId");
       ViewBag.PostId = postId;
-      ViewBag.IsAjaxCall = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
       ViewBag.Post = postDetails;
 
       return PartialView();
