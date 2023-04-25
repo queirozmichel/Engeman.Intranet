@@ -10,7 +10,7 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> Get()
     {
       var comments = new List<Comment>();
-      var query = $"SELECT * FROM COMMENT";
+      var query = $"SELECT * FROM COMMENT WHERE ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -38,7 +38,7 @@ namespace Engeman.Intranet.Repositories
 
     public Comment GetById(int id)
     {
-      string query = $"SELECT * FROM COMMENT WHERE ID = '{id}'";
+      string query = $"SELECT * FROM COMMENT WHERE ID = '{id}' AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -60,7 +60,7 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetByPostId(int postId)
     {
       var comments = new List<Comment>();
-      var query = $"SELECT * FROM COMMENT WHERE POST_ID = {postId}";
+      var query = $"SELECT * FROM COMMENT WHERE POST_ID = {postId} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -89,7 +89,7 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetByUserAccountId(int userAccountId)
     {
       var comments = new List<Comment>();
-      var query = $"SELECT * FROM COMMENT WHERE USER_ACCOUNT_ID = {userAccountId}";
+      var query = $"SELECT * FROM COMMENT WHERE USER_ACCOUNT_ID = {userAccountId} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -118,7 +118,7 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetUnrevisedComments()
     {
       var comments = new List<Comment>();
-      string query = $"SELECT * FROM COMMENT WHERE REVISED = 0";
+      string query = $"SELECT * FROM COMMENT WHERE REVISED = 0 AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -143,7 +143,7 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetByUserRestriction(UserAccount userAccount, int postId)
     {
       var comments = new List<Comment>();
-      string query = $"SELECT ID, ACTIVE, DESCRIPTION, USER_ACCOUNT_ID, CHANGE_DATE, REVISED FROM COMMENT WHERE POST_ID = '{postId}'";
+      string query = $"SELECT ID, ACTIVE, DESCRIPTION, USER_ACCOUNT_ID, CHANGE_DATE, REVISED FROM COMMENT WHERE POST_ID = '{postId}' AND ACTIVE = 1";
       bool revised;
       int authorCommentId;
       bool moderator;
@@ -178,7 +178,7 @@ namespace Engeman.Intranet.Repositories
     public List<Comment> GetByUsername(string username)
     {
       var comments = new List<Comment>();
-      var query = $"SELECT * FROM COMMENT as C INNER JOIN USERACCOUNT as U ON C.USER_ACCOUNT_ID =  U.ID WHERE U.USERNAME = '{username}'";
+      var query = $"SELECT * FROM COMMENT as C INNER JOIN USERACCOUNT as U ON C.USER_ACCOUNT_ID =  U.ID WHERE U.USERNAME = '{username}' AND C.ACTIVE = 1 AND U.ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -202,6 +202,15 @@ namespace Engeman.Intranet.Repositories
 
         return comments;
       }
+    }
+
+    public int GetPostIdById(int id)
+    {
+      string query = $"SELECT POST_ID FROM COMMENT WHERE ID = {id} AND ACTIVE = 1";
+
+      using StaticQuery sq = new();
+      var result = sq.GetDataToInt(query);
+      return result;
     }
 
     public void Add(NewCommentViewModel newComment, string currentUsername)
@@ -269,7 +278,7 @@ namespace Engeman.Intranet.Repositories
     public int CountByUsername(string username)
     {
       var query = $"SELECT COUNT(*) FROM COMMENT AS C INNER JOIN USERACCOUNT AS U ON C.USER_ACCOUNT_ID = U.ID " +
-                  $"WHERE U.USERNAME = '{username}'";
+                  $"WHERE U.USERNAME = '{username}' AND C.ACTIVE = 1 AND U.ACTIVE = 1";
 
       using StaticQuery sq = new StaticQuery();
       int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
@@ -279,7 +288,7 @@ namespace Engeman.Intranet.Repositories
 
     public int CountByUserId(int userId)
     {
-      var query = $"SELECT COUNT(*) FROM COMMENT WHERE USER_ACCOUNT_ID = {userId}";
+      var query = $"SELECT COUNT(*) FROM COMMENT WHERE USER_ACCOUNT_ID = {userId} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
@@ -289,20 +298,11 @@ namespace Engeman.Intranet.Repositories
 
     public int Count()
     {
-      var query = $"SELECT COUNT(*) FROM COMMENT";
+      var query = $"SELECT COUNT(*) FROM COMMENT WHERE ACTIVE = 1";
 
       using StaticQuery sq = new();
       int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
 
-      return result;
-    }
-
-    public int GetPostIdById(int id)
-    {
-      string query = $"SELECT POST_ID FROM COMMENT WHERE ID = {id}";
-
-      using StaticQuery sq = new();
-      var result = sq.GetDataToInt(query);
       return result;
     }
   }

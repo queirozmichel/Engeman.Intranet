@@ -3,6 +3,11 @@
   padding-inline: 0;
 }
 
+/*Barra principal*/
+.actionBar {
+  padding: 0px;
+}
+
 /*Menu de filtragem de postagens*/
 #filter-button {
   width: 16rem;

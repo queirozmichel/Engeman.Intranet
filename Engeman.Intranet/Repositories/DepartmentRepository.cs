@@ -7,7 +7,7 @@ namespace Engeman.Intranet.Repositories
   {
     public Department GetById(int id)
     {
-      var query = $"SELECT * FROM DEPARTMENT WHERE ID = {id}";
+      var query = $"SELECT * FROM DEPARTMENT WHERE ID = {id} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -27,7 +27,7 @@ namespace Engeman.Intranet.Repositories
     public List<Department> Get()
     {
       var departments = new List<Department>();
-      var query = $"SELECT * FROM DEPARTMENT";
+      var query = $"SELECT * FROM DEPARTMENT WHERE ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -50,7 +50,7 @@ namespace Engeman.Intranet.Repositories
 
     public string GetDescriptionById(int id)
     {
-      var query = $"SELECT DESCRIPTION FROM DEPARTMENT WHERE ID = {id}";
+      var query = $"SELECT DESCRIPTION FROM DEPARTMENT WHERE ID = {id} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataToString(query);

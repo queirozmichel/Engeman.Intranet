@@ -3,6 +3,11 @@
   padding-inline: 0;
 }
 
+/*Barra principal*/
+.actionBar {
+  padding: 0px;
+}
+
 /*Paginação*/
 .pagination {
   cursor: pointer;

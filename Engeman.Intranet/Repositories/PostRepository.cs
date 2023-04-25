@@ -10,7 +10,7 @@ namespace Engeman.Intranet.Repositories
     public List<Post> Get()
     {
       var posts = new List<Post>();
-      var query = $"SELECT * FROM POST";
+      var query = $"SELECT * FROM POST WHERE ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -55,7 +55,7 @@ namespace Engeman.Intranet.Repositories
       {
         query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
                 $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
-                $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE POST.ACTIVE = 1 " +
+                $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE POST.ACTIVE = 1 AND UA.ACTIVE = 1 AND D.ACTIVE = 1 " +
                 $"GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
                 $"UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION " +
                 $"ORDER BY POST.CHANGE_DATE DESC";
@@ -67,7 +67,7 @@ namespace Engeman.Intranet.Repositories
                 $"FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
                 $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
                 $"INNER JOIN {Constants.SearchCondition.Replace("#SearchPhrase#", searchPhrase)} ON POST.ID = KEY_TBL.[KEY] " +
-                $"WHERE POST.ACTIVE = 1 AND KEY_TBL.RANK >= {Constants.Rank} " +
+                $"WHERE POST.ACTIVE = 1 AND UA.ACTIVE = 1 AND D.ACTIVE = 1 AND KEY_TBL.RANK >= {Constants.Rank} " +
                 $"ORDER BY KEY_TBL.RANK DESC";
       }
 
@@ -110,7 +110,7 @@ namespace Engeman.Intranet.Repositories
     {
 
       var posts = new List<Post>();
-      var query = $"SELECT * FROM POST WHERE USER_ACCOUNT_ID = {userAccountId}";
+      var query = $"SELECT * FROM POST WHERE USER_ACCOUNT_ID = {userAccountId} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -144,7 +144,7 @@ namespace Engeman.Intranet.Repositories
     public List<Post> GetByUsername(string username)
     {
       var posts = new List<Post>();
-      var query = $"SELECT * FROM POST as P INNER JOIN USERACCOUNT as U ON P.USER_ACCOUNT_ID =  U.ID WHERE U.USERNAME = '{username}'";
+      var query = $"SELECT * FROM POST as P INNER JOIN USERACCOUNT as U ON P.USER_ACCOUNT_ID =  U.ID WHERE U.USERNAME = '{username}' AND P.ACTIVE = 1 AND U.ACTIVE = 1";
 
       using StaticQuery sq = new StaticQuery();
       var result = sq.GetDataSet(query).Tables[0];
@@ -177,7 +177,7 @@ namespace Engeman.Intranet.Repositories
 
     public string GetSubjectById(int id)
     {
-      var query = $"SELECT SUBJECT FROM POST WHERE ID = {id}";
+      var query = $"SELECT SUBJECT FROM POST WHERE ID = {id} AND ACTIVE = 1";
 
       using StaticQuery sq = new StaticQuery();
       var result = sq.GetDataSet(query).Tables[0].Rows[0];
@@ -187,7 +187,7 @@ namespace Engeman.Intranet.Repositories
 
     public Post GetById(int id)
     {
-      var query = $"SELECT * FROM POST WHERE ID = {id}";
+      var query = $"SELECT * FROM POST WHERE ID = {id} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0].Rows[0];
@@ -217,7 +217,8 @@ namespace Engeman.Intranet.Repositories
       string query = $"SELECT DISTINCT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
                      $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT " +
                      $"FROM POST INNER JOIN COMMENT AS C ON C.POST_ID = POST.ID LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
-                     $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE C.REVISED = 0";
+                     $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE C.REVISED = 0 " +
+                     $"AND POST.ACTIVE = 1 AND UA.ACTIVE = 1 AND D.ACTIVE = 1 C.ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -316,7 +317,7 @@ namespace Engeman.Intranet.Repositories
       {
         GlobalFunctions.NewLog('D', "POS", id, "POST", currentUsername);
       }
-    }   
+    }
 
     public void Aprove(int id, string currentUsername)
     {
@@ -333,7 +334,7 @@ namespace Engeman.Intranet.Repositories
 
     public int CountByUsername(string username)
     {
-      var query = $"SELECT COUNT(*) FROM POST AS P INNER JOIN USERACCOUNT AS U ON P.USER_ACCOUNT_ID = U.ID WHERE U.USERNAME = '{username}'";
+      var query = $"SELECT COUNT(*) FROM POST AS P INNER JOIN USERACCOUNT AS U ON P.USER_ACCOUNT_ID = U.ID WHERE U.USERNAME = '{username}' AND P.ACTIVE = 1 AND U.ACTIVE = 1";
 
       using StaticQuery sq = new();
       int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
@@ -343,7 +344,7 @@ namespace Engeman.Intranet.Repositories
 
     public int CountByUserId(int userId)
     {
-      var query = $"SELECT COUNT(*) FROM POST WHERE USER_ACCOUNT_ID = {userId}";
+      var query = $"SELECT COUNT(*) FROM POST WHERE USER_ACCOUNT_ID = {userId} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);
@@ -353,7 +354,7 @@ namespace Engeman.Intranet.Repositories
 
     public int CountByPostType(char postType)
     {
-      var query = $"SELECT COUNT(*) FROM POST WHERE POST_TYPE = '{postType}'";
+      var query = $"SELECT COUNT(*) FROM POST WHERE POST_TYPE = '{postType}' AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       int result = Convert.ToInt32(sq.GetDataSet(query).Tables[0].Rows[0][0]);

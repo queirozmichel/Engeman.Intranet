@@ -9,7 +9,7 @@ namespace Engeman.Intranet.Repositories
   {
     public UserAccount GetById(int id)
     {
-      var query = $"SELECT * FROM USERACCOUNT WHERE ID = {id}";
+      var query = $"SELECT * FROM USERACCOUNT WHERE ID = {id} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -42,7 +42,7 @@ namespace Engeman.Intranet.Repositories
       var query = $"SELECT UA.ID,UA.ACTIVE,NAME,USERNAME,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
                   $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.CREATE_POST, UA.EDIT_OWNER_POST, UA.DELETE_OWNER_POST, UA.EDIT_ANY_POST, " +
                   $"UA.DELETE_ANY_POST, UA.MODERATOR, UA.NOVICE_USER, UA.CHANGE_DATE FROM USERACCOUNT UA INNER JOIN DEPARTMENT D " +
-                  $"ON UA.DEPARTMENT_ID = D.ID WHERE USERNAME = '{username.ToLower()}'";
+                  $"ON UA.DEPARTMENT_ID = D.ID WHERE UA.USERNAME = '{username.ToLower()}' AND UA.ACTIVE = 1 AND D.ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -71,7 +71,7 @@ namespace Engeman.Intranet.Repositories
 
     public string GetUsernameById(int id)
     {
-      var query = $"SELECT USERNAME FROM USERACCOUNT WHERE ID = {id}";
+      var query = $"SELECT USERNAME FROM USERACCOUNT WHERE ID = {id} AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataToString(query);
@@ -82,7 +82,7 @@ namespace Engeman.Intranet.Repositories
     public UserPermissionsViewModel GetUserPermissionsByUsername(string username)
     {
       var query = $"SELECT CREATE_POST, EDIT_OWNER_POST, DELETE_OWNER_POST, EDIT_ANY_POST, DELETE_ANY_POST, MODERATOR, NOVICE_USER " +
-                  $"FROM USERACCOUNT WHERE USERNAME = '{username}'";
+                  $"FROM USERACCOUNT WHERE USERNAME = '{username}' AND ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -105,7 +105,7 @@ namespace Engeman.Intranet.Repositories
     {
       var users = new List<UserGridViewModel>();
       var query = $"SELECT U.ID, U.ACTIVE, U.NAME, U.USERNAME, D.DESCRIPTION AS DEPARTMENT, U.MODERATOR, U.NOVICE_USER FROM USERACCOUNT AS U INNER JOIN DEPARTMENT AS D " +
-                  $"ON U.DEPARTMENT_ID = D.ID";
+                  $"ON U.DEPARTMENT_ID = D.ID WHERE U.ACTIVE = 1 AND D.ACTIVE = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -126,6 +126,16 @@ namespace Engeman.Intranet.Repositories
       }
 
       return users;
+    }
+
+    public int GetDepartmentIdById(int id)
+    {
+      var query = $"SELECT DEPARTMENT_ID FROM USERACCOUNT WHERE ID = {id} AND ACTIVE = 1";
+
+      using StaticQuery sq = new();
+      var result = sq.GetDataToInt(query);
+
+      return result;
     }
 
     public void Add(NewUserViewModel user, string currentUsername)
@@ -183,16 +193,6 @@ namespace Engeman.Intranet.Repositories
       {
         GlobalFunctions.NewLog('D', "USU", id, "USERACCOUNT", currentUsername);
       }
-    }
-
-    public int GetDepartmentIdById(int id)
-    {
-      var query = $"SELECT DEPARTMENT_ID FROM USERACCOUNT WHERE ID = {id}";
-
-      using StaticQuery sq = new();
-      var result = sq.GetDataToInt(query);
-
-      return result;
     }
   }
 }
