@@ -163,14 +163,20 @@ function deleteComment(id, comment) {
     },
     url: "/comments/deletecomment",
     dataType: "text",
-    success: function (response) {
-      if (response == 200) {
+    success: function (response, status) {
+      if (status == "success") {
         comment.fadeOut(700);
         setTimeout(() => {
           comment.remove();
         }, 700)
         toastr.success("O comentário foi apagado.", "Sucesso!");
         $("#comment-count").text($("#comment-count").text() - 1);
+        $(comment).find(".comment-aprove-btn").remove();
+        $(comment).find(".status-post").remove();
+        $(".sub-menu > li.all-posts").remove();
+        $(".sub-menu > li.unrevised-posts").remove();
+        $(".sub-menu > li.unrevised-comments").remove();
+        $("#list-posts-content").html(response);
       }
     },
     error: function (response) {

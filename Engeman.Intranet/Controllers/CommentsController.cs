@@ -175,7 +175,7 @@ namespace Engeman.Intranet.Controllers
 
       try { _commentRepository.Delete(commentId, currentUsername); } catch (Exception) { }
 
-      return Ok(StatusCodes.Status200OK);
+      return ViewComponent("UnrevisedList", StatusCodes.Status200OK);
     }
 
     [HttpPut]
