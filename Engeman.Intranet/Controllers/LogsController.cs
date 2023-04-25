@@ -68,9 +68,9 @@ namespace Engeman.Intranet.Controllers
     {
       int.TryParse(searchPhrase, out int id);
 
-      return logs.Where("username.Contains(@0, StringComparison.OrdinalIgnoreCase) OR operation.Contains(@0, StringComparison.OrdinalIgnoreCase) " +
-        "OR description.Contains(@0, StringComparison.OrdinalIgnoreCase) OR referenceTable.Contains(@0, StringComparison.OrdinalIgnoreCase) " +
-        "OR changeDate.Contains(@0) OR id == (@1) OR referenceId == (@1)", searchPhrase, id);
+      return logs.Where("id == (@1) OR operation.Contains(@0, StringComparison.OrdinalIgnoreCase) OR registryType.Contains(@0, StringComparison.OrdinalIgnoreCase) " +
+        "OR registryId == (@1) OR registryTable.Contains(@0, StringComparison.OrdinalIgnoreCase) OR username.Contains(@0, StringComparison.OrdinalIgnoreCase) " +
+        "OR changeDate.Contains(@0)", searchPhrase, id);
     }
 
     public IQueryable OrderedLogs(IQueryable<LogGridViewModel> logs, string orderedField, int current, int rowCount)
