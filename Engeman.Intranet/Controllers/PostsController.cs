@@ -199,7 +199,19 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditPost(int postId)
     {
-      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+      if (HttpContext.Session.Get<bool>("_IsModerator") == false)
+      {
+        var postAux = _postRepository.GetById(postId);
+        if (postAux.Restricted == true)
+        {
+          var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
+          var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
+          if (postRestrictionCount == 0)
+          {
+            return Redirect(Request.Host.ToString());
+          }
+        }
+      }
 
       var restrictedDepartments = new List<int>();
       var postEditViewModel = new PostEditViewModel();
@@ -322,7 +334,19 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult PostDetails(int postId)
     {
-      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+      if (HttpContext.Session.Get<bool>("_IsModerator") == false)
+      {
+        var postAux = _postRepository.GetById(postId);
+        if (postAux.Restricted == true)
+        {
+          var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
+          var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
+          if (postRestrictionCount == 0)
+          {
+            return Redirect(Request.Host.ToString());
+          }
+        }
+      }
 
       var postDetails = new PostDetailsViewModel();
       var commentFiles = new List<CommentFile>();
