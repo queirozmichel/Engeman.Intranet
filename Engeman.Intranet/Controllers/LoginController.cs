@@ -24,7 +24,11 @@ namespace Engeman.Intranet.Controllers
 
     public IActionResult Index()
     {
-      if (HttpContext.Session.Get<string>("_CurrentUsername") == null) return PartialView();
+      if (HttpContext.Session.Get<string>("_CurrentUsername") == null)
+      {
+        ViewBag.AppVersion = _configuration["AppVersion"];
+        return PartialView("Index");
+      }
       return RedirectToAction("index", "dashboard");
     }
 
@@ -47,8 +51,8 @@ namespace Engeman.Intranet.Controllers
       //  return RedirectToAction("index", "login");
       //}
 
-      try { userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username); } 
-      catch (IndexOutOfRangeException) 
+      try { userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username); }
+      catch (IndexOutOfRangeException)
       {
         TempData["Message"] = "Erro!/Usuário não cadastrado.";
 

@@ -64,6 +64,12 @@
       }
     </div>
   </div>
+  <div class="text-center">
+    <br />
+    <span>@ViewBag.AppVersion</span>
+    <br />
+    <span>Copyright © 2023 - Todos os direitos reservados</span>
+  </div>
   @if (TempData["Message"] != null)
   {
     @await Component.InvokeAsync("AlertModal", TempData["Message"]);
