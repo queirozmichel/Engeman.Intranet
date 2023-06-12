@@ -41,6 +41,7 @@ builder.Services.AddTransient<ICommentFileRepository, CommentFileRepository>();
 builder.Services.AddTransient<IPostRestrictionRepository, PostRestrictionRepository>();
 builder.Services.AddTransient<ILogRepository, LogRepository>();
 builder.Services.AddTransient<IBlacklistTermRepository, BlacklistTermRepository>();
+builder.Services.AddTransient<IKeywordRepository, KeywordRepository>();
 
 //Determina qual será a condição de pesquisa a ser utilizada
 if (bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:FREETEXTTABLE").Value) == true && bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == false)

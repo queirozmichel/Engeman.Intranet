@@ -71,6 +71,26 @@ $(document).ready(function () {
     },
     ignore: '*:not([name])',
   });
+
+  new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "/keywords/getkeywordlist",
+      datatype: "json",
+      success: function (response) {
+        resolve(
+          new Tokenfield({
+            el: document.querySelector("#keywords"),
+            items: response,
+            newItems: false
+          })
+        )
+      },
+      error: function (error) {
+        reject(error)
+      },
+    })
+  }) 
 })
 
 $("#new-post-form").on("submit", function (event) {

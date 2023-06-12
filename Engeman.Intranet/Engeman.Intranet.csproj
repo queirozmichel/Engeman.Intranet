@@ -30,11 +30,15 @@
     <Folder Include="wwwroot\lib\jquery\" />
     <Folder Include="wwwroot\lib\toastr\" />
     <Folder Include="wwwroot\plugins\easy-loading\" />
+    <Folder Include="wwwroot\plugins\tokenfield\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Views\BlacklistTerms\EditTermForm.cshtml" />
     <None Include="Views\BlacklistTerms\NewTermForm.cshtml" />
+    <None Include="Views\Keywords\EditKeywordForm.cshtml" />
+    <None Include="Views\Keywords\KeywordsGrid.cshtml" />
+    <None Include="Views\Keywords\NewKeywordForm.cshtml" />
     <None Include="Views\Logs\LogsGrid.cshtml" />
     <None Include="Views\Shared\Components\Charts\PostsCommentsChart\Default.cshtml" />
     <None Include="Views\Shared\Components\PageHeader\Default.cshtml" />
