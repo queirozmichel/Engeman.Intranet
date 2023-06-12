@@ -1,0 +1,51 @@
+﻿@{string layout = null; }
+
+@if (ViewBag.IsAjaxCall == false)
+{
+  layout = "~/Views/Shared/_Layout.cshtml";
+  <script>startSpinner();</script>
+}
+
+@{
+  Layout = layout;
+}
+
+<link rel="stylesheet" href="~/css/keywords-grid.css" />
+
+<div class="modal fade" id="new-keyword-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Cadastro de nova palavra-chave</h4>
+      </div>
+      <div id="new-keyword-modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="edit-keyword-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edição de palavra-chave</h4>
+      </div>
+      <div id="edit-keyword-modal-body"></div>
+    </div>
+  </div>
+</div>
+
+@await Component.InvokeAsync("ConfirmationModal")
+@await Component.InvokeAsync("PageHeader", "Palavras-chave")
+
+<table id="keywords-grid" class="table table-condensed table-hover table-striped">
+  <thead>
+    <tr>
+      <th data-width="10%" data-column-id="id" data-formatter="id" data-align="center" data-header-align="center" data-header-css-class="id-header">ID</th>
+      <th data-width="65%" data-column-id="description" data-formatter="name" data-align="center" data-header-align="center" data-header-css-class="description-header">Descrição</th>
+      <th data-width="15%" data-column-id="changeDate" data-order="desc" data-formatter="changeDate" data-align="center" data-header-align="center" data-header-css-class="change-date-header">Data</th>
+      <th data-width="10%" data-column-id="action" data-formatter="action" data-align="center" data-header-align="center" data-header-css-class="actions-header" disabled>Ações</th>
+    </tr>
+  </thead>
+</table>
+
+<script src="~/js/keywords-grid.js"></script>

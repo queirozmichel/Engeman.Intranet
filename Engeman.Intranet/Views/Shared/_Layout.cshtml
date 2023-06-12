@@ -158,23 +158,36 @@
             </ul>
           </li>
           @if (Context.Session.Get<bool>("_IsModerator") == true)
-          {
+          {            
             <li>
-              <a class="users-btn" href="#">
-                <i class="fa-solid fa-users"></i>
-                Usuários
+              <a id="moderator" href="javascript:void(0);">
+                <i class="fa-solid fa-user-gear"></i>Moderação
               </a>
+              <ul class="sub-menu">
+                <li>
+                  <a class="users-btn" href="#">
+                    <i class="icon-angle-right"></i>Usuários
+                  </a>
+                </li>
+                <li>
+                  <a class="keywords-btn" href="#">
+                    <i class="icon-angle-right"></i>Palavras-chave
+                  </a>
+                </li>
+                <li>
+                  <a class="blacklist-terms-btn" href="#">
+                    <i class="icon-angle-right"></i>Termos proibidos
+                  </a>
+                </li>
+                <li>
+                  <a class="logs-btn" href="#">
+                    <i class="icon-angle-right"></i>Log de dados
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li>
-              <a class="logs-btn" href="#">
-                <i id="logs-link" class="fa-solid fa-clipboard-list"></i>Log de dados
-              </a>
-            </li>
-            <li>
-              <a class="blacklist-terms-btn" href="#">
-                <i id="blacklist-terms-link" class="fa-solid fa-ban"></i>Termos proibidos
-              </a>
-            </li>      
+
+
           }
         </ul>
         <!-- /Navigation -->

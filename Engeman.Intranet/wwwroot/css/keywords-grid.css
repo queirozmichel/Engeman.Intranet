@@ -1,0 +1,35 @@
+﻿/*Remove o padding no eixo x do cabeçalho*/
+#keywords-grid > thead tr > th {
+  padding-inline: 0;
+}
+
+/*Barra principal*/
+.actionBar {
+  padding: 0px;
+}
+
+/*Margem dos textos internos dos cabeçalhos*/
+#keywords-grid > thead tr > th > a > span:nth-child(1) {
+  margin: 0px;
+}
+
+/*Ações(cabeçalho)*/
+.actions-header {
+  pointer-events: none;
+}
+
+/*Paginação*/
+.pagination {
+  cursor: pointer;
+}
+
+/*Botão Novo Termo*/
+#btn-new-keyword {
+  background-color: #00cc003d;
+  margin-right: 20px;
+}
+
+/*Modais de novo e edição de termo*/
+#new-keyword-modal, #edit-keyword-modal {
+  overflow: auto;
+}
