@@ -217,8 +217,8 @@ namespace Engeman.Intranet.Repositories
     {
       string[] paramters = { "BinaryData;byte" };
       //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
-      var query = $"INSERT INTO COMMENT(DESCRIPTION, USER_ACCOUNT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
-                  $"VALUES(N'{newComment.Description.Replace("'", "''")}', {newComment.UserAccountId}, {newComment.PostId}, '{newComment.Revised}')";
+      var query = $"INSERT INTO COMMENT(DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_ID, REVISED) OUTPUT INSERTED.ID " +
+                  $"VALUES(N'{newComment.Description.Replace("'", "''")}', '{newComment.CleanDescription.Replace("'", "''")}', {newComment.UserAccountId}, {newComment.PostId}, '{newComment.Revised}')";
 
       using StaticQuery sq = new();
       var outputCommentId = sq.GetDataToInt(query);
@@ -234,11 +234,12 @@ namespace Engeman.Intranet.Repositories
       {
         GlobalFunctions.NewLog('I', "COM", outputCommentId, "COMMENT", currentUsername);
       }
-    }   
+    }
 
     public void Update(int id, Comment comment, string currentUsername)
     {
-      string query = $"UPDATE COMMENT SET ACTIVE = '{comment.Active}', DESCRIPTION = N'{comment.Description.Replace("'", "''")}', REVISED = '{comment.Revised}' WHERE ID = '{id}'";
+      string query = $"UPDATE COMMENT SET DESCRIPTION = N'{comment.Description.Replace("'", "''")}', " +
+                     $"CLEAN_DESCRIPTION = '{comment.CleanDescription.Replace("'", "''")}', REVISED = '{comment.Revised}' WHERE ID = '{id}'";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query);
@@ -247,7 +248,7 @@ namespace Engeman.Intranet.Repositories
       {
         GlobalFunctions.NewLog('U', "COM", id, "COMMENT", currentUsername);
       }
-    }    
+    }
 
     public void Delete(int id, string currentUsername)
     {
@@ -260,7 +261,7 @@ namespace Engeman.Intranet.Repositories
       {
         GlobalFunctions.NewLog('D', "COM", id, "COMMENT", currentUsername);
       }
-    }    
+    }
 
     public void Aprove(int id, string currentUsername)
     {

@@ -1,4 +1,5 @@
 ﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Helpers;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
@@ -63,6 +64,8 @@ namespace Engeman.Intranet.Controllers
       catch (Exception) { }
 
       comment.Description = editedComment.Comment.Description;
+
+      comment.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(editedComment.Comment.Description));
 
       if (currentComment.Revised == true && userAccount.NoviceUser == false) comment.Revised = true;
 
@@ -136,6 +139,8 @@ namespace Engeman.Intranet.Controllers
       try { userAccount = _userAccountRepository.GetByUsername(sessionUsername); } catch (Exception) { }
 
       if (userAccount.Moderator == true || userAccount.NoviceUser == false) newComment.Revised = true;
+
+      newComment.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(newComment.Description));
 
       newComment.UserAccountId = HttpContext.Session.Get<int>("_CurrentUserId");
 

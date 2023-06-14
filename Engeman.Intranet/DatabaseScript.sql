@@ -122,6 +122,7 @@ CREATE TABLE COMMENT (
 	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENCOMMENT),
   ACTIVE                        BIT DEFAULT 1                       NOT NULL,
 	DESCRIPTION                   NVARCHAR(MAX)                       NOT NULL,	 
+	CLEAN_DESCRIPTION             VARCHAR(MAX)                        NOT NULL,
 	REVISED                       BIT DEFAULT 0                       NOT NULL,
 	USER_ACCOUNT_ID               NUMERIC(18)                         NOT NULL,
 	POST_ID                       NUMERIC(18)                         NOT NULL,
@@ -425,6 +426,7 @@ GO
 CREATE FULLTEXT CATALOG ENGEMAN_INTRANET_CATALOG AS DEFAULT
 
 CREATE UNIQUE INDEX UI_POST ON POST(ID) 
+CREATE UNIQUE INDEX UI_COMMENT ON COMMENT(ID)
 
 CREATE FULLTEXT INDEX ON POST
 (
@@ -433,6 +435,13 @@ CREATE FULLTEXT INDEX ON POST
 	KEYWORDS Language 1046
 )
 KEY INDEX UI_POST ON ENGEMAN_INTRANET_CATALOG 
+WITH CHANGE_TRACKING AUTO, STOPLIST = SYSTEM
+
+CREATE FULLTEXT INDEX ON COMMENT
+(
+	CLEAN_DESCRIPTION Language 1046
+)
+KEY INDEX UI_COMMENT ON ENGEMAN_INTRANET_CATALOG 
 WITH CHANGE_TRACKING AUTO, STOPLIST = SYSTEM
 
 /* =================================== Inserção de Dados para Testes =============================================== */
