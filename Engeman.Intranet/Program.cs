@@ -46,11 +46,13 @@ builder.Services.AddTransient<IKeywordRepository, KeywordRepository>();
 //Determina qual será a condição de pesquisa a ser utilizada
 if (bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:FREETEXTTABLE").Value) == true && bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == false)
 {
-  Constants.SearchCondition = Constants.FreeTextTable;
+  Constants.SearchConditionPOST = Constants.FreeTextTablePOST;
+  Constants.SearchConditionCOMMENT = Constants.FreeTextTableCOMMENT;
 }
 else if (bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:FREETEXTTABLE").Value) == false && bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == true)
 {
-  Constants.SearchCondition = Constants.ContainsTable;
+  Constants.SearchConditionPOST = Constants.ContainsTablePOST;
+  Constants.SearchConditionCOMMENT = Constants.ContainsTableCOMMENT;
 }
 else
 {

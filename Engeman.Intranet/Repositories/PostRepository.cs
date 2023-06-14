@@ -62,17 +62,29 @@ namespace Engeman.Intranet.Repositories
       }
       else
       {
-        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
-                $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT, KEY_TBL.RANK " +
-                $"FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
-                $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
-                $"INNER JOIN {Constants.SearchCondition.Replace("#SearchPhrase#", searchPhrase)} ON POST.ID = KEY_TBL.[KEY] " +
-                $"WHERE POST.ACTIVE = 1 AND UA.ACTIVE = 1 AND D.ACTIVE = 1 AND KEY_TBL.RANK >= {Constants.Rank} " +
-                $"ORDER BY KEY_TBL.RANK DESC";
+        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
+                $"UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT, TABELA.RANK " +
+                $"FROM POST " +
+                $"LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
+                $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID " +
+                $"INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
+                $"INNER JOIN (SELECT ID, RANK FROM POST INNER JOIN {Constants.SearchConditionPOST.Replace("#SearchPhrase#", searchPhrase)} " +
+                $"ON POST.ID = KEY_TBL.[KEY] WHERE KEY_TBL.RANK >= {Constants.Rank} " +
+                $"UNION " +
+                $"SELECT POST_ID, RANK FROM COMMENT INNER JOIN {Constants.SearchConditionCOMMENT.Replace("#SearchPhrase#", searchPhrase)} " +
+                $"ON COMMENT.ID = KEY_TBL.[KEY] WHERE KEY_TBL.RANK >= {Constants.Rank}) TABELA ON TABELA.ID = POST.ID " +
+                $"WHERE POST.ID IN (SELECT ID FROM POST INNER JOIN {Constants.SearchConditionPOST.Replace("#SearchPhrase#", searchPhrase)} ON POST.ID = KEY_TBL.[KEY] " +
+                $"WHERE KEY_TBL.RANK >= {Constants.Rank} " +
+                $"UNION " +
+                $"SELECT  POST_ID FROM COMMENT " +
+                $"INNER JOIN {Constants.SearchConditionCOMMENT.Replace("#SearchPhrase#", searchPhrase)} ON COMMENT.ID = KEY_TBL.[KEY] " +
+                $"WHERE KEY_TBL.RANK >= {Constants.Rank}) " +
+                $"ORDER BY RANK DESC";
       }
 
       using StaticQuery sq = new();
-      var result = sq.GetDataSet(query).Tables[0];
+      var result = sq.GetDataSet(query).Tables[0].DefaultView.ToTable(true, new String[] { "POST_ID", "RESTRICTED", "REVISED", "SUBJECT", "KEYWORDS", "USER_ACCOUNT_ID",
+        "POST_TYPE", "CHANGE_DATE", "NAME", "MODERATOR", "DEPARTMENT" });
 
       for (int i = 0; i < result.Rows.Count; i++)
       {
