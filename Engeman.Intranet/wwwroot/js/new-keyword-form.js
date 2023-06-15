@@ -6,7 +6,13 @@
     ignoreTitle: true,
     rules: {
       "description": {
-        required: true
+        required: true,
+        pattern: "[A-Za-z0-9]+",
+      },
+    },
+    messages: {
+      "description": {
+        pattern: "Não é permitido o uso de caracteres especiais ou espaços em branco.",
       }
     },
     ignore: '*:not([name])',
