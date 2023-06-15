@@ -81,7 +81,7 @@ namespace Engeman.Intranet.Controllers
       int resultAux = StatusCodes.Status200OK;
       var newKeyword = new KeywordViewModel
       {
-        Description = formData["description"].ToString().ToLower()
+        Description = formData["description"]
       };
 
       try { _keywordRepository.Add(newKeyword, sessionUsername); }

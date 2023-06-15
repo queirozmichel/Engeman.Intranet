@@ -29,7 +29,6 @@ namespace Engeman.Intranet.Repositories
             Subject = result.Rows[i]["Subject"].ToString(),
             Description = result.Rows[i]["Description"].ToString(),
             CleanDescription = result.Rows[i]["Clean_Description"].ToString(),
-            Keywords = result.Rows[i]["Keywords"].ToString(),
             UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]),
             PostType = Convert.ToChar(result.Rows[i]["Post_Type"]),
             Revised = Convert.ToBoolean(result.Rows[i]["Revised"]),
@@ -53,16 +52,16 @@ namespace Engeman.Intranet.Repositories
 
       if (string.IsNullOrWhiteSpace(searchPhrase))
       {
-        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
+        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID AS USER_ACCOUNT_ID, " +
                 $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
                 $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE POST.ACTIVE = 1 AND UA.ACTIVE = 1 AND D.ACTIVE = 1 " +
-                $"GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
+                $"GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
                 $"UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION " +
                 $"ORDER BY POST.CHANGE_DATE DESC";
       }
       else
       {
-        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
+        query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID AS USER_ACCOUNT_ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
                 $"UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT, TABELA.RANK " +
                 $"FROM POST " +
                 $"LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
@@ -83,7 +82,7 @@ namespace Engeman.Intranet.Repositories
       }
 
       using StaticQuery sq = new();
-      var result = sq.GetDataSet(query).Tables[0].DefaultView.ToTable(true, new String[] { "POST_ID", "RESTRICTED", "REVISED", "SUBJECT", "KEYWORDS", "USER_ACCOUNT_ID",
+      var result = sq.GetDataSet(query).Tables[0].DefaultView.ToTable(true, new String[] { "POST_ID", "RESTRICTED", "REVISED", "SUBJECT", "USER_ACCOUNT_ID",
         "POST_TYPE", "CHANGE_DATE", "NAME", "MODERATOR", "DEPARTMENT" });
 
       for (int i = 0; i < result.Rows.Count; i++)
@@ -108,7 +107,6 @@ namespace Engeman.Intranet.Repositories
           Subject = result.Rows[i]["Subject"].ToString(),
           ChangeDate = result.Rows[i]["Change_Date"].ToString(),
           PostType = Convert.ToChar(result.Rows[i]["Post_Type"]),
-          Keywords = result.Rows[i]["Keywords"].ToString(),
           UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]),
           Department = result.Rows[i]["Department"].ToString(),
           UserAccountName = result.Rows[i]["Name"].ToString()
@@ -140,7 +138,6 @@ namespace Engeman.Intranet.Repositories
             Subject = result.Rows[i]["Subject"].ToString(),
             Description = result.Rows[i]["Description"].ToString(),
             CleanDescription = result.Rows[i]["Clean_Description"].ToString(),
-            Keywords = result.Rows[i]["Keywords"].ToString(),
             UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]),
             PostType = Convert.ToChar(result.Rows[i]["Post_Type"]),
             Revised = Convert.ToBoolean(result.Rows[i]["Revised"]),
@@ -174,7 +171,6 @@ namespace Engeman.Intranet.Repositories
             Subject = result.Rows[i]["Subject"].ToString(),
             Description = result.Rows[i]["Description"].ToString(),
             CleanDescription = result.Rows[i]["Clean_Description"].ToString(),
-            Keywords = result.Rows[i]["Keywords"].ToString(),
             UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]),
             PostType = Convert.ToChar(result.Rows[i]["Post_Type"]),
             Revised = Convert.ToBoolean(result.Rows[i]["Revised"]),
@@ -212,7 +208,6 @@ namespace Engeman.Intranet.Repositories
         Subject = result["Subject"].ToString(),
         Description = result["Description"].ToString(),
         CleanDescription = result["Clean_Description"].ToString(),
-        Keywords = result["Keywords"].ToString(),
         UserAccountId = Convert.ToInt32(result["User_Account_Id"]),
         PostType = Convert.ToChar(result["Post_Type"].ToString()),
         Revised = Convert.ToBoolean(result["Revised"]),
@@ -226,7 +221,7 @@ namespace Engeman.Intranet.Repositories
     {
       var posts = new List<PostGridViewModel>();
 
-      string query = $"SELECT DISTINCT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, POST.KEYWORDS, UA.ID AS USER_ACCOUNT_ID, " +
+      string query = $"SELECT DISTINCT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID AS USER_ACCOUNT_ID, " +
                      $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT " +
                      $"FROM POST INNER JOIN COMMENT AS C ON C.POST_ID = POST.ID LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
                      $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
@@ -245,7 +240,6 @@ namespace Engeman.Intranet.Repositories
           Subject = result.Rows[i]["Subject"].ToString(),
           ChangeDate = result.Rows[i]["Change_Date"].ToString(),
           PostType = Convert.ToChar(result.Rows[i]["Post_Type"]),
-          Keywords = result.Rows[i]["Keywords"].ToString(),
           UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]),
           Department = result.Rows[i]["Department"].ToString(),
           UserAccountName = result.Rows[i]["Name"].ToString(),
@@ -260,12 +254,22 @@ namespace Engeman.Intranet.Repositories
     public void Add(NewPostViewModel post, string currentUsername)
     {
       string[] paramters = { "BinaryData;byte" };
-      var query = $"INSERT INTO POST (RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
-                  $"VALUES ('{post.Restricted}', '{post.Subject.Replace("'", "''")}', N'{post.Description.Replace("'", "''")}', '{post.CleanDescription.Replace("'", "''")}', '{post.Keywords}', {post.UserAccountId}, " +
+      var query = $"INSERT INTO POST (RESTRICTED, SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_TYPE, REVISED) OUTPUT INSERTED.ID " +
+                  $"VALUES ('{post.Restricted}', '{post.Subject.Replace("'", "''")}', N'{post.Description.Replace("'", "''")}', '{post.CleanDescription.Replace("'", "''")}', {post.UserAccountId}, " +
                   $"'{post.PostType}', '{post.Revised}')";
 
       using StaticQuery sq = new();
       var outputPostId = sq.GetDataToInt(query);
+
+      if (post.KeywordsList is not null)
+      {
+        for (int i = 0; i < post.KeywordsList.Count; i++)
+        {
+          query = $"INSERT INTO POSTKEYWORD (POST_ID, KEYWORD_ID, KEYWORD) " +
+                  $"VALUES ({outputPostId}, {post.KeywordsList[i].Id}, '{post.KeywordsList[i].Description}')";
+          sq.ExecuteCommand(query);
+        }
+      }      
 
       for (int i = 0; i < post.Files.Count; i++)
       {
@@ -292,12 +296,21 @@ namespace Engeman.Intranet.Repositories
     public void Update(int id, PostEditViewModel post, string currentUsername)
     {
       var update = $"UPDATE POST SET RESTRICTED = '{post.Restricted}', SUBJECT = '{post.Subject.Replace("'", "''")}', DESCRIPTION = N'{post.Description.Replace("'", "''")}', " +
-                   $"CLEAN_DESCRIPTION = '{post.CleanDescription.Replace("'", "''")}', KEYWORDS = '{post.Keywords}', POST_TYPE = '{post.PostType}', REVISED = '{post.Revised}' " +
+                   $"CLEAN_DESCRIPTION = '{post.CleanDescription.Replace("'", "''")}', POST_TYPE = '{post.PostType}', REVISED = '{post.Revised}' " +
                    $"WHERE ID = {post.Id}";
       var delete = $"DELETE FROM POSTRESTRICTION WHERE POST_ID = {post.Id}";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(update);
+      sq.ExecuteCommand($"DELETE FROM POSTKEYWORD WHERE POST_ID = {id}");
+
+      if (post.KeywordsList is not null)
+      {
+        for (int i = 0; i < post.KeywordsList.Count; i++)
+        {
+          sq.ExecuteCommand($"INSERT INTO POSTKEYWORD (POST_ID, KEYWORD_ID, KEYWORD) VALUES ({id}, {post.KeywordsList[i].Id}, '{post.KeywordsList[i].Description}')");
+        }
+      }
 
       if (post.Restricted == false) sq.ExecuteCommand(delete);
       else

@@ -123,5 +123,30 @@ namespace Engeman.Intranet.Repositories
       }
       return keywordList;
     }
+
+    public List<Keyword> GetByIds(int[] ids)
+    {
+      var query = "";
+      System.Data.DataRow result = null;
+      Keyword keyword = new Keyword();
+      List<Keyword> keywords = new List<Keyword>();
+      using StaticQuery sq = new();
+
+      for (int i = 0; i < ids.Length; i++)
+      {
+        query = $"SELECT * FROM KEYWORD WHERE ID = {ids[i]}";
+
+        result = sq.GetDataSet(query).Tables[0].Rows[0];
+        keyword = new Keyword
+        {
+          Id = Convert.ToInt32(result["id"]),
+          Description = result["description"].ToString(),
+          ChangeDate = (DateTime)result["change_Date"]
+        };
+        keywords.Add(keyword);
+      }
+
+      return keywords;
+    }
   }
 }

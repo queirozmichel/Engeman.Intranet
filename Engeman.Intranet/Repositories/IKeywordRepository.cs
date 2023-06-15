@@ -9,6 +9,7 @@ namespace Engeman.Intranet.Repositories
     public List<Keyword> Get();
     public List<KeywordComponentViewModel> GetIdAndName();
     public Keyword GetById(int id);
+    public List<Keyword> GetByIds(int[] ids);
     public void Add(KeywordViewModel keyword, string currentUsername = null);
     public void Update(int id, Keyword keyword, string currentUsername = null);
     public void Delete(int id, string currentUsername = null);

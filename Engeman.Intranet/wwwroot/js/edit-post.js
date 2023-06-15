@@ -81,7 +81,30 @@ $(document).ready(function () {
     $(".back-button").attr("title", "Voltar para os detalhes da postagem");
   }
 
+  new Promise((resolve, reject) => {
+    $.ajax({
+      type: "GET",
+      url: "/postkeywords/getkeywordlist",
+      datatype: "json",
+      data: { "postId": sessionStorage.getItem("postId") },
+      success: function (response) {
+        resolve(
+          new Tokenfield({
+            el: document.querySelector("#keywords"),
+            items: response.keywords,
+            setItems: response.postKeywords,
+            newItems: false
+          }),
+          $(".tokenfield-input").blur(),
+        )
+      },
+      error: function (error) {
+        reject(error)
+      },
+    })
+  })
 })
+
 
 if ($("#restricted").is(":checked")) {
   $("#restricted").bootstrapSwitch({
@@ -166,7 +189,7 @@ function countFiles() {
 }
 
 $(".icon-remove-circle").on("click", function () {
-  filesToBeRemove = filesToBeRemove + $(this).data("file-id") + " "; 
+  filesToBeRemove = filesToBeRemove + $(this).data("file-id") + " ";
   $(this).parent().css("display", "none");
   var qty = countFiles();
   if (($("#postType").val() == 'D' || $("#postType").val() == 'M') && qty == 0) {

@@ -23,6 +23,7 @@
     public string Description { get; set; }
     public string CleanDescription { get; set; }
     public string Keywords { get; set; }
+    public List<Keyword> KeywordsList { get; set; }
     public bool Revised { get; set; }
     public List<PostFile> Files { get; set; }
     public List<int> DepartmentsList { get; set; }

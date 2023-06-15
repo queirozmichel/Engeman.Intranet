@@ -21,11 +21,14 @@ namespace Engeman.Intranet.Controllers
     private readonly ICommentRepository _commentRepository;
     private readonly ICommentFileRepository _commentFileRepository;
     private readonly IPostRestrictionRepository _postRestrictionRepository;
+    private readonly IKeywordRepository _keywordRepository;
+    private readonly IPostKeywordRepository _postKeywordRepository;
     private readonly IConfiguration _configuration;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
       IDepartmentRepository departmentRepository, IPostFileRepository postFileRepository, ICommentRepository postCommentRepository,
-      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IConfiguration configuration)
+      ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IConfiguration configuration,
+      IKeywordRepository keywordRepository, IPostKeywordRepository postKeywordRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
@@ -35,12 +38,14 @@ namespace Engeman.Intranet.Controllers
       _commentFileRepository = postCommentFileRepository;
       _postRestrictionRepository = postRestrictionRepository;
       _configuration = configuration;
+      _keywordRepository = keywordRepository;
+      _postKeywordRepository = postKeywordRepository;
     }
 
     [HttpGet]
     public IActionResult Grid()
     {
-      if (Request.Query["filter"] != "allPosts" && HttpContext.Session.Get<bool>("_IsModerator") == false) return Redirect(Request.Host.ToString());
+      if (Request.Query["filter"] != "allPosts" && !IsModerator()) return Redirect(Request.Host.ToString());
 
       ViewBag.FilterGrid = Request.Query["filter"];
       ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
@@ -54,7 +59,7 @@ namespace Engeman.Intranet.Controllers
       IQueryable<PostGridViewModel> posts = null;
       IQueryable paginatedPosts;
       var total = 0;
-      var isModerator = CheckIsModerator();
+      var isModerator = IsModerator();
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       string order;
@@ -187,6 +192,8 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
+      if (newPost.Keywords is not null) newPost.KeywordsList = _keywordRepository.GetByIds(newPost.Keywords.Split(";").Select(int.Parse).ToArray());
+
       try { _postRepository.Add(newPost, sessionUsername); }
       catch (SqlException ex)
       {
@@ -199,17 +206,11 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditPost(int postId)
     {
-      if (HttpContext.Session.Get<bool>("_IsModerator") == false)
+      if (!IsModerator())
       {
-        var postAux = _postRepository.GetById(postId);
-        if (postAux.Restricted == true)
+        if (!HasPermission(postId, HttpContext.Session.Get<int>("_CurrentUserId")))
         {
-          var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
-          var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
-          if (postRestrictionCount == 0)
-          {
-            return Redirect(Request.Host.ToString());
-          }
+          return Redirect(Request.Host.ToString());
         }
       }
 
@@ -234,7 +235,6 @@ namespace Engeman.Intranet.Controllers
       postEditViewModel.Restricted = post.Restricted;
       postEditViewModel.Subject = post.Subject;
       postEditViewModel.Description = post.Description;
-      postEditViewModel.Keywords = post.Keywords;
       postEditViewModel.Revised = post.Revised;
       postEditViewModel.PostType = post.PostType;
 
@@ -280,7 +280,7 @@ namespace Engeman.Intranet.Controllers
 
       editedPost.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(editedPost.Description));
 
-      if (editedPost.Keywords != null) editedPost.Keywords = editedPost.Keywords.ToLower();
+      if (editedPost.Keywords is not null) editedPost.KeywordsList = _keywordRepository.GetByIds(editedPost.Keywords.Split(";").Select(int.Parse).ToArray());
 
       if (addFiles.Count != 0)
       {
@@ -334,17 +334,11 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult PostDetails(int postId)
     {
-      if (HttpContext.Session.Get<bool>("_IsModerator") == false)
+      if (!IsModerator())
       {
-        var postAux = _postRepository.GetById(postId);
-        if (postAux.Restricted == true)
+        if (!HasPermission(postId, HttpContext.Session.Get<int>("_CurrentUserId")))
         {
-          var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
-          var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
-          if (postRestrictionCount == 0)
-          {
-            return Redirect(Request.Host.ToString());
-          }
+          return Redirect(Request.Host.ToString());
         }
       }
 
@@ -386,10 +380,7 @@ namespace Engeman.Intranet.Controllers
       postDetails.AuthorPhoto = postAuthor.Photo;
       postDetails.Revised = post.Revised;
       postDetails.ChangeDate = post.ChangeDate;
-
-      if (post.Keywords == "") keywords = null;
-      else keywords = post.Keywords.Split(' ');
-
+      keywords = _postKeywordRepository.GetKeywordsByPostId(postId);
       postDetails.Keywords = keywords;
 
       postDetails.PostedDaysAgo = (DateTime.Now - postDetails.ChangeDate).Days;
@@ -428,7 +419,7 @@ namespace Engeman.Intranet.Controllers
       }
 
       ViewBag.Comments = comments;
-      ViewBag.IsModerator = CheckIsModerator();
+      ViewBag.IsModerator = IsModerator();
       ViewBag.UserId = HttpContext.Session.Get<int>("_CurrentUserId");
       ViewBag.PostId = postId;
       ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
@@ -440,7 +431,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult ShowFile(int postId, int file)
     {
-      if (HttpContext.Session.Get<bool>("_IsModerator") == false)
+      if (!IsModerator())
       {
         var post = _postRepository.GetById(postId);
         if (post.Restricted == true)
@@ -482,10 +473,25 @@ namespace Engeman.Intranet.Controllers
       return ViewComponent("UnrevisedList");
     }
 
-    public bool CheckIsModerator()
+    public bool IsModerator()
     {
       if (HttpContext.Session.Get<bool>("_IsModerator") == true) return true;
       else return false;
+    }
+
+    public bool HasPermission(int postId, int userId)
+    {
+      var postAux = _postRepository.GetById(postId);
+      if (postAux.Restricted == true)
+      {
+        var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
+        var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
+        if (postRestrictionCount == 0 && postAux.UserAccountId != HttpContext.Session.Get<int>("_CurrentUserId"))
+        {
+          return false;
+        }
+      }
+      return true;
     }
   }
 }

@@ -82,7 +82,7 @@ $(document).ready(function () {
           new Tokenfield({
             el: document.querySelector("#keywords"),
             items: response,
-            newItems: false
+            newItems: false,
           })
         )
       },

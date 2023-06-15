@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Engeman.Intranet.Models.ViewModels
+﻿namespace Engeman.Intranet.Models.ViewModels
 {
   public class PostDetailsViewModel
   {

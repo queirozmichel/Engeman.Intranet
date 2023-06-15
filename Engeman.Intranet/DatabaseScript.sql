@@ -52,6 +52,7 @@ CREATE SEQUENCE GENPOSTRESTRICTION START WITH 1 AS NUMERIC(18);
 CREATE SEQUENCE GENLOG START WITH 1 AS NUMERIC(18);
 CREATE SEQUENCE GENBLACKLISTTERM START WITH 1 AS NUMERIC(18);
 CREATE SEQUENCE GENKEYWORD START WITH 1 AS NUMERIC(18);
+CREATE SEQUENCE GENPOSTKEYWORD START WITH 1 AS NUMERIC(18);
 
 /* ====================================== Criação das Tabelas ====================================================== */
 
@@ -103,7 +104,6 @@ CREATE TABLE POST (
 	SUBJECT                       VARCHAR(255)                        NOT NULL,
 	DESCRIPTION                   NVARCHAR(MAX)                       NOT NULL,
 	CLEAN_DESCRIPTION             VARCHAR(MAX)                        NOT NULL,
-	KEYWORDS                      VARCHAR(MAX)                            NULL,
   POST_TYPE	                    CHAR(1)                             NOT NULL, /* I = Informativa, Q = Pergunta  M = Manual, D = Documento,  */
 	REVISED                       BIT DEFAULT 0                       NOT NULL,
 	USER_ACCOUNT_ID               NUMERIC(18)                         NOT NULL,
@@ -221,6 +221,22 @@ CREATE TABLE KEYWORD (
 	CHECK (DESCRIPTION <> ''),
 	)ON [PRIMARY]
 GO
+
+CREATE TABLE POSTKEYWORD ( 
+	ID                            NUMERIC(18) DEFAULT (NEXT VALUE FOR GENPOSTKEYWORD),
+	POST_ID                       NUMERIC(18)                         NOT NULL,
+	KEYWORD_ID                    NUMERIC(18)                         NOT NULL,
+	KEYWORD                       VARCHAR(100)                        NOT NULL,
+	CHANGE_DATE                   DATETIME DEFAULT CURRENT_TIMESTAMP  NULL,
+
+  CHECK (KEYWORD <> ''),
+	CHECK (POST_ID > 0),
+	CHECK (KEYWORD_ID > 0),
+	
+	CONSTRAINT PK_POSTKEYWORD PRIMARY KEY CLUSTERED(ID),
+  CONSTRAINT FK_POSTKEYWORD_POST FOREIGN KEY (POST_ID) REFERENCES POST(ID) ON DELETE CASCADE,
+  CONSTRAINT FK_POSTKEYWORD_KEYWORD FOREIGN KEY (KEYWORD_ID) REFERENCES KEYWORD(ID) ON DELETE CASCADE)ON [PRIMARY]
+	GO
 /* ====================================== Criação de Stored Procedures ====================================================== */
 
 CREATE PROCEDURE NEW_LOG
@@ -344,6 +360,15 @@ BEGIN
 END
 GO
 
+CREATE TRIGGER POSTKEYWORD_CHANGEDATE ON POSTKEYWORD AFTER UPDATE
+AS 
+ SET NOCOUNT ON
+BEGIN
+  UPDATE POSTKEYWORD SET CHANGE_DATE = CURRENT_TIMESTAMP FROM POSTKEYWORD
+  INNER JOIN INSERTED ON POSTKEYWORD.ID = INSERTED.ID;
+END
+GO
+
 --Trigger para alterar as permissões de criação, edição ou exclusão de postagens
 CREATE TRIGGER USERACCOUNT_MODERATOR ON USERACCOUNT FOR UPDATE
 AS SET NOCOUNT ON
@@ -431,8 +456,7 @@ CREATE UNIQUE INDEX UI_COMMENT ON COMMENT(ID)
 CREATE FULLTEXT INDEX ON POST
 (
 	SUBJECT Language 1046,
-	CLEAN_DESCRIPTION Language 1046,
-	KEYWORDS Language 1046
+	CLEAN_DESCRIPTION Language 1046
 )
 KEY INDEX UI_POST ON ENGEMAN_INTRANET_CATALOG 
 WITH CHANGE_TRACKING AUTO, STOPLIST = SYSTEM
@@ -447,7 +471,7 @@ WITH CHANGE_TRACKING AUTO, STOPLIST = SYSTEM
 /* =================================== Inserção de Dados para Testes =============================================== */
 
 INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('001', 'TI Web')
-INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('002', 'TI Client/Server')
+INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('002', 'TI Desktop')
 INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('003', 'TI Mobile')
 INSERT INTO DEPARTMENT (CODE, DESCRIPTION) VALUES ('004', 'TI Personalização')
 
@@ -456,25 +480,23 @@ INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Samuel M
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Durval Ferreira', 'durval.ferreira', 1, 'durval.ferreira@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Monique Santiago', 'monique.santiago', 1, 'monique.santiago@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Cruz', 'gustavo.cruz', 1, 'gustavo.cruz@engeman.com.br')
-INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Gustavo Silva', 'gustavo.silva', 1, 'gustavo.silva@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Matheus Correa', 'matheus.correa', 2, 'matheus.correa@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Luciano Rodrigues', 'luciano.rodrigues', 2, 'luciano.rodrigues@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Alan Vasconcelos', 'alan.vasconcelos', 3, 'alan.vasconcelos@engeman.com.br')
-INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Bruno Gonçalves', 'bruno.goncalves', 4, 'bruno.goncalves@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Pedro Silva', 'pedro.silva', 4, 'pedro.silva@engeman.com.br')
 INSERT INTO USERACCOUNT (NAME, USERNAME, DEPARTMENT_ID, EMAIL) VALUES ('Luan Santos', 'luan.santos', 4, 'luan.santos@engeman.com.br')
 
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Como instalar o Engeman Web?', N'<p>Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?</p>', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 'instalação Engeman Web', 1, 'Q', 1)
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Procedimentos para Migração Cloud', N'<p>Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o &nbsp;ambiente em nuvem da Engeman&reg;.</p>', 'Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o ambiente em nuvem da Engeman.', 'migração cloud', 1, 'I', 1)
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Dashboards Engeman', N'<p>Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?</p>', 'Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?', 'dashboard engeman', 9, 'Q', 1)
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Passo a passo para instalar o Engeman Client/Server.', N'<p>Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?</p>', 'Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?', 'instalação Engeman Client/Server', 9, 'Q', 1)
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Conversão de banco de dados', N'<p>Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?</p>', 'Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?', 'conversão banco de dados', 8, 'Q', 1)
-INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, KEYWORDS, USER_ACCOUNT_ID, POST_TYPE, REVISED)
-VALUES ('Como instalar o Engeman Mobile?', N'<p>Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação?</p>', 'Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação', 'instalação Engeman Mobile', 10, 'Q', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Como instalar o Engeman Web?', N'<p>Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?</p>', 'Estou com dúvidas sobre a instalação do Engeman Web no Windows Server 2016. É possível instalar nessa versão? Tem alguma restrição quanto ao uso de um certificado autoassinado?', 1, 'Q', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Procedimentos para Migração Cloud', N'<p>Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o &nbsp;ambiente em nuvem da Engeman&reg;.</p>', 'Preciso de um manual que contenha instruções sobre como realizar corretamente a migração para o ambiente em nuvem da Engeman.', 1, 'I', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Dashboards Engeman', N'<p>Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?</p>', 'Onde posso encontrar um documento explicativo sobre o Dashboard Engeman?', 9, 'Q', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Passo a passo para instalar o Engeman Client/Server.', N'<p>Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?</p>', 'Estou com dúvida sobre a instalação do Engeman Client/Server, existe algum manual ou documento detalhado que possa me ajudar?', 6, 'Q', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Conversão de banco de dados', N'<p>Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?</p>', 'Necessito de algum documento que contenha o fluxo a ser seguido para conversão de banco de dados. Alguém pode me dizer onde posso encontrar?', 8, 'Q', 1)
+INSERT INTO POST (SUBJECT, DESCRIPTION, CLEAN_DESCRIPTION, USER_ACCOUNT_ID, POST_TYPE, REVISED)
+VALUES ('Como instalar o Engeman Mobile?', N'<p>Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação?</p>', 'Sobre a instalação do Engeman Mobile, qual a versão mínima requisitada dos sistemas iOS ou Android para que possa ser feita a instalação', 10, 'Q', 1)
 
 --Senha do banco: Engeman.1

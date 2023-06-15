@@ -1,5 +1,4 @@
 ﻿using Engeman.Intranet.Models.ViewModels;
-using System.Collections.Generic;
 
 namespace Engeman.Intranet.Models
 {
@@ -14,6 +13,7 @@ namespace Engeman.Intranet.Models
     public string Description { get; set; }
     public string CleanDescription { get; set; }
     public string Keywords { get; set; }
+    public List<Keyword> KeywordsList { get; set; }
     public int UserAccountId { get; set; }
     public char PostType { get; set; }
     public bool Revised { get; set; }

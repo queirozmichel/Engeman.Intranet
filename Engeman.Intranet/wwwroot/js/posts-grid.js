@@ -108,9 +108,6 @@ $(document).ready(function () {
       subject: function (column, row) {
         return "<span title=\"" + row.subject + "\">" + row.subject + "</span>";
       },
-      keywords: function (column, row) {
-        return "<span>" + row.keywords + "</span>";
-      },
       changeDate: function (column, row) {
         return row.changeDate;
       },
