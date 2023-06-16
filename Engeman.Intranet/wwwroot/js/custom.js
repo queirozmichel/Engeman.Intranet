@@ -7,9 +7,8 @@ $(document).ready(function () {
 
 //Lista de restrição de setores
 $("#multiselect-department").multiselect({
-  nonSelectedText: 'Nenhum ',
-  includeSelectAllOption: true,
-  allSelectedText: 'Todos ',
+  nonSelectedText: 'Nenhum',
+  includeSelectAllOption: false,
   buttonTitle: function () { },
 });
 $(".multiselect-container").find('label').each(function () {
