@@ -165,28 +165,18 @@ namespace Engeman.Intranet.Controllers
 
     /// <summary>
     /// Testa se a string contém algum termo existente na tabela de termos proibidos.
+    /// Se sim, cria um array de string com as palavras que foram encontradas nos campos("keys") do respectivo formulário para ser mostrada no modal de alerta.
     /// </summary>
     /// <param name="formData">Entradas do formulário com seus respectivos valores</param>
     [HttpPost]
     public JsonResult BlacklistTest(IFormCollection formData)
     {
       var blacklist = _blacklistTermRepository.Get();
-      var keys = formData.Keys.Where(x => x.Equals("subject") || x.Equals("keywords") || x.Equals("description") || x.Equals("comment.description") || x.Equals("name") || x.Equals("username")).ToList();
+      var keys = formData.Keys.Where(x => x.Equals("subject") || x.Equals("description") || x.Equals("comment.description") || x.Equals("name") || x.Equals("username")).ToList();
       string text = string.Empty;
       string regexPattern = "(?i)";
       int count = 0;
-
-      for (int i = 0; i < blacklist.Count; i++)
-      {
-        if (i + 1 == blacklist.Count)
-        {
-          regexPattern += "(\\b" + blacklist[i].Description + "\\b)";
-        }
-        else
-        {
-          regexPattern += "(\\b" + blacklist[i].Description + "\\b)|";
-        }
-      }
+      string termsFounded = string.Empty;
 
       foreach (var key in keys)
       {
@@ -207,10 +197,19 @@ namespace Engeman.Intranet.Controllers
         }
         else
         {
-          count += Regex.Matches(text, regexPattern).Count;
+          for (int i = 0; i < blacklist.Count; i++)
+          {
+            regexPattern = "(?i)" + "(\\b" + blacklist[i].Description + "\\b)";
+            if (Regex.Matches(text, regexPattern).Count != 0)
+            {
+              termsFounded = termsFounded + "\"" + blacklist[i].Description + "\" ";
+              count++;
+            }
+          }
         }
       }
-      return Json(new { occurrences = count });
+      string[] termsFoundedArray = (termsFounded.Split(" ").Distinct().ToArray())[..^1];
+      return Json(new { occurrences = count, termsFounded = termsFoundedArray });
     }
   }
 }
