@@ -71,13 +71,19 @@ namespace Engeman.Intranet.Repositories
                 $"ON POST.ID = KEY_TBL.[KEY] WHERE KEY_TBL.RANK >= {Constants.Rank} " +
                 $"UNION " +
                 $"SELECT POST_ID, RANK FROM COMMENT INNER JOIN {Constants.SearchConditionCOMMENT.Replace("#SearchPhrase#", searchPhrase)} " +
-                $"ON COMMENT.ID = KEY_TBL.[KEY] WHERE KEY_TBL.RANK >= {Constants.Rank}) TABELA ON TABELA.ID = POST.ID " +
+                $"ON COMMENT.ID = KEY_TBL.[KEY] WHERE KEY_TBL.RANK >= {Constants.Rank} " +
+                $"UNION " +
+                $"SELECT POST_ID, RANK FROM POSTKEYWORD INNER JOIN {Constants.SearchConditionPOSTKEYWORD.Replace("#SearchPhrase#", searchPhrase)} " +
+                $"ON POSTKEYWORD.ID = KEY_TBL.[KEY] WHERE KEY_TBL.RANK >= {Constants.Rank}) TABELA ON TABELA.ID = POST.ID " +
                 $"WHERE POST.ID IN (SELECT ID FROM POST INNER JOIN {Constants.SearchConditionPOST.Replace("#SearchPhrase#", searchPhrase)} ON POST.ID = KEY_TBL.[KEY] " +
                 $"WHERE KEY_TBL.RANK >= {Constants.Rank} " +
                 $"UNION " +
                 $"SELECT  POST_ID FROM COMMENT " +
                 $"INNER JOIN {Constants.SearchConditionCOMMENT.Replace("#SearchPhrase#", searchPhrase)} ON COMMENT.ID = KEY_TBL.[KEY] " +
-                $"WHERE KEY_TBL.RANK >= {Constants.Rank}) " +
+                $"WHERE KEY_TBL.RANK >= {Constants.Rank} " +
+                $"UNION " +
+                $"SELECT POST_ID FROM POSTKEYWORD INNER JOIN {Constants.SearchConditionPOSTKEYWORD.Replace("#SearchPhrase#", searchPhrase)} " +
+                $"ON POSTKEYWORD.ID = KEY_TBL.[KEY] WHERE KEY_TBL.RANK >= {Constants.Rank}) " +
                 $"ORDER BY RANK DESC";
       }
 

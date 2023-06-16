@@ -49,11 +49,13 @@ if (bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:FREETEXTTABLE"
 {
   Constants.SearchConditionPOST = Constants.FreeTextTablePOST;
   Constants.SearchConditionCOMMENT = Constants.FreeTextTableCOMMENT;
+  Constants.SearchConditionPOSTKEYWORD = Constants.FreeTextTablePOSTKEYWORD;
 }
 else if (bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:FREETEXTTABLE").Value) == false && bool.Parse(builder.Configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == true)
 {
   Constants.SearchConditionPOST = Constants.ContainsTablePOST;
   Constants.SearchConditionCOMMENT = Constants.ContainsTableCOMMENT;
+  Constants.SearchConditionPOSTKEYWORD = Constants.ContainsTablePOSTKEYWORD;
 }
 else
 {
