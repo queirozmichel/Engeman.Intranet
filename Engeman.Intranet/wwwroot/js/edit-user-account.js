@@ -73,7 +73,7 @@ $("#edit-user-form").on("submit", function (event) {
       },
       success: function (response) {
         if (response.occurrences != 0) {
-          showAlertModal("Atenção!", `O formulário contém ${response.occurrences} termo(s) de uso não permitido, é necessário removê-lo(s) para poder continuar.`);
+          showAlertModal("Atenção!", `O formulário contém o(s) termo(s) ${response.termsFounded}, de uso não permitido. É necessário removê-lo(s) para poder continuar.`);
         } else {
           $.ajax({
             type: "POST",
