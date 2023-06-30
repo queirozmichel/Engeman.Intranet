@@ -7,12 +7,12 @@
     rules: {
       "description": {
         required: true,
-        pattern: "[A-Za-z0-9]+",
+        pattern: "[A-Za-z0-9-]+",
       },
     },
     messages: {
       "description": {
-        pattern: "Não é permitido o uso de caracteres especiais ou espaços em branco.",
+        pattern: "Não é permitido o uso de caracteres especiais ou espaços em branco, exceto o hífen(-).",
       }
     },
     ignore: '*:not([name])',

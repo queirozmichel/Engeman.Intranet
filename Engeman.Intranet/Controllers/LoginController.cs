@@ -39,17 +39,17 @@ namespace Engeman.Intranet.Controllers
     {
       var userAccount = new UserAccount();
 
-      //try
-      //{
-      //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
-      //  Object obj = entry.NativeObject;
-      //}
-      //catch (COMException ex)
-      //{
-      //  TempData["Message"] = "Erro!" + "/" + ex.Message;
+      try
+      {
+        DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
+        Object obj = entry.NativeObject;
+      }
+      catch (COMException ex)
+      {
+        TempData["Message"] = "Erro!" + "/" + ex.Message;
 
-      //  return RedirectToAction("index", "login");
-      //}
+        return RedirectToAction("index", "login");
+      }
 
       try { userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username); }
       catch (IndexOutOfRangeException)
