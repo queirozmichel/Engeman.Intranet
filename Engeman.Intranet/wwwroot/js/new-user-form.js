@@ -93,3 +93,7 @@ $("#cancel-form-button").on("click", function (event) {
 $("#username-input").on("input", function () {
   $("#email-input").val(this.value);
 })
+
+$('#new-user-modal').on('shown.bs.modal', function () {
+  $('#new-user-form').find('#name').focus();
+})
