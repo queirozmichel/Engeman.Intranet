@@ -6,28 +6,7 @@ $(document).ready(function () {
   FormComponents.init();
   sessionStorage.setItem("postId", $("#post-id").text());
 
-  $("#tab_1_3").removeClass("active");  
-})
-
-$("#post-tab").on("click", function () {
-  $.ajax({
-    type: "GET",
-    dataType: "html",
-    beforeSend: function () {
-      startSpinner();
-    },
-    url: "/posts/postdetails?postId=" + sessionStorage.getItem("postId"),
-    success: function (response) {
-      $("#render-body").empty();
-      $("#render-body").html(response);
-    },
-    error: function () {
-      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
-    },
-    complete: function () {
-      stopSpinner();
-    }
-  })
+  $("#tab_1_3").removeClass("active");
 })
 
 $(".edit-post-button").on("click", function () {

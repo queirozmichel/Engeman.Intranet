@@ -89,28 +89,6 @@ $("#comment-form").on("submit", function (event) {
   }
 })
 
-$("#comment-tab").on("click", function () {
-  $(".wang-editor").remove();
-  $("#wang-editor-script").remove();
-  $.ajax({
-    type: "GET",
-    dataType: "html",
-    url: "/comments/wangeditor",
-    beforeSend: function () {
-      startSpinner();
-    },
-    success: function (response) {
-      $("#form-group-wang-editor").html(response);
-    },
-    error: function (response) {
-      toastr.error("Não foi possível carregar o editor", "Erro!");
-    },
-    complete: function () {
-      stopSpinner();
-    }
-  })
-})
-
 $(".comment-aprove-btn").on("click", function () {
   var id = $(this).parents(".comment-box").attr("data-comment-id");
   showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove-comment", id);
@@ -191,6 +169,8 @@ function deleteComment(id, comment) {
 
 $(".comment-edit-btn").on("click", function () {
   $(".wang-editor").remove();
+  $("#comment-tab").css("pointer-events", "none");
+  $("#comment-tab").css("color", "#55555545");
   $(".comment-edit-btn").css("display", "none");
   $(".comment-delete-btn").css("display", "none");
   $(".comment-aprove-btn").css("display", "none");
@@ -206,7 +186,6 @@ $(".comment-edit-btn").on("click", function () {
       $(comment).html(response);
     },
     error: function (response) {
-      console.log("error");
     }
   })
 })

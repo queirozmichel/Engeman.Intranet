@@ -12,22 +12,4 @@
     <textarea id="@Model-description" class="form-control wang-editor-description" name="description"></textarea>
   </div>
 
-  <script>
-    if (!$("#wang-editor-script").length) {
-      function addScript(attribute, text, callback) {
-        var s = document.createElement('script');
-        for (var attr in attribute) {
-          s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
-        }
-        s.innerHTML = text;
-        s.onload = callback;
-        document.body.appendChild(s);
-      }
-      addScript({
-        id: 'wang-editor-script',
-        src: '../js/components/wang-editor.js',
-        type: 'text/javascript',
-        async: null
-      });
-    }
-  </script>
+  <script type="text/javascript" src="~/js/components/wang-editor.js"></script>
