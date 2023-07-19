@@ -65,9 +65,9 @@ namespace Engeman.Intranet.Repositories
       return term;
     }
 
-    public void Add(BlacklistTermViewModel term, string currentUsername)
+    public void Add(string term, string currentUsername)
     {
-      var query = $"INSERT INTO BLACKLISTTERM (DESCRIPTION) OUTPUT INSERTED.ID VALUES ('{term.Description}')";
+      var query = $"INSERT INTO BLACKLISTTERM (DESCRIPTION) OUTPUT INSERTED.ID VALUES ('{term}')";
 
       using StaticQuery sq = new();
       var outputTermId = sq.GetDataToInt(query);
@@ -78,9 +78,9 @@ namespace Engeman.Intranet.Repositories
       }
     }
 
-    public void Update(int id, BlacklistTerm term, string currentUsername)
+    public void Update(int id, string term, string currentUsername)
     {
-      var query = $"UPDATE BLACKLISTTERM SET DESCRIPTION = '{term.Description}'WHERE ID = '{term.Id}'";
+      var query = $"UPDATE BLACKLISTTERM SET DESCRIPTION = '{term}'WHERE ID = '{id}'";
 
       using StaticQuery sq = new StaticQuery();
       sq.ExecuteCommand(query);

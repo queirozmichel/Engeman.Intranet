@@ -81,12 +81,8 @@ namespace Engeman.Intranet.Controllers
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       string messageAux = null;
       int resultAux = StatusCodes.Status200OK;
-      var newTerm = new BlacklistTermViewModel
-      {
-        Description = formData["description"]
-      };
 
-      try { _blacklistTermRepository.Add(newTerm, sessionUsername); }
+      try { _blacklistTermRepository.Add(formData["description"].ToString().ToLower(), sessionUsername); }
       catch (SqlException ex)
       {
         resultAux = StatusCodes.Status500InternalServerError;
@@ -123,14 +119,9 @@ namespace Engeman.Intranet.Controllers
     {
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       string messageAux = null;
-      int resultAux = StatusCodes.Status200OK;
-      var editedTerm = new BlacklistTerm
-      {
-        Id = Convert.ToInt32(formData["id"]),
-        Description = formData["description"],
-      };
+      int resultAux = StatusCodes.Status200OK;   
 
-      try { _blacklistTermRepository.Update(editedTerm.Id, editedTerm, sessionUsername); }
+      try { _blacklistTermRepository.Update(Convert.ToInt32(formData["id"]), formData["description"].ToString().ToLower(), sessionUsername); }
       catch (SqlException ex)
       {
         resultAux = StatusCodes.Status500InternalServerError;

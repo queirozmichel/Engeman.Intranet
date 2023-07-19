@@ -2,6 +2,10 @@
   margin-bottom: 0px;
 }
 
-.form-group-term{
+.form-group-term {
   padding-right: 10rem !important;
+}
+
+#description {
+  text-transform: lowercase;
 }

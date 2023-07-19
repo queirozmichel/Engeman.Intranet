@@ -5,3 +5,7 @@
 .form-group-term {
   padding-right: 10rem !important;
 }
+
+#description {
+  text-transform: lowercase;
+}
