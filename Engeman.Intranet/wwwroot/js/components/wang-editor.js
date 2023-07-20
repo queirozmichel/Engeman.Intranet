@@ -34,11 +34,13 @@ function richTextBox() {
           $('#' + editorDescription).val("");
         }
         Prism.highlightAll();
+
       },
       onCreated(editor) {
-        editor.setHtml($('#' + editorDescription).val());
+        editor.setHtml($('#' + editorDescription).val());      
       },
       onFocus(editor) {
+
       },
       onBlur(editor) {
         let aux = editor.id;
@@ -64,6 +66,7 @@ function richTextBox() {
         { text: 'C#', value: 'csharp' },
         { text: 'SQL', value: 'sql' },
         { text: 'JSON', value: 'json' },
+        { text: 'XML', value: 'xml' },
         // others...
       ]
     }
@@ -80,35 +83,30 @@ function richTextBox() {
   function createT(toolbarId, editor) {
     const toolbarConfig = {
       toolbarKeys: [
-        'headerSelect',
+        //'headerSelect',
         'fontSize',
-        'fontFamily',
-        'lineHeight',
-        '|',
+        //'fontFamily',
+        //'lineHeight',
         'bold',
         'underline',
         'italic',
         'sup',
         'color',
         'bgColor',
-        '|',
         'bulletedList',
         'numberedList',
         'todo',
-        '|',
         'justifyLeft',
         'justifyCenter',
         'justifyRight',
         'justifyJustify',
-        '|',
         'emotion',
         'insertLink',
         'uploadImage',
         'insertTable',
-        'blockquote',
+        //'blockquote',
         'codeBlock',
         'divider',
-        '|',
         'undo',
         'redo',
         'clearStyle',
