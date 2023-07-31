@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Engeman.Intranet.Controllers
 {
-  public class PostKeywordsController : Controller
+  public class PostKeywordsController : RootController
   {
     private readonly IKeywordRepository _keywordRepository;
     private readonly IPostKeywordRepository _postKeywordRepository;

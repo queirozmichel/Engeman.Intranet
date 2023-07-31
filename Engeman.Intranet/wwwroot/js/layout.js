@@ -4,6 +4,21 @@
   Plugins.init(); // Init all plugins
   setInterval(exclamation, 1000);
 
+  //Define em um cookie, as permissões de usuário de forma criptografada. 
+  fetch("/useraccount/getpermissions")
+    .then(response => {
+      if (!response.ok) throw new Error();
+      return response.text();
+    })
+    .then(permissions => {
+      EncryptData(permissions).then(response => {
+        Cookies.set("Permissions", response);
+      });
+    })
+    .catch(error => {
+      toastr.error(error.message, "Erro!");
+    });
+
   $(window).on("popstate", function (event) {
     $.ajax({
       type: "GET",

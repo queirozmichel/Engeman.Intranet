@@ -8,7 +8,7 @@ using System.Text.Json.Nodes;
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
-  public class DashboardController : Controller
+  public class DashboardController : RootController
   {
     private readonly IPostRepository _postRepository;
     private readonly ICommentRepository _commentRepository;

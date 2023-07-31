@@ -170,7 +170,7 @@ function deleteComment(id, comment) {
 $(".comment-edit-btn").on("click", function () {
   $(".wang-editor").remove();
   $("#comment-tab").css("pointer-events", "none");
-  $("#comment-tab").css("color", "#55555545");
+  $("#comment-tab").css("color", "#55555555");
   $(".comment-edit-btn").css("display", "none");
   $(".comment-delete-btn").css("display", "none");
   $(".comment-aprove-btn").css("display", "none");

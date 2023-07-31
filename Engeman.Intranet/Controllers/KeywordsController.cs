@@ -8,7 +8,7 @@ using System.Linq.Dynamic.Core;
 
 namespace Engeman.Intranet.Controllers
 {
-  public class KeywordsController : Controller
+  public class KeywordsController : RootController
   {
     private readonly IKeywordRepository _keywordRepository;
 

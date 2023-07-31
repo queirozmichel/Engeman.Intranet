@@ -1,6 +1,5 @@
 ﻿using Engeman.Intranet.Extensions;
 using Engeman.Intranet.Helpers;
-using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Engeman.Intranet.Controllers
 {
-  public class BlacklistTermsController : Controller
+  public class BlacklistTermsController : RootController
   {
     private readonly IBlacklistTermRepository _blacklistTermRepository;
 

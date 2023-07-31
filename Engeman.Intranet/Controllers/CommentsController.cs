@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
-  public class CommentsController : Controller
+  public class CommentsController : RootController
   {
     private readonly ICommentRepository _commentRepository;
     private readonly ICommentFileRepository _commentFileRepository;
@@ -46,6 +46,7 @@ namespace Engeman.Intranet.Controllers
     {
       var files = new List<CommentFile>();
       var comment = new Comment();
+      var currentPost = new Post();
       var currentComment = new Comment();
       var userAccount = new UserAccount();
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
@@ -60,6 +61,7 @@ namespace Engeman.Intranet.Controllers
       {
         currentComment = _commentRepository.GetById(editedComment.Comment.Id);
         userAccount = _userAccountRepository.GetByUsername(sessionUsername);
+        currentPost = _postRepository.GetById(editedComment.Comment.PostId); 
       }
       catch (Exception) { }
 
@@ -67,7 +69,7 @@ namespace Engeman.Intranet.Controllers
 
       comment.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(editedComment.Comment.Description));
 
-      if (currentComment.Revised == true && userAccount.NoviceUser == false) comment.Revised = true;
+      if (!GlobalFunctions.RequiresModeration(HttpContext.Session.Get<int>("_CurrentUserId"), currentPost.PostType)) comment.Revised = true;
 
       if (binaryData.Count != 0)
       {
@@ -135,10 +137,16 @@ namespace Engeman.Intranet.Controllers
     {
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       var userAccount = new UserAccount();
+      var postAux = new Post();
 
-      try { userAccount = _userAccountRepository.GetByUsername(sessionUsername); } catch (Exception) { }
+      try
+      {
+        userAccount = _userAccountRepository.GetByUsername(sessionUsername);
+        postAux = _postRepository.GetById(newComment.PostId);
+      }
+      catch (Exception) { }
 
-      if (userAccount.Moderator == true || userAccount.NoviceUser == false) newComment.Revised = true;
+      newComment.Revised = !GlobalFunctions.RequiresModeration(HttpContext.Session.Get<int>("_CurrentUserId"), postAux.PostType);
 
       newComment.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(newComment.Description));
 

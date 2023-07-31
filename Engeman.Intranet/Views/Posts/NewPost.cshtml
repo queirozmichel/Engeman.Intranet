@@ -1,4 +1,5 @@
 ﻿@{List<Department> departments = ViewBag.Departments;}
+@model Engeman.Intranet.Models.ViewModels.UserPermissionsViewModel
 @{string layout = null;}
 
 @if (ViewBag.IsAjaxCall == false)
@@ -54,10 +55,22 @@
               <div class="col-md-2">
                 <select id="postType" class="form-control" name="postType">
                   <option value="" selected disabled hidden>Não selecionado</option>
-                  <option value="I">Informativa</option>
-                  <option value="Q">Pergunta</option>
-                  <option value="M">Manual</option>
-                  <option value="D">Documento</option>
+                  @if (Model.PostType.Informative.CanPost == 1)
+                  {
+                    <option value="I">Informativa</option>
+                  }
+                  @if (Model.PostType.Question.CanPost == 1)
+                  {
+                    <option value="Q">Pergunta</option>
+                  }
+                  @if (Model.PostType.Manual.CanPost == 1)
+                  {
+                    <option value="M">Manual</option>
+                  }
+                  @if (Model.PostType.Document.CanPost == 1)
+                  {
+                    <option value="D">Documento</option>
+                  }
                 </select>
               </div>
             </div>
@@ -66,13 +79,13 @@
               <div class="col-md-10">
                 <input id="subject" class="form-control" type="text" name="subject">
               </div>
-            </div>            
+            </div>
             <div class="form-group">
               <label class="col-md-2 control-label">Palavras-chave</label>
               <div class="col-md-10">
                 <input id="keywords" class="form-control" type="text" name="keywords">
               </div>
-            </div>            
+            </div>
             <div class="form-group">
               <label id="description-label" class="col-md-2 control-label">Descrição<span class="required">*</span></label>
               <div class="col-md-10">

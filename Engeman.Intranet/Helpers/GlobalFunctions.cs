@@ -1,5 +1,7 @@
 ﻿using Engeman.Intranet.Library;
+using Engeman.Intranet.Models.ViewModels;
 using HtmlAgilityPack;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Engeman.Intranet.Helpers
@@ -90,7 +92,97 @@ namespace Engeman.Intranet.Helpers
         pureText = Regex.Replace(pureText, @"(&nbsp;)|(&lt;)|(&gt;)", " ");  // Remove as tags '&nbsp;' '&lt;' e '&gt;'
 
         return pureText;
-      }      
+      }
+    }
+
+    /// <summary>
+    /// Testa se um usuário é considerado moderador.
+    /// Para ser considerado moderador, todas os itens devem estar com o valor 1 exceto "RequiresModeration" que deve obrigatoriamente estar com o valor 0.
+    /// Qualquer combinação diferente desta, é tratado como um usuário comum.
+    /// </summary>
+    /// <param name="userId">ID do usuário</param>
+    /// <returns>Retorna "True" caso seja moderador e "False" caso usuário comum.</returns>
+    public static bool IsModerator(int userId)
+    {
+      var query = $"SELECT PERMISSIONS FROM USERACCOUNT WHERE ID = {userId}";
+      using StaticQuery sq = new();
+      var result = sq.GetDataToObject(query).ToString();
+
+      if (string.IsNullOrEmpty(result) == true) return false;
+      else
+      {
+        UserPermissionsViewModel permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(result);
+
+        if (permissions.PostType.Informative.CanPost == 1 && permissions.PostType.Informative.CanComment == 1 && permissions.PostType.Informative.EditAnyPost == 1
+          && permissions.PostType.Informative.DeleteAnyPost == 1 && permissions.PostType.Informative.RequiresModeration == 0 &&
+          permissions.PostType.Question.CanPost == 1 && permissions.PostType.Question.CanComment == 1 && permissions.PostType.Question.EditAnyPost == 1
+          && permissions.PostType.Question.DeleteAnyPost == 1 && permissions.PostType.Question.RequiresModeration == 0 &&
+          permissions.PostType.Manual.CanPost == 1 && permissions.PostType.Manual.CanComment == 1 && permissions.PostType.Manual.EditAnyPost == 1
+          && permissions.PostType.Manual.DeleteAnyPost == 1 && permissions.PostType.Manual.RequiresModeration == 0 &&
+          permissions.PostType.Document.CanPost == 1 && permissions.PostType.Document.CanComment == 1 && permissions.PostType.Document.EditAnyPost == 1
+          && permissions.PostType.Document.DeleteAnyPost == 1 && permissions.PostType.Document.RequiresModeration == 0)
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// Testa se uma postagem ou comentários necessita de moderação/revisão.
+    /// Se sim, é retornado TRUE, caso contrário, FALSE.
+    /// </summary>
+    /// <param name="userId">ID do usuário</param>
+    /// <param name="postType">Tipo de postagem que está sendo verificada, se for um comentário, deve-se passar o tipo da postagem na qual o comentário está sendo feito. <br/> I = Informativa, Q = Pergunta D = Documento M = Manual.</param>
+    /// <returns></returns>
+    public static bool RequiresModeration(int userId, char postType)
+    {
+      var query = $"SELECT PERMISSIONS FROM USERACCOUNT WHERE ID = {userId}";
+      using StaticQuery sq = new();
+      var result = sq.GetDataToObject(query).ToString();
+
+      if (string.IsNullOrEmpty(result) == true) return true;
+      else
+      {
+        UserPermissionsViewModel permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(result);
+
+        if (IsModerator(userId) == true)
+        {
+          return false;
+        }
+        else
+        {
+          if (postType == 'I')
+          {
+            if (permissions.PostType.Informative.RequiresModeration == 1)
+            {
+              return true;
+            }
+          }
+          else if (postType == 'Q')
+          {
+            if (permissions.PostType.Question.RequiresModeration == 1)
+            {
+              return true;
+            }
+          }
+          else if (postType == 'M')
+          {
+            if (permissions.PostType.Manual.RequiresModeration == 1)
+            {
+              return true;
+            }
+          }
+          else if (postType == 'D')
+          {
+            if (permissions.PostType.Document.RequiresModeration == 1)
+            {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
     }
   }
 }

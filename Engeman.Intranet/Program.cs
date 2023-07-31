@@ -32,6 +32,7 @@ builder.Services.AddSession(options =>
         options.Cookie.IsEssential = true;
       });
 
+builder.Services.AddSingleton<ServiceConfiguration>();
 builder.Services.AddTransient<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddTransient<IPostRepository, PostRepository>();
 builder.Services.AddTransient<IDepartmentRepository, DepartmentRepository>();

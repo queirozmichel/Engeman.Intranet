@@ -155,7 +155,7 @@ namespace Engeman.Intranet.Repositories
       {
         revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
         authorCommentId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
-        moderator = userAccount.Moderator;
+        moderator = GlobalFunctions.IsModerator(userAccount.Id);
 
         if (revised == false && authorCommentId != userAccount.Id && moderator == false) continue;
 

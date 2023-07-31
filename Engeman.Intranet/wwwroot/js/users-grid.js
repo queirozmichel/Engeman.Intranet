@@ -55,8 +55,6 @@ var usersGrid = $("#users-grid").bootgrid({
       "<li>" +
       "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"moderators\">Moderadores</a>" +
       "</li>" +
-      "<li>" +
-      "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"novices\">Novatos</a>" +
       "</li>" +
       "</ul>" +
       "</div>" +

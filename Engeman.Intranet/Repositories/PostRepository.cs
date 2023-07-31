@@ -53,16 +53,16 @@ namespace Engeman.Intranet.Repositories
       if (string.IsNullOrWhiteSpace(searchPhrase))
       {
         query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID AS USER_ACCOUNT_ID, " +
-                $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
+                $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, D.DESCRIPTION as DEPARTMENT FROM POST LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
                 $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID WHERE POST.ACTIVE = 1 AND UA.ACTIVE = 1 AND D.ACTIVE = 1 " +
                 $"GROUP BY POST.ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
-                $"UA.NAME, UA.MODERATOR, D.ID, D.DESCRIPTION " +
+                $"UA.NAME, D.ID, D.DESCRIPTION " +
                 $"ORDER BY POST.CHANGE_DATE DESC";
       }
       else
       {
         query = $"SELECT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID AS USER_ACCOUNT_ID, POST.POST_TYPE, POST.CHANGE_DATE, " +
-                $"UA.NAME, UA.MODERATOR, D.DESCRIPTION as DEPARTMENT, TABELA.RANK " +
+                $"UA.NAME, D.DESCRIPTION as DEPARTMENT, TABELA.RANK " +
                 $"FROM POST " +
                 $"LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
                 $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID " +
@@ -89,14 +89,14 @@ namespace Engeman.Intranet.Repositories
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0].DefaultView.ToTable(true, new String[] { "POST_ID", "RESTRICTED", "REVISED", "SUBJECT", "USER_ACCOUNT_ID",
-        "POST_TYPE", "CHANGE_DATE", "NAME", "MODERATOR", "DEPARTMENT" });
+        "POST_TYPE", "CHANGE_DATE", "NAME", "DEPARTMENT" });
 
       for (int i = 0; i < result.Rows.Count; i++)
       {
         revised = Convert.ToBoolean(result.Rows[i]["Revised"]);
         authorPostId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]);
         restricted = Convert.ToBoolean(result.Rows[i]["Restricted"]);
-        moderator = user.Moderator;
+        moderator = GlobalFunctions.IsModerator(user.Id);
         if (revised == false && authorPostId != user.Id && moderator == false) continue;
         if (restricted == true)
         {
@@ -228,7 +228,7 @@ namespace Engeman.Intranet.Repositories
       var posts = new List<PostGridViewModel>();
 
       string query = $"SELECT DISTINCT POST.ID as POST_ID, POST.RESTRICTED, POST.REVISED, POST.SUBJECT, UA.ID AS USER_ACCOUNT_ID, " +
-                     $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, UA.MODERATOR, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT " +
+                     $"POST.POST_TYPE, POST.CHANGE_DATE, UA.NAME, D.ID as DEPARTMENT_ID, D.DESCRIPTION as DEPARTMENT " +
                      $"FROM POST INNER JOIN COMMENT AS C ON C.POST_ID = POST.ID LEFT JOIN POSTFILE AS PF ON PF.POST_ID = POST.ID " +
                      $"INNER JOIN USERACCOUNT AS UA ON POST.USER_ACCOUNT_ID = UA.ID INNER JOIN DEPARTMENT AS D ON UA.DEPARTMENT_ID = D.ID " +
                      $"WHERE C.REVISED = 0 AND POST.ACTIVE = 1 AND C.ACTIVE = 1 AND UA.ACTIVE = 1 AND D.ACTIVE = 1";

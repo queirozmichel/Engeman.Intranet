@@ -8,7 +8,7 @@ using System.Linq.Dynamic.Core;
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
-  public class LogsController : Controller
+  public class LogsController : RootController
   {
     private readonly ILogRepository _logRepository;
     private IUserAccountRepository _userAccountRepository;

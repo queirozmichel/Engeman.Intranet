@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http;
-@using Engeman.Intranet.Extensions;
+﻿@using Engeman.Intranet.Extensions;
 @{string layout = null;}
 
 @if (ViewBag.IsAjaxCall == false)
@@ -22,12 +21,22 @@
     <div class="tabbable tabbable-custom tabbable-full-width">
       <ul class="nav nav-tabs">
         <li class="active"><a id="post-tab" href="#tab_1_1" data-toggle="tab">Postagem</a></li>
-        <li><a id="comment-tab" href="#tab_1_3" data-toggle="tab">Comentar</a></li>
+        @{
+          if (ViewBag.CanComment == true)
+          {
+            <li><a id="comment-tab" href="#tab_1_3" data-toggle="tab">Comentar</a></li>
+          }
+          else
+          {
+            <li title="Você não tem permissão para comentar nesta postagem."><a id="comment-tab-disabled">Comentar</a></li>
+          }
+        }
       </ul>
       <div class="tab-content row">
         <div class="tab-pane active" id="tab_1_1">
           <div class="col-md-12">
             <h2>@ViewBag.Post.Subject</h2>
+            <span id="post-type" hidden>@ViewBag.Post.PostType</span>
             <div class="post-info-div">
               <div>
                 <span class="post-info">Identificador</span>

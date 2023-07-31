@@ -6,11 +6,12 @@ using Engeman.Intranet.Models.ViewModels;
 using System.Linq.Dynamic.Core;
 using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
+using System.Text.Json;
 
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
-  public class UserAccountController : Controller
+  public class UserAccountController : RootController
   {
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IDepartmentRepository _departmentRepository;
@@ -77,7 +78,6 @@ namespace Engeman.Intranet.Controllers
 
       if (filterHeader == "actives") return users.Where("active == (@0)", true);
       else if (filterHeader == "moderators") return users.Where("moderator == (@0)", true);
-      else if (filterHeader == "novices") return users.Where("novice == (@0)", true);
       else return users;
     }
 
@@ -113,7 +113,7 @@ namespace Engeman.Intranet.Controllers
         else
         {
           messageAux = ex.Message;
-        }       
+        }
       }
 
       return Json(new { result = resultAux, message = messageAux });
@@ -175,7 +175,7 @@ namespace Engeman.Intranet.Controllers
 
       userEdit.Id = user.Id;
       userEdit.Active = user.Active;
-      userEdit.CreatePost = user.CreatePost;
+      //userEdit.CreatePost = user.CreatePost;
       userEdit.Name = user.Name;
       userEdit.Username = user.Username;
       userEdit.Email = user.Email.Substring(0, user.Email.IndexOf("@"));
@@ -185,31 +185,31 @@ namespace Engeman.Intranet.Controllers
 
       try { userEdit.DepartmentDescription = _departmentRepository.GetDescriptionById(user.DepartmentId); } catch (Exception) { }
 
-      if (user.Moderator == false && user.NoviceUser == false)
-      {
-        userEdit.UserType = "Comum";
-        userEdit.UserTypeCode = 0;
-      }
-      else if (user.Moderator == false && user.NoviceUser == true)
-      {
-        userEdit.UserType = "Novato";
-        userEdit.UserTypeCode = 1;
-      }
-      else
-      {
-        userEdit.UserType = "Moderador";
-        userEdit.UserTypeCode = 2;
-      }
+      //if (user.Moderator == false && user.NoviceUser == false)
+      //{
+      //  userEdit.UserType = "Comum";
+      //  userEdit.UserTypeCode = 0;
+      //}
+      //else if (user.Moderator == false && user.NoviceUser == true)
+      //{
+      //  userEdit.UserType = "Novato";
+      //  userEdit.UserTypeCode = 1;
+      //}
+      //else
+      //{
+      //  userEdit.UserType = "Moderador";
+      //  userEdit.UserTypeCode = 2;
+      //}
 
       UserTypes.Add("Comum", 0);
       UserTypes.Add("Novato", 1);
       UserTypes.Add("Moderador", 2);
-      userEdit.Novice = user.NoviceUser;
-      userEdit.EditOwnerPost = user.EditOwnerPost;
-      userEdit.EditAnyPost = user.EditAnyPost;
-      userEdit.DeleteOwnerPost = user.DeleteOwnerPost;
-      userEdit.DeleteAnyPost = user.DeleteAnyPost;
-      userEdit.CreatePost = user.CreatePost;
+      //userEdit.Novice = user.NoviceUser;
+      //userEdit.EditOwnerPost = user.EditOwnerPost;
+      //userEdit.EditAnyPost = user.EditAnyPost;
+      //userEdit.DeleteOwnerPost = user.DeleteOwnerPost;
+      //userEdit.DeleteAnyPost = user.DeleteAnyPost;
+      //userEdit.CreatePost = user.CreatePost;
 
       try { ViewBag.Departments = _departmentRepository.Get(); } catch (Exception) { }
 
@@ -226,7 +226,7 @@ namespace Engeman.Intranet.Controllers
       var user = new UserAccount();
       user.Id = userEdited.Id;
       user.Active = userEdited.Active;
-      user.CreatePost = userEdited.CreatePost;
+      //user.CreatePost = userEdited.CreatePost;
       user.Name = userEdited.Name;
       user.Username = userEdited.Username;
       user.Email = userEdited.Email + "@engeman.com.br";
@@ -235,31 +235,31 @@ namespace Engeman.Intranet.Controllers
 
       if (userEdited.UserTypeCode == 1)
       {
-        user.Moderator = false;
-        user.NoviceUser = true;
-        user.EditOwnerPost = true;
-        user.DeleteOwnerPost = true;
-        user.EditAnyPost = false;
-        user.DeleteAnyPost = false;
+        //user.Moderator = false;
+        //user.NoviceUser = true;
+        //user.EditOwnerPost = true;
+        //user.DeleteOwnerPost = true;
+        //user.EditAnyPost = false;
+        //user.DeleteAnyPost = false;
 
       }
       else if (userEdited.UserTypeCode == 2)
       {
-        user.Moderator = true;
-        user.NoviceUser = false;
-        user.EditOwnerPost = true;
-        user.DeleteOwnerPost = true;
-        user.EditAnyPost = true;
-        user.DeleteAnyPost = true;
+        //user.Moderator = true;
+        //user.NoviceUser = false;
+        //user.EditOwnerPost = true;
+        //user.DeleteOwnerPost = true;
+        //user.EditAnyPost = true;
+        //user.DeleteAnyPost = true;
       }
       else
       {
-        user.Moderator = false;
-        user.NoviceUser = false;
-        user.EditOwnerPost = true;
-        user.DeleteOwnerPost = true;
-        user.EditAnyPost = false;
-        user.DeleteAnyPost = false;
+        //user.Moderator = false;
+        //user.NoviceUser = false;
+        //user.EditOwnerPost = true;
+        //user.DeleteOwnerPost = true;
+        //user.EditAnyPost = false;
+        //user.DeleteAnyPost = false;
       }
 
       if (Photo.Count == 0) try { user.Photo = _userAccountRepository.GetByUsername(user.Username).Photo; } catch (Exception) { }
@@ -305,43 +305,17 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public IActionResult CheckPermissions(int authorId, string method)
+    public JsonResult GetPermissions()
     {
-      var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
-      string username = null;
-      var permissions = new UserPermissionsViewModel();
+      string aux;
+      UserPermissionsViewModel permissions = new();
 
-      try
-      {
-        username = _userAccountRepository.GetUsernameById(authorId);
-        permissions = _userAccountRepository.GetUserPermissionsByUsername(sessionUsername);
-      }
-      catch (Exception) { }
+      try { aux = _userAccountRepository.GetPermissionsById(HttpContext.Session.Get<int>("_CurrentUserId")); }
+      catch (Exception) { throw; }
 
-      if (method == "edit")
-      {
-        if (permissions.EditAnyPost == true) return Json("EditAnyPost");
-        else if (permissions.EditOwnerPost == true)
-        {
-          if (username == sessionUsername) return Json("EditOwnerPost");
-          else return Json("CannotEditAnyonePost");
-        }
-        else if (permissions.EditAnyPost == false && permissions.EditOwnerPost == false && username != sessionUsername) return Json("CannotEditAnyonePost");
-        else if (permissions.EditAnyPost == false && permissions.EditOwnerPost == false) return Json("CannotEditOwnerPost");
-      }
-      else if (method == "delete")
-      {
-        if (permissions.DeleteAnyPost == true) return Json("DeleteAnyPost");
-        else if (permissions.DeleteOwnerPost == true)
-        {
-          if (username == sessionUsername) return Json("DeleteOwnerPost");
-          else return Json("CannotDeleteAnyonePost");
-        }
-        else if (permissions.DeleteAnyPost == false && permissions.DeleteOwnerPost == false && username != sessionUsername) return Json("CannotDeleteAnyonePost");
-        else if (permissions.DeleteAnyPost == false && permissions.DeleteOwnerPost == false) return Json("CannotDeleteOwnerPost");
-      }
+      permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(aux);
 
-      return Ok(StatusCodes.Status200OK);
+      return Json(permissions);
     }
   }
 }

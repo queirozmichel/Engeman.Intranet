@@ -8,11 +8,12 @@ using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using System.Text.Json;
 
 namespace Engeman.Intranet.Controllers
 {
   [Authorize(AuthenticationSchemes = "CookieAuthentication")]
-  public class PostsController : Controller
+  public class PostsController : RootController
   {
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IPostRepository _postRepository;
@@ -45,7 +46,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult Grid()
     {
-      if (Request.Query["filter"] != "allPosts" && !IsModerator()) return Redirect(Request.Host.ToString());
+      if (Request.Query["filter"] != "allPosts" && !HttpContext.Session.Get<bool>("_IsModerator")) return Redirect(Request.Host.ToString());
 
       ViewBag.FilterGrid = Request.Query["filter"];
       ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
@@ -59,7 +60,7 @@ namespace Engeman.Intranet.Controllers
       IQueryable<PostGridViewModel> posts = null;
       IQueryable paginatedPosts;
       var total = 0;
-      var isModerator = IsModerator();
+      var isModerator = HttpContext.Session.Get<bool>("_IsModerator");
       var key = Request.Form.Keys.Where(k => k.StartsWith("sort")).FirstOrDefault();
       var requestKeys = Request.Form.ToDictionary(x => x.Key, x => x.Value.ToString());
       string order;
@@ -117,7 +118,7 @@ namespace Engeman.Intranet.Controllers
 
       if (filterGrid == "allPosts")
       {
-        if (user.Moderator == true) posts = posts.Where("revised == (@0) && UnrevisedComments == (@1) ", true, false);
+        if (GlobalFunctions.IsModerator(user.Id) == true) posts = posts.Where("revised == (@0) && UnrevisedComments == (@1) ", true, false);
       }
       else if (filterGrid == "unrevisedPosts") posts = posts.Where("revised == (@0)", false);
       else if (filterGrid == "unrevisedComments")
@@ -146,14 +147,16 @@ namespace Engeman.Intranet.Controllers
     {
       var permissions = new UserPermissionsViewModel();
 
-      try { permissions = _userAccountRepository.GetUserPermissionsByUsername(HttpContext.Session.Get<string>("_CurrentUsername")); } catch (Exception) { }
+      try { permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(HttpContext.Session.Get<int>("_CurrentUserId"))); }
+      catch (Exception) { }
 
-      if (permissions.CreatePost == true)
+      if (permissions.PostType.Informative.CanPost == 1 || permissions.PostType.Question.CanPost == 1
+        || permissions.PostType.Document.CanPost == 1 || permissions.PostType.Manual.CanPost == 1)
       {
         ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
         try { ViewBag.Departments = _departmentRepository.Get(); }
         catch (Exception) { }
-        return PartialView("NewPost");
+        return PartialView("NewPost", permissions);
       }
       else return StatusCode(StatusCodes.Status401Unauthorized);
     }
@@ -162,15 +165,10 @@ namespace Engeman.Intranet.Controllers
     public IActionResult NewPost(NewPostViewModel newPost, List<IFormFile> addFiles)
     {
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
-      var userAccount = new UserAccount();
 
-      try { userAccount = _userAccountRepository.GetByUsername(sessionUsername); } catch (Exception) { }
-
-      if (userAccount.Moderator == true || userAccount.NoviceUser == false) newPost.Revised = true;
-
+      newPost.UserAccountId = HttpContext.Session.Get<int>("_CurrentUserId");
       newPost.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(newPost.Description));
-
-      newPost.UserAccountId = userAccount.Id;
+      newPost.Revised = !GlobalFunctions.RequiresModeration(newPost.UserAccountId, newPost.PostType);
 
       if (newPost.Keywords != null) newPost.Keywords = newPost.Keywords.ToLower();
 
@@ -206,12 +204,9 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditPost(int postId)
     {
-      if (!IsModerator())
+      if (!IsAuthorized(postId, 2))
       {
-        if (!HasPermission(postId, HttpContext.Session.Get<int>("_CurrentUserId")))
-        {
-          return Redirect(Request.Host.ToString());
-        }
+        return Redirect(Request.Host.ToString());
       }
 
       var restrictedDepartments = new List<int>();
@@ -301,7 +296,7 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      if (currentPost.Revised == true && userAccount.NoviceUser == false) editedPost.Revised = true;
+      if (!GlobalFunctions.RequiresModeration(HttpContext.Session.Get<int>("_CurrentUserId"), editedPost.PostType)) editedPost.Revised = true;
 
       try
       {
@@ -334,14 +329,13 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult PostDetails(int postId)
     {
-      if (!IsModerator())
+      if (!IsAuthorized(postId, 1))
       {
-        if (!HasPermission(postId, HttpContext.Session.Get<int>("_CurrentUserId")))
-        {
-          return Redirect(Request.Host.ToString());
-        }
+        return Redirect(Request.Host.ToString());
       }
 
+      UserPermissionsViewModel permissions = new();
+      var currentUserId = HttpContext.Session.Get<int>("_CurrentUserId");
       var postDetails = new PostDetailsViewModel();
       var commentFiles = new List<CommentFile>();
       var comments = new List<CommentViewModel>();
@@ -357,6 +351,7 @@ namespace Engeman.Intranet.Controllers
 
       try
       {
+        permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(currentUserId));
         post = _postRepository.GetById(postId);
         postAuthor = _userAccountRepository.GetById(post.UserAccountId);
         orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
@@ -369,6 +364,7 @@ namespace Engeman.Intranet.Controllers
       catch (Exception) { }
 
       postDetails.Id = post.Id;
+      postDetails.PostType = post.PostType;
       postDetails.Subject = post.Subject;
       postDetails.Description = post.Description;
       postDetails.Files = orderedFiles;
@@ -419,11 +415,13 @@ namespace Engeman.Intranet.Controllers
       }
 
       ViewBag.Comments = comments;
-      ViewBag.IsModerator = IsModerator();
+      ViewBag.IsModerator = GlobalFunctions.IsModerator(HttpContext.Session.Get<int>("_CurrentUserId"));
       ViewBag.UserId = HttpContext.Session.Get<int>("_CurrentUserId");
       ViewBag.PostId = postId;
       ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
       ViewBag.Post = postDetails;
+      ViewBag.Permissions = permissions;
+      ViewBag.CanComment = IsAuthorized(postId, 4);
 
       return PartialView();
     }
@@ -431,7 +429,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult ShowFile(int postId, int file)
     {
-      if (!IsModerator())
+      if (!HttpContext.Session.Get<bool>("_IsModerator"))
       {
         var post = _postRepository.GetById(postId);
         if (post.Restricted == true)
@@ -473,22 +471,180 @@ namespace Engeman.Intranet.Controllers
       return ViewComponent("UnrevisedList");
     }
 
-    public bool IsModerator()
+    public string PostDeleteAuthorization(int postId)
     {
-      if (HttpContext.Session.Get<bool>("_IsModerator") == true) return true;
-      else return false;
+      var currentUserId = HttpContext.Session.Get<int>("_CurrentUserId");
+      Post post = new();
+      UserPermissionsViewModel permissions = new();
+
+      try
+      {
+        permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(currentUserId));
+        post = _postRepository.GetById(postId);
+      }
+      catch (Exception) { throw; }
+
+      if (!GlobalFunctions.IsModerator(currentUserId))
+      {
+        if (currentUserId != post.UserAccountId)
+        {
+          if (permissions.PostType.Informative.DeleteAnyPost == 0 && permissions.PostType.Question.DeleteAnyPost == 0
+            && permissions.PostType.Document.DeleteAnyPost == 0 && permissions.PostType.Manual.DeleteAnyPost == 0) return "NotAnyPost";
+          else
+          {
+            if (post.PostType == 'I')
+            {
+              if (permissions.PostType.Informative.DeleteAnyPost == 0) return "NotInformativePost";
+            }
+            else if (post.PostType == 'Q')
+            {
+              if (permissions.PostType.Question.DeleteAnyPost == 0) return "NotQuestionPost";
+            }
+            else if (post.PostType == 'D')
+            {
+              if (permissions.PostType.Document.DeleteAnyPost == 0) return "NotDocumentPost";
+            }
+            else if (post.PostType == 'M')
+            {
+              if (permissions.PostType.Manual.DeleteAnyPost == 0) return "NotManualPost";
+            }
+          }
+        }
+      }
+      return "DeletePost";
     }
 
-    public bool HasPermission(int postId, int userId)
+    /// <summary>
+    /// Verifica se o usuário corrente está autorizado a executar determinada ação de acordo com o nível de permissão.
+    /// </summary>
+    /// <param name="postId">ID da postagem na qual é solicitado acesso</param>
+    /// <param name="action">1 = Detalhar a postagem | 2 = Editar a postagem | 4 = Comentar a postagem</param>
+    /// <returns></returns>
+    public bool IsAuthorized(int postId, int action)
     {
+      var currentUserId = HttpContext.Session.Get<int>("_CurrentUserId");
+      var departmentId = _userAccountRepository.GetDepartmentIdById(currentUserId);
+      var restrictedDept = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
       var postAux = _postRepository.GetById(postId);
-      if (postAux.Restricted == true)
+      UserPermissionsViewModel permissions = new();
+
+      try { permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(currentUserId)); }
+      catch (Exception) { throw; }
+
+      //Verifica se tem permissão de visualizar a postagem
+      if (action == 1)
       {
-        var departmentId = _userAccountRepository.GetDepartmentIdById(HttpContext.Session.Get<int>("_CurrentUserId"));
-        var postRestrictionCount = _postRestrictionRepository.CountByPostIdDepId(postId, departmentId);
-        if (postRestrictionCount == 0 && postAux.UserAccountId != HttpContext.Session.Get<int>("_CurrentUserId"))
+        if (!GlobalFunctions.IsModerator(currentUserId))
         {
-          return false;
+          if (postAux.UserAccountId != currentUserId)
+          {
+            if (postAux.Restricted == true && restrictedDept == 0)
+            {
+              return false;
+            }
+            if (postAux.Revised == false)
+            {
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+      //Verifica se tem permissão de editar a postagem
+      else if (action == 2)
+      {
+        if (!GlobalFunctions.IsModerator(currentUserId))
+        {
+          if (currentUserId != postAux.UserAccountId)
+          {
+            if (postAux.Restricted == true && restrictedDept == 0)
+            {
+              return false;
+            }
+
+            if (postAux.Revised == false)
+            {
+              return false;
+            }
+
+            if (permissions.PostType.Informative.EditAnyPost == 0 && permissions.PostType.Question.EditAnyPost == 0 && permissions.PostType.Document.EditAnyPost == 0 && permissions.PostType.Manual.EditAnyPost == 0)
+            {
+              return false;
+            }
+            else
+            {
+              if (postAux.PostType == 'I')
+              {
+                if (permissions.PostType.Informative.EditAnyPost == 0)
+                {
+                  return false;
+                }
+              }
+              else if (postAux.PostType == 'Q')
+              {
+                if (permissions.PostType.Question.EditAnyPost == 0)
+                {
+                  return false;
+                }
+              }
+              else if (postAux.PostType == 'D')
+              {
+                if (permissions.PostType.Document.EditAnyPost == 0)
+                {
+                  return false;
+                }
+              }
+              else if (postAux.PostType == 'M')
+              {
+                if (permissions.PostType.Manual.EditAnyPost == 0)
+                {
+                  return false;
+                }
+              }
+            }
+          }
+        }
+      }
+      //Verifica se tem permissão de comentar a postagem
+      else if (action == 4)
+      {
+        if (!GlobalFunctions.IsModerator(currentUserId))
+        {
+          if (postAux.UserAccountId != currentUserId)
+          {
+            if (postAux.Restricted == true && restrictedDept == 0)
+            {
+              return false;
+            }
+            if (postAux.PostType == 'I')
+            {
+              if (permissions.PostType.Informative.CanComment == 0)
+              {
+                return false;
+              }
+            }
+            else if (postAux.PostType == 'Q')
+            {
+              if (permissions.PostType.Question.CanComment == 0)
+              {
+                return false;
+              }
+            }
+            else if (postAux.PostType == 'D')
+            {
+              if (permissions.PostType.Document.CanComment == 0)
+              {
+                return false;
+              }
+            }
+            else if (postAux.PostType == 'M')
+            {
+              if (permissions.PostType.Manual.CanComment == 0)
+              {
+                return false;
+              }
+            }
+          }
         }
       }
       return true;

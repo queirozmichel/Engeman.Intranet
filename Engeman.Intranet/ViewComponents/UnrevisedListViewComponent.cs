@@ -1,4 +1,5 @@
 ﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Helpers;
 using Engeman.Intranet.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Dynamic.Core;
@@ -24,6 +25,7 @@ namespace Engeman.Intranet.ViewComponents
       var user = _userAccount.GetByUsername (username);
       ViewBag.UnrevisedPosts = _postRepository.GetPostsGrid(user).AsQueryable().Where("revised == (@0)", false).Count();
       ViewBag.UnrevisedComments = _postCommentRepository.GetUnrevisedComments().Count();
+      ViewBag.Moderator = GlobalFunctions.IsModerator(user.Id);
 
       return View(user);
     }

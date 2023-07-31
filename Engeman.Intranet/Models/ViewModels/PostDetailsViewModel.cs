@@ -7,6 +7,7 @@
       Files = new List<PostFile>();
     }
     public int Id { get; set; }
+    public char PostType { get; set; }
     public string Subject { get; set; }
     public string Description { get; set; }
     public string[] Keywords { get; set; }

@@ -72,6 +72,7 @@ $(document).ready(function () {
         "<li>" +
         "<a class=\"{{css.dropDownItem}} {{css.dropDownItemButton}} filter-type\" data-value=\"manual\">Manuais</a>" +
         "</li>" +
+        "</li>" +
         "</ul>" +
         "</div>" +
         "</div>" +
@@ -113,9 +114,9 @@ $(document).ready(function () {
       },
       action: function (column, row) {
         var buttons;
-        var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-solid fa-magnifying-glass\"></i></button> ";;
-        var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
-        var btn3 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-post-id=\"" + row.id + "\"data-author-id=\"" + row.userAccountId + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
+        var btn1 = btn1 = "<button title=\"Detalhes\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"details\" data-post-id=\"" + row.id + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa-solid fa-magnifying-glass\"></i></button> ";;
+        var btn2 = "<button title=\"Editar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"edit\" data-post-id=\"" + row.id + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-pencil\"></i></button> ";
+        var btn3 = "<button title=\"Apagar\" type=\"button\" class=\"btn btn-xs btn-default\" data-action=\"delete\" data-post-id=\"" + row.id + "\"data-post-type=\"" + row.postType + "\"><i class=\"fa fa-trash-o\"></i></button> ";
         buttons = btn1 + btn2 + btn3;
         return buttons;
       },
@@ -171,7 +172,6 @@ $(document).ready(function () {
       var actionButtons = $(element);
       var action = actionButtons.data("action");
       var postId = actionButtons.data("post-id");
-      var authorId = actionButtons.data("author-id");
       var postType = actionButtons.data("post-type");
       actionButtons.on("click", function () {
         if (action == "details") {
@@ -179,9 +179,9 @@ $(document).ready(function () {
           sessionStorage.setItem("postType", postType);
           postDetails(postId, postType);
         } else if (action == "edit") {
-          postPermissions(authorId, postId, action);
+          editPost(postId);
         } else if (action == "delete") {
-          postPermissions(authorId, postId, action);
+          postDeleteAuthorization(postId);
           elementAux = element;
           idPostAux = postId;
         }
@@ -189,41 +189,33 @@ $(document).ready(function () {
     });
   })
 
-  function postPermissions(authorId, postId, method) {
-    $.get("/useraccount/checkpermissions", { authorId, method })
-      .done(function (response) {
-        if (method == "edit") {
-          if (response == "EditAnyPost" || response == "EditOwnerPost") {
-            editPost(postId);
+  function postDeleteAuthorization(postId) {
+    fetch(`/posts/postdeleteauthorization?postId=${postId}`)
+      .then(response => {
+        if (!response.ok) throw new Error();
+        return response.text().then(
+          permission => {
+            if (permission == "DeletePost") {
+              showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", postId);
+            }
+            else if (permission == "NotAnyPost") {
+              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de terceiros");
+            }
+            else if (permission == "NotInformativePost") {
+              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Informativa' de terceiros.");
+            }
+            else if (permission == "NotQuestionPost") {
+              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Pergunta' de terceiros.");
+            }
+            else if (permission == "NotDocumentPost") {
+              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Documento' de terceiros.");
+            }
+            else if (permission == "NotManualPost") {
+              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Manual' de terceiros.");
+            }
           }
-          else if (response == "CannotEditAnyonePost") {
-            showAlertModal("Operação não suportada!", "Você não tem permissão para editar uma postagem de outra pessoa");
-          }
-          else if (response == "CannotEditAnyPost") {
-            showAlertModal("Operação não suportada!", "Você não tem permissão para editar uma postagem");
-          }
-          else if (response == "CannotEditOwnerPost") {
-            showAlertModal("Operação não suportada!", "Você não tem permissão para editar uma postagem");
-          }
-        }
-        else if (method == "delete") {
-          if (response == "DeleteAnyPost") {
-            showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", postId);
-          }
-          else if (response == "CannotDeleteAnyonePost") {
-            showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de outra pessoa");
-          }
-          else if (response == "DeleteOwnerPost") {
-            showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", postId);
-          }
-          else if (response == "CannotDeleteAnyPost") {
-            showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de outra pessoa");
-          }
-          else if (response == "CannotDeleteOwnerPost") {
-            showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem");
-          }
-        }
-      });
+        );
+      })
   }
 
   $(".filter-type").on("click", function () {
@@ -278,8 +270,8 @@ function editPost(postId) {
     beforeSend: function () {
       startSpinner();
     },
-    error: function () {
-      toastr.error("Não foi possível editar a postagem", "Erro!");
+    error: function (response) {
+      toastr.error("Você não tem permissão para editar esta postagem.", "Erro!");
     },
     success: function (response) {
       $("#render-body").empty();
@@ -322,6 +314,7 @@ function deletePost(postId, element) {
       })
     },
     error: function (result) {
+      toastr.error("Erro", "Erro!");
     },
     complete: function () {
       setTimeout(() => {

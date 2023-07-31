@@ -7,7 +7,6 @@
     public string Name { get; set; }
     public string Username { get; set; }
     public string Department { get; set; }
-    public bool Novice { get; set; }
     public bool Moderator { get; set; }
   }
 }

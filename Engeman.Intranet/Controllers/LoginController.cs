@@ -1,4 +1,5 @@
 ﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Helpers;
 using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Repositories;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 
 namespace Engeman.Intranet.Controllers
 {
-  public class LoginController : Controller
+  public class LoginController : RootController
   {
     private readonly IConfiguration _configuration;
     private readonly IUserAccountRepository _userAccountRepository;
@@ -39,17 +40,17 @@ namespace Engeman.Intranet.Controllers
     {
       var userAccount = new UserAccount();
 
-      try
-      {
-        DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
-        Object obj = entry.NativeObject;
-      }
-      catch (COMException ex)
-      {
-        TempData["Message"] = "Erro!" + "/" + ex.Message;
+      //try
+      //{
+      //  DirectoryEntry entry = new("LDAP://" + _configuration["LocalPath"], loginViewModel.Username, loginViewModel.Password);
+      //  Object obj = entry.NativeObject;
+      //}
+      //catch (COMException ex)
+      //{
+      //  TempData["Message"] = "Erro!" + "/" + ex.Message;
 
-        return RedirectToAction("index", "login");
-      }
+      //  return RedirectToAction("index", "login");
+      //}
 
       try { userAccount = _userAccountRepository.GetByUsername(loginViewModel.Username); }
       catch (IndexOutOfRangeException)
@@ -73,7 +74,7 @@ namespace Engeman.Intranet.Controllers
         await HttpContext.SignInAsync("CookieAuthentication", principal, new AuthenticationProperties());
         HttpContext.Session.Set<int>("_CurrentUserId", userAccount.Id);
         HttpContext.Session.Set<int>("_DepartmentId", userAccount.DepartmentId);
-        HttpContext.Session.Set<bool>("_IsModerator", userAccount.Moderator);
+        HttpContext.Session.Set<bool>("_IsModerator", GlobalFunctions.IsModerator(userAccount.Id));
         HttpContext.Session.Set<string>("_CurrentUsername", loginViewModel.Username);
 
         return RedirectToAction("index", "dashboard");

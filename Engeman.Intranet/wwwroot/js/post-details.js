@@ -7,6 +7,9 @@ $(document).ready(function () {
   sessionStorage.setItem("postId", $("#post-id").text());
 
   $("#tab_1_3").removeClass("active");
+
+  $("#comment-tab-disabled").css("pointer-events", "none");
+  $("#comment-tab-disabled").css("color", "#55555555");
 })
 
 $(".edit-post-button").on("click", function () {

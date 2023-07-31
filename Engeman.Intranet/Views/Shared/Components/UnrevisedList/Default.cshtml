@@ -11,7 +11,7 @@
     <i class="icon-angle-right"></i>Listar Postagens
   </a>
 </li>
-@if (Model.Moderator == true && @ViewBag.UnrevisedPosts > 0)
+@if (ViewBag.Moderator == true && ViewBag.UnrevisedPosts > 0)
 {
   <li class="unrevised-posts">
     <a id="unrevised-posts-link">
@@ -22,7 +22,7 @@
     </a>
   </li>
 }
-@if (Model.Moderator == true && @ViewBag.UnrevisedComments > 0)
+@if (ViewBag.Moderator == true && ViewBag.UnrevisedComments > 0)
 {
   <li class="unrevised-comments">
     <a id="unrevised-comments-link">
