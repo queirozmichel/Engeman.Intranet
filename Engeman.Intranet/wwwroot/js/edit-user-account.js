@@ -107,58 +107,12 @@ $("#edit-user-form").on("submit", function (event) {
         stopSpinner();
       }
     })
-
-
-
-
-
-
-
-
-
-
-    
-  }
-})
-
-$("#permissions").on("change", function (e) {
-  if (this.value == 0) {
-    $("#create-post-switch").bootstrapSwitch('state', true);
-    $("#create-post-switch").bootstrapSwitch('readonly', false);
-    $("#create-post-radio").prop("checked", true);
-    $("#edit-owner-post-radio").prop("checked", true);
-    $("#delete-owner-post-radio").prop("checked", true);
-    $("#edit-any-post-radio").prop("checked", false);
-    $("#delete-any-post-radio").prop("checked", false);
-    $("#need-revision-radio").prop("checked", false);
-  } else if (this.value == 1) {
-    $("#create-post-switch").bootstrapSwitch('state', true);
-    $("#create-post-switch").bootstrapSwitch('readonly', false);
-    $("#create-post-radio").prop("checked", true);
-    $("#edit-owner-post-radio").prop("checked", true);
-    $("#delete-owner-post-radio").prop("checked", true);
-    $("#edit-any-post-radio").prop("checked", false);
-    $("#delete-any-post-radio").prop("checked", false);
-    $("#need-revision-radio").prop("checked", true);
-  } else if (this.value == 2) {
-    $("#create-post-switch").bootstrapSwitch('state', true);
-    $("#create-post-switch").bootstrapSwitch('readonly', true);
-    $("#create-post-radio").prop("checked", true);
-    $("#edit-owner-post-radio").prop("checked", true);
-    $("#delete-owner-post-radio").prop("checked", true);
-    $("#edit-any-post-radio").prop("checked", true);
-    $("#delete-any-post-radio").prop("checked", true);
-    $("#need-revision-radio").prop("checked", false);
   }
 })
 
 $("#username-input").on("input", function () {
   $("#email-input").val(this.value);
 })
-
-$(':radio').click(function (e) {
-  e.preventDefault();
-});
 
 $(".back-button").on("click", function (event) {
   previousPage();
@@ -189,14 +143,21 @@ $("#log-tab").on("click", function () {
   })
 })
 
-if ($("#permissions")[0].value == 2) {
-  $("#create-post-switch").bootstrapSwitch('readonly', true);
-}
-
-$("#create-post-switch").on("switchChange.bootstrapSwitch", function (event, state) {
-  if (state == true) {
-    $("#create-post-radio").prop("checked", true);
-  } else if (state == false) {
-    $("#create-post-radio").prop("checked", false);
+$(".template").on("click", function (e) {
+  e.preventDefault();
+  if ($(this).data('template') == "moderator") {
+    $(".can-post").prop("checked", true);
+    $(".can-comment").prop("checked", true);
+    $(".edit-any-post").prop("checked", true);
+    $(".delete-any-post").prop("checked", true);
+    $(".requires-moderation").prop("checked", false);
+  }
+  else if ($(this).data('template') == "default") {
+    $(".can-post").prop("checked", true);
+    $(".can-comment").prop("checked", true);
+    $(".edit-any-post").prop("checked", false);
+    $(".delete-any-post").prop("checked", false);
+    $(".requires-moderation").prop("checked", false);
   }
 });
+

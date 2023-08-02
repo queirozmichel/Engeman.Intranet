@@ -29,21 +29,13 @@
         <div class="tab-content row">
           <!--=== Overview ===-->
           <div class="tab-pane active" id="tab_overview">
+
             <div class="col-md-3">
               <div id="card-permissions">
                 @{ var base64 = Convert.ToBase64String(Model.Photo);
                   var imasrc = string.Format("data:image/png;base64,{0}", base64);
                 }
                 <img src='@imasrc' />
-                <div id="permission-text" class="text-center">Permissões</div>
-                <div>
-                  @*<div class="list-group-item permissions"><p class="permissions-p">Criar postagens</p><input id="crete-post-radio" type="radio" checked="@Model.CreatePost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Editar próprias postagens</p><input id="edit-owner-post-radio" type="radio" checked="@Model.EditOwnerPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Excluir próprias postagens</p><input id="delete-owner-post-radio" type="radio" checked="@Model.DeleteOwnerPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Editar qualquer postagem</p><input id="edit-any-post-radio" type="radio" checked="@Model.EditAnyPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Apagar qualquer postagem</p><input id="delete-any-post-radio" type="radio" checked="@Model.DeleteAnyPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Exige aprovação de postagens e comentários</p><input id="need-revision-radio" type="radio" checked="@Model.NoviceUser" /></div>*@
-                </div>
               </div>
             </div>
             <div class="col-md-9">
@@ -70,6 +62,49 @@
                 </div>
               </div> <!-- /.row -->
             </div> <!-- /.col-md-9 -->
+            <div class="col-md-12 permissions-div">
+              <div id="permission-text" class="text-center">Permissões por tipo de postagem</div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Informativa</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p><input type="radio" @(ViewBag.Permissions.PostType.Informative.CanPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Informative.CanComment ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Informative.EditAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Informative.DeleteAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p><input type="radio" @(ViewBag.Permissions.PostType.Informative.RequiresModeration ? "checked" : "") /></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Pergunta</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p><input type="radio" @(ViewBag.Permissions.PostType.Question.CanPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Question.CanComment ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Question.EditAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Question.DeleteAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p><input type="radio" @(ViewBag.Permissions.PostType.Question.RequiresModeration ? "checked" : "") /></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Manual</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p><input type="radio" @(ViewBag.Permissions.PostType.Manual.CanPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Manual.CanComment ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Manual.EditAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Manual.DeleteAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p><input type="radio" @(ViewBag.Permissions.PostType.Manual.RequiresModeration ? "checked" : "") /></div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Documento</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p><input type="radio" @(ViewBag.Permissions.PostType.Document.CanPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Document.CanComment ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Document.EditAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p><input type="radio" @(ViewBag.Permissions.PostType.Document.DeleteAnyPost ? "checked" : "") /></div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p><input type="radio" @(ViewBag.Permissions.PostType.Document.RequiresModeration ? "checked" : "") /></div>
+                </div>
+              </div>
+            </div>
           </div>
           <!-- /Overview -->
           <!--=== Edit Account ===-->

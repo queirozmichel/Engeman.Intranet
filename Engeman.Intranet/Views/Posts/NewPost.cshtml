@@ -55,19 +55,19 @@
               <div class="col-md-2">
                 <select id="postType" class="form-control" name="postType">
                   <option value="" selected disabled hidden>Não selecionado</option>
-                  @if (Model.PostType.Informative.CanPost == 1)
+                  @if (Model.PostType.Informative.CanPost == true)
                   {
                     <option value="I">Informativa</option>
                   }
-                  @if (Model.PostType.Question.CanPost == 1)
+                  @if (Model.PostType.Question.CanPost == true)
                   {
                     <option value="Q">Pergunta</option>
                   }
-                  @if (Model.PostType.Manual.CanPost == 1)
+                  @if (Model.PostType.Manual.CanPost == true)
                   {
                     <option value="M">Manual</option>
                   }
-                  @if (Model.PostType.Document.CanPost == 1)
+                  @if (Model.PostType.Document.CanPost == true)
                   {
                     <option value="D">Documento</option>
                   }

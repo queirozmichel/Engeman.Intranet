@@ -30,28 +30,14 @@
                   var imasrc = string.Format("data:image/png;base64,{0}", base64);
                 }
                 <img src='@imasrc' />
-                <div id="permission-text" class="text-center">Permissões</div>
-                <div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Criar postagens</p><input id="create-post-radio" type="radio" checked="@Model.CreatePost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Editar próprias postagens</p><input id="edit-owner-post-radio" type="radio" checked="@Model.EditOwnerPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Excluir próprias postagens</p><input id="delete-owner-post-radio" type="radio" checked="@Model.DeleteOwnerPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Editar qualquer postagem</p><input id="edit-any-post-radio" type="radio" checked="@Model.EditAnyPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Apagar qualquer postagem</p><input id="delete-any-post-radio" type="radio" checked="@Model.DeleteAnyPost" /></div>
-                  <div class="list-group-item permissions"><p class="permissions-p">Exige aprovação de postagens e comentários</p><input id="need-revision-radio" type="radio" checked="@Model.Novice" /></div>
-                </div>
+                <input name="id" type="text" value="@Model.Id" hidden />
               </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-5">
               <div class="form-group">
                 <label class="col-md-4 control-label">Ativo<span class="required">*</span></label>
                 <div class="col-md-8">
                   @Html.CheckBox("active", Model.Active, new { @class = "switch" })
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-4 control-label">Código do usuário<span class="required">*</span></label>
-                <div class="col-md-2">
-                  <input style="width: 84px;" class="form-control" name="id" type="text" value="@Model.Id" readonly />
                 </div>
               </div>
               <div class="form-group">
@@ -94,37 +80,65 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-4 control-label">Tipo de usuário<span class="required">*</span></label>
-                <div class="col-sm-4">
-                  <select title="<b>COMUM:</b> Pode editar e apagar postagens e comentários de própria autoria.<br/><b>NOVATO:</b> Pode editar e apagar postagens e comentários de própria autoria. Porém, a cada nova postagem ou novo comentário é necessário a aprovação de um moderador para que seja visível a todos.</br><b>MODERADOR:</b> Pode editar e apagar postagens e comentários de própria autoria ou de terceiros. Pode também aprovar postagens ou comentários de usuários novatos." class="form-control" id="permissions" name="userTypeCode">
-                    <option value="@Model.UserTypeCode" selected>@Model.UserType</option>
-                    @foreach (var item in ViewBag.Permissions)
-                    {
-                      if (item.Value != Model.UserTypeCode)
-                      {
-                        <option value="@item.Value">@item.Key</option>
-                      }
-                    }
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-4 control-label">Criar postagens<span class="required">*</span></label>
-                <div class="col-md-8">
-                  @Html.CheckBox("createPost", Model.CreatePost, new { @class = "switch", id = "create-post-switch" })
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-md-4 control-label" for="textArea">Descrição</label>
-                <div class="col-md-8">
-                  <textarea name="description" class="form-control" id="textArea" rows="5">@Model.Description</textarea>
-                </div>
-              </div>
-              <div class="form-group">
                 <label class="col-md-4 control-label">Foto de perfil</label>
                 <div class="col-md-8">
                   <input type="file" id="photo" name="photo" accept="image/jpeg, image/png, image/png" value="@Model.Photo" />
                   <label id="photo-limit">A imagem tem <span></span>MB e excede o tamanho máximo de 5MB</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label class="col-md-4 control-label" for="textArea">Descrição</label>
+                <div class="col-md-8">
+                  <textarea name="description" class="form-control" id="textArea" rows="13">@Model.Description</textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 permissions-div">
+              <div id="permission-text" class="text-center">Permissões por tipo de postagem</div>
+              <div class="col-md-12 template-div">
+                <button class="template" data-template="moderator">Template Moderador</button>
+                <button class="template" data-template="default">Template Padrão</button>
+              </div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Informativa</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p>@Html.CheckBox("permissions.PostType.Informative.CanPost", ViewBag.Permissions.PostType.Informative.CanPost, new { @class = "permissions can-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Informative.CanComment", ViewBag.Permissions.PostType.Informative.CanComment, new { @class = "permissions can-comment" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Informative.EditAnyPost", ViewBag.Permissions.PostType.Informative.EditAnyPost, new { @class = "permissions edit-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Informative.DeleteAnyPost", ViewBag.Permissions.PostType.Informative.DeleteAnyPost, new { @class = "permissions delete-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p>@Html.CheckBox("permissions.PostType.Informative.RequiresModeration", ViewBag.Permissions.PostType.Informative.RequiresModeration, new { @class = "permissions requires-moderation" })</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Pergunta</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p>@Html.CheckBox("permissions.PostType.Question.CanPost", ViewBag.Permissions.PostType.Question.CanPost, new { @class = "permissions can-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Question.CanComment", ViewBag.Permissions.PostType.Question.CanComment, new { @class = "permissions can-comment" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Question.EditAnyPost", ViewBag.Permissions.PostType.Question.EditAnyPost, new { @class = "permissions edit-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Question.DeleteAnyPost", ViewBag.Permissions.PostType.Question.DeleteAnyPost, new { @class = "permissions delete-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p>@Html.CheckBox("permissions.PostType.Question.RequiresModeration", ViewBag.Permissions.PostType.Question.RequiresModeration, new { @class = "permissions requires-moderation" })</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Manual</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p>@Html.CheckBox("permissions.PostType.Manual.CanPost", ViewBag.Permissions.PostType.Manual.CanPost, new { @class = "permissions can-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Manual.CanComment", ViewBag.Permissions.PostType.Manual.CanComment, new { @class = "permissions can-comment" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Manual.EditAnyPost", ViewBag.Permissions.PostType.Manual.EditAnyPost, new { @class = "permissions edit-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Manual.DeleteAnyPost", ViewBag.Permissions.PostType.Manual.DeleteAnyPost, new { @class = "permissions delete-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p>@Html.CheckBox("permissions.PostType.Manual.RequiresModeration", ViewBag.Permissions.PostType.Manual.RequiresModeration, new { @class = "permissions requires-moderation" })</div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="group">
+                  <div class="post-type">Documento</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Postar</p>@Html.CheckBox("permissions.PostType.Document.CanPost", ViewBag.Permissions.PostType.Document.CanPost, new { @class = "permissions can-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Comentar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Document.CanComment", ViewBag.Permissions.PostType.Document.CanComment, new { @class = "permissions can-comment" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Editar postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Document.EditAnyPost", ViewBag.Permissions.PostType.Document.EditAnyPost, new { @class = "permissions edit-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Excluir postagens de terceiros</p>@Html.CheckBox("permissions.PostType.Document.DeleteAnyPost", ViewBag.Permissions.PostType.Document.DeleteAnyPost, new { @class = "permissions delete-any-post" })</div>
+                  <div class="list-group-item permissions"><p class="permissions-p">Requer moderação</p>@Html.CheckBox("permissions.PostType.Document.RequiresModeration", ViewBag.Permissions.PostType.Document.RequiresModeration, new { @class = "permissions requires-moderation" })</div>
                 </div>
               </div>
             </div>

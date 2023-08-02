@@ -34,6 +34,35 @@ img {
   display: contents;
 }
 
-#tab-2{
+#tab-2 {
   margin-inline: 15px;
+}
+
+.post-type {
+  display: flex;
+  justify-content: center;
+  background-color: whitesmoke;
+  border: 1px solid #ddd;
+}
+
+.permissions-div {
+  padding: 0;
+}
+
+.group{
+  background-color: whitesmoke;
+}
+
+#permission-text{
+  margin-top: 5.0rem;
+}
+
+.template{
+  width: 15rem;
+  margin:1rem;
+}
+
+.template-div{
+  display:flex;
+  justify-content:center;
 }

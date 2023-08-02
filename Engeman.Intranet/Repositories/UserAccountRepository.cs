@@ -9,7 +9,7 @@ namespace Engeman.Intranet.Repositories
   {
     public UserAccount GetById(int id)
     {
-      var query = $"SELECT * FROM USERACCOUNT WHERE ID = {id} AND ACTIVE = 1";
+      var query = $"SELECT * FROM USERACCOUNT WHERE ID = {id}";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -35,7 +35,7 @@ namespace Engeman.Intranet.Repositories
     {
       var query = $"SELECT UA.ID,UA.ACTIVE,NAME,USERNAME,D.ID AS DEPARTMENT_ID,D.DESCRIPTION AS DEPARTMENT_DESCRIPTION,EMAIL," +
                   $"PHOTO,UA.DESCRIPTION AS USERDESCRIPTION, UA.PERMISSIONS, UA.CHANGE_DATE FROM USERACCOUNT UA INNER JOIN DEPARTMENT D " +
-                  $"ON UA.DEPARTMENT_ID = D.ID WHERE UA.USERNAME = '{username.ToLower()}' AND UA.ACTIVE = 1 AND D.ACTIVE = 1";
+                  $"ON UA.DEPARTMENT_ID = D.ID WHERE UA.USERNAME = '{username.ToLower()}'";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -70,7 +70,7 @@ namespace Engeman.Intranet.Repositories
     {
       var users = new List<UserGridViewModel>();
       var query = $"SELECT U.ID, U.ACTIVE, U.NAME, U.USERNAME, D.DESCRIPTION AS DEPARTMENT FROM USERACCOUNT AS U INNER JOIN DEPARTMENT AS D " +
-                  $"ON U.DEPARTMENT_ID = D.ID WHERE U.ACTIVE = 1 AND D.ACTIVE = 1";
+                  $"ON U.DEPARTMENT_ID = D.ID";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
@@ -132,7 +132,7 @@ namespace Engeman.Intranet.Repositories
       string[] paramters = { "Photo;byte" };
       object[] values = { editedUser.Photo };
       var query = $"UPDATE USERACCOUNT SET ACTIVE = '{editedUser.Active}', NAME = '{editedUser.Name}', USERNAME = '{editedUser.Username}', EMAIL = '{editedUser.Email}', " +
-                  $"DEPARTMENT_ID = {editedUser.DepartmentId}, DESCRIPTION = '{editedUser.Description}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " + $"WHERE ID = {id}";
+                  $"DEPARTMENT_ID = {editedUser.DepartmentId}, DESCRIPTION = '{editedUser.Description}' , PERMISSIONS = '{editedUser.Permissions}', PHOTO = CONVERT(VARBINARY(MAX),@Photo) " + $"WHERE ID = {id}";
 
       using StaticQuery sq = new();
       sq.ExecuteCommand(query, paramters, values);

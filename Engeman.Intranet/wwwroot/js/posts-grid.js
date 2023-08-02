@@ -199,19 +199,19 @@ $(document).ready(function () {
               showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", postId);
             }
             else if (permission == "NotAnyPost") {
-              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem de terceiros");
+              toastr.error("Você não tem permissão para apagar uma postagem de terceiros", "Operação não suportada!");
             }
             else if (permission == "NotInformativePost") {
-              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Informativa' de terceiros.");
+              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Informativa' de terceiros.", "Operação não suportada!");
             }
             else if (permission == "NotQuestionPost") {
-              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Pergunta' de terceiros.");
+              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Pergunta' de terceiros.", "Operação não suportada!");
             }
             else if (permission == "NotDocumentPost") {
-              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Documento' de terceiros.");
+              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Documento' de terceiros.", "Operação não suportada!");
             }
             else if (permission == "NotManualPost") {
-              showAlertModal("Operação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Manual' de terceiros.");
+              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Manual' de terceiros.", "Operação não suportada!");
             }
           }
         );
