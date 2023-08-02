@@ -147,11 +147,14 @@ namespace Engeman.Intranet.Controllers
     {
       var permissions = new UserPermissionsViewModel();
 
-      try { permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(HttpContext.Session.Get<int>("_CurrentUserId"))); }
+      try
+      {
+        permissions = _userAccountRepository.GetPermissionsById(HttpContext.Session.Get<int>("_CurrentUserId")).DeserializeAndConvertIntToBool<UserPermissionsViewModel>();
+      }
       catch (Exception) { }
 
-      if (permissions.PostType.Informative.CanPost == 1 || permissions.PostType.Question.CanPost == 1
-        || permissions.PostType.Document.CanPost == 1 || permissions.PostType.Manual.CanPost == 1)
+      if (permissions.PostType.Informative.CanPost == true || permissions.PostType.Question.CanPost == true
+        || permissions.PostType.Document.CanPost == true || permissions.PostType.Manual.CanPost == true)
       {
         ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
         try { ViewBag.Departments = _departmentRepository.Get(); }
@@ -351,7 +354,7 @@ namespace Engeman.Intranet.Controllers
 
       try
       {
-        permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(currentUserId));
+        permissions = _userAccountRepository.GetPermissionsById(currentUserId).DeserializeAndConvertIntToBool<UserPermissionsViewModel>();
         post = _postRepository.GetById(postId);
         postAuthor = _userAccountRepository.GetById(post.UserAccountId);
         orderedFiles = _postFileRepository.GetByPostId(postId).OrderBy(a => a.Name).ToList();
@@ -479,7 +482,7 @@ namespace Engeman.Intranet.Controllers
 
       try
       {
-        permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(currentUserId));
+        permissions = _userAccountRepository.GetPermissionsById(currentUserId).DeserializeAndConvertIntToBool<UserPermissionsViewModel>();
         post = _postRepository.GetById(postId);
       }
       catch (Exception) { throw; }
@@ -488,25 +491,25 @@ namespace Engeman.Intranet.Controllers
       {
         if (currentUserId != post.UserAccountId)
         {
-          if (permissions.PostType.Informative.DeleteAnyPost == 0 && permissions.PostType.Question.DeleteAnyPost == 0
-            && permissions.PostType.Document.DeleteAnyPost == 0 && permissions.PostType.Manual.DeleteAnyPost == 0) return "NotAnyPost";
+          if (permissions.PostType.Informative.DeleteAnyPost == false && permissions.PostType.Question.DeleteAnyPost == false
+            && permissions.PostType.Document.DeleteAnyPost == false && permissions.PostType.Manual.DeleteAnyPost == false) return "NotAnyPost";
           else
           {
             if (post.PostType == 'I')
             {
-              if (permissions.PostType.Informative.DeleteAnyPost == 0) return "NotInformativePost";
+              if (permissions.PostType.Informative.DeleteAnyPost == false) return "NotInformativePost";
             }
             else if (post.PostType == 'Q')
             {
-              if (permissions.PostType.Question.DeleteAnyPost == 0) return "NotQuestionPost";
+              if (permissions.PostType.Question.DeleteAnyPost == false) return "NotQuestionPost";
             }
             else if (post.PostType == 'D')
             {
-              if (permissions.PostType.Document.DeleteAnyPost == 0) return "NotDocumentPost";
+              if (permissions.PostType.Document.DeleteAnyPost == false) return "NotDocumentPost";
             }
             else if (post.PostType == 'M')
             {
-              if (permissions.PostType.Manual.DeleteAnyPost == 0) return "NotManualPost";
+              if (permissions.PostType.Manual.DeleteAnyPost == false) return "NotManualPost";
             }
           }
         }
@@ -528,7 +531,7 @@ namespace Engeman.Intranet.Controllers
       var postAux = _postRepository.GetById(postId);
       UserPermissionsViewModel permissions = new();
 
-      try { permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(_userAccountRepository.GetPermissionsById(currentUserId)); }
+      try { permissions = _userAccountRepository.GetPermissionsById(currentUserId).DeserializeAndConvertIntToBool<UserPermissionsViewModel>(); }
       catch (Exception) { throw; }
 
       //Verifica se tem permissão de visualizar a postagem
@@ -567,7 +570,7 @@ namespace Engeman.Intranet.Controllers
               return false;
             }
 
-            if (permissions.PostType.Informative.EditAnyPost == 0 && permissions.PostType.Question.EditAnyPost == 0 && permissions.PostType.Document.EditAnyPost == 0 && permissions.PostType.Manual.EditAnyPost == 0)
+            if (permissions.PostType.Informative.EditAnyPost == false && permissions.PostType.Question.EditAnyPost == false && permissions.PostType.Document.EditAnyPost == false && permissions.PostType.Manual.EditAnyPost == false)
             {
               return false;
             }
@@ -575,28 +578,28 @@ namespace Engeman.Intranet.Controllers
             {
               if (postAux.PostType == 'I')
               {
-                if (permissions.PostType.Informative.EditAnyPost == 0)
+                if (permissions.PostType.Informative.EditAnyPost == false)
                 {
                   return false;
                 }
               }
               else if (postAux.PostType == 'Q')
               {
-                if (permissions.PostType.Question.EditAnyPost == 0)
+                if (permissions.PostType.Question.EditAnyPost == false)
                 {
                   return false;
                 }
               }
               else if (postAux.PostType == 'D')
               {
-                if (permissions.PostType.Document.EditAnyPost == 0)
+                if (permissions.PostType.Document.EditAnyPost == false)
                 {
                   return false;
                 }
               }
               else if (postAux.PostType == 'M')
               {
-                if (permissions.PostType.Manual.EditAnyPost == 0)
+                if (permissions.PostType.Manual.EditAnyPost == false)
                 {
                   return false;
                 }
@@ -618,28 +621,28 @@ namespace Engeman.Intranet.Controllers
             }
             if (postAux.PostType == 'I')
             {
-              if (permissions.PostType.Informative.CanComment == 0)
+              if (permissions.PostType.Informative.CanComment == false)
               {
                 return false;
               }
             }
             else if (postAux.PostType == 'Q')
             {
-              if (permissions.PostType.Question.CanComment == 0)
+              if (permissions.PostType.Question.CanComment == false)
               {
                 return false;
               }
             }
             else if (postAux.PostType == 'D')
             {
-              if (permissions.PostType.Document.CanComment == 0)
+              if (permissions.PostType.Document.CanComment == false)
               {
                 return false;
               }
             }
             else if (postAux.PostType == 'M')
             {
-              if (permissions.PostType.Manual.CanComment == 0)
+              if (permissions.PostType.Manual.CanComment == false)
               {
                 return false;
               }

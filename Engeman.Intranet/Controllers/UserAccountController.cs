@@ -132,6 +132,7 @@ namespace Engeman.Intranet.Controllers
       catch (Exception) { }
 
       ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.Permissions = GetPermissions().Value;
 
       return PartialView(userAccount);
     }
@@ -169,13 +170,11 @@ namespace Engeman.Intranet.Controllers
 
       var userEdit = new UserEditViewModel();
       var user = new UserAccount();
-      var UserTypes = new Dictionary<string, int>();
 
       try { user = _userAccountRepository.GetById(userId); } catch (Exception) { }
 
       userEdit.Id = user.Id;
       userEdit.Active = user.Active;
-      //userEdit.CreatePost = user.CreatePost;
       userEdit.Name = user.Name;
       userEdit.Username = user.Username;
       userEdit.Email = user.Email.Substring(0, user.Email.IndexOf("@"));
@@ -183,37 +182,14 @@ namespace Engeman.Intranet.Controllers
       userEdit.Description = user.Description;
       userEdit.DepartmentId = user.DepartmentId;
 
-      try { userEdit.DepartmentDescription = _departmentRepository.GetDescriptionById(user.DepartmentId); } catch (Exception) { }
+      try
+      {
+        userEdit.DepartmentDescription = _departmentRepository.GetDescriptionById(user.DepartmentId);
+        ViewBag.Departments = _departmentRepository.Get();
+      }
+      catch (Exception) { }
 
-      //if (user.Moderator == false && user.NoviceUser == false)
-      //{
-      //  userEdit.UserType = "Comum";
-      //  userEdit.UserTypeCode = 0;
-      //}
-      //else if (user.Moderator == false && user.NoviceUser == true)
-      //{
-      //  userEdit.UserType = "Novato";
-      //  userEdit.UserTypeCode = 1;
-      //}
-      //else
-      //{
-      //  userEdit.UserType = "Moderador";
-      //  userEdit.UserTypeCode = 2;
-      //}
-
-      UserTypes.Add("Comum", 0);
-      UserTypes.Add("Novato", 1);
-      UserTypes.Add("Moderador", 2);
-      //userEdit.Novice = user.NoviceUser;
-      //userEdit.EditOwnerPost = user.EditOwnerPost;
-      //userEdit.EditAnyPost = user.EditAnyPost;
-      //userEdit.DeleteOwnerPost = user.DeleteOwnerPost;
-      //userEdit.DeleteAnyPost = user.DeleteAnyPost;
-      //userEdit.CreatePost = user.CreatePost;
-
-      try { ViewBag.Departments = _departmentRepository.Get(); } catch (Exception) { }
-
-      ViewBag.Permissions = UserTypes;
+      ViewBag.Permissions = GetPermissions(userId).Value;
       ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
 
       return PartialView(userEdit);
@@ -226,41 +202,12 @@ namespace Engeman.Intranet.Controllers
       var user = new UserAccount();
       user.Id = userEdited.Id;
       user.Active = userEdited.Active;
-      //user.CreatePost = userEdited.CreatePost;
       user.Name = userEdited.Name;
       user.Username = userEdited.Username;
       user.Email = userEdited.Email + "@engeman.com.br";
       user.Description = userEdited.Description;
       user.DepartmentId = userEdited.DepartmentId;
-
-      if (userEdited.UserTypeCode == 1)
-      {
-        //user.Moderator = false;
-        //user.NoviceUser = true;
-        //user.EditOwnerPost = true;
-        //user.DeleteOwnerPost = true;
-        //user.EditAnyPost = false;
-        //user.DeleteAnyPost = false;
-
-      }
-      else if (userEdited.UserTypeCode == 2)
-      {
-        //user.Moderator = true;
-        //user.NoviceUser = false;
-        //user.EditOwnerPost = true;
-        //user.DeleteOwnerPost = true;
-        //user.EditAnyPost = true;
-        //user.DeleteAnyPost = true;
-      }
-      else
-      {
-        //user.Moderator = false;
-        //user.NoviceUser = false;
-        //user.EditOwnerPost = true;
-        //user.DeleteOwnerPost = true;
-        //user.EditAnyPost = false;
-        //user.DeleteAnyPost = false;
-      }
+      user.Permissions = userEdited.Permissions.SerializeAndBoolToIntConverter();
 
       if (Photo.Count == 0) try { user.Photo = _userAccountRepository.GetByUsername(user.Username).Photo; } catch (Exception) { }
       else
@@ -305,15 +252,23 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpGet]
-    public JsonResult GetPermissions()
+    public JsonResult GetPermissions(int userId = 0)
     {
       string aux;
       UserPermissionsViewModel permissions = new();
 
-      try { aux = _userAccountRepository.GetPermissionsById(HttpContext.Session.Get<int>("_CurrentUserId")); }
-      catch (Exception) { throw; }
+      if (userId == 0)
+      {
+        try { aux = _userAccountRepository.GetPermissionsById(HttpContext.Session.Get<int>("_CurrentUserId")); }
+        catch (Exception) { throw; }
+      }
+      else
+      {
+        try { aux = _userAccountRepository.GetPermissionsById(userId); }
+        catch (Exception) { throw; }
+      }
 
-      permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(aux);
+      permissions = aux.DeserializeAndConvertIntToBool<UserPermissionsViewModel>();
 
       return Json(permissions);
     }

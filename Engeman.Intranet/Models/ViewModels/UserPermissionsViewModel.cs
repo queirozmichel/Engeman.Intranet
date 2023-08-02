@@ -15,37 +15,37 @@
 
   public class Informative
   {
-    public int CanPost { get; set; }
-    public int CanComment { get; set; }
-    public int EditAnyPost { get; set; }
-    public int DeleteAnyPost { get; set; }
-    public int RequiresModeration { get; set; }
+    public bool CanPost { get; set; }
+    public bool CanComment { get; set; }
+    public bool EditAnyPost { get; set; }
+    public bool DeleteAnyPost { get; set; }
+    public bool RequiresModeration { get; set; }
   }
 
   public class Question
   {
-    public int CanPost { get; set; }
-    public int CanComment { get; set; }
-    public int EditAnyPost { get; set; }
-    public int DeleteAnyPost { get; set; }
-    public int RequiresModeration { get; set; }
+    public bool CanPost { get; set; }
+    public bool CanComment { get; set; }
+    public bool EditAnyPost { get; set; }
+    public bool DeleteAnyPost { get; set; }
+    public bool RequiresModeration { get; set; }
   }
 
   public class Manual
   {
-    public int CanPost { get; set; }
-    public int CanComment { get; set; }
-    public int EditAnyPost { get; set; }
-    public int DeleteAnyPost { get; set; }
-    public int RequiresModeration { get; set; }
+    public bool CanPost { get; set; }
+    public bool CanComment { get; set; }
+    public bool EditAnyPost { get; set; }
+    public bool DeleteAnyPost { get; set; }
+    public bool RequiresModeration { get; set; }
   }
 
   public class Document
   {
-    public int CanPost { get; set; }
-    public int CanComment { get; set; }
-    public int EditAnyPost { get; set; }
-    public int DeleteAnyPost { get; set; }
-    public int RequiresModeration { get; set; }
+    public bool CanPost { get; set; }
+    public bool CanComment { get; set; }
+    public bool EditAnyPost { get; set; }
+    public bool DeleteAnyPost { get; set; }
+    public bool RequiresModeration { get; set; }
   }
 }

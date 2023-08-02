@@ -1,7 +1,7 @@
-﻿using Engeman.Intranet.Library;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Library;
 using Engeman.Intranet.Models.ViewModels;
 using HtmlAgilityPack;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Engeman.Intranet.Helpers
@@ -97,11 +97,11 @@ namespace Engeman.Intranet.Helpers
 
     /// <summary>
     /// Testa se um usuário é considerado moderador.
-    /// Para ser considerado moderador, todas os itens devem estar com o valor 1 exceto "RequiresModeration" que deve obrigatoriamente estar com o valor 0.
+    /// Para ser considerado moderador, todas os itens devem estar com o valor true exceto "RequiresModeration", que deve obrigatoriamente estar com o valor false.
     /// Qualquer combinação diferente desta, é tratado como um usuário comum.
     /// </summary>
     /// <param name="userId">ID do usuário</param>
-    /// <returns>Retorna "True" caso seja moderador e "False" caso usuário comum.</returns>
+    /// <returns>Retorna "true" caso seja moderador e "false" caso usuário comum.</returns>
     public static bool IsModerator(int userId)
     {
       var query = $"SELECT PERMISSIONS FROM USERACCOUNT WHERE ID = {userId}";
@@ -111,16 +111,16 @@ namespace Engeman.Intranet.Helpers
       if (string.IsNullOrEmpty(result) == true) return false;
       else
       {
-        UserPermissionsViewModel permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(result);
+        UserPermissionsViewModel permissions = result.DeserializeAndConvertIntToBool<UserPermissionsViewModel>();
 
-        if (permissions.PostType.Informative.CanPost == 1 && permissions.PostType.Informative.CanComment == 1 && permissions.PostType.Informative.EditAnyPost == 1
-          && permissions.PostType.Informative.DeleteAnyPost == 1 && permissions.PostType.Informative.RequiresModeration == 0 &&
-          permissions.PostType.Question.CanPost == 1 && permissions.PostType.Question.CanComment == 1 && permissions.PostType.Question.EditAnyPost == 1
-          && permissions.PostType.Question.DeleteAnyPost == 1 && permissions.PostType.Question.RequiresModeration == 0 &&
-          permissions.PostType.Manual.CanPost == 1 && permissions.PostType.Manual.CanComment == 1 && permissions.PostType.Manual.EditAnyPost == 1
-          && permissions.PostType.Manual.DeleteAnyPost == 1 && permissions.PostType.Manual.RequiresModeration == 0 &&
-          permissions.PostType.Document.CanPost == 1 && permissions.PostType.Document.CanComment == 1 && permissions.PostType.Document.EditAnyPost == 1
-          && permissions.PostType.Document.DeleteAnyPost == 1 && permissions.PostType.Document.RequiresModeration == 0)
+        if (permissions.PostType.Informative.CanPost == true && permissions.PostType.Informative.CanComment == true && permissions.PostType.Informative.EditAnyPost == true
+          && permissions.PostType.Informative.DeleteAnyPost == true && permissions.PostType.Informative.RequiresModeration == false &&
+          permissions.PostType.Question.CanPost == true && permissions.PostType.Question.CanComment == true && permissions.PostType.Question.EditAnyPost == true
+          && permissions.PostType.Question.DeleteAnyPost == true && permissions.PostType.Question.RequiresModeration == false &&
+          permissions.PostType.Manual.CanPost == true && permissions.PostType.Manual.CanComment == true && permissions.PostType.Manual.EditAnyPost == true
+          && permissions.PostType.Manual.DeleteAnyPost == true && permissions.PostType.Manual.RequiresModeration == false &&
+          permissions.PostType.Document.CanPost == true && permissions.PostType.Document.CanComment == true && permissions.PostType.Document.EditAnyPost == true
+          && permissions.PostType.Document.DeleteAnyPost == true && permissions.PostType.Document.RequiresModeration == false)
         {
           return true;
         }
@@ -130,7 +130,7 @@ namespace Engeman.Intranet.Helpers
 
     /// <summary>
     /// Testa se uma postagem ou comentários necessita de moderação/revisão.
-    /// Se sim, é retornado TRUE, caso contrário, FALSE.
+    /// Se sim, é retornado true, caso contrário, false.
     /// </summary>
     /// <param name="userId">ID do usuário</param>
     /// <param name="postType">Tipo de postagem que está sendo verificada, se for um comentário, deve-se passar o tipo da postagem na qual o comentário está sendo feito. <br/> I = Informativa, Q = Pergunta D = Documento M = Manual.</param>
@@ -144,7 +144,7 @@ namespace Engeman.Intranet.Helpers
       if (string.IsNullOrEmpty(result) == true) return true;
       else
       {
-        UserPermissionsViewModel permissions = JsonSerializer.Deserialize<UserPermissionsViewModel>(result);
+        UserPermissionsViewModel permissions = result.DeserializeAndConvertIntToBool<UserPermissionsViewModel>();
 
         if (IsModerator(userId) == true)
         {
@@ -154,28 +154,28 @@ namespace Engeman.Intranet.Helpers
         {
           if (postType == 'I')
           {
-            if (permissions.PostType.Informative.RequiresModeration == 1)
+            if (permissions.PostType.Informative.RequiresModeration == true)
             {
               return true;
             }
           }
           else if (postType == 'Q')
           {
-            if (permissions.PostType.Question.RequiresModeration == 1)
+            if (permissions.PostType.Question.RequiresModeration == true)
             {
               return true;
             }
           }
           else if (postType == 'M')
           {
-            if (permissions.PostType.Manual.RequiresModeration == 1)
+            if (permissions.PostType.Manual.RequiresModeration == true)
             {
               return true;
             }
           }
           else if (postType == 'D')
           {
-            if (permissions.PostType.Document.RequiresModeration == 1)
+            if (permissions.PostType.Document.RequiresModeration == true)
             {
               return true;
             }

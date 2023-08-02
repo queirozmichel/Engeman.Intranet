@@ -11,13 +11,6 @@
     public int DepartmentId { get; set; }
     public string DepartmentDescription { get; set; }
     public string Description { get; set; }
-    public string UserType { get; set; }
-    public int UserTypeCode { get; set; }
-    public bool Novice { get; set; }
-    public bool EditOwnerPost { get; set; }
-    public bool EditAnyPost { get; set; }
-    public bool DeleteOwnerPost { get; set; }
-    public bool DeleteAnyPost { get; set; }
-    public bool CreatePost { get; set; }
+    public UserPermissionsViewModel Permissions { get; set; }
   }
 }
