@@ -22,7 +22,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult Index()
     {
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView("Index");
     }

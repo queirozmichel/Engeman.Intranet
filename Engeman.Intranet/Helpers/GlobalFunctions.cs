@@ -184,5 +184,26 @@ namespace Engeman.Intranet.Helpers
         return false;
       }
     }
+
+    /// <summary>
+    /// Calcula quantos dias se passaram a partir de uma data, e retorna um inteiro correspondente à quantidade de dias.
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns>-1 = antes de meia noite, porém não um dia completo <br></br> Qualquer outro valor = quantidade de dias</returns>
+    public static int DaysUntilToday(DateTime date)
+    {
+      var days = (DateTime.Now - date).Days;
+
+      if (days == 0)
+      {
+        TimeSpan timeSpanPast = date.TimeOfDay;
+        TimeSpan timeSpanPresent = DateTime.Now.TimeOfDay;
+        if (timeSpanPast > timeSpanPresent)
+        {
+          return -1;
+        }
+      }
+      return days;
+    }
   }
 }

@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http;
-@using Engeman.Intranet.Extensions;
+﻿@using Engeman.Intranet.Extensions;
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -117,6 +116,9 @@
       <!-- /Sidebar Toggler -->
       <!-- Top Right Menu -->
       <ul class="nav navbar-nav navbar-right">
+        <li id="notifications-component" class="dropdown">
+          @await Component.InvokeAsync("Notifications")
+        </li>
         <!-- User Login Dropdown -->
         <li class="dropdown user">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -163,7 +165,7 @@
             </ul>
           </li>
           @if (Context.Session.Get<bool>("_IsModerator") == true)
-          {            
+          {
             <li>
               <a id="moderator" href="javascript:void(0);">
                 <i class="fa-solid fa-user-gear"></i>Moderação

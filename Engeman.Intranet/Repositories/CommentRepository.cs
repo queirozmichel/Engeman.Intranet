@@ -213,7 +213,7 @@ namespace Engeman.Intranet.Repositories
       return result;
     }
 
-    public void Add(NewCommentViewModel newComment, string currentUsername)
+    public int Add(NewCommentViewModel newComment, string currentUsername)
     {
       string[] paramters = { "BinaryData;byte" };
       //É inserido o caracter 'N' antes da descrição para codificar o emoji corretamente no banco de dados
@@ -234,6 +234,7 @@ namespace Engeman.Intranet.Repositories
       {
         GlobalFunctions.NewLog('I', "COM", outputCommentId, "COMMENT", currentUsername);
       }
+      return outputCommentId;
     }
 
     public void Update(int id, Comment comment, string currentUsername)

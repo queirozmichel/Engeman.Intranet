@@ -8,7 +8,6 @@ using Engeman.Intranet.Models.ViewModels;
 using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
-using System.Text.Json;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -24,12 +23,13 @@ namespace Engeman.Intranet.Controllers
     private readonly IPostRestrictionRepository _postRestrictionRepository;
     private readonly IKeywordRepository _keywordRepository;
     private readonly IPostKeywordRepository _postKeywordRepository;
+    private readonly INotificationRepository _notificationRepository;
     private readonly IConfiguration _configuration;
 
     public PostsController(IUserAccountRepository userAccountRepository, IPostRepository postRepository,
       IDepartmentRepository departmentRepository, IPostFileRepository postFileRepository, ICommentRepository postCommentRepository,
       ICommentFileRepository postCommentFileRepository, IPostRestrictionRepository postRestrictionRepository, IConfiguration configuration,
-      IKeywordRepository keywordRepository, IPostKeywordRepository postKeywordRepository)
+      IKeywordRepository keywordRepository, IPostKeywordRepository postKeywordRepository, INotificationRepository notificationRepository)
     {
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
@@ -41,6 +41,7 @@ namespace Engeman.Intranet.Controllers
       _configuration = configuration;
       _keywordRepository = keywordRepository;
       _postKeywordRepository = postKeywordRepository;
+      _notificationRepository = notificationRepository;
     }
 
     [HttpGet]
@@ -49,7 +50,7 @@ namespace Engeman.Intranet.Controllers
       if (Request.Query["filter"] != "allPosts" && !HttpContext.Session.Get<bool>("_IsModerator")) return Redirect(Request.Host.ToString());
 
       ViewBag.FilterGrid = Request.Query["filter"];
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView("PostsGrid");
     }
@@ -156,7 +157,7 @@ namespace Engeman.Intranet.Controllers
       if (permissions.PostType.Informative.CanPost == true || permissions.PostType.Question.CanPost == true
         || permissions.PostType.Document.CanPost == true || permissions.PostType.Manual.CanPost == true)
       {
-        ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+        ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
         try { ViewBag.Departments = _departmentRepository.Get(); }
         catch (Exception) { }
         return PartialView("NewPost", permissions);
@@ -227,7 +228,7 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
       ViewBag.Departments = departments;
       postEditViewModel.Id = post.Id;
       postEditViewModel.Restricted = post.Restricted;
@@ -261,6 +262,7 @@ namespace Engeman.Intranet.Controllers
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       var fileList = new List<NewPostFileViewModel>();
       var currentPost = new Post();
+      var currentUserId = HttpContext.Session.Get<int>("_CurrentUserId");
       var userAccount = new UserAccount();
       int[] filesToBeRemove = null;
 
@@ -299,7 +301,7 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      if (!GlobalFunctions.RequiresModeration(HttpContext.Session.Get<int>("_CurrentUserId"), editedPost.PostType)) editedPost.Revised = true;
+      if (!GlobalFunctions.RequiresModeration(currentUserId, editedPost.PostType)) editedPost.Revised = true;
 
       try
       {
@@ -320,7 +322,7 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult DeletePost(int postId)
     {
-      if (!HttpContext.Request.IsAjax("DELETE")) return Redirect(Request.Host.ToString());
+      if (!HttpContext.Request.IsAjaxOrFetch("DELETE")) return Redirect(Request.Host.ToString());
 
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
@@ -381,15 +383,7 @@ namespace Engeman.Intranet.Controllers
       postDetails.ChangeDate = post.ChangeDate;
       keywords = _postKeywordRepository.GetKeywordsByPostId(postId);
       postDetails.Keywords = keywords;
-
-      postDetails.PostedDaysAgo = (DateTime.Now - postDetails.ChangeDate).Days;
-
-      if (postDetails.PostedDaysAgo == 0)
-      {
-        TimeSpan aux = postDetails.ChangeDate.TimeOfDay;
-        TimeSpan now = DateTime.Now.TimeOfDay;
-        if (aux > now) postDetails.PostedDaysAgo = -1;
-      }
+      postDetails.PostedDaysAgo = GlobalFunctions.DaysUntilToday(postDetails.ChangeDate);
 
       for (int i = 0; i < orderedComments.Count; i++)
       {
@@ -421,7 +415,7 @@ namespace Engeman.Intranet.Controllers
       ViewBag.IsModerator = GlobalFunctions.IsModerator(HttpContext.Session.Get<int>("_CurrentUserId"));
       ViewBag.UserId = HttpContext.Session.Get<int>("_CurrentUserId");
       ViewBag.PostId = postId;
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
       ViewBag.Post = postDetails;
       ViewBag.Permissions = permissions;
       ViewBag.CanComment = IsAuthorized(postId, 4);
@@ -459,7 +453,7 @@ namespace Engeman.Intranet.Controllers
     [HttpPut]
     public IActionResult AprovePost(int postId)
     {
-      if (!HttpContext.Request.IsAjax("PUT")) return Redirect(Request.Host.ToString());
+      if (!HttpContext.Request.IsAjaxOrFetch("PUT")) return Redirect(Request.Host.ToString());
 
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 

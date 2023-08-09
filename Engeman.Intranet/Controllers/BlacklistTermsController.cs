@@ -25,7 +25,7 @@ namespace Engeman.Intranet.Controllers
 
       if (isModerator == false) return Redirect(Request.Host.ToString());
 
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView("BlacklistTermsGrid");
     }
@@ -101,7 +101,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditTerm(int termId)
     {
-      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+      if (!HttpContext.Request.IsAjaxOrFetch("GET")) return Redirect(Request.Host.ToString());
 
       var termAux = _blacklistTermRepository.GetById(termId);
       var term = new BlacklistTermViewModel

@@ -41,6 +41,7 @@
     <None Include="Views\Keywords\NewKeywordForm.cshtml" />
     <None Include="Views\Logs\LogsGrid.cshtml" />
     <None Include="Views\Shared\Components\Charts\PostsCommentsChart\Default.cshtml" />
+    <None Include="Views\Shared\Components\Notifications\Default.cshtml" />
     <None Include="Views\Shared\Components\PageHeader\Default.cshtml" />
     <None Include="Views\Shared\Components\StatBoxes\Default.cshtml" />
     <None Include="Views\UserAccount\EditUserAccount.cshtml" />

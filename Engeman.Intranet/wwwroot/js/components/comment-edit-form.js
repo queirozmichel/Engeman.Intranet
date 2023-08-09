@@ -8,7 +8,7 @@ $(document).ready(function () {
       "comment.description": {
         required: true,
         normalizer: function (value) {
-          return RemoveHTMLTags(value);
+          return removeHTMLTags(value);
         }
       },
     },

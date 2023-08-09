@@ -30,7 +30,7 @@ namespace Engeman.Intranet.Controllers
         try { ViewBag.Username = _userAccountRepository.GetUsernameById(userId); } catch (Exception) { }
       }
 
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView("LogsGrid");
     }

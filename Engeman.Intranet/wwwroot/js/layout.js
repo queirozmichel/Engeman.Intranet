@@ -11,7 +11,7 @@
       return response.text();
     })
     .then(permissions => {
-      EncryptData(permissions).then(response => {
+      encryptData(permissions).then(response => {
         Cookies.set("Permissions", response);
       });
     })

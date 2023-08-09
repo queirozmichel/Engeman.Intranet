@@ -21,7 +21,7 @@ $(document).ready(function () {
       "description": {
         required: true,
         normalizer: function (value) {
-          return RemoveHTMLTags(value);
+          return removeHTMLTags(value);
         }
       },
       "departmentsList": {

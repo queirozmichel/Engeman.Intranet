@@ -177,7 +177,7 @@ $(document).ready(function () {
         if (action == "details") {
           sessionStorage.setItem("postId", postId);
           sessionStorage.setItem("postType", postType);
-          postDetails(postId, postType);
+          postDetails(postId);
         } else if (action == "edit") {
           editPost(postId);
         } else if (action == "delete") {
@@ -237,29 +237,6 @@ $(".btn-yes, .btn-no").on("click", function () {
     hideConfirmationModal();
   }
 })
-
-function postDetails(postId) {
-  $.ajax({
-    type: "GET",
-    data: { "postId": postId },
-    dataType: "html",
-    url: "/posts/postdetails",
-    beforeSend: function () {
-      startSpinner();
-    },
-    error: function () {
-      toastr.error("Não foi possível mostrar os detalhes da postagem", "Erro!");
-    },
-    success: function (response) {
-      $("#render-body").empty();
-      $("#render-body").html(response);
-      window.history.pushState(this.url, null, this.url);
-    },
-    complete: function () {
-      stopSpinner();
-    }
-  })
-}
 
 function editPost(postId) {
   $.ajax({

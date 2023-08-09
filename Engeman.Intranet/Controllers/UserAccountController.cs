@@ -29,7 +29,7 @@ namespace Engeman.Intranet.Controllers
 
       if (isModerator == false) return Redirect(Request.Host.ToString());
 
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView("UsersGrid");
     }
@@ -131,7 +131,7 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
       ViewBag.Permissions = GetPermissions().Value;
 
       return PartialView(userAccount);
@@ -190,7 +190,7 @@ namespace Engeman.Intranet.Controllers
       catch (Exception) { }
 
       ViewBag.Permissions = GetPermissions(userId).Value;
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView(userEdit);
     }

@@ -24,7 +24,7 @@ namespace Engeman.Intranet.Controllers
 
       if (isModerator == false) return Redirect(Request.Host.ToString());
 
-      ViewBag.IsAjaxCall = HttpContext.Request.IsAjax("GET");
+      ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView("KeywordsGrid");
     }
@@ -104,7 +104,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditKeyword(int keywordId)
     {
-      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+      if (!HttpContext.Request.IsAjaxOrFetch("GET")) return Redirect(Request.Host.ToString());
 
       var keywordAux = _keywordRepository.GetById(keywordId);
       var keyword = new KeywordViewModel

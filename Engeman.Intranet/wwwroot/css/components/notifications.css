@@ -1,0 +1,20 @@
+﻿.notification{
+  cursor: pointer;
+}
+
+#notifications-dropdown {
+  max-width: 350px;
+  width: 350px;
+  max-height: 30rem;
+  overflow-y: auto;
+}
+
+.title{
+  text-align: center;
+}
+
+.navbar .nav > li > a .badge{
+  top: 8px;
+  right: 7px;
+  border-radius: 30px
+}

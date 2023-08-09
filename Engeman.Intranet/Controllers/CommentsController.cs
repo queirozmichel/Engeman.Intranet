@@ -17,14 +17,16 @@ namespace Engeman.Intranet.Controllers
     private readonly IUserAccountRepository _userAccountRepository;
     private readonly IPostRepository _postRepository;
     private readonly IPostRestrictionRepository _postRestrictionRepository;
+    private readonly INotificationRepository _notificationRepository;
 
-    public CommentsController(ICommentRepository commentRepository, ICommentFileRepository commentFileRepository, IUserAccountRepository userAccountRepository, IPostRepository postRepository, IPostRestrictionRepository postRestrictionRepository)
+    public CommentsController(ICommentRepository commentRepository, ICommentFileRepository commentFileRepository, IUserAccountRepository userAccountRepository, IPostRepository postRepository, IPostRestrictionRepository postRestrictionRepository, INotificationRepository notificationRepository)
     {
       _commentRepository = commentRepository;
       _commentFileRepository = commentFileRepository;
       _userAccountRepository = userAccountRepository;
       _postRepository = postRepository;
       _postRestrictionRepository = postRestrictionRepository;
+      _notificationRepository = notificationRepository;
     }
 
     [HttpGet]
@@ -36,7 +38,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult CommentEditForm(int commentId)
     {
-      if (!HttpContext.Request.IsAjax("GET")) return Redirect(Request.Host.ToString());
+      if (!HttpContext.Request.IsAjaxOrFetch("GET")) return Redirect(Request.Host.ToString());
 
       return ViewComponent("CommentEditForm", commentId);
     }
@@ -48,6 +50,7 @@ namespace Engeman.Intranet.Controllers
       var comment = new Comment();
       var currentPost = new Post();
       var currentComment = new Comment();
+      var currentUserId = HttpContext.Session.Get<int>("_CurrentUserId");
       var userAccount = new UserAccount();
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       int[] filesToBeRemove = null;
@@ -61,7 +64,7 @@ namespace Engeman.Intranet.Controllers
       {
         currentComment = _commentRepository.GetById(editedComment.Comment.Id);
         userAccount = _userAccountRepository.GetByUsername(sessionUsername);
-        currentPost = _postRepository.GetById(editedComment.Comment.PostId); 
+        currentPost = _postRepository.GetById(editedComment.Comment.PostId);
       }
       catch (Exception) { }
 
@@ -69,7 +72,7 @@ namespace Engeman.Intranet.Controllers
 
       comment.CleanDescription = GlobalFunctions.CleanText(GlobalFunctions.HTMLToTextConvert(editedComment.Comment.Description));
 
-      if (!GlobalFunctions.RequiresModeration(HttpContext.Session.Get<int>("_CurrentUserId"), currentPost.PostType)) comment.Revised = true;
+      if (!GlobalFunctions.RequiresModeration(currentUserId, currentPost.PostType)) comment.Revised = true;
 
       if (binaryData.Count != 0)
       {
@@ -170,7 +173,15 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      try { _commentRepository.Add(newComment, sessionUsername); }
+      try
+      {
+        var commentOutputId = _commentRepository.Add(newComment, sessionUsername);
+
+        if (postAux.UserAccountId != newComment.UserAccountId)
+        {
+          _notificationRepository.Add(CreateNotification(commentOutputId, postAux.UserAccountId, 1, newComment.Revised));
+        }
+      }
       catch (Exception ex)
       {
         return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
@@ -182,7 +193,7 @@ namespace Engeman.Intranet.Controllers
     [HttpDelete]
     public IActionResult DeleteComment(int commentId)
     {
-      if (!HttpContext.Request.IsAjax("DELETE")) return Redirect(Request.Host.ToString());
+      if (!HttpContext.Request.IsAjaxOrFetch("DELETE")) return Redirect(Request.Host.ToString());
 
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
@@ -194,13 +205,30 @@ namespace Engeman.Intranet.Controllers
     [HttpPut]
     public IActionResult AproveComment(int commentId)
     {
-      if (!HttpContext.Request.IsAjax("PUT")) return Redirect(Request.Host.ToString());
+      if (!HttpContext.Request.IsAjaxOrFetch("PUT")) return Redirect(Request.Host.ToString());
 
       var currentUsername = HttpContext.Session.Get<string>("_CurrentUsername");
 
-      try { _commentRepository.Aprove(commentId, currentUsername); } catch (Exception) { }
+      try
+      {
+        _commentRepository.Aprove(commentId, currentUsername);
+        _notificationRepository.MakeRevisedByRegistryId(commentId);
+      }
+      catch (Exception) { }
 
       return ViewComponent("UnrevisedList");
+    }
+
+    public int GetPostIdByCommentId(int commentId)
+    {
+      try
+      {
+        return _commentRepository.GetPostIdById(commentId);
+      }
+      catch (Exception)
+      {
+        throw;
+      }
     }
   }
 }

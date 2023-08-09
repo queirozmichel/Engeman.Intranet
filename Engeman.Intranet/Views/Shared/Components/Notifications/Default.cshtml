@@ -1,0 +1,81 @@
+﻿@{
+  Layout = null;
+}
+
+<link rel="stylesheet" href="~/css/components/notifications.css" />
+
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+  @{
+    if (@ViewBag.Notifications.Count != 0)
+    {
+      <i class="fa-regular fa-bell fa-shake"></i>
+      <span class="badge">@ViewBag.Notifications.Count</span>
+    }
+    else
+    {
+      <i class="fa-regular fa-bell"></i>
+    }
+  }
+</a>
+<ul id="notifications-dropdown" class="dropdown-menu extended">
+  <li class="title">
+    @{
+      if (ViewBag.Notifications.Count == 0)
+      {
+        <p>Você não tem novas notificações</p>
+      }
+      else if (ViewBag.Notifications.Count == 1)
+      {
+        <p>Você tem uma nova notificação</p>
+      }
+      else
+      {
+        <p>Você tem @ViewBag.Notifications.Count novas notificações</p>
+      }
+    }
+  </li>
+
+  @{
+    if (ViewBag.Notifications.Count != 0)
+    {
+      for (int i = 0; i < ViewBag.Notifications.Count; i++)
+      {
+        <li>
+          <a class="notification" data-registry-code="@ViewBag.Notifications[i].RegistryCode" data-registry-id="@ViewBag.Notifications[i].RegistryId">
+            <span class="photo">
+              @{ var base64 = Convert.ToBase64String(ViewBag.Notifications[i].UserPhoto);
+                var imasrc = string.Format("data:image/png;base64,{0}", base64);
+              }
+              <img src='@imasrc' />
+            </span>
+            <span class="subject">
+              <span class="from">@ViewBag.Notifications[i].Username</span>
+              @{
+                if (ViewBag.Notifications[i].PastDays == -1)
+                {
+                  <span class="time">ontem</span>
+                }
+                else if (ViewBag.Notifications[i].PastDays == 0)
+                {
+                  <span class="time">hoje</span>
+                }
+                else
+                {
+                  <span class="time">há @ViewBag.Notifications[i].PastDays dia(s)</span>
+                }
+              }
+            </span>
+            <span class="text">
+              @ViewBag.Notifications[i].RegistryDescription
+            </span>
+          </a>
+        </li>
+      }
+      <li class="footer">
+        <a href="#" onclick="MakeAllNotificationsViewed(@ViewBag.CurrentUserId)">Limpar todas as notificações</a>
+      </li>
+    }
+  }
+</ul>
+
+<script type="text/javascript" src="~/js/components/notifications.js"></script>

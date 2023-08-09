@@ -1,4 +1,6 @@
-﻿using Engeman.Intranet.Helpers;
+﻿using Engeman.Intranet.Extensions;
+using Engeman.Intranet.Helpers;
+using Engeman.Intranet.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Engeman.Intranet.Controllers
@@ -21,6 +23,27 @@ namespace Engeman.Intranet.Controllers
     public string GetCryptoSecretKey()
     {
       return ServiceConfiguration.GetCryptoSecretKey();
+    }
+
+    /// <summary>
+    /// Cria um objeto do tipo Notification
+    /// </summary>
+    /// <param name="registryId">Id do registro(Postagem, comentário e etc.)</param>
+    /// <param name="toUserId">Id do usuário na qual a notificação vai ser associada.</param>
+    /// <param name="notificationTypeId">Id do tipo de notificação.</param>
+    /// <param name="revised">Se a notificação(postagem ou comentário) foi ou não revisada.</param>
+    /// <returns></returns>
+    public Notification CreateNotification(int registryId, int toUserId, int notificationTypeId, bool revised = true)
+    {
+      var notification = new Notification()
+      {
+        RegistryId = registryId,
+        ByUserId = HttpContext.Session.Get<int>("_CurrentUserId"),
+        ToUserId = toUserId,
+        NotifcationTypeId = notificationTypeId,
+        Revised = revised
+      };
+      return notification;
     }
   }
 }
