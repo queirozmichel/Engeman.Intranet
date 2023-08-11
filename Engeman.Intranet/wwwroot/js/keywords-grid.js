@@ -60,7 +60,7 @@ keywordsGrid.on("loaded.rs.jquery.bootgrid", function () {
       if (action == "edit") {
         editKeyword(keywordId);
       } else if (action == "delete") {
-        showConfirmationModal("Apagar a palavra-chave?", "Esta operação não pode ser desfeita", "delete-keyword", keywordId);
+        showConfirmationModal(deleteKeyword, { keywordId: keywordId });
         elementAux = $(this).parents("tr");
       }
     })
@@ -100,7 +100,10 @@ function editKeyword(keywordId) {
   })
 }
 
-function deleteKeyword(keywordId, elementAux) {
+function deleteKeyword(args) {
+
+  const { keywordId } = args;
+
   $.ajax({
     type: "DELETE",
     data: { 'keywordId': keywordId },
@@ -108,11 +111,8 @@ function deleteKeyword(keywordId, elementAux) {
     dataType: "json",
     success: function (response) {
       if (response.result == 200) {
-        $(elementAux).fadeOut(700);
-        setTimeout(() => {
-          $(elementAux).remove();
-          $("#keywords-grid").bootgrid("reload");
-        }, 700);
+        $(elementAux).remove();
+        $("#keywords-grid").bootgrid("reload");
         toastr.success("A palavra-chave foi apagada.", "Sucesso!");
       } else if (response.result == 500) {
         showAlertModal("Não foi possível apagar a palavra-chave!", response.message);

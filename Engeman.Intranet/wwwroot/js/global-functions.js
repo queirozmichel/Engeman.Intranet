@@ -101,3 +101,66 @@ function postDetailsByCommentId(commentId) {
     }
   })
 }
+
+//Apaga uma postagem e pode ou não redirecionar para o grid caso necessário
+function deletePost(args) {
+
+  const { postId, redirectTo } = args;
+
+  if (redirectTo === undefined) {
+    $.ajax({
+      type: "DELETE",
+      data: {
+        'postId': postId
+      },
+      url: "/posts/deletepost",
+      dataType: "text",
+      success: function (result) {
+        toastr.success("A postagem foi apagada.", "Sucesso!");
+      },
+      error: function (result) {
+        toastr.error("Erro", "Erro!");
+      },
+      complete: function () {
+        $("#posts-grid").bootgrid("reload");
+      }
+    });
+  } else if (redirectTo === "postGrid") {
+    $.ajax({
+      type: "DELETE",
+      data: {
+        'postId': postId
+      },
+      url: "/posts/deletepost",
+      dataType: "text",
+      success: function (result) {
+        $.ajax({
+          type: "GET",
+          dataType: "html",
+          url: "/posts/grid" + "?filter=" + sessionStorage.getItem("filterGrid"),
+          beforeSend: function () {
+            startSpinner();
+          },
+          success: function (response) {
+            $("#render-body").empty();
+            $("#render-body").html(response);
+            window.history.pushState("/posts/grid?filter=" + sessionStorage.getItem("filterGrid"), null, "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
+            toastr.success("A postagem foi apagada.", "Sucesso!");
+          },
+          error: function () {
+            toastr.error("Não foi possível voltar", "Erro!");
+          },
+          complete: function () {
+            stopSpinner();
+          }
+        });
+      },
+      error: function (result) {
+        toastr.error("Erro", "Erro!");
+      },
+      complete: function () {
+        $("#posts-grid").bootgrid("reload");
+      }
+    });
+  }
+}

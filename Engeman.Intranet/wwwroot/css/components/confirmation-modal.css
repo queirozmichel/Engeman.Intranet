@@ -1,17 +1,24 @@
-﻿.confirmation-modal {
+﻿#confirmation-modal {
   overflow: hidden;
 }
 
-  .confirmation-modal .modal-header, .modal-content, .modal-footer {
-    text-align: center;
-  }
+#modal-dialog {
+  width: 40rem;
+}
 
-  .confirmation-modal .modal-header, .modal-footer {
-    background-color: lightyellow;
-    padding: 10px;
-    margin-top: 0px;
-  }
+#modal-header {
+  padding: 5px;
+}
 
-  .confirmation-modal .modal-content {
-    background-color: whitesmoke;
-  }
+#modal-footer {
+  text-align: center;
+}
+
+#message {
+  margin: 0px;
+}
+
+#confirmation-modal #modal-header, #modal-footer {
+  padding: 10px;
+  margin-top: 0px;
+}

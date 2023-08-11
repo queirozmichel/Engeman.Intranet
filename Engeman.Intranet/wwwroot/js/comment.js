@@ -91,38 +91,26 @@ $("#comment-form").on("submit", function (event) {
 
 $(".comment-aprove-btn").on("click", function () {
   var id = $(this).parents(".comment-box").attr("data-comment-id");
-  showConfirmationModal("Aprovar o comentário?", "Esta ação não poderá ser revertida.", "aprove-comment", id);
+  showConfirmationModal(aproveComment, { commentId: id, element: this.closest(".comment-box") });
 })
 
 $(".comment-delete-btn").on("click", function () {
   var id = $(this).parents(".comment-box").attr("data-comment-id");
-  showConfirmationModal("Apagar o comentário?", "Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos.", "delete-comment", id);
+  showConfirmationModal(deleteComment, { commentId: id, element: this.closest(".comment-box") });
 })
 
-function getCommentElement(id) {
-  var aux;
-  var comments = $(".comments").find("div.comment-box");
-  comments.each(function (index, element) {
-    if ($(element).attr("data-comment-id") == id) {
-      aux = element;
-    }
-  })
-  return $(aux);
-}
+function aproveComment(args) {
 
-function aproveComment(id, comment) {
+  const { commentId, element } = args;
+
   $.ajax({
     type: "PUT",
-    data: { "commentId": id },
+    data: { "commentId": commentId },
     url: "/comments/aprovecomment",
     dataType: "text",
     success: function (response) {
-      $(comment).find(".comment-aprove-btn").remove();
-      $(comment).find(".status-post").remove();
-      $(".sub-menu > li.all-posts").remove();
-      $(".sub-menu > li.unrevised-posts").remove();
-      $(".sub-menu > li.unrevised-comments").remove();
-      $("#list-posts-content").html(response);
+      $(element).find(".comment-aprove-btn").remove();
+      $(element).find(".status-post").remove();
       toastr.success("Comentário aprovado", "Sucesso!");
     },
     error: function (response) {
@@ -133,38 +121,28 @@ function aproveComment(id, comment) {
   })
 }
 
-function deleteComment(id, comment) {
+function deleteComment(args) {
+
+  const { commentId, element } = args;
   $.ajax({
     type: "DELETE",
     data: {
-      "commentId": id
+      "commentId": commentId
     },
     url: "/comments/deletecomment",
     dataType: "text",
-    success: function (response, status) {
-      if (status == "success") {
-        comment.fadeOut(700);
-        setTimeout(() => {
-          comment.remove();
-        }, 700)
+    success: function (response) {
+      debugger;
+      if (response == 200) {
+        $(element).remove();
         toastr.success("O comentário foi apagado.", "Sucesso!");
         $("#comment-count").text($("#comment-count").text() - 1);
-        $(comment).find(".comment-aprove-btn").remove();
-        $(comment).find(".status-post").remove();
-        $(".sub-menu > li.all-posts").remove();
-        $(".sub-menu > li.unrevised-posts").remove();
-        $(".sub-menu > li.unrevised-comments").remove();
-        $("#list-posts-content").html(response);
       }
     },
     error: function (response) {
       toastr.error("Ocorreu um erro ao tentar enviar a requisição.", "Erro!");
     }
   })
-  comment.fadeOut(700);
-  setTimeout(() => {
-    comment.remove();
-  }, 700)
 }
 
 $(".comment-edit-btn").on("click", function () {

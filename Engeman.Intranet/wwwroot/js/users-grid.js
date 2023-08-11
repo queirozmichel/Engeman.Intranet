@@ -106,7 +106,7 @@ usersGrid.on("loaded.rs.jquery.bootgrid", function () {
       if (action == "edit") {
         EditUserAccount(userId);
       } else if (action == "delete") {
-        showConfirmationModal("Apagar o usuário?", "Se houver quaisquer postagens ou comentários associados a este usuário, também serão excluídos", "delete-user", userId);
+        showConfirmationModal(deleteUser, { userId: userId });
         elementAux = $(this).parents("tr");
       }
     })
@@ -170,16 +170,6 @@ $("#btn-new-user").on("click", function () {
   })
 })
 
-$(".btn-yes, .btn-no").on("click", function () {
-  if ($(this).attr("id") == "delete-user") {
-    deleteUser($(this).attr("data-id"), elementAux)
-    hideConfirmationModal();
-  }
-  else {
-    hideConfirmationModal();
-  }
-})
-
 function EditUserAccount(userId) {
   $.ajax({
     type: "GET",
@@ -203,7 +193,10 @@ function EditUserAccount(userId) {
   })
 }
 
-function deleteUser(userId, elementAux) {
+function deleteUser(args) {
+
+  const { userId } = args;
+
   $.ajax({
     type: "DELETE",
     data: { 'userId': userId },
@@ -211,11 +204,7 @@ function deleteUser(userId, elementAux) {
     dataType: "json",
     success: function (response) {
       if (response.result == 200) {
-        $(elementAux).fadeOut(700);
-        setTimeout(() => {
-          $(elementAux).remove();
-          $("#users-grid").bootgrid("reload");
-        }, 700);
+        $("#users-grid").bootgrid("reload");
         toastr.success("O usuário foi apagado.", "Sucesso!");
       } else if (response.result == 500) {
         showAlertModal("Não foi possível apagar o usuário!", response.message);

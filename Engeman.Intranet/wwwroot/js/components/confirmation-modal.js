@@ -1,29 +1,44 @@
-﻿var _title
-var _body
-var _id
-var _selector
+﻿
+function showConfirmationModal(confirmCallback, callbackArguments) {
 
-function showConfirmationModal(title, body, selector, id) {
-  _title = title;
-  _body = body;
-  _id = id;
-  _selector = selector;
+  let header;
+  let body;
 
-  $(".confirmation-modal").find('.modal-title').text(_title);
-  $(".confirmation-modal").find('.modal-body').text(_body);
-  $(".confirmation-modal").find('.btn-yes').attr("data-id", _id);
-  $(".confirmation-modal").find('.btn-yes').attr("id", _selector);
-  $(".confirmation-modal").modal("show");
+  if (confirmCallback.name === "deletePost") {
+    header = "<h5>Apagar a postagem?</h5>";
+    body = '<p id="message">Se houver quaisquer arquivos associados à postagem, <br> eles também serão excluídos</p>';
+  } else if (confirmCallback.name === "deleteTerm") {
+    header = "<h5>Apagar o termo?</h5>";
+    body = '<p id="message">Esta operação não pode ser desfeita</p>';
+  } else if (confirmCallback.name === "aproveComment") {
+    header = "<h5>Aprovar o comentário?</h5>";
+    body = '<p id="message">Esta ação não poderá ser revertida.</p>';
+  }
+  else if (confirmCallback.name === "deleteComment") {
+    header = "<h5>Apagar o comentário?</h5>";
+    body = '<p id="message">Se houver quaisquer arquivos associados ao comentário, eles também serão excluídos.</p>';
+  }
+  else if (confirmCallback.name === "deleteKeyword") {
+    header = "<h5>Apagar a palavra-chave?</h5>";
+    body = '<p id="message">Esta operação não pode ser desfeita</p>';
+  }
+  else if (confirmCallback.name === "aprovePost") {
+    header = "<h5>Aprovar a postagem?</h5>";
+    body = '<p id="message">Esta ação não poderá ser revertida.</p>';
+  }
+  else if (confirmCallback.name === "deleteUser") {
+    header = "<h5>Apagar o usuário?</h5>";
+    body = '<p id="message">Se houver quaisquer postagens ou comentários associados a este usuário, também serão excluídos</p>';
+  }
+
+  document.getElementById('modal-header').innerHTML = header
+  document.getElementById('modal-body').innerHTML = body
+
+  // Define a ação a ser executada quando o botão de confirmação for clicado
+  document.getElementById('confirm-button').onclick = function () {
+    confirmCallback(callbackArguments);
+    $('#confirmation-modal').modal('hide');
+  };
+
+  $('#confirmation-modal').modal('show');
 }
-
-function hideConfirmationModal() {
-  $(".confirmation-modal").modal("hide");
-}
-
-$('.confirmation-modal').on('hidden.bs.modal', function (e) {
-  $("body").css("overflow", "scroll");
-})
-
-$('.confirmation-modal').on('show.bs.modal', function (e) {
-  $("body").css("overflow", "hidden");
-})

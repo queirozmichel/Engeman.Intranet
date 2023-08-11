@@ -15,8 +15,8 @@
 <link rel="stylesheet" href="~/css/post-details.css" />
 <script type="text/javascript" src="~/plugins/prism/js/prism.js"></script>
 
-@await Component.InvokeAsync("ConfirmationModal")
 @await Component.InvokeAsync("PageHeader", "Detalhes da postagem")
+
 <div class="row">
   <div class="col-md-12">
     <div class="tabbable tabbable-custom tabbable-full-width">
@@ -35,7 +35,7 @@
       </ul>
       <div class="tab-content row">
         <div class="tab-pane active" id="tab_1_1">
-          <div class="col-md-12">
+          <div id="post-details-container" class="col-md-12">
             <h2>@ViewBag.Post.Subject</h2>
             <span id="post-type" hidden>@ViewBag.Post.PostType</span>
             <div class="post-info-div">

@@ -1,7 +1,4 @@
-﻿//variáveis para armazenar o id da postagem e o elemento linha
-var idPostAux;
-var elementAux;
-var isModerator;
+﻿var isModerator;
 
 $(window).on("load", function () {
   stopSpinner();
@@ -181,22 +178,20 @@ $(document).ready(function () {
         } else if (action == "edit") {
           editPost(postId);
         } else if (action == "delete") {
-          postDeleteAuthorization(postId);
-          elementAux = element;
-          idPostAux = postId;
+          postDeleteAuthorization(postId, this.closest('tr'));
         }
       })
     });
   })
 
-  function postDeleteAuthorization(postId) {
+  function postDeleteAuthorization(postId, element) {
     fetch(`/posts/postdeleteauthorization?postId=${postId}`)
       .then(response => {
         if (!response.ok) throw new Error();
         return response.text().then(
           permission => {
             if (permission == "DeletePost") {
-              showConfirmationModal("Apagar a postagem?", "Se houver quaisquer arquivos associados à postagem, eles também serão excluídos", "delete-post", postId);
+              showConfirmationModal(deletePost, { postId: postId });
             }
             else if (permission == "NotAnyPost") {
               toastr.error("Você não tem permissão para apagar uma postagem de terceiros", "Operação não suportada!");
@@ -223,21 +218,6 @@ $(document).ready(function () {
   });
 });
 
-$(".btn-yes, .btn-no").on("click", function () {
-  if ($(this).attr("id") == "delete-post") {
-    deletePost(idPostAux, elementAux);
-    hideConfirmationModal();
-    toastr.success("A postagem foi apagada", "Sucesso!");
-  } else if ($(this).attr("id") == "aprove") {
-    idPostAux = $(this).attr("data-id");
-    aprovePost(idPostAux);
-    hideConfirmationModal();
-  }
-  else {
-    hideConfirmationModal();
-  }
-})
-
 function editPost(postId) {
   $.ajax({
     type: "GET",
@@ -259,44 +239,4 @@ function editPost(postId) {
       stopSpinner();
     }
   })
-}
-
-function deletePost(postId, element) {
-  $.ajax({
-    type: "DELETE",
-    data: {
-      'postId': postId
-    },
-    url: "/posts/deletepost",
-    dataType: "text",
-    success: function (result) {
-      $(element).parent().parent().fadeOut(700);
-      setTimeout(() => {
-        $(element).parent().parent().remove();
-      }, 700);
-      $.ajax({
-        type: "GET",
-        url: "/posts/unrevisedlist",
-        dataType: "html",
-        success: function (result) {
-          $(".sub-menu > li.all-posts").remove();
-          $(".sub-menu > li.unrevised-posts").remove();
-          $(".sub-menu > li.unrevised-comments").remove();
-          $(".aprove-post-button").remove();
-          $("#list-posts-content").html(result);
-        },
-        error: function (result) {
-          toastr.error("Não foi possível atualizar o menu de postagens", "Erro!");
-        },
-      })
-    },
-    error: function (result) {
-      toastr.error("Erro", "Erro!");
-    },
-    complete: function () {
-      setTimeout(() => {
-        $("#posts-grid").bootgrid("reload");
-      }, 700);
-    }
-  });
 }

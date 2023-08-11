@@ -37,99 +37,17 @@ $(".edit-post-button").on("click", function () {
 })
 
 $(".delete-post-button").on("click", function () {
-  showConfirmationModal("Apagar a postagem?", "Esta ação não poderá ser revertida.", "delete-post", sessionStorage.getItem("postId"));
+  showConfirmationModal(deletePost, { postId: sessionStorage.getItem("postId"), redirectTo: "postGrid" });
 })
 
 $(".aprove-post-button").on("click", function () {
-  showConfirmationModal("Aprovar a postagem?", "Esta ação não poderá ser revertida.", "aprove-post", sessionStorage.getItem("postId"));
+  showConfirmationModal(aprovePost, { postId: sessionStorage.getItem("postId") });
 })
 
-$(".btn-yes, .btn-no").on("click", function () {
-  if ($(this).attr("id") == "delete-post") {
-    deletePost(sessionStorage.getItem("postId")).then((response) => {
-      $.ajax({
-        type: "GET",
-        dataType: "html",
-        url: "/posts/grid" + "?filter=" + sessionStorage.getItem("filterGrid"),
-        beforeSend: function () {
-          startSpinner();
-        },
-        success: function (response) {
-          $("#render-body").empty();
-          $("#render-body").html(response);
-          window.history.pushState("/posts/grid?filter=" + sessionStorage.getItem("filterGrid"), null, "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
-          $.ajax({
-            type: "GET",
-            url: "/posts/unrevisedlist",
-            dataType: "html",
-            success: function (result) {
-              $(".sub-menu > li.all-posts").remove();
-              $(".sub-menu > li.unrevised-posts").remove();
-              $(".sub-menu > li.unrevised-comments").remove();
-              $(".aprove-post-button").remove();
-              $("#list-posts-content").html(result);
-            },
-            error: function (result) {
-              toastr.error("Não foi possível atualizar o menu de postagens", "Erro!");
-            },
-          })
-        },
-        error: function () {
-          toastr.error("Não foi possível voltar", "Erro!");
-        },
-        complete: function () {
-          stopSpinner();
-        }
-      });
-    })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-  else if ($(this).attr("id") == "aprove-post") {
-    aprovePost(sessionStorage.getItem("postId"));
-  }
-  else if ($(this).attr("id") == "aprove-comment") {
-    var id = $(this).attr("data-id");
-    var comment = getCommentElement(id);
-    aproveComment(id, comment);
-    hideConfirmationModal();
-  }
-  else if ($(this).attr("id") == "delete-comment") {
-    var id = $(this).attr("data-id");
-    var comment = getCommentElement(id);
-    deleteComment(id, comment);
-    hideConfirmationModal();
-  }
-  else if ($(this).hasClass("btn-no")) {
-    hideConfirmationModal();
-  }
-})
+function aprovePost(args) {
 
-function deletePost(postId) {
-  return new Promise((resolve, reject) => {
-    $.ajax({
-      type: "DELETE",
-      data: {
-        'postId': postId
-      },
-      url: "/posts/deletepost",
-      dataType: "html",
-      success: function (response) {
-        hideConfirmationModal();
-        toastr.success("A postagem foi apagada", "Sucesso!");
-        setTimeout(() => {
-          resolve(response)
-        }, 350);
-      },
-      error: function (error) {
-        reject(error)
-      },
-    })
-  })
-}
+  const { postId } = args;
 
-function aprovePost(postId) {
   $.ajax({
     type: "PUT",
     data: {
@@ -138,13 +56,8 @@ function aprovePost(postId) {
     url: "/posts/aprovepost",
     dataType: "text",
     success: function (result) {
-      $(".sub-menu > li.all-posts").remove();
-      $(".sub-menu > li.unrevised-posts").remove();
-      $(".sub-menu > li.unrevised-comments").remove();
       $(".aprove-post-button").remove();
       $(".status-post").remove();
-      $("#list-posts-content").html(result);
-      hideConfirmationModal();
       toastr.success("Postagem aprovada", "Sucesso!");
     },
     error: function (result) {

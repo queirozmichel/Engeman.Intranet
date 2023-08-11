@@ -199,7 +199,7 @@ namespace Engeman.Intranet.Controllers
 
       try { _commentRepository.Delete(commentId, currentUsername); } catch (Exception) { }
 
-      return ViewComponent("UnrevisedList", StatusCodes.Status200OK);
+      return Json(StatusCodes.Status200OK);
     }
 
     [HttpPut]
@@ -216,7 +216,7 @@ namespace Engeman.Intranet.Controllers
       }
       catch (Exception) { }
 
-      return ViewComponent("UnrevisedList");
+      return Json(StatusCodes.Status200OK);
     }
 
     public int GetPostIdByCommentId(int commentId)

@@ -328,7 +328,7 @@ namespace Engeman.Intranet.Controllers
 
       try { _postRepository.Delete(postId, currentUsername); } catch (Exception) { }
 
-      return PartialView("PostsGrid");
+      return Json(StatusCodes.Status200OK);
     }
 
     [HttpGet]
@@ -459,7 +459,7 @@ namespace Engeman.Intranet.Controllers
 
       try { _postRepository.Aprove(postId, currentUsername); } catch (Exception) { }
 
-      return ViewComponent("UnrevisedList");
+      return Json(StatusCodes.Status200OK);
     }
 
     [HttpGet]

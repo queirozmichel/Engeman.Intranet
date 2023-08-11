@@ -60,24 +60,17 @@ blacklistTermsGrid.on("loaded.rs.jquery.bootgrid", function () {
       if (action == "edit") {
         editTerm(termId);
       } else if (action == "delete") {
-        showConfirmationModal("Apagar o termo?", "Esta operação não pode ser desfeita", "delete-term", termId);
+        showConfirmationModal(deleteTerm, { termId: termId });
         elementAux = $(this).parents("tr");
       }
     })
   });
 })
 
-$(".btn-yes, .btn-no").on("click", function () {
-  if ($(this).attr("id") == "delete-term") {
-    deleteTerm($(this).attr("data-id"), elementAux)
-    hideConfirmationModal();
-  }
-  else {
-    hideConfirmationModal();
-  }
-})
+function deleteTerm(args) {
 
-function deleteTerm(termId, elementAux) {
+  const { termId } = args;
+
   $.ajax({
     type: "DELETE",
     data: { 'termId': termId },
@@ -85,11 +78,8 @@ function deleteTerm(termId, elementAux) {
     dataType: "json",
     success: function (response) {
       if (response.result == 200) {
-        $(elementAux).fadeOut(700);
-        setTimeout(() => {
-          $(elementAux).remove();
-          $("#blacklist-terms-grid").bootgrid("reload");
-        }, 700);
+        $(elementAux).remove();
+        $("#blacklist-terms-grid").bootgrid("reload");
         toastr.success("O termo foi apagado.", "Sucesso!");
       } else if (response.result == 500) {
         showAlertModal("Não foi possível apagar o termo!", response.message);

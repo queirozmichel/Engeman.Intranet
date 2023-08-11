@@ -95,6 +95,7 @@
 </head>
 
 <body>
+  @await Component.InvokeAsync("ConfirmationModal")
   @await Component.InvokeAsync("AlertModal")
   <!-- Header -->
   <header class="header navbar navbar-fixed-top" role="banner">

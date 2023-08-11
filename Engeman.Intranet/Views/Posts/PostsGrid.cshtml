@@ -12,8 +12,6 @@
 
 <link rel="stylesheet" href="~/css/posts-grid.css" />
 
-@await Component.InvokeAsync("ConfirmationModal")
-
 @if (ViewBag.FilterGrid == "allPosts")
 {
   @await Component.InvokeAsync("PageHeader", "Todas as postagens")
