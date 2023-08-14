@@ -84,14 +84,17 @@
               </div>
             }
             <div class="col-md-10 buttons">
-              @if (ViewBag.Post.AuthorId == Context.Session.Get<int>("_CurrentUserId") || ViewBag.IsModerator == true)
+              @if (ViewBag.Post.AuthorId == Context.Session.Get<int>("_CurrentUserId") || ViewBag.IsModerator == true || ViewBag.CanEdit == true)
               {
                 <button title="Editar a postagem" class="btn btn-xs edit-post-button"><i class="fa fa-pencil"></i>Editar</button>
+              }
+              @if (ViewBag.Post.AuthorId == Context.Session.Get<int>("_CurrentUserId") || ViewBag.IsModerator == true || ViewBag.CanDelete == true)
+              {
                 <button title="Excluir a postagem" class="btn btn-xs delete-post-button"><i class="fa fa-trash-o"></i>Excluir</button>
-                @if (ViewBag.Post.Revised == false && ViewBag.IsModerator == true)
-                {
-                  <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check"></i>Aprovar</button>
-                }
+              }
+              @if (ViewBag.Post.Revised == false && ViewBag.IsModerator == true)
+              {
+                <button title="Aprovar a postagem" class="btn btn-xs aprove-post-button"><i class="fa-solid fa-check"></i>Aprovar</button>
               }
               <button title="Voltar para as postagens" class="btn btn-xs back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar</button>
             </div>

@@ -416,6 +416,8 @@ namespace Engeman.Intranet.Controllers
       ViewBag.Post = postDetails;
       ViewBag.Permissions = permissions;
       ViewBag.CanComment = IsAuthorized(postId, 4);
+      ViewBag.CanEdit = IsAuthorized(postId, 2);
+      ViewBag.CanDelete = IsAuthorized(postId, 3);
 
       return PartialView();
     }
@@ -506,7 +508,7 @@ namespace Engeman.Intranet.Controllers
     /// Verifica se o usuário corrente está autorizado a executar determinada ação de acordo com o nível de permissão.
     /// </summary>
     /// <param name="postId">ID da postagem na qual é solicitado acesso</param>
-    /// <param name="action">1 = Detalhar a postagem | 2 = Editar a postagem | 4 = Comentar a postagem</param>
+    /// <param name="action">1 = Detalhar a postagem | 2 = Editar a postagem | 3 = Editar a postagem | 4 = Comentar a postagem</param>
     /// <returns></returns>
     public bool IsAuthorized(int postId, int action)
     {
@@ -585,6 +587,60 @@ namespace Engeman.Intranet.Controllers
               else if (postAux.PostType == 'M')
               {
                 if (permissions.PostType.Manual.EditAnyPost == false)
+                {
+                  return false;
+                }
+              }
+            }
+          }
+        }
+      }
+      else if (action == 3)
+      {
+        if (!GlobalFunctions.IsModerator(currentUserId))
+        {
+          if (currentUserId != postAux.UserAccountId)
+          {
+            if (postAux.Restricted == true && restrictedDept == 0)
+            {
+              return false;
+            }
+
+            if (postAux.Revised == false)
+            {
+              return false;
+            }
+
+            if (permissions.PostType.Informative.DeleteAnyPost == false && permissions.PostType.Question.DeleteAnyPost == false && permissions.PostType.Document.DeleteAnyPost == false && permissions.PostType.Manual.DeleteAnyPost == false)
+            {
+              return false;
+            }
+            else
+            {
+              if (postAux.PostType == 'I')
+              {
+                if (permissions.PostType.Informative.DeleteAnyPost == false)
+                {
+                  return false;
+                }
+              }
+              else if (postAux.PostType == 'Q')
+              {
+                if (permissions.PostType.Question.DeleteAnyPost == false)
+                {
+                  return false;
+                }
+              }
+              else if (postAux.PostType == 'D')
+              {
+                if (permissions.PostType.Document.DeleteAnyPost == false)
+                {
+                  return false;
+                }
+              }
+              else if (postAux.PostType == 'M')
+              {
+                if (permissions.PostType.Manual.DeleteAnyPost == false)
                 {
                   return false;
                 }
