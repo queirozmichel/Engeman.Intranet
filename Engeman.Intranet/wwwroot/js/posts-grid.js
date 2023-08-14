@@ -31,7 +31,6 @@ $(document).ready(function () {
           request.filterHeader = $(this).data('filter');
         }
       })
-      request.filterGrid = $("#posts-grid").data("filter-grid");
       return request;
     },
     responseHandler: function (response) {
@@ -164,7 +163,7 @@ $(document).ready(function () {
 
   //Após carregar o grid
   postGrid.on("loaded.rs.jquery.bootgrid", function () {
-    sessionStorage.setItem("filterGrid", $("#posts-grid").attr("data-filter-grid"));
+    //sessionStorage.setItem("filterGrid", $("#posts-grid").attr("data-filter-grid"));
     postGrid.find("button.btn").each(function (index, element) {
       var actionButtons = $(element);
       var action = actionButtons.data("action");
@@ -194,19 +193,19 @@ $(document).ready(function () {
               showConfirmationModal(deletePost, { postId: postId });
             }
             else if (permission == "NotAnyPost") {
-              toastr.error("Você não tem permissão para apagar uma postagem de terceiros", "Operação não suportada!");
+              showAlertModal("Ação não suportada!", "Você não tem permissão para apagar uma postagem de terceiros.");
             }
             else if (permission == "NotInformativePost") {
-              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Informativa' de terceiros.", "Operação não suportada!");
+              showAlertModal("Ação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Informativa' de terceiros.");
             }
             else if (permission == "NotQuestionPost") {
-              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Pergunta' de terceiros.", "Operação não suportada!");
+              showAlertModal("Ação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Pergunta' de terceiros.");
             }
             else if (permission == "NotDocumentPost") {
-              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Documento' de terceiros.", "Operação não suportada!");
+              showAlertModal("Ação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Documento' de terceiros.");
             }
             else if (permission == "NotManualPost") {
-              toastr.error("Você não tem permissão para apagar uma postagem do tipo 'Manual' de terceiros.", "Operação não suportada!");
+              showAlertModal("Ação não suportada!", "Você não tem permissão para apagar uma postagem do tipo 'Manual' de terceiros.");
             }
           }
         );
@@ -228,7 +227,7 @@ function editPost(postId) {
       startSpinner();
     },
     error: function (response) {
-      toastr.error("Você não tem permissão para editar esta postagem.", "Erro!");
+      showAlertModal("Ação não suportada!", "Você não tem permissão para editar esta postagem.");
     },
     success: function (response) {
       $("#render-body").empty();

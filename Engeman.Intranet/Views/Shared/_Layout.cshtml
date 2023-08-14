@@ -160,9 +160,11 @@
                   <i class="icon-angle-right"></i>Nova Postagem
                 </a>
               </li>
-              <li id="list-posts-content">
-                @await Component.InvokeAsync("UnrevisedList")
-              </li>
+              <li>
+                <a id="list-posts-btn" href="#">
+                  <i class="icon-angle-right"></i>Listar Postagens
+                </a>
+              </li> 
             </ul>
           </li>
           @if (Context.Session.Get<bool>("_IsModerator") == true)

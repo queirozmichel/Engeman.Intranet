@@ -123,7 +123,7 @@ $("#new-post-form").on("submit", function (event) {
               if (response == 200) {
                 $.ajax({
                   type: "GET",
-                  url: "/posts/grid?filter=allPosts",
+                  url: "/posts/grid",
                   dataType: "html",
                   success: function (response) {
                     $("#render-body").empty();

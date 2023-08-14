@@ -90,6 +90,28 @@ $("#new-post-btn").on("click", function (event) {
   })
 })
 
+$("#list-posts-btn").on("click", function (event) {
+  event.preventDefault();
+  $.ajax({
+    type: "GET",
+    url: "/posts/grid",
+    beforeSend: function () {
+      startSpinner();
+    },
+    success: function (response) {
+      $("#render-body").empty();
+      $("#render-body").html(response);
+      window.history.pushState(this.url, null, this.url);
+    },
+    error: function () {
+      toastr.error("Não foi possível acessar a lista", "Erro!");
+    },
+    complete: function () {
+      stopSpinner();
+    }
+  })
+})
+
 $(".user-profile-btn").on("click", function (event) {
   event.preventDefault();
   $.ajax({

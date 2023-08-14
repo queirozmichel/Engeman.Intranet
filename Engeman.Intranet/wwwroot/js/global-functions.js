@@ -97,7 +97,7 @@ function postDetailsByCommentId(commentId) {
     if (postId != 0) {
       postDetails(postId);
     } else {
-      toastr.error("A postagem em questão não existe mais, foi excluída.", "Erro!");
+      showAlertModal("Erro!", "A postagem ou o comentário em questão não existe mais, pode ter sido excluída(o).");
     }
   })
 }
@@ -137,14 +137,14 @@ function deletePost(args) {
         $.ajax({
           type: "GET",
           dataType: "html",
-          url: "/posts/grid" + "?filter=" + sessionStorage.getItem("filterGrid"),
+          url: "/posts/grid",
           beforeSend: function () {
             startSpinner();
           },
           success: function (response) {
             $("#render-body").empty();
             $("#render-body").html(response);
-            window.history.pushState("/posts/grid?filter=" + sessionStorage.getItem("filterGrid"), null, "/posts/grid?filter=" + sessionStorage.getItem("filterGrid"));
+            window.history.pushState("/posts/grid", null, "/posts/grid");
             toastr.success("A postagem foi apagada.", "Sucesso!");
           },
           error: function () {

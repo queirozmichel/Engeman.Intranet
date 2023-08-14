@@ -132,7 +132,6 @@ function deleteComment(args) {
     url: "/comments/deletecomment",
     dataType: "text",
     success: function (response) {
-      debugger;
       if (response == 200) {
         $(element).remove();
         toastr.success("O comentário foi apagado.", "Sucesso!");

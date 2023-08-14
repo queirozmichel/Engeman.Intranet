@@ -47,9 +47,6 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult Grid()
     {
-      if (Request.Query["filter"] != "allPosts" && !HttpContext.Session.Get<bool>("_IsModerator")) return Redirect(Request.Host.ToString());
-
-      ViewBag.FilterGrid = Request.Query["filter"];
       ViewBag.IsAjaxCall = HttpContext.Request.IsAjaxOrFetch("GET");
 
       return PartialView("PostsGrid");
@@ -117,15 +114,15 @@ namespace Engeman.Intranet.Controllers
         }
       }
 
-      if (filterGrid == "allPosts")
+      if (GlobalFunctions.IsModerator(user.Id))
       {
-        if (GlobalFunctions.IsModerator(user.Id) == true) posts = posts.Where("revised == (@0) && UnrevisedComments == (@1) ", true, false);
+        posts = posts.OrderBy("revised == (@0)", true).ThenBy("unrevisedComments == (@0)", false);
       }
-      else if (filterGrid == "unrevisedPosts") posts = posts.Where("revised == (@0)", false);
-      else if (filterGrid == "unrevisedComments")
+      else
       {
-        try { posts = _postRepository.GetWithUnrevisedComments().AsQueryable(); } catch (Exception) { }
+        posts = posts.Where("revised == (@0) || UnrevisedComments == (@1) || userAccountId == (@2)", true, false, HttpContext.Session.Get<int>("_CurrentUserId"));
       }
+
       if (filterHeader == "manual") return posts = posts.Where("postType == (@0)", "M");
       else if (filterHeader == "document") return posts = posts.Where("postType == (@0)", "D");
       else if (filterHeader == "informative") return posts = posts.Where("postType == (@0)", "I");
@@ -460,12 +457,6 @@ namespace Engeman.Intranet.Controllers
       try { _postRepository.Aprove(postId, currentUsername); } catch (Exception) { }
 
       return Json(StatusCodes.Status200OK);
-    }
-
-    [HttpGet]
-    public IActionResult UnrevisedList()
-    {
-      return ViewComponent("UnrevisedList");
     }
 
     public string PostDeleteAuthorization(int postId)

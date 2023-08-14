@@ -24,7 +24,9 @@ namespace Engeman.Intranet.Repositories
                   $"FROM NOTIFICATION AS N " +
                   $"INNER JOIN NOTIFICATIONTYPE AS NT ON NT.ID = N.NOTIFICATION_TYPE_ID " +
                   $"INNER JOIN USERACCOUNT AS UA ON UA.ID = N.BY_USER_ID " +
-                  $"WHERE N.TO_USER_ID = {toUserId} AND N.VIEWED = 0 AND N.REVISED = 1";
+                  $"WHERE N.TO_USER_ID = {toUserId} AND N.VIEWED = 0";
+
+      if (!GlobalFunctions.IsModerator(toUserId)) query += "AND N.REVISED = 1";
 
       using StaticQuery sq = new();
       var result = sq.GetDataSet(query).Tables[0];
