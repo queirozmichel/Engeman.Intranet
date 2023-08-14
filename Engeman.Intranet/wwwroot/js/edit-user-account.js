@@ -159,5 +159,12 @@ $(".template").on("click", function (e) {
     $(".delete-any-post").prop("checked", false);
     $(".requires-moderation").prop("checked", false);
   }
+  else if ($(this).data('template') == "novice") {
+    $(".can-post").prop("checked", true);
+    $(".can-comment").prop("checked", true);
+    $(".edit-any-post").prop("checked", false);
+    $(".delete-any-post").prop("checked", false);
+    $(".requires-moderation").prop("checked", true);
+  }
 });
 

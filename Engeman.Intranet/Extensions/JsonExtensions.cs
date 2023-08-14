@@ -31,7 +31,6 @@ namespace Engeman.Intranet.Extensions
       JsonSerializerOptions options = new JsonSerializerOptions
       {
         Converters = { new JsonBoolToIntConverter() },
-        WriteIndented = true
       };
 
       return JsonSerializer.Serialize(obj, options);

@@ -104,8 +104,8 @@ namespace Engeman.Intranet.Repositories
 
     public void Add(NewUserViewModel user, string currentUsername)
     {
-      var query = $"INSERT INTO USERACCOUNT (NAME, USERNAME, EMAIL, DEPARTMENT_ID, MODERATOR, NOVICE_USER) OUTPUT INSERTED.ID VALUES ('{user.Name}', '{user.Username}', " +
-                  $"'{user.Email}', {user.DepartmentId}, {user.Moderator}, {user.NoviceUser})";
+      var query = $"INSERT INTO USERACCOUNT (NAME, USERNAME, EMAIL, PERMISSIONS, DEPARTMENT_ID) OUTPUT INSERTED.ID VALUES ('{user.Name}', '{user.Username}', " +
+                  $"'{user.Email}', '{user.Permissions}', {user.DepartmentId})";
 
       using StaticQuery sq = new();
       var outputUserId = sq.GetDataToInt(query);
