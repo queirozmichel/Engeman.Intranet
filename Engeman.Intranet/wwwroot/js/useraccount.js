@@ -10,7 +10,7 @@ $(document).ready(function () {
     rules: {
       "name": {
         required: true,
-        maxlength: 30
+        maxlength: 19,
       },
       "photo": {
         accept: "jpg,jpeg",

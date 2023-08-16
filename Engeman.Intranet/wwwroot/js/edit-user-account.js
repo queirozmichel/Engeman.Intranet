@@ -20,8 +20,7 @@ $(document).ready(function () {
     rules: {
       "name": {
         required: true,
-        maxlength: 30,
-        pattern: "[A-Za-záàâãéèêíóôõúçñÁÀÂÃÉÈÍÓÔÕÚÇÑ ]+",
+        maxlength: 19,
       },
       "username": {
         required: true,

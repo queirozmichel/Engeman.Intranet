@@ -98,23 +98,24 @@
               }
               <button title="Voltar para as postagens" class="btn btn-xs back-button"><i class="fa-solid fa-circle-arrow-left"></i>Voltar</button>
             </div>
+
             <div class="col-md-2 card">
               <span>postada</span>
               <span>@ViewBag.Post.ChangeDate.GetDateTimeFormats()[0] às @ViewBag.Post.ChangeDate.GetDateTimeFormats()[22]</span>
-              <figure class="fir-image-figure">
-                <a class="fir-imageover">
-                  @{ var base64 = Convert.ToBase64String(ViewBag.Post.AuthorPhoto);
-                    var imasrc = string.Format("data:image/png;base64,{0}", base64);
-                  }
-                  <img class="fir-author-image fir-clickcircle" src='@imasrc'>
-                </a>
-                <figcaption>
-                  <div class="fig-author-figure-title">@ViewBag.Post.AuthorUsername</div>
-                  <div class="fig-author-figure-title">@ViewBag.Post.AuthorDepartment</div>
+              @{ var base64 = Convert.ToBase64String(ViewBag.Post.AuthorPhoto);
+                var imasrc = string.Format("data:image/png;base64,{0}", base64);
+              }
+              <div class="img-container">
+                <img class="author-img" src='@imasrc'>
+              </div>
+              <div class="content-info">
+                <div>
+                  <div>@ViewBag.Post.AuthorUsername</div>
+                  <div>@ViewBag.Post.AuthorDepartment</div>
                   <span title="Postagens realizadas"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.Post.AuthorPostsMade</span>
                   <span title="Comentários realizados"><i class="fa-regular fa-comment-dots"></i>@ViewBag.Post.AuthorCommentsMade</span>
-                </figcaption>
-              </figure>
+                </div>
+              </div>
             </div>
             <div class="status-post align-center">
               @if (ViewBag.Post.Revised == false && (ViewBag.IsModerator == true || ViewBag.UserId == ViewBag.Post.AuthorId))
@@ -170,20 +171,20 @@
                     <div class="col-md-2 card">
                       <span>comentada</span>
                       <span>@ViewBag.Comments[i].ChangeDate.GetDateTimeFormats()[0] às @ViewBag.Comments[i].ChangeDate.GetDateTimeFormats()[22]</span>
-                      <figure class="fir-image-figure">
-                        <a class="fir-imageover">
-                          @{ base64 = Convert.ToBase64String(ViewBag.Comments[i].AuthorPhoto);
-                            imasrc = string.Format("data:image/png;base64,{0}", base64);
-                          }
-                          <img class="fir-author-image fir-clickcircle" src='@imasrc'>
-                        </a>
-                        <figcaption>
-                          <div class="fig-author-figure-title">@ViewBag.Comments[i].AuthorUsername</div>
-                          <div class="fig-author-figure-title">@ViewBag.Comments[i].AuthorDepartment</div>
-                          <span title="Postagens realizadas"><i class="fa-regular fa-comment"></i>@ViewBag.Comments[i].AuthorPostsMade</span>
-                          <span title="Postagens respondidas"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.Comments[i].AuthorCommentsMade</span>
-                        </figcaption>
-                      </figure>
+                      @{ base64 = Convert.ToBase64String(ViewBag.Comments[i].AuthorPhoto);
+                        imasrc = string.Format("data:image/png;base64,{0}", base64);
+                      }
+                      <div class="img-container">
+                        <img class="author-img" src='@imasrc'>
+                      </div>
+                      <div class="content-info">
+                        <div>
+                          <div>@ViewBag.Comments[i].AuthorUsername</div>
+                          <div>@ViewBag.Comments[i].AuthorDepartment</div>
+                          <span title="Postagens realizadas"><i class="fa-regular fa-pen-to-square"></i>@ViewBag.Comments[i].AuthorPostsMade</span>
+                          <span title="Comentários realizados"><i class="fa-regular fa-comment-dots"></i>@ViewBag.Comments[i].AuthorCommentsMade</span>
+                        </div>
+                      </div>
                     </div>
                     <div class="status-post align-center">
                       @if (ViewBag.Comments[i].Revised == false && (ViewBag.IsModerator == true || ViewBag.UserId == ViewBag.Comments[i].AuthorId))

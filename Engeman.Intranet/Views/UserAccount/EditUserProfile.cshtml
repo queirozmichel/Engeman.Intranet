@@ -35,7 +35,9 @@
                 @{ var base64 = Convert.ToBase64String(Model.Photo);
                   var imasrc = string.Format("data:image/png;base64,{0}", base64);
                 }
-                <img src='@imasrc' />
+                <div class="img-container">
+                  <img class="user-img" src='@imasrc' />
+                </div>
               </div>
             </div>
             <div class="col-md-9">
