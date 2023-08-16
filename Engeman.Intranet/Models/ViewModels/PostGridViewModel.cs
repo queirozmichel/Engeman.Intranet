@@ -12,5 +12,20 @@
     public string UserAccountName { get; set; }
     public string ChangeDate { get; set; }
     public bool UnrevisedComments { get; set; }
+    public int Status
+    {
+      get
+      {
+        if (Revised == false || UnrevisedComments == true)
+        {
+          return 3;// 0 = success(verde) | 1 = info(azul) | 2 = warning(amarelo) | 3 = danger(vermelho)
+        }
+        else
+        {
+          return 999;
+        }
+      }
+      set { }
+    }
   }
 }

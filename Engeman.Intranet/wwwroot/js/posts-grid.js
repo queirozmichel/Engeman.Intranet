@@ -73,27 +73,22 @@ $(document).ready(function () {
         "</div>" +
         "</div>" +
         "</div>" +
-        "</div>"
+        "</div>",
     },
     formatters: {
       //Por padrão as chaves do json retornado são no formato camelCase (id, postType, changeDate e etc.)
       postType: function (column, row) {
-        if ((row.revised == false || row.unrevisedComments == true) && (isModerator == true)) {
-          return "<i title=\"Pendente de revisão\" class=\"not-revised fa-solid fa-asterisk\"></i>";
+        if (row.postType === "D") {
+          return "<i title=\"Documento\" class=\"fa-solid fa-file\"></i>"
         }
-        if (row.revised == true || row.userAccountId == $("#current-user-id").text()) {
-          if (row.postType === "D") {
-            return "<i title=\"Documento\" class=\"fa-solid fa-file\"></i>"
-          }
-          else if (row.postType === "M") {
-            return "<i title=\"Manual\" class=\"fa-regular fa-file-lines\"></i>"
-          }
-          else if (row.postType === "Q") {
-            return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>";
-          }
-          else if (row.postType === "I") {
-            return "<i title=\"Informativa\" class=\"fa-solid fa-circle-exclamation\"></i>";
-          }
+        else if (row.postType === "M") {
+          return "<i title=\"Manual\" class=\"fa-regular fa-file-lines\"></i>"
+        }
+        else if (row.postType === "Q") {
+          return "<i title=\"Pergunta\" class=\"fa-regular fa-circle-question\"></i>";
+        }
+        else if (row.postType === "I") {
+          return "<i title=\"Informativa\" class=\"fa-solid fa-circle-exclamation\"></i>";
         }
       },
       userAccountName: function (column, row) {

@@ -36,3 +36,8 @@
 .pagination {
   cursor: pointer;
 }
+
+/*Pinta o fundo de vermelho as linhas que contenham a classe "danger"*/
+.table > tbody > tr.danger > td {
+  background-color: #f2dede;
+}
