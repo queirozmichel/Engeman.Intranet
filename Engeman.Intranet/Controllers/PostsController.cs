@@ -205,10 +205,7 @@ namespace Engeman.Intranet.Controllers
     [HttpGet]
     public IActionResult EditPost(int postId)
     {
-      if (!IsAuthorized(postId, 2))
-      {
-        return Redirect(Request.Host.ToString());
-      }
+      if (!IsAuthorized(postId, 2)) return Json(StatusCodes.Status401Unauthorized);
 
       var restrictedDepartments = new List<int>();
       var postEditViewModel = new PostEditViewModel();

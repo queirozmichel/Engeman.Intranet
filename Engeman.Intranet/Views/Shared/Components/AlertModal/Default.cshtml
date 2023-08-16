@@ -4,33 +4,21 @@
 
 <link rel="stylesheet" href="~/css/components/alert-modal.css" />
 
-<div data-backdrop="true" class="alert-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="alert-modal" data-backdrop="true" class="alert-modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title"><h5>@ViewBag.Title</h5></div>
-      </div>
-      <div class="modal-body">@ViewBag.Body</div>
+      @if (ViewBag.Title != null || ViewBag.Body != null)
+      {
+        <div class="modal-header"><h5>@ViewBag.Title</h5></div>
+        <div class="modal-body"><p>@ViewBag.Body</p></div>
+      }
+      else
+      {
+        <div class="modal-header"></div>
+        <div class="modal-body"></div>
+      }
     </div>
   </div>
 </div>
 
-<script>
-    if (!$("#alert-modal-script").length) {
-      function addScript(attribute, text, callback) {
-        var s = document.createElement('script');
-        for (var attr in attribute) {
-          s.setAttribute(attr, attribute[attr] ? attribute[attr] : null)
-        }
-        s.innerHTML = text;
-        s.onload = callback;
-        document.body.appendChild(s);
-      }
-      addScript({
-        id: 'alert-modal-script',
-        src: '../js/components/alert-modal.js',
-        type: 'text/javascript',
-        async: null
-      });
-    }
-</script>
+<script type="text/javascript" src="~/js/components/alert-modal.js"></script>

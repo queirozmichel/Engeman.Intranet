@@ -1,11 +1,20 @@
-﻿.alert-modal {
+﻿#alert-modal {
   overflow: hidden;
 }
 
-  .alert-modal .modal-header, .modal-content {
-    text-align: center;
-  }
+#alert-modal .modal-header, .modal-content {
+  text-align: center;
+}
 
-  .alert-modal .modal-header {
-    background-color: lightcoral;
-  }
+#alert-modal .modal-header {
+  background-color: lightcoral;
+}
+
+#alert-modal .modal-body p{
+  margin: 0px;
+}
+
+#alert-modal .modal-header, .modal-footer {
+  padding: 10px;
+  margin-top: 0px;
+}

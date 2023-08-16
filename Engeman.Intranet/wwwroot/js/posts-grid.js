@@ -227,12 +227,15 @@ function editPost(postId) {
       startSpinner();
     },
     error: function (response) {
-      showAlertModal("Ação não suportada!", "Você não tem permissão para editar esta postagem.");
     },
     success: function (response) {
-      $("#render-body").empty();
-      $("#render-body").html(response);
-      window.history.pushState(this.url, null, this.url);
+      if (response == 401) {
+        showAlertModal("Ação não suportada!", "Você não tem permissão para editar esta postagem.");
+      } else {
+        $("#render-body").empty();
+        $("#render-body").html(response);
+        window.history.pushState(this.url, null, this.url);
+      }
     },
     complete: function () {
       stopSpinner();

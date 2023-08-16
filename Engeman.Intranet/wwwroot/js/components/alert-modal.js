@@ -1,23 +1,7 @@
-﻿var _title
-var _body
+﻿function showAlertModal(headerText, bodyText) {
 
-function showAlertModal(title, body) {
-  _title = title;
-  _body = body;
+  document.getElementById('alert-modal').querySelector(".modal-header").innerHTML = "<h5>" + headerText + "</h5>"
+  document.getElementById('alert-modal').querySelector(".modal-body").innerHTML = "<p>" + bodyText + "</p>"
 
-  $(".alert-modal").find('.modal-title').text(_title);
-  $(".alert-modal").find('.modal-body').text(_body);
-  $(".alert-modal").modal("show");
+  $('#alert-modal').modal('show');
 }
-
-function hideAlertModal() {
-  $(".alert-modal").modal("hide");
-}
-
-$('.alert-modal').on('hidden.bs.modal', function (e) {
-  $("body").css("overflow", "scroll");
-})
-
-$('.alert-modal').on('show.bs.modal', function (e) {
-  $("body").css("overflow", "hidden");
-})
