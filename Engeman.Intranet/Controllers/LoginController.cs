@@ -77,7 +77,7 @@ namespace Engeman.Intranet.Controllers
         HttpContext.Session.Set<bool>("_IsModerator", GlobalFunctions.IsModerator(userAccount.Id));
         HttpContext.Session.Set<string>("_CurrentUsername", loginViewModel.Username);
 
-        return RedirectToAction("index", "dashboard");
+        return RedirectToAction("grid", "posts");
       }
     }
 
