@@ -16,6 +16,10 @@ $(document).ready(function () {
         accept: "jpg,jpeg",
         filesize: 5,
       },
+      "email": {
+        required: true,
+        email: true
+      },
       "description": {
         required: false,
       }

@@ -2,12 +2,12 @@
 {
   public class NewUserViewModel
   {
-    public NewUserViewModel(string name, string username, int departmentId, int permission)
+    public NewUserViewModel(string name, string username, string email, int departmentId, int permission)
     {
       Name = name;
       Username = username;
       DepartmentId = departmentId;
-      Email = username + "@engeman.com.br";
+      Email = email;
       SetPermissions(permission);
     }
 

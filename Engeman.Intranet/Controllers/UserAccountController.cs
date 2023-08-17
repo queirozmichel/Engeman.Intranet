@@ -100,7 +100,7 @@ namespace Engeman.Intranet.Controllers
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       string messageAux = null;
       int resultAux = StatusCodes.Status200OK;
-      var newUser = new NewUserViewModel(formData["name"], formData["username"], Convert.ToInt32(formData["departmentId"]), Convert.ToInt32(formData["permission"]));
+      var newUser = new NewUserViewModel(formData["name"], formData["username"], formData["email"], Convert.ToInt32(formData["departmentId"]), Convert.ToInt32(formData["permission"]));
 
       try { _userAccountRepository.Add(newUser, sessionUsername); }
       catch (SqlException ex)
@@ -177,7 +177,7 @@ namespace Engeman.Intranet.Controllers
       userEdit.Active = user.Active;
       userEdit.Name = user.Name;
       userEdit.Username = user.Username;
-      userEdit.Email = user.Email.Substring(0, user.Email.IndexOf("@"));
+      userEdit.Email = user.Email;
       userEdit.Photo = user.Photo;
       userEdit.Description = user.Description;
       userEdit.DepartmentId = user.DepartmentId;
@@ -204,7 +204,7 @@ namespace Engeman.Intranet.Controllers
       user.Active = userEdited.Active;
       user.Name = userEdited.Name;
       user.Username = userEdited.Username;
-      user.Email = userEdited.Email + "@engeman.com.br";
+      user.Email = userEdited.Email;
       user.Description = userEdited.Description;
       user.DepartmentId = userEdited.DepartmentId;
       user.Permissions = userEdited.Permissions.SerializeAndBoolToIntConverter();

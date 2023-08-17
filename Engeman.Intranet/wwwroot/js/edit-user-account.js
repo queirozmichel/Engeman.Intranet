@@ -26,6 +26,10 @@ $(document).ready(function () {
         required: true,
         pattern: "[a-z]+[.][a-z]+",
       },
+      "email": {
+        required: true,
+        email: true
+      },
       "photo": {
         accept: "jpg,jpeg,png",
         filesize: 5,
@@ -107,10 +111,6 @@ $("#edit-user-form").on("submit", function (event) {
       }
     })
   }
-})
-
-$("#username-input").on("input", function () {
-  $("#email-input").val(this.value);
 })
 
 $(".back-button").on("click", function (event) {

@@ -21,6 +21,10 @@
         required: true,
         pattern: "[a-z]+[.][a-z]+"
       },
+      "email": {
+        required: true,
+        email: true
+      },
       "departmentId": {
         required: true,
       },
@@ -88,10 +92,6 @@ $("#new-user-form").on("submit", function (event) {
 $("#cancel-form-button").on("click", function (event) {
   event.preventDefault();
   $("#new-user-modal").modal("hide");
-})
-
-$("#username-input").on("input", function () {
-  $("#email-input").val(this.value);
 })
 
 $('#new-user-modal').on('shown.bs.modal', function () {
