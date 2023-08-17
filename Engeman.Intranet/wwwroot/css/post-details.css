@@ -35,6 +35,10 @@
   margin-bottom: 0px;
 }
 
+.editor-content-view{
+  word-wrap: break-word;
+}
+
 .editor-content-view p,
 .editor-content-view li {
   white-space: pre-wrap;

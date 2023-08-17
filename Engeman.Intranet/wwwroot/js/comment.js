@@ -35,9 +35,6 @@ $("#comment-form").on("submit", function (event) {
       processData: false,
       data: formData,
       dataType: "json",
-      beforeSend: function () {
-        startSpinner();
-      },
       success: function (response) {
         if (response.occurrences != 0) {
           showAlertModal("Atenção!", `O formulário contém o(s) termo(s) ${response.termsFounded}, de uso não permitido. É necessário removê-lo(s) para poder continuar.`);
@@ -49,9 +46,6 @@ $("#comment-form").on("submit", function (event) {
             contentType: false,
             processData: false,
             data: formData,
-            beforeSend: function () {
-              startSpinner();
-            },
             success: function (response) {
               if (response == 200) {
                 $.ajax({
@@ -59,6 +53,9 @@ $("#comment-form").on("submit", function (event) {
                   dataType: "html",
                   data: { "postId": sessionStorage.getItem("postId") },
                   url: "/posts/postdetails",
+                  beforeSend: function () {
+                    startSpinner();
+                  },
                   success: function (response) {
                     $("#render-body").empty();
                     $("#render-body").html(response);
@@ -66,8 +63,11 @@ $("#comment-form").on("submit", function (event) {
                   error: function () {
                     toastr.error("Não foi possível ir para os detalhes da postagem", "Erro!");
                   },
+                  complete: function () {
+                    stopSpinner();
+                    toastr.success("O comentário foi salvo", "Sucesso!");
+                  }
                 });
-                toastr.success("O comentário foi salvo", "Sucesso!");
               }
             },
             error: function (response) {
@@ -75,16 +75,10 @@ $("#comment-form").on("submit", function (event) {
                 toastr.error(response.responseText, "Erro " + response.status);
               }
             },
-            complete: function () {
-              stopSpinner();
-            },
           })
         }
       },
       error: function (response) { },
-      complete: function (response) {
-        stopSpinner();
-      }
     })
   }
 })

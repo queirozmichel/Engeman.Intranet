@@ -1,4 +1,5 @@
-﻿using Engeman.Intranet.Extensions;
+﻿using Engeman.Intranet.Attributes;
+using Engeman.Intranet.Extensions;
 using Engeman.Intranet.Library;
 using Engeman.Intranet.Models.ViewModels;
 using HtmlAgilityPack;
@@ -204,6 +205,20 @@ namespace Engeman.Intranet.Helpers
         }
       }
       return days;
+    }
+
+    /// <summary>
+    /// Obtém a data e hora da última compilação.
+    /// </summary>
+    /// <returns></returns>
+    public static DateTime? GetAssemblyBuildDateTime()
+    {
+      var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+      var attr = Attribute.GetCustomAttribute(assembly, typeof(BuildDateTimeAttribute)) as BuildDateTimeAttribute;
+      if (DateTime.TryParse(attr?.DateTime, out DateTime dateTime))
+        return dateTime;
+      else
+        return null;
     }
   }
 }

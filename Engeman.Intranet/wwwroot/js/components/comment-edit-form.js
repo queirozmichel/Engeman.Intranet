@@ -50,9 +50,6 @@ $("#comment-edit-form").on("submit", function (event) {
       processData: false,
       data: formData,
       dataType: "json",
-      beforeSend: function () {
-        startSpinner();
-      },
       success: function (response) {
         if (response.occurrences != 0) {
           showAlertModal("Atenção!", `O formulário contém o(s) termo(s) ${response.termsFounded}, de uso não permitido. É necessário removê-lo(s) para poder continuar.`);
@@ -65,8 +62,10 @@ $("#comment-edit-form").on("submit", function (event) {
             processData: false,
             data: formData,
             url: "/comments/updatecomment",
-            success: function (response) {
-              toastr.success("O comentário foi atualizado", "Sucesso!");
+            beforeSend: function () {
+              startSpinner();
+            },
+            success: function (response) {              
               $("#render-body").empty();
               $("#render-body").html(response);
             },
@@ -77,14 +76,13 @@ $("#comment-edit-form").on("submit", function (event) {
             },
             complete: function (response) {
               Cookies.remove('FilesToBeRemove');
+              stopSpinner();
+              toastr.success("O comentário foi atualizado", "Sucesso!");
             }
           })
         }
       },
       error: function (response) { },
-      complete: function (response) {
-        stopSpinner();
-      }
     })
   }
 })

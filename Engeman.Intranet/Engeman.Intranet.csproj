@@ -9,6 +9,13 @@
   <ItemGroup>
 	<Watch Include="**\*.cshtml" Exclude="node_modules\**\*;**\*.js.map;obj\**\*;bin\**\*" />
   </ItemGroup>
+  
+<!--Obtenção da data e hora da última compilação-->
+  <ItemGroup>
+    <AssemblyAttribute Include="Engeman.Intranet.Attributes.BuildDateTime">
+      <_Parameter1>$([System.DateTime]::Now.ToString("s"))</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="DatabaseScript.sql" />
