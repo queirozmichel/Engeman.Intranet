@@ -77,6 +77,7 @@ namespace Engeman.Intranet.Repositories
             Description = result.Rows[i]["Description"].ToString(),
             PostId = postId,
             Revised = Convert.ToBoolean(result.Rows[i]["Revised"]),
+            UserAccountId = Convert.ToInt32(result.Rows[i]["User_Account_Id"]),
             ChangeDate = (DateTime)result.Rows[i]["Change_Date"]
           };
           comments.Add(comment);

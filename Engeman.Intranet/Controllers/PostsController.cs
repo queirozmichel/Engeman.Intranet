@@ -87,6 +87,7 @@ namespace Engeman.Intranet.Controllers
       var user = new UserAccount();
       IQueryable<PostGridViewModel> posts = null;
       var comments = new List<Comment>();
+      var currentUserId = HttpContext.Session.Get<int>("_CurrentUserId");
 
       if (bool.Parse(_configuration.GetSection("SEARCH_CONDITION:CONTAINSTABLE").Value) == true && (!string.IsNullOrEmpty(searchPhrase)))
       {
@@ -96,7 +97,7 @@ namespace Engeman.Intranet.Controllers
 
       try
       {
-        user = _userAccountRepository.GetById(HttpContext.Session.Get<int>("_CurrentUserId"));
+        user = _userAccountRepository.GetById(currentUserId);
         posts = _postRepository.GetPostsGrid(user, searchPhrase).AsQueryable();
       }
       catch (Exception) { }
@@ -106,7 +107,7 @@ namespace Engeman.Intranet.Controllers
         try { comments = _commentRepository.GetByPostId(post.Id); } catch (Exception) { }
         for (int i = 0; i < comments.Count; i++)
         {
-          if (comments[i].Revised == false)
+          if (comments[i].Revised == false && (comments[i].UserAccountId == currentUserId || GlobalFunctions.IsModerator(currentUserId)))
           {
             post.UnrevisedComments = true;
             break;
@@ -120,7 +121,7 @@ namespace Engeman.Intranet.Controllers
       }
       else
       {
-        posts = posts.Where("revised == (@0) || UnrevisedComments == (@1) || userAccountId == (@2)", true, false, HttpContext.Session.Get<int>("_CurrentUserId"));
+        posts = posts.Where("revised == (@0) || UnrevisedComments == (@1) || userAccountId == (@2)", true, false, currentUserId);
       }
 
       if (filterHeader == "manual") return posts = posts.Where("postType == (@0)", "M");
