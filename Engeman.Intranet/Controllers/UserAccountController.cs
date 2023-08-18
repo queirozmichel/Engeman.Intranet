@@ -6,7 +6,7 @@ using Engeman.Intranet.Models.ViewModels;
 using System.Linq.Dynamic.Core;
 using Engeman.Intranet.Extensions;
 using System.Data.SqlClient;
-using System.Text.Json;
+using Engeman.Intranet.Helpers;
 
 namespace Engeman.Intranet.Controllers
 {
@@ -138,20 +138,12 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public IActionResult UpdateUserProfile(UserAccount userAccount, List<IFormFile> Photo)
+    public IActionResult UpdateUserProfile(UserAccount userAccount, IFormFile photo)
     {
-      if (Photo.Count == 0) try { userAccount.Photo = _userAccountRepository.GetByUsername(userAccount.Username).Photo; } catch (Exception) { }
-
-      foreach (var item in Photo)
+      if (photo == null) try { userAccount.Photo = _userAccountRepository.GetByUsername(userAccount.Username).Photo; } catch (Exception) { }
+      else
       {
-        if (item.Length > 0)
-        {
-          using (var stream = new MemoryStream())
-          {
-            item.CopyTo(stream);
-            userAccount.Photo = stream.ToArray();
-          }
-        }
+        userAccount.Photo = GlobalFunctions.ResizeAndCompressImage(photo, 600);
       }
 
       try { _userAccountRepository.Update(userAccount); }
@@ -196,7 +188,7 @@ namespace Engeman.Intranet.Controllers
     }
 
     [HttpPost]
-    public IActionResult UpdateUserAccount(UserEditViewModel userEdited, List<IFormFile> Photo)
+    public IActionResult UpdateUserAccount(UserEditViewModel userEdited, IFormFile photo)
     {
       var sessionUsername = HttpContext.Session.Get<string>("_CurrentUsername");
       var user = new UserAccount();
@@ -209,20 +201,10 @@ namespace Engeman.Intranet.Controllers
       user.DepartmentId = userEdited.DepartmentId;
       user.Permissions = userEdited.Permissions.SerializeAndBoolToIntConverter();
 
-      if (Photo.Count == 0) try { user.Photo = _userAccountRepository.GetByUsername(user.Username).Photo; } catch (Exception) { }
+      if (photo == null) try { user.Photo = _userAccountRepository.GetByUsername(user.Username).Photo; } catch (Exception) { }
       else
       {
-        foreach (var item in Photo)
-        {
-          if (item.Length > 0)
-          {
-            using (var stream = new MemoryStream())
-            {
-              item.CopyTo(stream);
-              user.Photo = stream.ToArray();
-            }
-          }
-        }
+        user.Photo = GlobalFunctions.ResizeAndCompressImage(photo, 600);
       }
 
       try { _userAccountRepository.UpdateByModerator(user.Id, user, sessionUsername); }

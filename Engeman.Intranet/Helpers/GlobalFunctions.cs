@@ -1,8 +1,11 @@
 ﻿using Engeman.Intranet.Attributes;
 using Engeman.Intranet.Extensions;
 using Engeman.Intranet.Library;
+using Engeman.Intranet.Models;
 using Engeman.Intranet.Models.ViewModels;
 using HtmlAgilityPack;
+using System.Drawing.Imaging;
+using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace Engeman.Intranet.Helpers
@@ -219,6 +222,39 @@ namespace Engeman.Intranet.Helpers
         return dateTime;
       else
         return null;
+    }
+
+    /// <summary>
+    /// Redimensiona e comprime uma imagem a partir do valor de largura passado como parâmetro. 
+    /// O comprimento da mesma é ajustado proporcionalmente para que não fique distorcida.
+    /// </summary>
+    /// <param name="image">Imagem no formato IFormFile</param>
+    /// <param name="width">Valor da largura em pixels</param>
+    /// <returns>Retorna a imagem no formato de um array de bytes</returns>
+    public static byte[] ResizeAndCompressImage(IFormFile image, int width)
+    {
+      using (var stream = image.OpenReadStream())
+      {
+        Image originalImage = Image.FromStream(stream);
+
+        // Calcula a nova altura mantendo a proporção original
+        int newHeight = (int)(originalImage.Height * ((double)width / originalImage.Width));
+
+        using (var memoryStream = new MemoryStream())
+        {
+          using (Image compressedImage = new Bitmap(width, newHeight))
+          {
+            using (Graphics graphics = Graphics.FromImage(compressedImage))
+            {
+              graphics.DrawImage(originalImage, 0, 0, width, newHeight);
+            }
+            // Salva a imagem compactada no MemoryStream
+            compressedImage.Save(memoryStream, ImageFormat.Jpeg);
+          }
+          //byte[] compressedImageData = memoryStream.ToArray();
+          return memoryStream.ToArray();
+        }
+      }
     }
   }
 }
